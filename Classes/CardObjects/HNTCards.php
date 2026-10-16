@@ -262,43 +262,43 @@ class art_of_the_dragon_scale_red extends Card {
 }
 
 
-// class bite_red extends Card {
+class bite extends BaseCard {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (IsHeroAttackTarget()) {
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+		}
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "bite_red";
-//     $this->controller = $controller;
-//     }
+	function ProcessAttackTrigger($target, $uniqueID) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class bite_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "bite_red";
+		$this->controller = $controller;
+		$this->baseCard = new bite($this->cardID, $this->controller);
+	}
+}
 
+class bite_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "bite_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new bite($this->cardID, $this->controller);
+	}
+}
 
-// class bite_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "bite_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class bite_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "bite_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class bite_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "bite_blue";
+		$this->controller = $controller;
+		$this->baseCard = new bite($this->cardID, $this->controller);
+	}
+}
 
 
 // class blade_beckoner_boots extends Card {
@@ -470,17 +470,35 @@ class art_of_the_dragon_scale_red extends Card {
 // }
 
 
-// class burning_blade_dance_red extends Card {
+class burning_blade_dance_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "burning_blade_dance_red";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "burning_blade_dance_red";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) {
+			if (!$check) {
+				ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
+				Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ONHITEFFECT", final:true);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+	}
+
+	function DoesAttackHaveGoAgain() {
+		return NumDraconicChainLinks() > 1;
+	}
+}
 
 
 // class calming_breeze_red extends Card {
@@ -691,17 +709,35 @@ class art_of_the_dragon_scale_red extends Card {
 // }
 
 
-// class danger_digits extends Card {
+class danger_digits extends Card {
+	function __construct($controller) {
+		$this->cardID = "danger_digits";
+		$this->controller = $controller;
+    }
 
-//   function __construct($controller) {
-//     $this->cardID = "danger_digits";
-//     $this->controller = $controller;
-//     }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+		return "";
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PayAdditionalCosts($from, $index = '-') {
+		ThrowDaggerTargeting($this->controller, $this->cardID);
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		$CharacterCard->Destroy();
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		$searchResult = SearchMultizone($this->controller, DaggerSearch());
+		if (!$CombatChain->HasCurrentLink()) return true;
+		if ($searchResult == "") return true;
+		return false;
+	}
+}
 
 
 // class defang_the_dragon_red extends Card {
@@ -2181,17 +2217,32 @@ class long_whisker_loyalty_red extends Card {
 // }
 
 
-// class pain_in_the_backside_red extends Card {
+class pain_in_the_backside_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "pain_in_the_backside_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "pain_in_the_backside_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+	
+	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+		if (IsHeroAttackTarget()) {
+			if (!$check) {
+				ThrowDaggerTargeting($this->controller, $this->cardID, false, true);
+				Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ONHITEFFECT", final:true);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+		ThrowWeapon("Dagger", $cardID, destroy:false, target:$target);
+	}
+}
 
 
 // class path_of_vengeance extends Card {
@@ -2875,43 +2926,43 @@ class rake_over_the_coals_red extends Card {
 // }
 
 
-// class silver_talons_red extends Card {
+class silver_talons extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if(TalentContains($this->cardID, "DRACONIC", $this->controller) && IsHeroAttackTarget()) {
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+		}
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "silver_talons_red";
-//     $this->controller = $controller;
-//     }
+  	function ProcessAttackTrigger($target, $uniqueID) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class silver_talons_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "silver_talons_red";
+		$this->controller = $controller;
+		$this->baseCard = new silver_talons($this->cardID, $this->controller);
+	}
+}
 
+class silver_talons_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "silver_talons_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new silver_talons($this->cardID, $this->controller);
+	}
+}
 
-// class silver_talons_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "silver_talons_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class silver_talons_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "silver_talons_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class silver_talons_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "silver_talons_blue";
+		$this->controller = $controller;
+		$this->baseCard = new silver_talons($this->cardID, $this->controller);
+	}
+}
 
 
 // class sisters_of_fire_red extends Card {
@@ -3200,56 +3251,67 @@ class rake_over_the_coals_red extends Card {
 // }
 
 
-// class throw_dagger_blue extends Card {
+class throw_dagger_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "throw_dagger_blue";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		ThrowWeapon("Dagger", $this->cardID, onHitDraw: true, target:$target);
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "throw_dagger_blue";
-//     $this->controller = $controller;
-//     }
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		$searchResult = SearchMultizone($this->controller, DaggerSearch());
+		if (!$CombatChain->HasCurrentLink()) return true;
+		if ($searchResult == "") return true;
+		return false;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PayAdditionalCosts($from, $index = '-') {
+		ThrowDaggerTargeting($this->controller, $this->cardID);
+	}
+}
 
+class throw_yourself_at_them extends BaseCard {
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (IsHeroAttackTarget()) {
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+		}
+		return "";
+	}
 
-// class throw_yourself_at_them_red extends Card {
+	function ProcessAttackTrigger($target, $uniqueID) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "throw_yourself_at_them_red";
-//     $this->controller = $controller;
-//     }
+class throw_yourself_at_them_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "throw_yourself_at_them_red";
+		$this->controller = $controller;
+		$this->baseCard = new throw_yourself_at_them($this->cardID, $this->controller);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class throw_yourself_at_them_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "throw_yourself_at_them_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new throw_yourself_at_them($this->cardID, $this->controller);
+	}
+}
 
-
-// class throw_yourself_at_them_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "throw_yourself_at_them_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class throw_yourself_at_them_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "throw_yourself_at_them_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class throw_yourself_at_them_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "throw_yourself_at_them_blue";
+		$this->controller = $controller;
+		$this->baseCard = new throw_yourself_at_them($this->cardID, $this->controller);
+	}
+}
 
 
 // class tip_off_red extends Card {

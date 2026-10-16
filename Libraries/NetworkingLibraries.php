@@ -4300,34 +4300,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "trench_of_sunken_treasure":
       FaceDownArsenalBotDeck($currentPlayer);
       break;
-    case "flick_knives":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
-      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
-      if(!ShouldAutotargetOpponent($currentPlayer)) {
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "ARCANETARGET,0", 1); //Arcane Target isn't used for arcane only. Should be renamed to something else.
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a target for ".CardLink($cardID, $cardID), 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
-      }
-      else {
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "{0},", 1);
-      }
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
-    case "hurl_red":
-    case "hurl_yellow":
-    case "hurl_blue":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how much to pay for " . CardLink($cardID, $cardID));
-      AddPayPrompt("BUTTONINPUT", $currentPlayer, "0,1");
-      AddDecisionQueue("PAYRESOURCES", $currentPlayer, "<-", 1);
-      AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
-      AddDecisionQueue("APPENDCLASSSTATE", $currentPlayer, $CS_AdditionalCosts . "-PAY1", 1);
-      AddDecisionQueue("WRITELOG", $currentPlayer, "Paid extra resource to throw a dagger", 1);
-      break;
     case "mask_of_malicious_manifestations":
       BottomDeckMultizone($currentPlayer, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
       break;
@@ -4560,14 +4532,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
-    case "danger_digits":
-    case "throw_dagger_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
-      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      break;
     case "war_cry_of_themis_yellow":
       if (GetResolvedAbilityType($cardID, $from) == "I")   
       {
@@ -4786,9 +4750,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
       }
       if ($resourcesPaid != "Skipped") {
         switch ($cardID) {
-          case "flick_knives": //cards that go on the combat chain but need to keep track of targets
-          case "danger_digits":
-          case "throw_dagger_blue":
           case "shred_red":
           case "shred_yellow":
           case "shred_blue":

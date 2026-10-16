@@ -2143,37 +2143,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             }
           }
           break;
-        case "flick_knives":
-        case "throw_dagger_blue":
-        case "danger_digits":
-          $allTargets = explode(",", $lastResult);
-          $otherPlayerCharacter = GetPlayerCharacter($otherPlayer);
-          $character = GetPlayerCharacter($player);
-          foreach ($allTargets as $targ) {
-            $targParts = explode("-", $targ);
-            if (!isset($targParts[1])) continue;
-            $index = intval($targParts[1]);
-            $location = $targParts[0];
-            if(str_starts_with($location, "MY"))
-            {
-              $cleanTarget == "" ? 
-                  $cleanTarget .= "MYCHAR," . $character[$index + 11] 
-                : $cleanTarget .= ",MYCHAR," . $character[$index + 11];
-            }
-            elseif (str_starts_with($location, "CO"))
-            {
-              $cleanTarget == "" ? 
-                $cleanTarget .= "COMBATCHAINATTACKS,$index" 
-              : $cleanTarget .= ",COMBATCHAINATTACKS,$index";
-            }
-            else {
-              $cleanTarget == "" ? 
-                $cleanTarget .= "THEIRCHAR," . $otherPlayerCharacter[$index + 11] 
-              : $cleanTarget .= ",THEIRCHAR," . $otherPlayerCharacter[$index + 11];
-            }
-          }
-          $target = $cleanTarget;
-          break;
         case "arcane_compliance_blue":
           $targetArr = explode("-", $lastResult);
           $target = "LAYERUID-" . $layers[intval($targetArr[1]) + 6];
@@ -3464,26 +3433,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "channel_the_tranquil_domain_yellow":
           AddLayer("TRIGGER", $player, $params[0], "$targetedPlayer-" . GetMZUID($targetedPlayer, $target));
           break;
-        case "pain_in_the_backside_red":
-          $targetParts = explode("-", $target);
-          $targetLoc = $targetParts[0];
-          $targetInd = $targetParts[1] ?? "-";
-          if ($targetLoc == "MYCHAR") {
-            $targetInd = GetMZUID($player, $target);
-          }
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd", $additional);
-          break;
-        case "bite_red":
-        case "bite_yellow":
-        case "bite_blue":
-          $targetParts = explode("-", $target);
-          $targetLoc = $targetParts[0];
-          $targetInd = $targetParts[1];
-          if ($targetLoc == "MYCHAR") {
-            $targetInd = GetMZUID($player, $target);
-          }
-          AddLayer("TRIGGER", $player, $params[0], "$targetLoc,$targetInd");
-          break;
         case "verdance":
         case "verdance_thorn_of_the_rose":
         case "nettling_shot_red":
@@ -3524,7 +3473,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $targetParts = explode("-", $target);
           $targetLoc = $targetParts[0];
           $targetID = $targetParts[1] ?? "-";
-          $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
+          if ($targetLoc != "COMBATCHAINATTACKS")
+            $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
+          else $uid = $targetID;
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional, $uniqueID);
           WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
           break;

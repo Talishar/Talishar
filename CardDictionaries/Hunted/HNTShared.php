@@ -26,7 +26,6 @@ function HNTAbilityType($cardID): string
     "path_of_vengeance" => "AR",
     "coat_of_allegiance" => "A",
     "fealty" => "I",
-    "danger_digits" => "AR",
     "starting_point" => "AR",
     "quickdodge_flexors" => "DR",
     "bunker_beard" => "DR",
@@ -360,18 +359,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
         if ($allies[$j+2] == 0) DestroyAlly($otherPlayer, $j);
       }
       break;
-    case "bite_red":
-    case "bite_yellow":
-    case "bite_blue":
-      if (IsHeroAttackTarget())
-      {
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA");
-        AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-        AddDecisionQueue("ADDTRIGGER", $currentPlayer, $cardID, 1);
-      }
-      break;
     case "whittle_from_bone_red":
     case "whittle_from_bone_yellow":
     case "whittle_from_bone_blue":
@@ -439,13 +426,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "dragon_power_blue":
       if(TalentContains($cardID, "DRACONIC", $currentPlayer)) {
         AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
-      break;
-    case "silver_talons_red":
-    case "silver_talons_yellow":
-    case "silver_talons_blue":
-      if(TalentContains($cardID, "DRACONIC", $currentPlayer) && IsHeroAttackTarget()) {
-        ThrowWeapon("Dagger", $cardID, true);
       }
       break;
     case "fire_tenet_strike_first_red":
@@ -618,22 +598,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "fealty":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
-    case "danger_digits":
-      ThrowWeapon("Dagger", $cardID, target:$target);
-      break;
-    case "throw_dagger_blue":
-      $daggerUID = explode(",", $target)[1] ?? "-";
-      if ($daggerUID != "-") {
-        if (str_contains($target, "COMBATCHAINATTACKS")) {
-          if ($chainLinks[intdiv($daggerUID,ChainLinksPieces())][2] == 0) return "FAILED";
-        }
-        else {
-          $index = SearchCharacterForUniqueID(explode(",", $target)[1], $currentPlayer);
-          if ($index == -1) return "FAILED";
-        }
-        ThrowWeapon("Dagger", $cardID, onHitDraw: true, target:$target);
-      }
-      break;
     case "up_sticks_and_run_red":
     case "up_sticks_and_run_yellow":
     case "up_sticks_and_run_blue":
@@ -644,11 +608,6 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "pick_up_the_point_yellow":
     case "pick_up_the_point_blue":
       Retrieve($currentPlayer, "Dagger");
-      break;
-    case "throw_yourself_at_them_red":
-    case "throw_yourself_at_them_yellow":
-    case "throw_yourself_at_them_blue":
-      if(IsHeroAttackTarget()) ThrowWeapon("Dagger", $cardID, true);
       break;
     case "starting_point":
       GiveAttackGoAgain();
@@ -941,9 +900,6 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
     case "mark_the_prey_blue":
       MarkHero($defPlayer);
       break;
-    case "burning_blade_dance_red":
-      ThrowWeapon("Dagger", $cardID, true);
-      break;
     case "hot_on_their_heels_red":
     case "mark_with_magma_red":
       MarkHero($defPlayer);
@@ -965,9 +921,6 @@ function HNTHitEffect($cardID, $uniqueID = -1, $target="-"): void
     case "pursue_to_the_edge_of_oblivion_red":
     case "pursue_to_the_pits_of_despair_red":
       MarkHero($defPlayer);
-      break;
-    case "pain_in_the_backside_red":
-      ThrowWeapon("Dagger", $cardID, destroy: false, target:$target);
       break;
     default:
       break;
