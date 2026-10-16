@@ -1634,7 +1634,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
       }
       WriteLog(CardLink($lastResult, $lastResult) . " was charged.");
+      $firstCharge = GetClassState($player, $CS_NumCharged) == 0;
       IncrementClassState($player, $CS_NumCharged);
+      if ($firstCharge) BoltynChargePowerOnPastChainLinks($player);
       LogPlayCardStats($player, $lastResult, "HAND", "CHARGE");
       if ((CardType($EffectContext) == "AA" || isset($layers[0]) && CardType($layers[0]) == "AA") && $parameter != "NOTCOST") IncrementCombatChainState($CCS_AttackNumCharged);
       return $lastResult;

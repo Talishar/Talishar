@@ -1465,11 +1465,8 @@ function GetChainLinkCardIDs($playerID = "", $cardType = "", $exclCardTypes = ""
 
 function ChainLinkResolvedEffects()
 {
-  global $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CombatChain;
+  global $mainPlayer, $CCS_WeaponIndex;
   $allies = GetAllies($mainPlayer);
-  if ($CombatChain->HasCurrentLink()) {
-    if ($combatChain[0] == "exude_confidence_red" && !ExudeConfidenceReactionsPlayable()) AddCurrentTurnEffect($combatChain[0], $mainPlayer, "CC");
-  }
   if (IsAllyAttacking()) {
     $weaponIndex = GetCombatChainState($CCS_WeaponIndex);
     if (isset($allies[$weaponIndex + 2]) && $allies[$weaponIndex + 2] <= 0) {

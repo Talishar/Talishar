@@ -1893,26 +1893,8 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (DelimStringContains($cardType, "A") && GetClassState($player, $CS_NumNonAttackCards) >= 1) return false;
     if ($cardType == "AA" && GetClassState($player, $CS_NumAttackCards) >= 1) return false;
   }
-  if ($hasCurrentLink
-    && $attackID == "exude_confidence_red"
-    && $player == $defPlayer
-    && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
-    $restriction = "Exude Confidance";
-    $exudeAttack = GetCombatChainState($CCS_CachedTotalPower);
-    $countCombatChain = count($combatChain);
-    $combatChainPieces = CombatChainPieces();
-    for ($i = $combatChainPieces; $i < $countCombatChain; $i += $combatChainPieces) {
-      if (DelimStringContains(CardType($combatChain[$i]), "AA")) {
-        $powerValue = PowerValue($combatChain[$i], $defPlayer, "CC");
-        if ($powerValue + $combatChain[$i + 5] >= $exudeAttack) {
-          $restriction = "";
-        }
-      }
-    }
-    if ($restriction == "Exude Confidance") return false;
-  }
-  if ($player == $defPlayer && !str_contains($phase, "CHOOSE") && SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer) && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I"))) {
-    $restriction = "Exude Confidance";
+  if ($player == $defPlayer && !str_contains($phase, "CHOOSE") && (($abilityType ??= GetAbilityType($cardID, $index, $from)) == "I" || DelimStringContains($cardType, "I") || str_contains($abilityTypes, "I")) && ExudeConfidenceRestrictsReactions()) {
+    $restriction = "Exude Confidence";
     return false;
   }
   if (($cardID == "chum_friendly_first_mate_yellow" || $cardID == "anka_drag_under_yellow" || $cardID == "gallow_end_of_the_line_yellow") && $from == "PLAY") {
@@ -3328,10 +3310,9 @@ function IsDefenseReactionPlayable($cardID, $from, $played=Null)
     "evasive_nageboshi_blue" => 1,
   ];
   if ((isset($blocksDreacts[$attackID]) || isset($blocksDreacts[$extraText])) && CardType($cardID) == "DR") return false;
-  if ($attackID == "exude_confidence_red") if (!ExudeConfidenceReactionsPlayable()) return false;
+  if (ExudeConfidenceRestrictsReactions()) return false;
   if ($from == "HAND" && CardSubType($attackID) == "Arrow" && SearchCharacterForCard($mainPlayer, "dreadbore")) return false;
   if (CurrentEffectPreventsDefenseReaction($from)) return false;
-  if (SearchCurrentTurnEffects("exude_confidence_red", $mainPlayer)) return false;
   if (SearchCurrentTurnEffects("corrupt_and_conquer_red", $mainPlayer) && $played) return false;
   if (SearchCurrentTurnEffects("imperial_seal_of_command_red", $mainPlayer) && CardType($cardID) == "DR") return false;
   if ($from == "HAND" && CachedTotalPower() <= 2 && (SearchCharacterForCard($mainPlayer, "benji_the_piercing_wind") || SearchCurrentTurnEffects("benji_the_piercing_wind-SHIYANA", $mainPlayer)) && (SearchCharacterActive($mainPlayer, "benji_the_piercing_wind") || SearchCharacterActive($mainPlayer, "shiyana_diamond_gemini")) && CardType($attackID) == "AA") return false;
