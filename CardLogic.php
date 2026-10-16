@@ -81,7 +81,7 @@ function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID 
 
 function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 {
-  global $currentTurnEffects, $combatChain, $CombatChain;
+  global $currentTurnEffects, $combatChain, $CombatChain, $chainLinks, $chainLinkSummary;
   if ($cardID == "BEATCHEST") {
     CharacterBeatChestTrigger($player);
     if (SearchCurrentTurnEffects("BEATCHEST", $player)) { // don't duplicate the icon
@@ -100,6 +100,15 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
   $currentTurnEffects[] = $uniqueID;
   $currentTurnEffects[] = CurrentTurnEffectUses($cardID);
   $powerModifier = EffectPowerModifier($cardID);
+  if ($cardID == "v_of_the_vanguard_yellow" && !empty($chainLinks)) {
+    // Also increases attacks on earlier chain links, including Exude Confidence.
+    $summaryPieces = ChainLinkSummaryPieces();
+    foreach ($chainLinks as $linkNum => $link) {
+      if (($link[1] ?? null) != $player || ($link[2] ?? 0) != 1) continue;
+      $powerIndex = $linkNum * $summaryPieces + 1;
+      if (isset($chainLinkSummary[$powerIndex])) $chainLinkSummary[$powerIndex] += $powerModifier;
+    }
+  }
   if ($uniqueID != -1 && $uniqueID != "ATTACK" && $powerModifier != 0) {
     $isCurrentAttack = isset($CombatChain) && $CombatChain->HasCurrentAttack() && $CombatChain->AttackCard()->UniqueID() == $uniqueID;
     if (!$isCurrentAttack) {

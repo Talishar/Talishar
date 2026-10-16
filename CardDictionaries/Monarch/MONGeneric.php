@@ -2,7 +2,7 @@
 
   function MONGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "-")
   {
-    global $currentPlayer, $CombatChain, $CS_PlayIndex;
+    global $currentPlayer, $CombatChain, $ChainLinks, $chainLinkSummary, $CS_PlayIndex;
     switch($cardID)
     {
       case "blood_drop_brocade": GainResources(1, $currentPlayer); return "";
@@ -14,7 +14,11 @@
             $CombatChain->AttackCard()->ModifyPower(2);
             break;
           case "COMBATCHAINATTACKS":
-            WriteLog("For now activating " . CardLink($cardID, $cardID) . " on a previous chain link will have no effect");
+            $linkNum = intdiv(GetClassState($currentPlayer, $CS_PlayIndex), ChainLinksPieces());
+            $attack = $ChainLinks->GetLink($linkNum)->AttackCard();
+            if ($attack->ID() == $cardID && $attack->StillOnChain()) {
+              $chainLinkSummary[$linkNum * ChainLinkSummaryPieces() + 1] += 2;
+            }
             break;
         }
         return "";
@@ -80,16 +84,42 @@
     }
   }
 
-  function ExudeConfidenceReactionsPlayable()
+  function ExudeConfidenceRestrictsReactions()
   {
-    global $CombatChain, $defPlayer;
-    $found = false;
-    $numActiveLink = $CombatChain->NumCardsActiveLink();
-    for($i=1; $i<$numActiveLink; ++$i) {
-      $card = $CombatChain->Card($i, cardNumber:true);
-      $powerValue = ModifiedPowerValue($card->ID(), $defPlayer, "CC", source:"exude_confidence_red");
-      if(IsHeroAttackTarget() && $card->PlayerID() == $defPlayer && $powerValue >= CachedTotalPower()) $found = true;
+    global $combatChain, $chainLinks, $chainLinkSummary, $CombatChain, $defPlayer;
+    if (($combatChain[0] ?? "") == "exude_confidence_red" && IsHeroAttackTarget()) {
+      $defendedByStrongCard = false;
+      $chainPieces = CombatChainPieces();
+      $chainCount = count($combatChain);
+      $attackPower = CachedTotalPower();
+      for ($i = $chainPieces; $i < $chainCount; $i += $chainPieces) {
+        if ($combatChain[$i + 1] != $defPlayer) continue;
+        if ($CombatChain->Card($i)->TotalPower() >= $attackPower) {
+          $defendedByStrongCard = true;
+          break;
+        }
+      }
+      if (!$defendedByStrongCard) return true;
     }
-    return $found;
+
+    if (empty($chainLinks)) return false;
+    $linkPieces = ChainLinksPieces();
+    $summaryPieces = ChainLinkSummaryPieces();
+    foreach ($chainLinks as $linkNum => $link) {
+      if (($link[0] ?? "") != "exude_confidence_red" || ($link[2] ?? 0) != 1) continue;
+      $defendedByStrongCard = false;
+      $attackPower = $chainLinkSummary[$linkNum * $summaryPieces + 1] ?? 0;
+      $linkCount = count($link);
+      for ($i = $linkPieces; $i < $linkCount; $i += $linkPieces) {
+        if (($link[$i + 1] ?? null) != $defPlayer) continue;
+        $power = ModifiedPowerValue($link[$i], $defPlayer, "CC", source:"exude_confidence_red") + ($link[$i + 4] ?? 0);
+        if ($power >= $attackPower) {
+          $defendedByStrongCard = true;
+          break;
+        }
+      }
+      if (!$defendedByStrongCard) return true;
+    }
+    return false;
   }
 

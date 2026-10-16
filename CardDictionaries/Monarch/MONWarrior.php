@@ -98,6 +98,40 @@
     AddDecisionQueue("FINISHCHARGE", $player, $mod, 1);
   }
 
+  function BoltynChargePowerOnPastChainLinks($player)
+  {
+    global $mainPlayer, $chainLinks, $chainLinkSummary;
+    if ($player != $mainPlayer || empty($chainLinks)) return;
+
+    $character = &GetPlayerCharacter($player);
+    $boltynCount = 0;
+    $characterCount = count($character);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $characterCount; $i += $characterPieces) {
+      $hero = $character[$i];
+      if ($hero != "boltyn" && $hero != "ser_boltyn_breaker_of_dawn" && $hero != "shiyana_diamond_gemini") continue;
+      if (($character[$i + 1] ?? 0) != 2 || ($character[$i + 12] ?? "DOWN") == "DOWN") continue;
+      if ($hero == "shiyana_diamond_gemini") $hero = ShiyanaCharacter($hero, $player);
+      if ($hero == "boltyn" || $hero == "ser_boltyn_breaker_of_dawn") ++$boltynCount;
+    }
+    if ($boltynCount == 0) return;
+
+    $defPlayer = 3 - $player;
+    $linkPieces = ChainLinksPieces();
+    $summaryPieces = ChainLinkSummaryPieces();
+    foreach ($chainLinks as $linkNum => $link) {
+      if (($link[1] ?? null) != $player || ($link[2] ?? 0) != 1) continue;
+      $linkCount = count($link);
+      for ($i = $linkPieces; $i < $linkCount; $i += $linkPieces) {
+        if (($link[$i + 1] ?? null) != $defPlayer || ($link[$i + 2] ?? 0) != 1) continue;
+        if (CardType($link[$i]) != "AA") continue;
+        $powerIndex = $linkNum * $summaryPieces + 1;
+        if (isset($chainLinkSummary[$powerIndex])) $chainLinkSummary[$powerIndex] += $boltynCount;
+        break;
+      }
+    }
+  }
+
   function DQCharge()
   {
     global $currentPlayer;
