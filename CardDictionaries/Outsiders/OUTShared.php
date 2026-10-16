@@ -819,10 +819,20 @@ function OUTAbilityCost($cardID)
 
   function SpireSnipingAbility($player)
   {
-    AddDecisionQueue("PASSPARAMETER", $player, "0,1");
-    AddDecisionQueue("MULTIREMOVEDECK", $player, "-");
-    AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put back on top", 1);
-    AddDecisionQueue("CHOOSETOP", $player, "<-");
+    $deck = new Deck($player);
+    if ($deck->RemainingCards() == 1) {
+      AddDecisionQueue("DECKCARDS", $player, "0", 1);
+      AddDecisionQueue("SETDQVAR", $player, "1", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "The top card of your deck is <1>", 1);
+      AddDecisionQueue("OK", $player, "-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $player, "-");
+    }
+    elseif (!$deck->Empty()) {
+      AddDecisionQueue("PASSPARAMETER", $player, "0,1");
+      AddDecisionQueue("MULTIREMOVEDECK", $player, "-");
+      AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to put back on top", 1);
+      AddDecisionQueue("CHOOSETOP", $player, "<-");
+    }
   }
 
   function Belch()
