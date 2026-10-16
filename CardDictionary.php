@@ -4118,7 +4118,7 @@ function HasRunegate($cardID)
   return GeneratedHasRunegate($cardID);
 }
 
-function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "", $index = -1)
+function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player = "", $index = -1, $ignoredPlayModes = [])
 {
   global $currentPlayer, $CS_NumNonAttackCards, $CS_Num6PowBan, $CurrentTurnEffects;
   if ($player == "") $player = $currentPlayer;
@@ -4127,17 +4127,19 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
   if ($mod == "TRAPDOOR") return SubtypeContains($cardID, "Trap", $currentPlayer);
   if (isFaceDownMod($mod)) return false;
   if ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "INST" || $mod == "spew_shadow_red" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
-  if ($CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $banishCard->UniqueID())->Index() != -1 && CardType($cardID) != "E") return true;
-  if (HasRunegate($cardID) && NumRunechants($player) >= CardCost($cardID, "BANISH")) return true;
+  if (!isset($ignoredPlayModes["Horror"]) && $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $banishCard->UniqueID(), $player)->Index() != -1 && CardType($cardID) != "E") return true;
+  if (!isset($ignoredPlayModes["Runegate"]) && HasRunegate($cardID) && NumRunechants($player) >= CardCost($cardID, "BANISH")) return true;
   $char = &GetPlayerCharacter($player);
   $banishHero = $char[0] ?? "";
   if (($banishHero == "professor_teklovossen" || $banishHero == "teklovossen_esteemed_magnate" || $banishHero == "teklovossen") && $char[1] < 3 && SubtypeContains($cardID, "Evo")) return true;
-  if (!$nonLimitedOnly && $banishHero == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
+  if (!$nonLimitedOnly && !isset($ignoredPlayModes["Blasmophet"]) && $banishHero == "blasmophet_levia_consumed" && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player) && HasBloodDebt($cardID) && $char[1] < 3 && !TypeContains($cardID, "E") && !TypeContains($cardID, "W")) return true;
   static $gateToIarathael = ["gate_to_iarathael" => true, "huxley" => true, "huxley_racketeer" => true];
   if ($CurrentTurnEffects->HasAnyEffectID($gateToIarathael)) {
-    if ($CurrentTurnEffects->HasAnySpecificEffect($gateToIarathael, $banishCard->UniqueID(), $player)) return true;
+    if (!isset($ignoredPlayModes["Gate"]) && $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $banishCard->UniqueID(), $player)->Index() != -1) return true;
+    static $huxleyEffects = ["huxley" => true, "huxley_racketeer" => true];
+    if ($CurrentTurnEffects->HasAnySpecificEffect($huxleyEffects, $banishCard->UniqueID(), $player)) return true;
   }
-  if (!$nonLimitedOnly && SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player) && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
+  if (!$nonLimitedOnly && !isset($ignoredPlayModes["Blasmophet"]) && SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player) && HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))) return true;
   if (!$nonLimitedOnly && SearchCurrentTurnEffects("embrace_sin_yellow-SIN", $player) && IsRunechant($cardID)) return true;
   $card = GetClass($cardID, $player);
   if ($card != "-") return $card->PlayableFromBanish($mod, $nonLimitedOnly);

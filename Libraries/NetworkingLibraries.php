@@ -2517,6 +2517,53 @@ function FinalizeTurn()
   ProcessDecisionQueue();
 }
 
+function GetBanishPlayModes($cardID, $mod, $index, $uniqueID, $player)
+{
+  global $CurrentTurnEffects;
+  $modes = [];
+  if ($CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $player)->Index() != -1) $modes[] = "Gate_to_iArathael";
+  if (CardType($cardID) != "E" && $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $uniqueID, $player)->Index() != -1) $modes[] = "Shadowrealm_Horror";
+
+  $character = GetPlayerCharacter($player);
+  if (($character[0] ?? "") == "blasmophet_levia_consumed" && ($character[1] ?? 3) < 3 && HasBloodDebt($cardID)
+      && !TypeContains($cardID, "E") && !TypeContains($cardID, "W") && SearchCurrentTurnEffects("blasmophet_levia_consumed", $player)) {
+    $modes[] = "Blasmophet_Levia_Consumed";
+  }
+  if (HasBloodDebt($cardID) && (TypeContains($cardID, "A") || TypeContains($cardID, "AA"))
+      && SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player)) {
+    $modes[] = "Blasmophet_the_Insatiable_Hunger";
+  }
+  if (HasRunegate($cardID) && NumRunechants($player) >= CardCost($cardID, "BANISH")) $modes[] = "Runegate";
+
+  $ignored = ["Gate" => true, "Horror" => true, "Blasmophet" => true, "Runegate" => true];
+  if (PlayableFromBanish($cardID, $mod, false, $player, $index, $ignored)) $modes[] = "Pay_resources";
+  return $modes;
+}
+
+function ApplyBanishPlayMode($mode, $uniqueID, $player)
+{
+  global $CurrentTurnEffects, $CS_PlayedFromGateUID;
+  switch ($mode) {
+    case "Gate_to_iArathael":
+      $effect = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $player);
+      if ($effect->Index() != -1) {
+        SetClassState($player, $CS_PlayedFromGateUID, $uniqueID);
+        $effect->Remove();
+      }
+      break;
+    case "Shadowrealm_Horror":
+      $effect = $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $uniqueID, $player);
+      if ($effect->Index() != -1) $effect->Remove();
+      break;
+    case "Blasmophet_Levia_Consumed":
+      SearchCurrentTurnEffects("blasmophet_levia_consumed", $player, true);
+      break;
+    case "Blasmophet_the_Insatiable_Hunger":
+      SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $player, true);
+      break;
+  }
+}
+
 function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID = -1, $zone=-1, $facing=0, $mod="-", $firstPass=true)
 {
   // CR 5.1 - Play a Card (includes cost declaration, targeting, and resolution setup)
@@ -2529,7 +2576,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumDraconicPlayed, $CS_TunicTicks, $CCS_NumUsedInReactions, $CCS_NumReactionPlayedActivated, $CS_NumStealthAttacks;
   global $CS_NumCannonsActivated, $chainLinks, $CS_PlayedNimblism, $CS_NumAttackCardsBlocked, $CS_NumCostedCardsPlayed, $CCS_AttackCost;
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
-  global $CS_PlayedFromGateUID, $CS_NumAuras;
+  global $CS_NumAuras, $CS_BanishPlayMode;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
   global $ChainLinks;
 
@@ -2622,22 +2669,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
     }
   }
-  if ($from == "BANISH" && $firstPass) { // reset effects giving permission to play from banish
-    $Gate = $CurrentTurnEffects->FindSpecificEffect("gate_to_iarathael", $uniqueID, $currentPlayer);
-    $Horror = $CurrentTurnEffects->FindSpecificEffect("shadowrealm_horror_red-PLAY", $uniqueID, $currentPlayer);
-    if ($Gate->Index() != -1) {
-      SetClassState($currentPlayer, $CS_PlayedFromGateUID, $uniqueID);
-      $Gate->Remove();
-    }
-    elseif ($Horror->Index() != -1) {
-      $Horror->Remove();
-    }
-    elseif (!PlayableFromBanish($cardID, $mod, true, index:$index)) {
-      $found = SearchCurrentTurnEffects("blasmophet_levia_consumed", $currentPlayer, true);
-      if (!$found)
-        SearchCurrentTurnEffects("blasmophet_the_insatiable_hunger", $currentPlayer, true);
-    }
-  }
+  if ($from == "BANISH" && $firstPass) SetClassState($currentPlayer, $CS_BanishPlayMode, "-");
   if ($dynCostResolved == -1) {
     //CR 5.1.1 Play a Card (CR 2.0) - Layer Created
     $abilityType = (IsStaticType($cardType, $from, $cardID)) ? GetResolvedAbilityType($cardID, $from) : "-";
@@ -2688,6 +2720,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   }
   if ($turn[0] != "P") {
     if ($dynCostResolved >= 0) {
+      if ($from == "BANISH" && !$firstPass) ApplyBanishPlayMode(GetClassState($currentPlayer, $CS_BanishPlayMode), $uniqueID, $currentPlayer);
       // OPTIMIZATION: Cache fealty searches to avoid searching twice in same condition
       if ($playingCard && TypeContains($cardID, "AA") && GetResolvedAbilityName($cardID, $from) != "Ability") {
         $hasFealty = SearchCurrentTurnEffects("fealty", $currentPlayer);
@@ -3359,11 +3392,21 @@ function QueueSacredArtModes($cardID, $modalities)
 
 function AddPrePitchDecisionQueue($cardID, $from, $index = -1, $facing="-")
 {
-  global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
+  global $currentPlayer, $CS_NumActionsPlayed, $CS_AdditionalCosts, $CS_BanishPlayMode, $turn, $combatChainState, $CCS_EclecticMag, $CS_NextWizardNAAInstant, $CS_NextNAAInstant;
   global $actionPoints, $mainPlayer, $currentTurnEffects;
   $cardType = CardType($cardID);
   $mod = "";
   if($from == "BANISH") $mod = GetBanishModifier($index);
+  if ($from == "BANISH") {
+    $banish = new BanishCard($currentPlayer, $index);
+    $modes = GetBanishPlayModes($cardID, $mod, $index, $banish->UniqueID(), $currentPlayer);
+    if (count($modes) == 1) SetClassState($currentPlayer, $CS_BanishPlayMode, $modes[0]);
+    elseif (count($modes) > 1) {
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how to play " . CardLink($cardID));
+      AddDecisionQueue("BUTTONINPUT", $currentPlayer, implode(",", $modes));
+      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_BanishPlayMode, 1);
+    }
+  }
   if (IsStaticType($cardType, $from, $cardID)) {
     $names = GetAbilityNames($cardID, $index, $from);
     if ($names != "") {

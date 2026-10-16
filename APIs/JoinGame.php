@@ -1030,7 +1030,7 @@ function isBannedInFormat($cardID, $format) {
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
           "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle",
           "symbiosis_shot", "cintari_saber", "cintari_saber_r"
-      ], $livingLegends)),
+      ], $livingLegends)), // $livingLegends contains the heroes that have LL
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",
           "waning_moon", "zephyr_needle", "reality_refractor", "stubby_hammerers"
