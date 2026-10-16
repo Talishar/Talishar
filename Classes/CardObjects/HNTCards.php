@@ -2231,7 +2231,7 @@ class pain_in_the_backside_red extends Card {
 	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
 		if (IsHeroAttackTarget()) {
 			if (!$check) {
-				ThrowDaggerTargeting($this->controller, $this->cardID, false, true);
+				ThrowDaggerTargeting($this->controller, $this->cardID, false, false);
 				Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ONHITEFFECT", final:true);
 			}
 			return true;
