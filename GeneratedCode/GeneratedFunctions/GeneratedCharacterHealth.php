@@ -127,6 +127,7 @@ return match($cardID) {
 "shelly_hardened_traveler_yellow" => 5,
 "sticky_fingers" => 2,
 "sticky_fingers_ally" => 2,
+"suraya_archangel_of_endless_hope" => 4,
 "suraya_archangel_of_erudition" => 4,
 "suraya_archangel_of_knowledge" => 4,
 "swabbie_yellow" => 3,
@@ -152,7 +153,6 @@ return match($cardID) {
 "yoji_royal_protector" => 22,
 "zen_tamer_of_purpose" => 40,
 "zyggy_starlight" => 40,
-"suraya_archangel_of_endless_hope" => 4,
 "trained_saurian" => 3,
 default => 20
 };

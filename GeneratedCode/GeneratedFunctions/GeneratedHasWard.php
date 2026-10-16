@@ -53,6 +53,7 @@ return match($cardID) {
 "solitary_companion_blue" => true,
 "spectral_shield" => true,
 "stardust_spike_red" => true,
+"suraya_archangel_of_endless_hope" => true,
 "suraya_archangel_of_erudition" => true,
 "suraya_archangel_of_knowledge" => true,
 "themis_archangel_of_judgment" => true,
@@ -73,7 +74,6 @@ return match($cardID) {
 "waxing_specter_red" => true,
 "waxing_specter_yellow" => true,
 "waxing_specter_blue" => true,
-"suraya_archangel_of_endless_hope" => true,
 default => false
 };
 }

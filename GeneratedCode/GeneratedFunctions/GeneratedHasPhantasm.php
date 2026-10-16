@@ -16,6 +16,9 @@ return match($cardID) {
 "enigma_chimera_blue" => true,
 "frightmare_red" => true,
 "herald_of_erudition_yellow" => true,
+"herald_of_hope_red" => true,
+"herald_of_hope_yellow" => true,
+"herald_of_hope_blue" => true,
 "herald_of_judgment_yellow" => true,
 "herald_of_protection_red" => true,
 "herald_of_protection_yellow" => true,
@@ -55,9 +58,6 @@ return match($cardID) {
 "wartune_herald_red" => true,
 "wartune_herald_yellow" => true,
 "wartune_herald_blue" => true,
-"herald_of_hope_red" => true,
-"herald_of_hope_yellow" => true,
-"herald_of_hope_blue" => true,
 default => false
 };
 }
