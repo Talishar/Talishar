@@ -14,7 +14,6 @@ function OUTAbilityCost($cardID)
     case "quiver_of_abyssal_depths": return 3;
     case "quiver_of_rustling_leaves": return 3;
     case "driftwood_quiver": return 0;
-    case "flick_knives": return 0;
     case "mask_of_shifting_perspectives": return 0;
     case "blade_cuff": return 2;
     case "mask_of_malicious_manifestations": return 1;
@@ -43,7 +42,6 @@ function OUTAbilityCost($cardID)
       case "quiver_of_abyssal_depths": return "I";
       case "quiver_of_rustling_leaves": return "I";
       case "driftwood_quiver": return "I";
-      case "flick_knives": return "AR";
       case "mask_of_shifting_perspectives": return "AR";
       case "blade_cuff": return "A";
       case "mask_of_malicious_manifestations": return "A";
@@ -345,9 +343,6 @@ function OUTAbilityCost($cardID)
           $rv = "Gets +1.";
         }
         return $rv;
-      case "flick_knives":
-        ThrowWeapon("Dagger", $cardID, target:$target);
-        return "";
       case "mask_of_shifting_perspectives":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
@@ -359,12 +354,6 @@ function OUTAbilityCost($cardID)
         return "";
       case "knives_out_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
-      case "hurl_red": case "hurl_yellow": case "hurl_blue":
-        if(DelimStringContains($additionalCosts, "PAY1"))
-        {
-          ThrowWeapon("Dagger", $cardID);
-        }
         return "";
       case "short_and_sharp_red": case "short_and_sharp_yellow": case "short_and_sharp_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
@@ -700,77 +689,51 @@ function OUTAbilityCost($cardID)
     }
   }
 
+  function DaggerSearch() {
+		return "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA&LAYER:subtype=Dagger;type=AA";
+  }
 
   function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-")
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
-    $weaponTargetInd = "";
     $heroTargetInd = "";
     $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-    $weaponUID = "-";
     if ($target == "-") {
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:subtype=" . $subtype . "&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
-      AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $currentPlayer, "<-", 1);
-      if($optional) AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      else AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      WriteLog("Throw weapon without a target is deprecated");
+      return;
     }
     else {
       $targets = explode(",", $target);
-      $targetWeapon = $targets[1];
-      isset($targets[2]) ? $targetHero = $targets[2] : $targetHero = "THEIRCHAR";
-      if(isset($targets[3])) $targetHeroUniqueID = $targets[3];
-      else {
-        $otherCharacter = GetPlayerCharacter($otherPlayer);
-        $targetHeroUniqueID = $otherCharacter[11];
-      }
-      //Target Weapon
-      if ($targets[0] == "COMBATCHAINATTACKS") {
-        $ccAttacks = GetCombatChainAttacks();
-        if ($ccAttacks[$targetWeapon + 2] != 1) {
-          WriteLog("The targeted dagger is no longer there, the layer fails to resolve");
-          return;
-        }
-        $weaponTargetInd = "COMBATCHAINATTACKS-" . $targetWeapon;
-        $weaponUID = $ccAttacks[$targetWeapon + 8];
+      $index = explode("-", $targets[0])[1] ?? "-";
+      if (is_numeric($index)) {
+        $TargetDagger = MZIndexToObject($currentPlayer, $targets[0]);
+        $CleanIndex = CleanTarget($currentPlayer, $targets[0]);
       }
       else {
-        $index = SearchCharacterForUniqueID($targetWeapon, $currentPlayer);
-        $char = GetPlayerCharacter($currentPlayer);
-        if ($index == -1 || $char[$index + 1] == 0) {
-          WriteLog("The targeted dagger is no longer there, the layer fails to resolve");
-          return;
-        }
-        $weaponTargetInd = "MYCHAR-$index";
-        $weaponUID = $char[$index + 11];
+        $TargetDagger = CleanTargetToObject($currentPlayer, $targets[0]);
+        $CleanIndex = $targets[0];
       }
-      SetDamageSourceUID($weaponUID);
+      $targetHero = $targets[1] ?? "THEIRCHAR-0";
+      if ($TargetDagger == "" || $TargetDagger->Index() == -1) {
+        WriteLog("The targeted dagger is no longer there, the layer fails to resolve");
+        return;
+      }
+      SetDamageSourceUID($TargetDagger->UniqueID());
       //Target Hero
-      if(substr($targetHero, 0, 5) == "THEIR") {
-        $index = SearchCharacterForUniqueID($targetHeroUniqueID, $otherPlayer);
-        $heroTargetInd = "$targetHero-$index";
-      }
-      else {
-        $index = SearchCharacterForUniqueID($targetHeroUniqueID, $currentPlayer);
-        $heroTargetInd = "$targetHero-$index";
-      }
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $weaponTargetInd, 1);
+      if(substr($targetHero, 0, 5) == "THEIR")
+        $heroTargetInd = "THEIRCHAR-0";
+      else
+        $heroTargetInd = "MYCHAR-0";
     }
-    if ($destroy) AddDecisionQueue("MZDESTROY", $currentPlayer, "-", 1);
-    else AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
-    AddDecisionQueue("SETDQVAR", $currentPlayer, "1", 1);
-    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $heroTargetInd, 1);
-    AddDecisionQueue("SETDQVAR", $currentPlayer, "2", 1);
-    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "1-", 1);
-    AddDecisionQueue("APPENDLASTRESULT", $currentPlayer, "-DAMAGE-$currentPlayer", 1);
-    AddDecisionQueue("DEALDAMAGE", $currentPlayer, "{2}", 1);
+    Await($currentPlayer, "DealDamage", target:$heroTargetInd, source:$TargetDagger->CardID(), playerSource:$currentPlayer);
     AddDecisionQueue("INCREMENTCOMBATCHAINSTATEBY", $currentPlayer, $CCS_FlickedDamage, 1);
     AddDecisionQueue("LESSTHANPASS", $currentPlayer, "1", 1);
-    AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$weaponTargetInd,{2},$weaponUID", 1);
+    AddDecisionQueue("PASSPARAMETER", $currentPlayer, $TargetDagger->CardID(), 1);
+    AddDecisionQueue("ONHITEFFECT", $otherPlayer, "$source,$targets[0],$heroTargetInd," . $TargetDagger->UniqueID(), 1);
     AddDecisionQueue("PASSPARAMETER", $currentPlayer, "1", 1);
     AddDecisionQueue("SETCOMBATCHAINSTATE", $currentPlayer, $CCS_HitThisLink, 1);
     if ($onHitDraw) AddDecisionQueue("DRAW", $currentPlayer, "-", 1);
+    if ($destroy) Await($currentPlayer, "MZDestroyCleanObj", MZIndex:$CleanIndex, subsequent:0, final:true);
   }
 
   function DamageDealtBySubtype($subtype)

@@ -368,6 +368,14 @@ function MZDestroyAwait($player) {
   MZDestroy($player, $MZInd, $effectController, $allArsenal);
 }
 
+function MZDestroyCleanObjAwait($player) {
+  global $dqVars;
+  $MZInd = $dqVars["MZIndex"] ?? "";
+  $obj = CleanTargetToObject($player, $MZInd);
+  if ($obj != "")
+    $obj->Destroy();
+}
+
 function SharpenAwait($player) {
   global $dqVars;
   $MZindex = $dqVars["MZIndex"];

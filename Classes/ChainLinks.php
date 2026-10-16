@@ -195,6 +195,10 @@ class LinkCard {
 		return $this->link[$this->index] ?? "-";
 	}
 
+	function CardID() {
+		return $this->ID();
+	}
+
 	function PlayerID() {
 		return $this->link[$this->index+1] ?? "-";
 	}
@@ -225,6 +229,10 @@ class LinkCard {
 
 	function OriginUniqueID() {
 		return $this->link[$this->index+8] ?? "";
+	}
+
+	function UniqueID() {
+		return $this->OriginUniqueID();
 	}
 
 	function NumTimesUsed() {

@@ -940,17 +940,36 @@ class fisticuffs extends Card {
 // }
 
 
-// class flick_knives extends Card {
+class flick_knives extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "flick_knives";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "flick_knives";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+		return "";
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		$targetSearch = ShouldAutotargetOpponent($this->controller) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
+		SetTargets($this->controller, $this->cardID, DaggerSearch());
+		SetTargets($this->controller, $this->cardID, $targetSearch);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "AR";
+	}
+
+	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+		global $CombatChain;
+		$searchResult = SearchMultizone($this->controller, DaggerSearch());
+		if (!$CombatChain->HasCurrentLink()) return true;
+		if ($searchResult == "") return true;
+		return false;
+	}
+}
 
 
 // class frailty extends Card {
@@ -1096,43 +1115,53 @@ class fisticuffs extends Card {
 // }
 
 
-// class hurl_red extends Card {
+class hurl extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if(DelimStringContains($additionalCosts, "PAY1")) {
+          SetTargets($this->controller, $this->cardID, DaggerSearch(), playCard:false);
+		  Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+        }
+		return "";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "hurl_red";
-//     $this->controller = $controller;
-//     }
+	function ProcessAttackTrigger($target, $uniqueID) {
+		ThrowWeapon("Dagger", $this->cardID, target:$target);
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CS_AdditionalCosts;
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID));
+		AddPayPrompt("BUTTONINPUT", $this->controller, "0,1");
+		AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+		AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
+		AddDecisionQueue("APPENDCLASSSTATE", $this->controller, $CS_AdditionalCosts . "-PAY1", 1);
+		AddDecisionQueue("WRITELOG", $this->controller, "Paid extra resource to throw a dagger", 1);
+	}
+}
 
+class hurl_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "hurl_red";
+		$this->controller = $controller;
+		$this->baseCard = new hurl($this->cardID, $this->controller);
+	}
+}
 
-// class hurl_yellow extends Card {
+class hurl_yellow extends Card {
+	function __construct($controller) {
+		$this->cardID = "hurl_yellow";
+		$this->controller = $controller;
+		$this->baseCard = new hurl($this->cardID, $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "hurl_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class hurl_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "hurl_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class hurl_blue extends Card {
+	function __construct($controller) {
+		$this->cardID = "hurl_blue";
+		$this->controller = $controller;
+		$this->baseCard = new hurl($this->cardID, $this->controller);
+	}
+}
 
 
 // class inertia extends Card {

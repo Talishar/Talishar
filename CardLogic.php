@@ -1178,20 +1178,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
-    case "pain_in_the_backside_red":
-      if (IsHeroAttackTarget()) {
-        if (!$check) {
-          $subtype = "Dagger";
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:subtype=$subtype&COMBATCHAINATTACKS:subtype=$subtype;type=AA");
-          AddDecisionQueue("REMOVEINDICESIFACTIVECHAINLINK", $mainPlayer, "<-", 1);
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_a_dagger_to_poke_with", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("SHOWSELECTEDTARGET", $mainPlayer, "-", 1);
-          AddDecisionQueue("ADDTRIGGER", $mainPlayer, "$cardID|ONHITEFFECT", "<-", 1);
-        }
-        return true;
-      }
-      break;
     case "runic_reclamation_red":
       if (IsHeroAttackTarget()) {
         if (!$check) {
@@ -1220,7 +1206,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
-    case "burning_blade_dance_red":
     case "hot_on_their_heels_red":
     case "mark_with_magma_red":
       if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) {
@@ -3709,18 +3694,17 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         else AddDecisionQueue("PASSPARAMETER", $player, -1);
         AddDecisionQueue("CHAOSTRANSFORM", $player, $char[0], 1);
         break;
-      case "bite_red":
-      case "bite_yellow":
-      case "bite_blue":
-        ThrowWeapon("Dagger", $parameter, target:$target);
-        break;
       case "hunted_or_hunter_red":
         WriteLog("👹 The Hunter has become the hunted");
         LoseHealth(1, $mainPlayer);
         break;
       case "blood_runs_deep_red":
-        ThrowWeapon("Dagger", "blood_runs_deep_red");
-        ThrowWeapon("Dagger", "blood_runs_deep_red");
+        $Character = new PlayerCharacter($player);
+        for ($i = 0; $i < $Character->NumCards(); ++$i) {
+          $CharacterCard = $Character->Card($i, true);
+          if (SubtypeContains($CharacterCard->CardID(), "Dagger"))
+            ThrowWeapon("Dagger", $parameter, target:"MYCHAR-" .$CharacterCard->UniqueID());
+        }
         break;
       case "ignite_red":
         AddCurrentTurnEffect("ignite_red", $player);

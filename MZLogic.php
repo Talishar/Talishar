@@ -800,6 +800,8 @@ function MZIndexToObject($player, $MZIndex) {
 function CleanTargetToObject($player, $cleanTarget) {
   if ($cleanTarget === null || $cleanTarget === "" || $cleanTarget === "-") return "";
   $targArr = explode("-", $cleanTarget, 2);
+  if ($targArr[0] == "COMBATCHAINATTACKS")
+    return MZIndexToObject($player, $cleanTarget);
   $zone = GetZoneObject($player, $targArr[0]);
   $uid = $targArr[1] ?? "-";
   return $zone != "" ? $zone->FindCardUID($uid) : "";

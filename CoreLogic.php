@@ -2675,8 +2675,6 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
     case "flittering_charge_yellow":
     case "flittering_charge_blue":
       return GetCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer) > 0;
-    case "burning_blade_dance_red":
-      return NumDraconicChainLinks() > 1;
     case "art_of_the_dragon_blood_red":
       $attackUniqueID = $CombatChain->AttackCard()->UniqueID();
       return SearchCurrentTurnEffects("art_of_the_dragon_blood_red-$attackUniqueID", $mainPlayer);
