@@ -716,9 +716,10 @@ class curative_ceremony_red extends Card {
     foreach ($modes as $mode) {
       $suffix = match($mode) {
         "Buff_Power" => "BUFF", "Go_again" => "GOAGAIN", "Veil" => "VEIL",
-        default => "BUFF"
+        default => "-"
       };
-      AddCurrentTurnEffect("$this->cardID-$suffix", $this->controller);
+      if ($suffix != "-")
+        AddCurrentTurnEffect("$this->cardID-$suffix", $this->controller);
     }
     return "";
   }
@@ -757,10 +758,12 @@ class curative_ceremony_red extends Card {
     global $CS_AdditionalCosts;
     $numModes = GetClassState($this->controller, $CS_AdditionalCosts);
     $modalities = "Buff_Power,Go_again,Veil";
-    Await($this->controller, "SetClassState", lastResultName:"value", piece:$CS_AdditionalCosts, prepend:"true");
-    PrependDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
-    PrependDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modalities-$numModes");
-    PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
+    if ($numModes > 0) {
+      Await($this->controller, "SetClassState", lastResultName:"value", piece:$CS_AdditionalCosts, prepend:"true");
+      PrependDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+      PrependDecisionQueue("MULTICHOOSETEXT", $this->controller, "$numModes-$modalities-$numModes");
+      PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a mode for " . CardLink($this->cardID));
+    }
   }
 }
 
