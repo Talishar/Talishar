@@ -3178,7 +3178,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
       return CountItemByName("Gold", $currentPlayer) == 0;
     case "compass_of_sunken_depths":
-    case "gold_baited_hook":
     case "redspine_manta":
     case "hammerhead_harpoon_cannon":
     case "polly_cranka":
@@ -3803,7 +3802,7 @@ function CharacterNumUsesPerTurn($cardID)
     "cogwerx_blunderbuss" => 1, "dead_threads" => 1, "puffin" => 1,
     "puffin_hightail" => 1, "hammerhead_harpoon_cannon" => 1, "spitfire" => 1,
     "compass_of_sunken_depths" => 1, "gravy_bones" => 1, "gravy_bones_shipwrecked_looter" => 1,
-    "marlynn" => 1, "marlynn_treasure_hunter" => 1, "gold_baited_hook" => 1, "scurv_stowaway" => 1,
+    "marlynn" => 1, "marlynn_treasure_hunter" => 1, "scurv_stowaway" => 1,
     "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1, "kayo_underhanded_cheat" => 1,
     "kayo_strong_arm" => 1, "pleiades" => 1, "pleiades_superstar" => 1, "tuffnut" => 1,
     "tuffnut_bumbling_hulkster" => 1, "mbrio_base_digits" => 1, "farflight_longbow" => 1,

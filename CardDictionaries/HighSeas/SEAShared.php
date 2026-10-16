@@ -8,7 +8,6 @@ function SEAAbilityType($cardID, $from="-"): string
     "buccaneers_bounty" => "A",
     "fish_fingers" => "A",
     "patch_the_hole" => "I",
-    "gold_baited_hook" => "A",
     "glidewell_fins" => "A",
     "rust_belt" => "I",
     "unicycle" => "I",
@@ -92,7 +91,6 @@ function SEAAbilityHasGoAgain($cardID, $from): bool
     "blue_sea_tricorn" => true,
     "buccaneers_bounty" => true,
     "fish_fingers" => true,
-    "gold_baited_hook" => true,
     "redspine_manta" => true,
     "marlynn_treasure_hunter" => true,
     "scurv_stowaway" => true,
@@ -160,8 +158,6 @@ function SEACombatEffectActive($cardID, $attackID): bool
   global $mainPlayer, $CS_NumAttacks;
   return match ($cardID) {
     "peg_leg" => true,
-    // pirate is inconsistently classed as a talent or a class leave it like this until it gets cleaned up
-    "gold_baited_hook" => ClassContains($attackID, "PIRATE", $mainPlayer) || TalentContains($attackID, "PIRATE", $mainPlayer),
     "regain_composure_blue" => true,
     "board_the_ship_red" => true,
     "hoist_em_up_red" => true,
@@ -330,7 +326,6 @@ function SEAPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "patch_the_hole":
       MZMoveCard($currentPlayer, "MYARS", "MYHAND", silent: true);
       break;
-    case "gold_baited_hook":
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":

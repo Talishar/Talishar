@@ -1538,7 +1538,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
         return true;
       }
       return false;
-    case "gold_baited_hook":
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":

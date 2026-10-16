@@ -476,14 +476,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "imperial_seal_of_command_red-HIT":
       DestroyArsenal($defPlayer, effectController:$mainPlayer);
       return 1;
-    case "gold_baited_hook":
-      $EffectContext = $effectSource; // ripple away always works on hook
-      AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRITEMS:type=T;cardID=gold");
-      AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL", 1);
-      AddDecisionQueue("ELSE", $mainPlayer, "-");
-      AddDecisionQueue("PLAYITEM", $mainPlayer, "gold", 1);
-      break;
     case "avast_ye_blue":
     case "heave_ho_blue":
     case "yo_ho_ho_blue":

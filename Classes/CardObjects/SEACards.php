@@ -1230,17 +1230,55 @@ class blue_fin_harpoon_blue extends GoFishCard {
 // }
 
 
-// class gold_baited_hook extends Card {
+class gold_baited_hook extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "gold_baited_hook";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "gold_baited_hook";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    return $CharacterCard->Tapped();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->TapForCost();
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    $EffectContext = $effectSource; // ripple away always works on hook
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRITEMS:type=T;cardID=gold");
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZOP", $this->controller, "GAINCONTROL", 1);
+    AddDecisionQueue("ELSE", $this->controller, "-");
+    AddDecisionQueue("PLAYITEM", $this->controller, "gold", 1);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return ClassContains($attackID, "PIRATE", $this->controller) || TalentContains($attackID, "PIRATE", $this->controller);
+  }
+}
 
 
 // class golden_cog extends Card {
