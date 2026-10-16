@@ -1257,6 +1257,7 @@ class gold_baited_hook extends Card {
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $EffectContext;
     $EffectContext = $effectSource; // ripple away always works on hook
     AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRITEMS:type=T;cardID=gold");
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
