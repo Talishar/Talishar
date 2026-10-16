@@ -95,9 +95,6 @@
       case "pummel_red": return 4;
       case "pummel_yellow": return 3;
       case "pummel_blue": return 2;
-      case "nimblism_red": return 3;
-      case "nimblism_yellow": return 2;
-      case "nimblism_blue": return 1;
       case "sloggism_red": return 6;
       case "sloggism_yellow": return 5;
       case "sloggism_blue": return 4;
@@ -147,7 +144,6 @@
       case "regurgitating_slog_red": case "regurgitating_slog_yellow": case "regurgitating_slog_blue": return true;
       case "wounded_bull_red": case "wounded_bull_yellow": case "wounded_bull_blue": return true;
       case "pummel_red": case "pummel_yellow": case "pummel_blue": return true;
-      case "nimblism_red": case "nimblism_yellow": case "nimblism_blue": return CardType($attackID) == "AA" && CardCost($attackID) <= 1;
       case "sloggism_red": case "sloggism_yellow": case "sloggism_blue": return CardType($attackID) == "AA" && CardCost($attackID) >= 2;
       case "rout_red": case "singing_steelblade_yellow": case "overpower_red": case "overpower_yellow": case "overpower_blue": return true;
       case "ironsong_response_red": case "ironsong_response_yellow": case "ironsong_response_blue": return true;
@@ -392,9 +388,6 @@
         return "";
       case "sink_below_red": case "sink_below_yellow": case "sink_below_blue":
         BottomDeck($currentPlayer, true, shouldDraw:true);
-        return "";
-      case "nimblism_red": case "nimblism_yellow": case "nimblism_blue":
-        AddCurrentTurnEffect($cardID, $mainPlayer);
         return "";
       case "sloggism_red": case "sloggism_yellow": case "sloggism_blue":
         AddCurrentTurnEffect($cardID, $mainPlayer);

@@ -1699,44 +1699,54 @@ class hope_merchants_hood extends Card {
 // }
 
 
-// class nimblism_red extends Card {
+class nimblism extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "nimblism_red";
-//     $this->controller = $controller;
-//     }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return CardCost($attackID) <= 1 && TypeContains($attackID, "AA");
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     AddCurrentTurnEffect($this->cardID, $this->controller);
-//     return "";
-//   }
-// }
+class nimblism_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "nimblism_red";
+    $this->controller = $controller;
+    $this->baseCard = new nimblism($this->cardID, $this->controller);
+  }
 
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+}
 
-// class nimblism_yellow extends Card {
+class nimblism_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "nimblism_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new nimblism($this->cardID, $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "nimblism_yellow";
-//     $this->controller = $controller;
-//     }
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class nimblism_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "nimblism_blue";
+    $this->controller = $controller;
+    $this->baseCard = new nimblism($this->cardID, $this->controller);
+  }
 
-
-// class nimblism_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "nimblism_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+}
 
 
 // class open_the_center_red extends Card {
