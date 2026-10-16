@@ -3604,7 +3604,13 @@ class soul_harvest_blue extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    return (new Discard($this->controller))->NumCards() < 6;
+    $discard = new Discard($this->controller);
+    $count = 0;
+    for ($i = 0; $i < $discard->NumCards(); ++$i) {
+      if (!IsFacedownMod($discard->Card($i, true)->Facing()))
+        ++$count;
+    }
+    return $count < 6;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
