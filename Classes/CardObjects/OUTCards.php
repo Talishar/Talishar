@@ -954,7 +954,7 @@ class flick_knives extends Card {
 
 	function PayAdditionalCosts($from, $index = '-') {
 		$targetSearch = ShouldAutotargetOpponent($this->controller) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
-		SetTargets($this->controller, $this->cardID, DaggerSearch());
+		ThrowDaggerTargeting($this->controller, $this->cardID);
 		SetTargets($this->controller, $this->cardID, $targetSearch);
 	}
 
@@ -1118,8 +1118,8 @@ class flick_knives extends Card {
 class hurl extends BaseCard {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if(DelimStringContains($additionalCosts, "PAY1")) {
-          SetTargets($this->controller, $this->cardID, DaggerSearch(), playCard:false);
-		  Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+			ThrowDaggerTargeting($this->controller, $this->cardID, false, true);
+			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
         }
 		return "";
 	}

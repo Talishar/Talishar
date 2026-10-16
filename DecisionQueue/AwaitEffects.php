@@ -246,6 +246,7 @@ function SetLayerTargetAwait($player) {
   global $dqVars, $Stack;
   $cardID = $dqVars["layerID"] ?? "-";
   $targ = $dqVars["index"] ?? "-";
+  if ($targ == "-" && isset($dqVars["MZIndex"])) $targ = $dqVars["MZIndex"];
   if ($cardID == "-" || $targ == "-") return "PASS";
   $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
   WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");

@@ -3473,7 +3473,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $targetParts = explode("-", $target);
           $targetLoc = $targetParts[0];
           $targetID = $targetParts[1] ?? "-";
-          $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
+          if ($targetLoc != "COMBATCHAINATTACKS")
+            $uid = is_numeric($targetID) ? GetMZUID($targetedPlayer, $target) : $targetID;
+          else $uid = $targetID;
           AddLayer("TRIGGER", $player, $params[0], "$targetLoc-$uid", $additional, $uniqueID);
           WriteLog("Player " . $targetedPlayer . "'s " . GetMZCardLink($targetedPlayer, $lastResult) . " was targeted by " . CardLink($parameter));
           break;

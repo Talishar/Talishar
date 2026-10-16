@@ -265,7 +265,7 @@ class art_of_the_dragon_scale_red extends Card {
 class bite extends BaseCard {
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if (IsHeroAttackTarget()) {
-			SetTargets($this->controller, $this->cardID, DaggerSearch(), may:true, playCard:false);
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
 			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
 		}
 		return "";
@@ -483,11 +483,12 @@ class burning_blade_dance_red extends Card {
 	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
 		if (IsHeroAttackTarget() && NumDraconicChainLinks() > 1) {
 			if (!$check) {
-				SetTargets($this->controller, $this->cardID, DaggerSearch(), may:true, playCard:false);
+				ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
 				Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ONHITEFFECT", final:true);
 			}
 			return true;
 		}
+		return false;
 	}
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
@@ -720,7 +721,7 @@ class danger_digits extends Card {
 	}
 
 	function PayAdditionalCosts($from, $index = '-') {
-		SetTargets($this->controller, $this->cardID, DaggerSearch());
+		ThrowDaggerTargeting($this->controller, $this->cardID);
 		$CharacterCard = new CharacterCard($index, $this->controller);
 		$CharacterCard->Destroy();
 	}
@@ -2230,11 +2231,12 @@ class pain_in_the_backside_red extends Card {
 	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
 		if (IsHeroAttackTarget()) {
 			if (!$check) {
-				SetTargets($this->controller, $this->cardID, DaggerSearch(), playCard:false);
+				ThrowDaggerTargeting($this->controller, $this->cardID, false, true);
 				Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ONHITEFFECT", final:true);
 			}
 			return true;
 		}
+		return false;
 	}
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
@@ -2927,7 +2929,7 @@ class rake_over_the_coals_red extends Card {
 class silver_talons extends BaseCard {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if(TalentContains($this->cardID, "DRACONIC", $this->controller) && IsHeroAttackTarget()) {
-			SetTargets($this->controller, $this->cardID, DaggerSearch(), may:true, playCard:false);
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
 			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
 		}
 		return "";
@@ -3269,14 +3271,14 @@ class throw_dagger_blue extends Card {
 	}
 
 	function PayAdditionalCosts($from, $index = '-') {
-		SetTargets($this->controller, $this->cardID, DaggerSearch());
+		ThrowDaggerTargeting($this->controller, $this->cardID);
 	}
 }
 
 class throw_yourself_at_them extends BaseCard {
   	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if (IsHeroAttackTarget()) {
-			SetTargets($this->controller, $this->cardID, DaggerSearch(), may:true, playCard:false);
+			ThrowDaggerTargeting($this->controller, $this->cardID, true, false);
 			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
 		}
 		return "";

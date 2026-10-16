@@ -786,7 +786,8 @@ function MZIndexToObject($player, $MZIndex) {
   $ind = $parts[1] ?? -1;
   if (!is_numeric($ind)) return CleanTargetToObject($player, $MZIndex);
   if ($zone == "COMBATCHAINATTACKS") { //this zone is wonky, handle separately
-    return $ChainLinks->GetLink($ind)->AttackCard();
+    $linkNum = intdiv($ind, ChainLinksPieces());
+    return $ChainLinks->GetLink($linkNum)->AttackCard();
   }
   elseif ($zone == "PASTCHAINLINK") {
     $linkInd = $parts[2] ?? -1;

@@ -693,6 +693,28 @@ function OUTAbilityCost($cardID)
 		return "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA&LAYER:subtype=Dagger;type=AA";
   }
 
+  function ThrowDaggerTargeting($player, $cardID, $may=false, $playCard=true) {
+    global $CombatChain;
+    $message = "Choose a target for " . CardLink($cardID);
+    $indices = SearchMultizone($player, DaggerSearch());
+    $indices = explode(",", $indices);
+    $Attack = $CombatChain->AttackCard();
+    $char = GetPlayerCharacter($player);
+    $filtered = [];
+    foreach ($indices as $index) {
+      $option = explode("-", $index, 2);
+      if ($option[0] === "MYCHAR"
+          && $char[$option[1]] === $Attack->ID()
+          && $char[$option[1] + 11] === $Attack->OriginUniqueID()) {
+        continue;
+      }
+      $filtered[] = $index;
+    }
+    $indices = implode(",", $filtered);
+    Await($player, "ChooseMultiZone", indices:$indices, may:$may, context:$message, subsequent:0);
+    if ($playCard) Await($player, "SetLayerTarget", layerID:$cardID, final:true);
+  }
+
   function ThrowWeapon($subtype, $source, $optional = false, $destroy = true, $onHitDraw = false, $target = "-")
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
