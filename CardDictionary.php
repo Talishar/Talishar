@@ -1832,7 +1832,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
       if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B") && !str_contains($abilityTypes, "I")) return false;
     }
-    if (CachedVeilActive() && NumDefendedMatchingColor($cardID) >= 1)
+    if (CachedVeilActive() && NumDefendedMatchingColor($cardID) >= 1 && !DelimStringContains($abilityTypes, "I", true))
       return false;
   }
   if ($phase == "B" && $from == "ARS" && !($cardType == "AA" && SearchCurrentTurnEffects("art_of_war_yellow-2", $player) || $cardID == "down_and_dirty_red" || HasAmbush($cardID, $defPlayer))) return false;
