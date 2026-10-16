@@ -241,18 +241,22 @@ try {
     $layers = $newLayers;
     break;
   case 106: // change opt order
-      $deck = new Deck($playerID);
-      $cardListTop = $submission->cardListTop;
-      $cardListBottom = $submission->cardListBottom;
+      $cardListTop = $submission->cardListTop ?? null;
+      $cardListBottom = $submission->cardListBottom ?? null;
+      if (!ValidateOptReorder($turn, $playerID, $cardListTop, $cardListBottom)) break;
       $cardListTopString = implode(",", $cardListTop);
       $cardListBottomString = implode(",", $cardListBottom);
       $newOptions = $cardListTopString . ";" . $cardListBottomString;
       $turn[2] = $newOptions;
       break;
     case 107: //submit Opt
+      $cardListTop = $submission->cardListTop ?? null;
+      $cardListBottom = $submission->cardListBottom ?? null;
+      if (!ValidateOptReorder($turn, $playerID, $cardListTop, $cardListBottom)) {
+        $response->ignored = true;
+        break;
+      }
       $deck = new Deck($playerID);
-      $cardListTop = $submission->cardListTop;
-      $cardListBottom = $submission->cardListBottom;
       $origDeckSize = GetClassState($playerID, $CS_CardsInDeckBeforeOpt);
       $proposedDeckSize = $deck->RemainingCards() + count($cardListTop) + count($cardListBottom);
       if ($origDeckSize == "-" || $origDeckSize == $proposedDeckSize) {
@@ -267,11 +271,17 @@ try {
       }
       else {
         WriteLog("Something funny happened while opting. I attempted to catch the behavior, but it may have caused issues. If you believe the opt resolved incorrectly, please submit a bug report.", highlight:true);
+        $response->ignored = true;
+        break;
       }
       ContinueDecisionQueue();
       break;
     case 108: // change trigger order
-      $cardListTop = $submission->cardListTop;
+      if (($turn[1] ?? null) != $playerID) break;
+      $cardListTop = $submission->cardListTop ?? null;
+      if (($turn[0] ?? null) === "COERCIVE") {
+        if (!ValidateCoerciveReorder($turn, $playerID, $cardListTop)) break;
+      } elseif (($turn[0] ?? null) !== "ORDERTRIGGERS" || !is_array($cardListTop)) break;
       $cardListTopString = implode(",", $cardListTop);
       $turn[2] = $cardListTopString;
       break;
@@ -329,9 +339,13 @@ try {
     $response->message = "Deck reordered.";
     break;
   case 110: // rearranging the top card of the opponent's deck
+    $cardList = $submission->cardListTop ?? null;
+    if (!ValidateCoerciveReorder($turn, $playerID, $cardList)) {
+      $response->ignored = true;
+      break;
+    }
     $otherPlayer = $playerID == 1 ? 2 : 1;
     $deck = new Deck($otherPlayer);
-    $cardList = $submission->cardListTop;
     for ($i = count($cardList) - 1; $i >= 0; --$i) {
       $deck->AddTop($cardList[$i]);
     }
