@@ -84,6 +84,44 @@ function validatePlayerID($playerID) {
     return ($playerID >= 1 && $playerID <= 3);
 }
 
+function ValidateCardPermutation($expectedCards, $submittedCards) {
+    if (count($submittedCards) !== count($expectedCards)) return false;
+    foreach ($submittedCards as $cardID) {
+        if (!is_string($cardID) || $cardID === "") return false;
+    }
+
+    sort($expectedCards);
+    sort($submittedCards);
+    return $submittedCards === $expectedCards;
+}
+
+function ValidateCoerciveReorder($turn, $playerID, $submittedCards) {
+    if (($turn[0] ?? null) !== "COERCIVE" || ($turn[1] ?? null) != $playerID ||
+        !is_array($submittedCards) || !is_string($turn[2] ?? null)) {
+        return false;
+    }
+
+    $expectedCards = array_values(array_filter(
+        explode(",", explode(";", $turn[2], 2)[0]),
+        fn($cardID) => $cardID !== ""
+    ));
+    if (count($expectedCards) < 1 || count($expectedCards) > 3) return false;
+    return ValidateCardPermutation($expectedCards, $submittedCards);
+}
+
+function ValidateOptReorder($turn, $playerID, $topCards, $bottomCards) {
+    if (($turn[0] ?? null) !== "OPT" || ($turn[1] ?? null) != $playerID ||
+        !is_array($topCards) || !is_array($bottomCards) || !is_string($turn[2] ?? null)) {
+        return false;
+    }
+
+    $expectedCards = array_values(array_filter(
+        explode(",", str_replace(";", ",", $turn[2])),
+        fn($cardID) => $cardID !== ""
+    ));
+    return ValidateCardPermutation($expectedCards, array_merge($topCards, $bottomCards));
+}
+
 function validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key) {
     if (filter_var($playerID, FILTER_VALIDATE_INT) === false) {
         return false;
