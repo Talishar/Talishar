@@ -2729,7 +2729,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       if ($turn[0] != "B" || ($layersCount > 0 && $layers[0] != "")) GetLayerTarget($cardID, $from);
       //CR 5.1.4b Declare target of attack
       // checking whether the card is an attack happens inside GETTARGETOFATTACK
-      AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from . ",0,LAYER");
+      if ($turn[0] != "B" && $currentPlayer == $mainPlayer) AddDecisionQueue("GETTARGETOFATTACK", $currentPlayer, $cardID . "," . $from . ",0,LAYER");
       // Alternative Gold payment is chosen after targets
       if ($playingCard) AddPostTargetDecisionQueue($cardID, $from, $index, $facing);
       if ($dynCost == "") AddDecisionQueue("PASSPARAMETER", $currentPlayer, "0");
