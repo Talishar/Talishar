@@ -166,3 +166,62 @@ class MILL extends Card {
     return "Manual Mode Mill";
   }
 }
+
+class flow_baited_hook extends Card {
+  function __construct($controller) {
+    $this->cardID = "flow_baited_hook";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(1, resolvedTarget:$target, source:$this->cardID);
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    return $CharacterCard->Tapped();
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->TapForCost();
+    SetArcaneTarget($this->controller, $this->cardID, "any");
+  }
+
+  function ArcaneHitEffect($source, $target, $damage) {
+    PlayAura("lightning_flow", $this->controller);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function AbilityCost() {
+    return 3;
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialTalent() {
+    return "LIGHTNING";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialName() {
+    return "Flow Baited Hook";
+  }
+}
