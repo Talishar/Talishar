@@ -284,6 +284,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $isFaBMeta = str_contains($decklink, "fabmeta");
    $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
    $isFaBBazaar = IsFaBBazaarHostLink($decklink);
+   $isGradely = IsGradelyHostLink($decklink);
    if ($isFaBDB) {
      $decklinkArr = explode("/", $decklink);
      $slug = $decklinkArr[count($decklinkArr) - 1];
@@ -294,6 +295,15 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      parse_str($parsedUrl['query'] ?? "-", $queryParams);
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
+   }
+   else if ($isGradely) {
+     $deckPath = ExtractGradelyDeckPath($decklink);
+     if ($deckPath === '') {
+       $response->error = "Invalid Gradely deck URL format. Expected a community, precon or tournament deck link, e.g. https://gradely.io/decks/public/DECK_ID";
+       echo (json_encode($response));
+       exit;
+     }
+     $apiLink = "https://api.gradely.io/api/v1/decks/" . $deckPath . "/export?format=talishar";
    }
    else if ($isFaBBazaar) {
      $deckId = ExtractFaBBazaarDeckId($decklink);
@@ -346,6 +356,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
    $deckObj = json_decode($apiDeck);
+   if ($isGradely) $deckObj = json_decode($deckObj->data->content ?? "null");
    if ($apiInfo['http_code'] == 401 && $isFaBBazaar) {
      $response->error = "API UNAUTHORIZED! FaB Bazaar API key is missing. Contact site administrator.";
      echo (json_encode($response));
@@ -356,6 +367,18 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      die();
    } elseif ($apiInfo['http_code'] == 429 && $isFaBBazaar) {
      $response->error = "FaB Bazaar rate limit exceeded. Please wait a minute and try again.";
+     echo (json_encode($response));
+     die();
+   } elseif ($apiInfo['http_code'] == 404 && $isGradely) {
+     $response->error = "Deck not found on Gradely. The deck may be private, unpublished or deleted, or the URL is incorrect.";
+     echo (json_encode($response));
+     die();
+   } elseif ($apiInfo['http_code'] == 400 && $isGradely) {
+     $response->error = "Only Flesh and Blood decks can be loaded from Gradely.";
+     echo (json_encode($response));
+     die();
+   } elseif ($apiInfo['http_code'] >= 500 && $isGradely) {
+     $response->error = "Gradely could not load this deck right now. Please try again in a minute.";
      echo (json_encode($response));
      die();
    }
