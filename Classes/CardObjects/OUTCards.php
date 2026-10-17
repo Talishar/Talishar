@@ -1118,9 +1118,9 @@ class flick_knives extends Card {
 class hurl extends BaseCard {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
 		if(DelimStringContains($additionalCosts, "PAY1")) {
-			ThrowDaggerTargeting($this->controller, $this->cardID, false, true);
+			ThrowDaggerTargeting($this->controller, $this->cardID, false, false);
 			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
-        }
+		}
 		return "";
 	}
 
