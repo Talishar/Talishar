@@ -119,7 +119,9 @@ function ValidateOptReorder($turn, $playerID, $topCards, $bottomCards) {
         explode(",", str_replace(";", ",", $turn[2])),
         fn($cardID) => $cardID !== ""
     ));
-    return ValidateCardPermutation($expectedCards, array_merge($topCards, $bottomCards));
+    $ret = ValidateCardPermutation($expectedCards, array_merge($topCards, $bottomCards));
+    if (!$ret) WriteLog("Opt validation failed, please submit a bug report and try undoing to opt again", highlight:true);
+    return $ret;
 }
 
 function validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key) {
