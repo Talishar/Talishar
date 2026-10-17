@@ -130,17 +130,36 @@
 // }
 
 
-// class zap_clappers extends Card {
+class zap_clappers extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "zap_clappers";
-//     $this->controller = $controller;
-//     }
+    function __construct($controller) {
+        $this->cardID = "zap_clappers";
+        $this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+    function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+        return "";
+    }
+
+    function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+        AddLayer("TRIGGER", $this->controller, $this->cardID);
+    }
+
+    function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+        if (CanRevealCards($this->controller)) {
+          QueueRevealInstant($this->controller);
+          Await($this->controller, $this->cardID, final:true);
+        }
+    }
+
+    function SpecificLogic() {
+        global $mainPlayer;
+        $Character = new PlayerCharacter($this->controller);
+        $CharacterCard = $Character->FindCardID($this->cardID);
+        SetDamageSourceUID($CharacterCard->UniqueID());
+        DealArcane(1, 1, source:$this->cardID);
+    }
+}
 
 
 ?>

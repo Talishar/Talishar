@@ -1033,7 +1033,6 @@ function OnBlockResolveEffects($cardID = "")
         case "mask_of_deceit":
         case "kabuto_of_imperial_authority":
         case "thick_hide_hunter_yellow":
-        case "zap_clappers":
         case "starlight_striders":
         case "hoist_em_up_red":
         case "breaker_helm_protos":

@@ -3781,12 +3781,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("WRITELOG", $player, "📣<b>{0}</b> was chosen");
         AddDecisionQueue("NULLTIMEZONE", $player, $ItemCard->Index().",{0}");
         break;
-      case "zap_clappers":
-        if (CanRevealCards($player)) {
-          QueueRevealInstant($player);
-          AddDecisionQueue("DEALARCANE", $player, "1-zap_clappers-TRIGGER", 1);
-        }
-        break;
       case "starlight_striders":
         if (CanRevealCards($player)) {
           QueueRevealInstant($player);
