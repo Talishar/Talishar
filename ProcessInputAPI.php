@@ -281,41 +281,22 @@ try {
       $cardListTop = $submission->cardListTop ?? null;
       if (($turn[0] ?? null) === "COERCIVE") {
         if (!ValidateCoerciveReorder($turn, $playerID, $cardListTop)) break;
-      } elseif (($turn[0] ?? null) !== "ORDERTRIGGERS" || !is_array($cardListTop)) break;
-      $cardListTopString = implode(",", $cardListTop);
-      $turn[2] = $cardListTopString;
+        $turn[2] = implode(",", $cardListTop);
+      } elseif (($turn[0] ?? null) === "ORDERTRIGGERS") {
+        // Keep the full trigger entries so the popup and a pass still see unique IDs and usurped costs
+        $reordered = ReorderTriggerEntries($turn[2] ?? "", $cardListTop);
+        if ($reordered !== null) $turn[2] = $reordered;
+      }
       break;
     case 109: // reorder triggers
       $cardList = $submission->cardListTop;
-      $layerPieces = LayerPieces();
       if (!IsReplay()) {
           $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
           $cards = implode(",", $cardList);
           fwrite($commandFile, "$playerID REORDER $cards 0 0\r\n");
           fclose($commandFile);
         }
-      foreach ($cardList as $card) {
-        $index = -1;
-        $layersCount = count($layers);
-        if (str_contains($card, "USURPED")) $card = "USURPED";
-        for ($i = 0; $i < $layersCount; $i += $layerPieces) {
-          if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID && $layers[$i+2] == $card) {
-            $index = $i;
-          }
-        }
-        if ($index != -1) {
-          $pretrigger = array_splice($layers, $index, $layerPieces);
-          $pretrigger[0] = "TRIGGER";
-          array_unshift($layers, ...$pretrigger);
-        }
-      }
-      $layersCount = count($layers);
-      for ($i = 0; $i < $layersCount; $i += $layerPieces) {
-        if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $playerID) {
-          WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
-          $layers[$i] = "TRIGGER";
-        }
-      }
+      ApplyTriggerOrder($playerID, $cardList);
       ContinueDecisionQueue();
       break;
   case 111: // manual mode: reorder your own deck

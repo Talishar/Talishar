@@ -1450,46 +1450,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($order !== null) ReorderDeck($playerID, $order);
       break;
     case "REORDER": // should only show up in replays
-      $cardList = explode(",", $buttonInput);
-      $layerPiecesReorder = LayerPieces();
-      $cardIndexMap = [];
-      $layersLen = count($layers);
-      for ($i = 0; $i < $layersLen; $i += $layerPiecesReorder) {
-        if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID) {
-          $cardIndexMap[$layers[$i + 2]] = $i;
-        }
-      }
-      $movedIndices = [];
-      $newLayersTop = [];
-      foreach ($cardList as $card) {
-        if (isset($cardIndexMap[$card])) {
-          $idx = $cardIndexMap[$card];
-          $movedIndices[$idx] = true;
-          $chunk = ["TRIGGER"];
-          for ($j = 1; $j < $layerPiecesReorder; $j++) {
-            $chunk[] = $layers[$idx + $j];
-          }
-          $newLayersTop = [...$chunk, ...$newLayersTop];
-        }
-      }
-      if (!empty($newLayersTop)) {
-        $newLayersRest = [];
-        for ($i = 0; $i < $layersLen; $i += $layerPiecesReorder) {
-          if (!isset($movedIndices[$i])) {
-            for ($j = 0; $j < $layerPiecesReorder; $j++) {
-              $newLayersRest[] = $layers[$i + $j];
-            }
-          }
-        }
-        $layers = [...$newLayersTop, ...$newLayersRest];
-      }
-      $layersCountReorder = count($layers);
-      for ($i = 0; $i < $layersCountReorder; $i += $layerPiecesReorder) {
-        if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $playerID) {
-          WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i + 2] . " to the stack", highlight: true);
-          $layers[$i] = "TRIGGER";
-        }
-      }
+      ApplyTriggerOrder($playerID, array_filter(explode(",", $buttonInput), fn($card) => $card !== ""));
       ContinueDecisionQueue();
       break;
     case "SETTINGS": // should only show up in replays
@@ -1596,6 +1557,96 @@ function OptAndLog($deck, $player, $cardListTop, $cardListBottom)
   WriteLog("🔮 Player " . $player . " has put " . $message . " of their deck.");
 }
 
+// Card IDs as the trigger order popup shows them, from a "cardID|uniqueID|additionalCosts,..." list
+function TriggerOrderCardIDs($triggerOrder)
+{
+  $cardIDs = [];
+  foreach (explode(",", $triggerOrder ?? "") as $entry) {
+    if ($entry === "") continue;
+    $parts = explode("|", $entry);
+    $cardIDs[] = $parts[0] == "USURPED" ? ($parts[2] ?? "-") . "-USURPED" : $parts[0];
+  }
+  return $cardIDs;
+}
+
+// Trigger order the player gets if they don't rearrange anything (matches FINDINDICES PRELAYERIDS)
+function DefaultTriggerOrderCardIDs($player)
+{
+  global $layers;
+  $layerPieces = LayerPieces();
+  $cardIDs = [];
+  for ($i = count($layers) - $layerPieces; $i >= 0; $i -= $layerPieces) {
+    if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $player) {
+      $cardIDs[] = $layers[$i + 2] == "USURPED" ? $layers[$i + 4] . "-USURPED" : $layers[$i + 2];
+    }
+  }
+  return $cardIDs;
+}
+
+// Rearranges the full trigger entries to match the submitted card IDs, or returns null if they don't match
+function ReorderTriggerEntries($triggerOrder, $submittedCardIDs)
+{
+  if (!is_array($submittedCardIDs)) return null;
+  $entries = array_values(array_filter(explode(",", $triggerOrder ?? ""), fn($entry) => $entry !== ""));
+  $cardIDs = TriggerOrderCardIDs($triggerOrder);
+  if (!ValidateCardPermutation($cardIDs, $submittedCardIDs)) return null;
+  $reordered = [];
+  foreach ($submittedCardIDs as $cardID) {
+    $index = array_search($cardID, $cardIDs, true);
+    $reordered[] = $entries[$index];
+    unset($cardIDs[$index]);
+  }
+  return implode(",", $reordered);
+}
+
+// ProcessInput logs a pass as mode 99 before running it. When that pass resolves an opt or a
+// rearranged trigger order, swap the line for the explicit command so replays and puzzles reproduce it.
+function RecordPassAsReplayCommand($player, $command)
+{
+  global $gameName;
+  if (IsReplay()) return;
+  $filename = "./Games/$gameName/commandfile.txt";
+  $contents = @file_get_contents($filename);
+  if (!is_string($contents)) $contents = "";
+  $body = rtrim($contents, "\r\n");
+  $lastLineStart = strrpos($body, "\n");
+  $lastLineStart = $lastLineStart === false ? 0 : $lastLineStart + 1;
+  if (str_starts_with(substr($body, $lastLineStart), "$player 99 ")) {
+    file_put_contents($filename, substr($body, 0, $lastLineStart) . "$command\r\n", LOCK_EX);
+  }
+  else {
+    file_put_contents($filename, "$command\r\n", FILE_APPEND | LOCK_EX);
+  }
+}
+
+function ApplyTriggerOrder($player, $cardList)
+{
+  global $layers;
+  $layerPieces = LayerPieces();
+  foreach ($cardList as $card) {
+    $index = -1;
+    $layersCount = count($layers);
+    if (str_contains($card, "USURPED")) $card = "USURPED";
+    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+      if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player && $layers[$i+2] == $card) {
+        $index = $i;
+      }
+    }
+    if ($index != -1) {
+      $pretrigger = array_splice($layers, $index, $layerPieces);
+      $pretrigger[0] = "TRIGGER";
+      array_unshift($layers, ...$pretrigger);
+    }
+  }
+  $layersCount = count($layers);
+  for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+    if ($layers[$i] == "PRETRIGGER" && $layers[$i+1] == $player) {
+      WriteLog("Something went wrong with adding triggers and we missed adding " . $layers[$i+2] . " to the stack", highlight: true);
+      $layers[$i] = "TRIGGER";
+    }
+  }
+}
+
 function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry = false)
 {
   global $turn, $currentPlayer, $mainPlayer, $layers;
@@ -1652,10 +1703,18 @@ function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry =
     ContinueDecisionQueue($passDefault);
   }
   elseif ($turn[0] == "ORDERTRIGGERS") {
-    $layersCount = count($layers);
-    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
-      if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer)
-        $layers[$i] = "TRIGGER";
+    // If the player rearranged their triggers (synced with mode 108), passing accepts that order
+    $cardList = TriggerOrderCardIDs($turn[2] ?? "");
+    if ($cardList != DefaultTriggerOrderCardIDs($currentPlayer)) {
+      RecordPassAsReplayCommand($currentPlayer, "$currentPlayer REORDER " . implode(",", $cardList) . " 0 0");
+      ApplyTriggerOrder($currentPlayer, $cardList);
+    }
+    else {
+      $layersCount = count($layers);
+      for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+        if ($layers[$i] == "PRETRIGGER" && $layers[$i + 1] == $currentPlayer)
+          $layers[$i] = "TRIGGER";
+      }
     }
     ContinueDecisionQueue();
   }
@@ -1668,7 +1727,7 @@ function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry =
     PassTurn();
   }
   elseif ($turn[0] == "OPT") {
-    global $gameName, $CS_CardsInDeckBeforeOpt;
+    global $CS_CardsInDeckBeforeOpt;
     $options = explode(";", $turn[2]);
     $cardListTop = array_values(array_filter(explode(",", $options[0] ?? "")));
     $cardListBottom = array_values(array_filter(explode(",", $options[1] ?? "")));
@@ -1676,13 +1735,9 @@ function PassInput($autopass = true, $doublePass = false, $resolutionStepRetry =
     $origDeckSize = GetClassState($currentPlayer, $CS_CardsInDeckBeforeOpt);
     $proposedDeckSize = $deck->RemainingCards() + count($cardListTop) + count($cardListBottom);
     if ($origDeckSize == "-" || $origDeckSize == $proposedDeckSize) {
-      if (!IsReplay()) {
-        $commandFile = fopen("./Games/$gameName/commandfile.txt", "a");
-        $top = implode(",", $cardListTop);
-        $bot = implode(",", $cardListBottom);
-        fwrite($commandFile, "$currentPlayer OPT $top $bot 0\r\n");
-        fclose($commandFile);
-      }
+      $top = implode(",", $cardListTop);
+      $bot = implode(",", $cardListBottom);
+      RecordPassAsReplayCommand($currentPlayer, "$currentPlayer OPT $top $bot 0");
       OptAndLog($deck, $currentPlayer, $cardListTop, $cardListBottom);
     } else {
       WriteLog("Something funny happened while opting. If you believe the opt resolved incorrectly, please submit a bug report.", highlight: true);
