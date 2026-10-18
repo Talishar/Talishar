@@ -38,37 +38,4 @@ function IsFaBBazaarDeckLink($deckLink)
   return ExtractFaBBazaarDeckId($deckLink) !== '';
 }
 
-function IsGradelyHostLink($deckLink)
-{
-  if (!is_string($deckLink) || $deckLink === '') return false;
-
-  $favoriteMarker = strpos($deckLink, '<fav>');
-  if ($favoriteMarker !== false) {
-    $deckLink = substr($deckLink, $favoriteMarker + strlen('<fav>'));
-  }
-
-  $host = parse_url(trim($deckLink), PHP_URL_HOST);
-  if (!is_string($host)) return false;
-
-  $host = strtolower($host);
-  return $host === 'gradely.io' || $host === 'www.gradely.io';
-}
-
-function ExtractGradelyDeckPath($deckLink)
-{
-  if (!IsGradelyHostLink($deckLink)) return '';
-
-  $favoriteMarker = strpos($deckLink, '<fav>');
-  if ($favoriteMarker !== false) {
-    $deckLink = substr($deckLink, $favoriteMarker + strlen('<fav>'));
-  }
-
-  $path = parse_url(trim($deckLink), PHP_URL_PATH);
-  if (!is_string($path)) return '';
-
-  return preg_match('~^/decks/(public|precon|tournament)/([A-Za-z0-9_-]+)/?$~', $path, $matches)
-    ? $matches[1] . '/' . $matches[2]
-    : '';
-}
-
 ?>
