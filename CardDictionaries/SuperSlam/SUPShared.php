@@ -396,15 +396,15 @@ function CuttingIndicesAwait($player) {
   foreach (explode(",", $lastResult) as $cardID) {
     if ($cardID != "") $currentNamesMap[CardName($cardID)] = true;
   }
-  $auras = GetAuras($defPlayer);
+  $auras = new Auras($defPlayer);
   $rv = [];
-  $auraCount = count($auras);
-  $auraPieces = AuraPieces();
   //remove any choices that have already been targeted
-  for($i = 0; $i < $auraCount; $i += $auraPieces) {
-    $auraID = $auras[$i];
-    if (TypeContains($auraID, "T", $defPlayer) && !isset($currentNamesMap[CardName($auraID)])) {
-      $rv[] = "THEIRAURAS-$i";
+  for($i = 0; $i < $auras->NumAuras(); $i += 1) {
+    $AuraCard = $auras->Card($i, true);
+    $auraID = $AuraCard->CardID();
+    $isToken = TypeContains($auraID, "T", $defPlayer) || $AuraCard->IsToken();
+    if ($isToken && !isset($currentNamesMap[CardName($auraID)])) {
+      $rv[] = "THEIRAURAS-" . $AuraCard->Index();
     }
   }
   $rv = implode(",", $rv);

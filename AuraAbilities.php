@@ -338,10 +338,6 @@ function AuraLeavesPlay($player, $index, $uniqueID, $location = "AURAS", $mainPh
     case "sigil_of_earth_blue":
       PlayAura("embodiment_of_earth", $player);
       break;
-    case "sigil_of_conductivity_blue":
-      WriteLog(CardLink($cardID, $cardID) . " created an " . CardLink("embodiment_of_lightning", "embodiment_of_lightning"));
-      PlayAura("embodiment_of_lightning", $player, effectSource:$cardID, effectController:$player);
-      break;
     case "sigil_of_lightning_blue":
       PlayAura("embodiment_of_lightning", $player, effectSource:$cardID, effectController:$player);
       break;

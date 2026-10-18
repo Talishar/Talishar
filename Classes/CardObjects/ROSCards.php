@@ -2440,17 +2440,26 @@ class sigil_of_aether_blue extends Card {
 // }
 
 
-// class sigil_of_conductivity_blue extends Card {
+class sigil_of_conductivity_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "sigil_of_conductivity_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "sigil_of_conductivity_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    WriteLog(CardLink($this->cardID) . " created an " . CardLink("embodiment_of_lightning", "embodiment_of_lightning"));
+    PlayAura("embodiment_of_lightning", $this->controller, effectSource:$this->cardID, effectController:$this->controller);
+  }
+
+  function LeavesPlayAbility($index, $uniqueID, $location, $mainPhase, $destinationUID = '-') {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "DESTROY");
+  }
+}
 
 
 // class sigil_of_cycles_blue extends Card {
