@@ -5019,22 +5019,25 @@ class violent_gusto_red extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if ($this->ChosenAuraName() === "") return false;
     return HeroHitTrigger($this->controller, $this->cardID, $check);
   }
 
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $CombatChain, $defPlayer;
-    $AttackCard = $CombatChain->AttackCard();
-    $buffs = explode(",", $AttackCard->StaticBuffs());
-    $chosenName = "-";
-    foreach ($buffs as $buff) {
-      $buffID = explode("|", $buff)[0];
+  private function ChosenAuraName() {
+    global $CombatChain;
+    foreach (explode(",", $CombatChain->AttackCard()->StaticBuffs()) as $buff) {
+      [$buffID, $name] = array_pad(explode("|", $buff, 2), 2, "");
       if ($buffID != $this->cardID && $buffID != SetID($this->cardID)) continue;
-      $chosenName = explode("|", $buff, 2)[1] ?? "-";
-      break;
+      if ($name === "" || $name === "-") return "";
+      return GamestateUnsanitize($name);
     }
-    if ($chosenName === "-" || $chosenName === "") return;
-    $chosenName = GamestateUnsanitize($chosenName);
+    return "";
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $chosenName = $this->ChosenAuraName();
+    if ($chosenName === "") return;
     $Auras = new Auras($defPlayer);
     for ($i = $Auras->NumAuras()-1; $i >=0; --$i){
       $AuraCard = $Auras->Card($i, true);
