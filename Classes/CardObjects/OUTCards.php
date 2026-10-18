@@ -119,63 +119,63 @@
 
 class barbed_castaway extends Card {
 
-  	function __construct($controller) {
-		$this->cardID = "barbed_castaway";
-		$this->controller = $controller;
-	}
+  function __construct($controller) {
+    $this->cardID = "barbed_castaway";
+    $this->controller = $controller;
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if($additionalCosts == "Load") LoadArrow($this->controller);
-        else if($additionalCosts == "Aim") {
-          if(ArsenalHasArrowCardFacing($this->controller, "DOWN")) {
-            Await($this->controller, "YesNo", context:"Flip an arrow face up and give it an aim counter?", subsequent:0);
-			Await($this->controller, $this->cardID, final:true);
-          }
-        }
-        return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if($additionalCosts == "Load") LoadArrow($this->controller);
+    else if($additionalCosts == "Aim") {
+      if(ArsenalHasArrowCardFacing($this->controller, "DOWN")) {
+        Await($this->controller, "YesNo", context:"Flip an arrow face up and give it an aim counter?", subsequent:0);
+        Await($this->controller, $this->cardID, final:true);
+      }
+    }
+    return "";
+  }
 
-	function SpecificLogic() {
-		SetArsenalFacing("UP", $this->controller);
-		$arsenal = &GetArsenal($this->controller);
-		$arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
-	}
+  function SpecificLogic() {
+    SetArsenalFacing("UP", $this->controller);
+    $arsenal = &GetArsenal($this->controller);
+    $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
+  }
 
-	function GetAbilityTypes($index = -1, $from = '-') {
-		return "I,I";
-	}
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return "I,I";
+  }
 
-	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
-		if ($allNames) return "Load,Aim";
-		if(!SearchCurrentTurnEffects("barbed_castaway-Load", $this->controller)) return "Aim";
-		if(!SearchCurrentTurnEffects("barbed_castaway-Aim", $this->controller)) return "Load";
-		return "Load,Aim";
-	}
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = '-', $allNames = false) {
+    if ($allNames) return "Load,Aim";
+    if(!SearchCurrentTurnEffects("barbed_castaway-Load", $this->controller)) return "Aim";
+    if(!SearchCurrentTurnEffects("barbed_castaway-Aim", $this->controller)) return "Load";
+    return "Load,Aim";
+  }
 
-	function NumUses() {
-		return 2;
-	}
+  function NumUses() {
+    return 2;
+  }
 
-	function StartTurnAbility($index) {
-		AddCurrentTurnEffect("$this->cardID-Load", $this->controller);
-      	AddCurrentTurnEffect("$this->cardID-Aim", $this->controller);
-	}
+  function StartTurnAbility($index) {
+    AddCurrentTurnEffect("$this->cardID-Load", $this->controller);
+    AddCurrentTurnEffect("$this->cardID-Aim", $this->controller);
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		global $CS_AdditionalCosts;
-		$CharacterCard = new CharacterCard($index, $this->controller);
-		$abilityName = GetResolvedAbilityName($this->cardID);
-		SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $this->controller, true);
-		SetClassState($this->controller, $CS_AdditionalCosts, $abilityName);
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $abilityName = GetResolvedAbilityName($this->cardID);
+    SearchCurrentTurnEffects("barbed_castaway-".$abilityName, $this->controller, true);
+    SetClassState($this->controller, $CS_AdditionalCosts, $abilityName);
+  }
 
-	function AbilityCost() {
-		return 1;
-	}
+  function AbilityCost() {
+    return 1;
+  }
 
-	function AbilityType($index = -1, $from = '-') {
-		return "I";
-	}
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
 }
 
 
@@ -349,34 +349,34 @@ class barbed_castaway extends Card {
 
 
 class boulder_trap_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "boulder_trap_yellow";
-		$this->controller = $controller;
+  function __construct($controller) {
+    $this->cardID = "boulder_trap_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    if (HasIncreasedAttack()) AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "MultiZoneIndices", search:"THEIRCHAR:type=E");
+    Await($this->controller, "ChooseMultiZone", context:"Put a -1 def counter on an equipment");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $chosenEquipment = MZIndexToObject($this->controller, $choice);
+    if ($chosenEquipment != "") {
+      $chosenEquipment->AddDefCounters(-1);
+      WriteLog(CardLink($this->cardID) . " triggered and puts a -1 counter on an equipment");
     }
-
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
-
-	function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
-		if (HasIncreasedAttack()) AddLayer("TRIGGER", $this->controller, $this->cardID);
-	}
-
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		Await($this->controller, "MultiZoneIndices", search:"THEIRCHAR:type=E");
-		Await($this->controller, "ChooseMultiZone", context:"Put a -1 def counter on an equipment");
-		Await($this->controller, $this->cardID, final:true);
-	}
-
-	function SpecificLogic() {
-		global $dqVars;
-		$choice = $dqVars["MZIndex"] ?? "-";
-		$chosenEquipment = MZIndexToObject($this->controller, $choice);
-		if ($chosenEquipment != "") {
-			$chosenEquipment->AddDefCounters(-1);
-			WriteLog(CardLink($this->cardID) . " triggered and puts a -1 counter on an equipment");
-		}
-	}
+  }
 }
 
 
@@ -853,38 +853,38 @@ class fisticuffs extends Card {
   function __construct($controller) {
     $this->cardID = "fisticuffs";
     $this->controller = $controller;
-	}
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
+    AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
 
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $CombatChain;
-		return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
-	}
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !$CombatChain->HasCurrentLink() || CardType($CombatChain->AttackCard()->ID()) != "AA";
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		$CharCard = new CharacterCard($index, $this->controller);
-		$CharCard->Destroy();
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharCard = new CharacterCard($index, $this->controller);
+    $CharCard->Destroy();
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return 1;
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
 
-	function AbilityCost() {
-		return 2;
-	}
+  function AbilityCost() {
+    return 2;
+  }
 
-	function AbilityType($index = -1, $from = '-') {
-		return "AR";
-	}
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
 }
 
 
@@ -941,34 +941,33 @@ class fisticuffs extends Card {
 
 
 class flick_knives extends Card {
+  function __construct($controller) {
+    $this->cardID = "flick_knives";
+    $this->controller = $controller;
+  }
 
-	function __construct($controller) {
-		$this->cardID = "flick_knives";
-		$this->controller = $controller;
-    }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    ThrowWeapon("Dagger", $this->cardID, target:$target);
+    return "";
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		ThrowWeapon("Dagger", $this->cardID, target:$target);
-		return "";
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    $targetSearch = ShouldAutotargetOpponent($this->controller) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
+    ThrowDaggerTargeting($this->controller, $this->cardID);
+    SetTargets($this->controller, $this->cardID, $targetSearch);
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		$targetSearch = ShouldAutotargetOpponent($this->controller) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
-		ThrowDaggerTargeting($this->controller, $this->cardID);
-		SetTargets($this->controller, $this->cardID, $targetSearch);
-	}
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
 
-	function AbilityType($index = -1, $from = '-') {
-		return "AR";
-	}
-
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $CombatChain;
-		$searchResult = SearchMultizone($this->controller, DaggerSearch());
-		if (!$CombatChain->HasCurrentLink()) return true;
-		if ($searchResult == "") return true;
-		return false;
-	}
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    $searchResult = ThrowDaggerIndices($this->controller);
+    if (!$CombatChain->HasCurrentLink()) return true;
+    if ($searchResult == "") return true;
+    return false;
+  }
 }
 
 
@@ -1116,51 +1115,51 @@ class flick_knives extends Card {
 
 
 class hurl extends BaseCard {
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if(DelimStringContains($additionalCosts, "PAY1")) {
-			ThrowDaggerTargeting($this->controller, $this->cardID, false, false);
-			Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
-		}
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if(DelimStringContains($additionalCosts, "PAY1")) {
+      ThrowDaggerTargeting($this->controller, $this->cardID, false, false);
+      Await($this->controller, "AddTrigger", lastResultName:"target", cardID:$this->cardID, additional:"ATTACKTRIGGER", final:true);
+    }
+    return "";
+  }
 
-	function ProcessAttackTrigger($target, $uniqueID) {
-		ThrowWeapon("Dagger", $this->cardID, target:$target);
-	}
+  function ProcessAttackTrigger($target, $uniqueID) {
+    ThrowWeapon("Dagger", $this->cardID, target:$target);
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		global $CS_AdditionalCosts;
-		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID));
-		AddPayPrompt("BUTTONINPUT", $this->controller, "0,1");
-		AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
-		AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
-		AddDecisionQueue("APPENDCLASSSTATE", $this->controller, $CS_AdditionalCosts . "-PAY1", 1);
-		AddDecisionQueue("WRITELOG", $this->controller, "Paid extra resource to throw a dagger", 1);
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how much to pay for " . CardLink($this->cardID));
+    AddPayPrompt("BUTTONINPUT", $this->controller, "0,1");
+    AddDecisionQueue("PAYRESOURCES", $this->controller, "<-", 1);
+    AddDecisionQueue("LESSTHANPASS", $this->controller, "1", 1);
+    AddDecisionQueue("APPENDCLASSSTATE", $this->controller, $CS_AdditionalCosts . "-PAY1", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Paid extra resource to throw a dagger", 1);
+  }
 }
 
 class hurl_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "hurl_red";
-		$this->controller = $controller;
-		$this->baseCard = new hurl($this->cardID, $this->controller);
-	}
+  function __construct($controller) {
+    $this->cardID = "hurl_red";
+    $this->controller = $controller;
+    $this->baseCard = new hurl($this->cardID, $this->controller);
+  }
 }
 
 class hurl_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "hurl_yellow";
-		$this->controller = $controller;
-		$this->baseCard = new hurl($this->cardID, $this->controller);
-	}
+  function __construct($controller) {
+    $this->cardID = "hurl_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new hurl($this->cardID, $this->controller);
+  }
 }
 
 class hurl_blue extends Card {
-	function __construct($controller) {
-		$this->cardID = "hurl_blue";
-		$this->controller = $controller;
-		$this->baseCard = new hurl($this->cardID, $this->controller);
-	}
+  function __construct($controller) {
+    $this->cardID = "hurl_blue";
+    $this->controller = $controller;
+    $this->baseCard = new hurl($this->cardID, $this->controller);
+  }
 }
 
 
@@ -1751,47 +1750,47 @@ class hurl_blue extends Card {
 
 class premeditate_red extends Card {
 
-	function __construct($controller) {
-		$this->cardID = "premeditate_red";
-		$this->controller = $controller;
-    }
+  function __construct($controller) {
+    $this->cardID = "premeditate_red";
+    $this->controller = $controller;
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddCurrentTurnEffect("$this->cardID-1", $this->controller);
-        AddCurrentTurnEffect("$this->cardID-2", $this->controller);
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect("$this->cardID-1", $this->controller);
+    AddCurrentTurnEffect("$this->cardID-2", $this->controller);
+    return "";
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		global $CombatChain;
-		$attackID = $CombatChain->AttackCard()->ID();
-		if ($parameter === "1") return CardType($attackID) == "AA";
-        else if ($parameter === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
-        else return false;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if ($parameter === "1") return CardType($attackID) == "AA";
+    else if ($parameter === "2") return CardType($attackID) == "AA" && AttackPlayedFrom() == "ARS";
+    else return false;
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return $param == "2" ? 3 : 0;
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "2" ? 3 : 0;
+  }
 
-	function IsCombatEffectPersistent($mode) {
-		return $mode == "1";
-	}
+  function IsCombatEffectPersistent($mode) {
+    return $mode == "1";
+  }
 
-	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if (($source == "-" || TypeContains($source, "AA")) && $parameter == "$this->cardID-1")
-			return HeroHitTrigger($this->controller, $this->cardID, $check, true);
-		else
-			return false;
-	}
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (($source == "-" || TypeContains($source, "AA")) && $parameter == "$this->cardID-1")
+      return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+    else
+      return false;
+  }
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-		global $CurrentTurnEffects;
-		PlayAura("ponder", $this->controller);
-		$Effect = $CurrentTurnEffects->FindEffect("$this->cardID-1");
-		$Effect->Remove();
-        return 1;
-	}
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $CurrentTurnEffects;
+    PlayAura("ponder", $this->controller);
+    $Effect = $CurrentTurnEffects->FindEffect("$this->cardID-1");
+    $Effect->Remove();
+    return 1;
+  }
 }
 
 

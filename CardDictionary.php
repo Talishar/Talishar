@@ -271,16 +271,7 @@ function SetID($cardID)
       "killjoy_the_crooked_blade" => "SPW001",
       "battle_clearing_bellow_blue" => "IAR040",
       "outbreak_blue" => "MPA031",
-      "mortimer_living_virus" => "OBK001",
-      "min_genius" => "OBK006",
-      "min_half_genius" => "OBK007",
-      "azalea_ace_of_spades" => "OBK080",
-      "azalea_lone_vigilante" => "OBK081",
-      "vyle_catalyst_of_collapse" => "OBK012",
-      "vyle" => "OBK013",
-      "a_01_first_cogwarden" => "OBK089",
-      "huxley_racketeer" => "OBK071",
-      "huxley" => "OBK072"
+      "phial_of_calamity" => "MPA006"
     ];
   }
 
@@ -340,13 +331,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Angel,Ally";
     case "drop_dead_bodice":
       return "Chest"; // temporary
-    case "vyle":
-    case "mortimer_living_virus":
-    case "min_half_genius":
-    case "azalea_lone_vigilante":
-    case "a_01_first_cogwarden":
-    case "huxley":
-      return "Young";
+    case "phial_of_calamity":
+      return "Off-Hand";
     default:
       break;
   }

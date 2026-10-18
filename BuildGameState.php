@@ -1535,8 +1535,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
   }
   if (!empty($staticBuffsArr)) {
-    foreach ($staticBuffsArr as $effectSetID) {
-      $cardID = ExtractCardID(ConvertToCardID($effectSetID));
+    foreach ($staticBuffsArr as $effectID) {
+      $cardID = ExtractCardID($effecteffectIDSetID);
       if ($cardID != "") {
         $isFriendly = $playerID == $mainPlayer;
         if ($isFriendly) {
@@ -1609,8 +1609,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
   }
   if (!empty($staticBuffsArr)) {
-    foreach ($staticBuffsArr as $effectSetID) {
-      $cardID = ExtractCardID(ConvertToCardID($effectSetID));
+    foreach ($staticBuffsArr as $effect) {
+      $cardID = ExtractCardID($effect);
       if ($cardID != "") {
         $isFriendly = $playerID == $mainPlayer;
         $BorderColor = $isFriendly ? "blue" : "red";

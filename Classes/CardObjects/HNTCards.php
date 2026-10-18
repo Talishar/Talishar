@@ -732,7 +732,7 @@ class danger_digits extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
-		$searchResult = SearchMultizone($this->controller, DaggerSearch());
+		$searchResult = ThrowDaggerIndices($this->controller);
 		if (!$CombatChain->HasCurrentLink()) return true;
 		if ($searchResult == "") return true;
 		return false;
@@ -3264,7 +3264,7 @@ class throw_dagger_blue extends Card {
 
 	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
 		global $CombatChain;
-		$searchResult = SearchMultizone($this->controller, DaggerSearch());
+		$searchResult = ThrowDaggerIndices($this->controller);
 		if (!$CombatChain->HasCurrentLink()) return true;
 		if ($searchResult == "") return true;
 		return false;

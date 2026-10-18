@@ -693,9 +693,8 @@ function OUTAbilityCost($cardID)
 		return "MYCHAR:subtype=Dagger&COMBATCHAINATTACKS:subtype=Dagger;type=AA&LAYER:subtype=Dagger;type=AA";
   }
 
-  function ThrowDaggerTargeting($player, $cardID, $may=false, $playCard=true) {
+  function ThrowDaggerIndices($player) {
     global $CombatChain;
-    $message = "Choose a target for " . CardLink($cardID);
     $indices = SearchMultizone($player, DaggerSearch());
     $indices = explode(",", $indices);
     $Attack = $CombatChain->AttackCard();
@@ -711,6 +710,12 @@ function OUTAbilityCost($cardID)
       $filtered[] = $index;
     }
     $indices = implode(",", $filtered);
+    return $indices;
+  }
+
+  function ThrowDaggerTargeting($player, $cardID, $may=false, $playCard=true) {
+    $message = "Choose a target for " . CardLink($cardID);
+    $indices = ThrowDaggerIndices($player);
     Await($player, "ChooseMultiZone", indices:$indices, may:$may, context:$message, subsequent:0);
     if ($playCard) Await($player, "SetLayerTarget", layerID:$cardID, final:true);
   }

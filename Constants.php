@@ -647,8 +647,8 @@ function AttackReplaced($cardID, $player, $from)
   $currentTurnEffectPieces = CurrentTurnEffectPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
     if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-      if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($currentTurnEffects[$i]); //saving them as set ids saves space
-      else $combatChain[10] .= "," . ConvertToSetID($currentTurnEffects[$i]);
+      if ($combatChain[10] == "-") $combatChain[10] = $currentTurnEffects[$i]; 
+      else $combatChain[10] .= "," . $currentTurnEffects[$i];
       RemoveCurrentTurnEffect($i);
     }
   }

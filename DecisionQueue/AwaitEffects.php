@@ -324,7 +324,8 @@ function PlayAuraAwait($player) {
   $additionalCosts = $dqVars["additionalCosts"] ?? "-";
   $effectController = $dqVars["effectController"] ?? "-";
   $effectSource = $dqVars["effectSource"] ?? "-";
-  PlayAura($cardID, $player, $number, $isToken, $rogueHeronSpecial, $numPowerCounters, $from, $additionalCosts, $effectController, $effectSource);
+  $effectAgent = $dqVars["effectAgent"] ?? "-";
+  PlayAura($cardID, $player, $number, $isToken, $rogueHeronSpecial, $numPowerCounters, $from, $additionalCosts, $effectController, $effectSource, effectAgent:$effectAgent);
 }
 
 function PlayItemAwait($player) {

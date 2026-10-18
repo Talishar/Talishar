@@ -64,8 +64,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   // check layer continuous buffs
   if(isset($combatChain[10]) && $combatChain[10] !== "-") {
     $buffs = explode(",", $combatChain[10]);
-    foreach ($buffs as $buffSetID) {
-      $buff = ConvertToCardID($buffSetID);
+    foreach ($buffs as $buff) {
       $power = EffectPowerModifier($buff, attached: true);
       if (($canGainAttack || $power < 0) && !($snagActive && ($buff == $attackID || CardType(EffectCardID($buff)) == "AR"))) {
         $powerModifiers[] = $buff;
@@ -495,6 +494,19 @@ function FindEmptyEquipmentSlots($player)
   $available = [];
   foreach ($slots as $slot) {
     if (!isset($occupied[$slot])) $available[] = $slot;
+  }
+  // off-hand check
+  if (NumOccupiedHands($player) < 2) {
+    $offHandOpen = true;
+    $Character = new PlayerCharacter($player);
+    for ($characterIndex = 0; $characterIndex < $characterCount; ++$characterIndex) {
+      $CharacterCard = $Character->Card($characterIndex, true);
+      $characterSlot = $CharacterCard->Slot();
+      if ($characterSlot == "Off-Hand")
+        $offHandOpen = False;
+    }
+    if ($offHandOpen)
+      $available[] = "Off-Hand";
   }
   return $available === [] ? "" : implode(",", $available);
 }
@@ -1096,7 +1108,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
   if ($damageContextUID == $AttackCard->UniqueID()) {
     $effects = explode(",",$AttackCard->StaticBuffs());
     foreach ($effects as $effect) {
-      $card = GetClass(SetIDtoCardID($effect), $mainPlayer);
+      $card = GetClass($effect, $mainPlayer);
       if ($card != "-") $card->CurrentEffectDamageEffect($target, $source, $type, $damage, $remove, attached:true);
     }
   }

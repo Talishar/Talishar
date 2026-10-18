@@ -730,14 +730,15 @@ function SilverBuyback($player, $index) {
   $discardIndex = SearchDiscardForCard($player, $graveyardCard);
   $foundSlot = in_array($graveyardSubType, $emptyEquipmentSlots);
   if (CountItem("silver", $player) >= 2 && $discardIndex != "" && $foundSlot) {
+    $cleanedSubtype = $graveyardSubType == "Off-Hand" ? "Off" : $graveyardSubType;
     AddDecisionQueue("COUNTITEM", $player, "silver");
     AddDecisionQueue("LESSTHANPASS", $player, "2");
     AddDecisionQueue("YESNO", $player, "if_you_want_to_pay_2_".Cardlink("silver", "silver")."_and_equip_" . CardLink($graveyardCard), 1);
     AddDecisionQueue("NOPASS", $player, "-", 1);
     AddDecisionQueue("PASSPARAMETER", $player, "silver-2", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $player, "<-", 1);
-    AddDecisionQueue("EQUIPCARD", $player, $graveyardCard."-".$graveyardSubType."-MYDISCARD-MYDISCARD", 1);
-    AddDecisionQueue("PASSPARAMETER", $player, "MYDISCARD-" . $discardIndex, 1);
+    AddDecisionQueue("EQUIPCARD", $player, "$graveyardCard-$cleanedSubtype-MYDISCARD-MYDISCARD", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, "MYDISCARD-$discardIndex", 1);
     AddDecisionQueue("MZREMOVE", $player, "-", 1);
   }
 }

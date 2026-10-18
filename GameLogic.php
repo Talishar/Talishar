@@ -145,7 +145,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
   global $CCS_AttackNumCharged, $layers, $CS_DamageDealt, $currentTurnEffects, $CCS_EclecticMag;
   global $CS_PlayIndex, $landmarks, $CCS_GoesWhereAfterLinkResolves, $CS_HitCounter, $CurrentTurnEffects, $CS_ArcaneDamageDealtToOpponent;
   global $turn, $actionPoints, $CS_NextWizardNAAInstant, $CS_NextNAAInstant, $CCS_CurrentAttackGainedGoAgain, $Stack, $CurrentTurnEffects;
-  global $CS_HaveIntimidatedOpponent, $CS_PreventionCache;
+  global $CS_HaveIntimidatedOpponent, $CS_PreventionCache, $CurrentTurnEffects;
   $rv = "";
   $otherPlayer = 3 - $player;
   switch ($phase) {
@@ -3084,20 +3084,21 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
           $index = intval(explode("-", $location, 2)[1]) / ChainLinksPieces();
           $activeEffects = explode(",", $chainLinks[$index][6]);
-          foreach ($activeEffects as $effectSetID) {
-            $effect = ConvertToCardID($effectSetID);
+          foreach ($activeEffects as $effect) {
             AddEffectHitTrigger($effect, $cardID, fromCombat: false, target:$targetPlayer);
             AddOnHitTrigger($effect, source:$cardID); // this probably doesn't need to be here
             AddCardEffectHitTrigger($effect, $cardID); // this probably doesn't need to be here
           }
         }
         $ctePieces = CurrentTurnEffectsPieces();
-        for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
-          $currentTurnEffectID = $currentTurnEffects[$i];
-          $currentTurnEffectsPlayer = $currentTurnEffects[$i + 1];
-          if ($currentTurnEffectsPlayer == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true)) {
+        for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
+          $Effect = $CurrentTurnEffects->Effect($i, true);
+          $currentTurnEffectID = $Effect->EffectID();
+          if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true)) {
             AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
           }
+          if ($Effect->AppliesToUniqueID() == $sourceUID) // effects that are applied to the source (used for weapon buffs)
+            AddEffectHitTrigger($currentTurnEffectID, $cardID, false, $targetPlayer);
         }
         CombatChainHitEffects($cardID, $targetPlayer);
         MainCharacterHitTrigger($cardID, $targetPlayer, flicked:true);

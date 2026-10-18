@@ -2047,8 +2047,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
 
 
       $hitEffectsPrevented = GetCombatChainState($CCS_ChainLinkHitEffectsPrevented);
-      foreach (explode(",", $combatChain[10]) as $effectSetID) {
-        $effect = ConvertToCardID($effectSetID);
+      foreach (explode(",", $combatChain[10]) as $effect) {
         if (!$hitEffectsPrevented && IsCombatEffectActive($effect)) {
           AddEffectHitTrigger($effect, source: $combatChain[0], target: $damageTarget); // Effects that do gives their effect to the attack
         }
@@ -2261,8 +2260,8 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       if ($currentTurnEffects[$i + 3] == 0) $effectsToRemove[] = $i;
       if (AddedOnHit($currentTurnEffects[$i])) {
         //adding onhits after chain resolution
-        if ($addedEffects == "-") $addedEffects = ConvertToSetID($currentTurnEffects[$i]);
-        else $addedEffects .= "," . ConvertToSetID($currentTurnEffects[$i]);
+        if ($addedEffects == "-") $addedEffects = $currentTurnEffects[$i];
+        else $addedEffects .= "," . $currentTurnEffects[$i];
       }
     }
     if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") $effectsToRemove[] = $i;
@@ -4936,7 +4935,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
             if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
               if (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
-                $CombatChain->AttackCard()->AddBuff(ConvertToSetID($currentTurnEffects[$i]));
+                $CombatChain->AttackCard()->AddBuff($currentTurnEffects[$i]);
                 RemoveCurrentTurnEffect($i);
               }
             }

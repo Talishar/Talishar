@@ -828,7 +828,9 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
     else if (SubtypeContains($cardID, "Chest")) $slot = "Chest";
     else if (SubtypeContains($cardID, "Arms")) $slot = "Arms";
     else if (SubtypeContains($cardID, "Legs")) $slot = "Legs";
-    else if (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion")) $slot = "Off-Hand";
+    else if (SubtypeContains($cardID, "Quiver") || SubtypeContains($cardID, "Off-Hand") || SubtypeContains($cardID, "Companion")) {
+      $slot = "Off-Hand";
+    }
     else if (TypeContains($cardID, "W")) {
       $characterCount = $Character->NumCards();
       for ($i = 0; $i < $characterCount; ++$i) {
@@ -838,6 +840,15 @@ function EquipEquipment($player, $cardID, $slot = "", $from = "HAND", $effectAge
       if ($slot == "") $slot = "LWep";
     }
     if ($slot == "") $slot = "-";
+  }
+  elseif ($slot == "Off")
+    $slot = "Off-Hand";
+  if ($slot == "Off-Hand") {
+    // if there's a weapon in the right hand already and no weapon in left, move the weapon to left to make room
+    $rightWep = $Character->GetSlot("RWep");
+    $leftWep = $Character->GetSlot("LWep");
+    if ($rightWep->Index() != -1 && $leftWep->Index() == -1)
+      $rightWep->Move("LWep");
   }
   if ((TypeContains($EffectContext, "C", $player) || TypeContains($EffectContext, "D", $player)) && (PreachModestyActive())) { 
     if (TypeContains($cardID, "T", $player, true)) {

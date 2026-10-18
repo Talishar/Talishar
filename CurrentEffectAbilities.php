@@ -1804,8 +1804,7 @@ function CurrentEffectGrantsGoAgain($cardToCheck = "")
   }
   if (!$CombatChain->HasCurrentLink()) return false;
   $activeEffects = explode(",", $CombatChain->AttackCard()->StaticBuffs());
-  foreach ($activeEffects as $effectSetID) {
-    $effect = ConvertToCardID($effectSetID);
+  foreach ($activeEffects as $effect) {
     $effectID = ExtractCardID($effect);
     $param = explode("-", $effect, 2)[1] ?? "-";
     if (IsCombatEffectActive($effect)) {

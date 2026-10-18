@@ -123,8 +123,8 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
 
 function AddEffectToCurrentAttack($cardID) {
   global $combatChain;
-  if ($combatChain[10] == "-") $combatChain[10] = ConvertToSetID($cardID); //saving them as set ids saves space
-  else $combatChain[10] .= "," . ConvertToSetID($cardID);
+  if ($combatChain[10] == "-") $combatChain[10] = $cardID;
+  else $combatChain[10] .= "," . $cardID;
   NotifyCurrentAttackPowerModifierApplied(EffectPowerModifier($cardID, attached: true), $cardID, attached: true);
 }
 
@@ -180,8 +180,8 @@ function NotifyCurrentAttackPowerModifierApplied($amount, $source = "-", $attach
 
 function AddEffectToPastAttack($index, $cardID) {
   global $chainLinks;
-  if ($chainLinks[$index][6] == "-") $chainLinks[$index][6] = ConvertToSetID($cardID);
-  else $chainLinks[$index][6] .= "," . ConvertToSetID($cardID);
+  if ($chainLinks[$index][6] == "-") $chainLinks[$index][6] = $cardID;
+  else $chainLinks[$index][6] .= "," . $cardID;
 }
 
 function AddAfterResolveEffect($cardID, $player, $from = "", $uniqueID = -1)
@@ -851,16 +851,17 @@ function CardPlayTrigger($cardID, $from)
 }
 
 // for cards that trigger when hitting anything
-function AnyHitTrigger($player, $cardID, $check, $effect=false) {
+function AnyHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
   $additional = $effect ? "EFFECTHITEFFECT" : "ONHITEFFECT";
-  if (!$check) AddLayer("TRIGGER", $player, $cardID, $cardID, $additional);
+  $target = $target == "-" ? $cardID : $target;
+  if (!$check) AddLayer("TRIGGER", $player, $cardID, $target, $additional);
   return true;
 }
 
 // for cards that trigger when hitting a hero
-function HeroHitTrigger($player, $cardID, $check, $effect=false) {
+function HeroHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
   if (IsHeroAttackTarget())
-    return AnyHitTrigger($player, $cardID, $check, $effect);
+    return AnyHitTrigger($player, $cardID, $check, $effect, $target);
   return false;
 }
 

@@ -38,6 +38,16 @@ class PlayerCharacter {
     return new CharacterCard(-1, $this->player);
   }
 
+  function GetSlot($slot) {
+    $count = count($this->char);
+    if ($count == 0) return new CharacterCard(-1, $this->player);
+    $characterPieces = CharacterPieces();
+    for ($i = 0; $i < $count; $i += $characterPieces) {
+      if ($this->char[$i+15] == $slot) return new CharacterCard($i, $this->player);
+    }
+    return new CharacterCard(-1, $this->player);
+  }
+
   function NumCards() {
     return intdiv(count($this->char), CharacterPieces());
   }

@@ -1946,8 +1946,7 @@ function ActiveOnHits(): bool
       if (AddEffectHitTrigger($currentTurnEffects[$i], source:$attackCardID, target:$target, check:true)) return true;
     }
   }
-  foreach(explode(",", $attackCard->StaticBuffs()) as $effectSetID) {
-    $effect = ConvertToCardID($effectSetID);
+  foreach(explode(",", $attackCard->StaticBuffs()) as $effect) {
     if (IsCombatEffectActive($effect)) {
       if (AddEffectHitTrigger($effect, source:$attackCardID, target:$target, check:true)) return true;// Effects that do gives their effect to the attack
     }
