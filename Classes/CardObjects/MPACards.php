@@ -560,9 +560,9 @@ class phial_of_calamity extends Card {
 		SilverBuyback($this->controller, $index);
 	}
 
-	// function SpecialName() {
-	// 	return "Phial of Calamity";
-	// }
+	function SpecialName() {
+		return "Phial of Calamity";
+	}
 
 	function SpecialType() {
 		return "E";
