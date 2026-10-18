@@ -461,6 +461,7 @@ function GetAuraObject($player, $location, $index) {
 function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true, $destroyedBy = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer, $CombatChain, $CS_NumControlledAurasDestroyed;
+  global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed, $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed;
   $AuraCard = GetAuraObject($player, $location, $index);
   $isToken = ($location == "EQUIP") ? true : $AuraCard->IsToken() == 1;
   if ($uniqueID != "") {
@@ -474,10 +475,23 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
   $from = $location == "AURAS" ? $AuraCard->From() : "EQUIPMENT";
   $destinationUID = AuraDestroyed($player, $AuraCard->CardID(), $isToken, $from);
   $cardID = RemoveAura($player, $index, $uniqueID, $location, $skipTrigger, $skipClose, $mainPhase, $destinationUID);
-  if ($cardID == "lightning_flow") {
-    global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed;
-    IncrementClassState($player, $CS_NumLightningFlowDestroyed);
-    if ($destroyedBy != -1) IncrementClassState($destroyedBy, $CS_NumLightningFlowsIDestroyed);
+  // specific Aura tracking
+  switch ($cardID) {
+    case "lightning_flow":
+      IncrementClassState($player, $CS_NumLightningFlowDestroyed);
+      if ($destroyedBy != -1) IncrementClassState($destroyedBy, $CS_NumLightningFlowsIDestroyed);
+      break;
+    case "bloodrot_pox":
+      IncrementClassState($player, $CS_BloodrotDestroyed);
+      break;
+    case "frailty":
+      IncrementClassState($player, $CS_FrailtyDestroyed);
+      break;
+    case "inertia":
+      IncrementClassState($player, $CS_InertiaDestroyed);
+      break;
+    default:
+      break;
   }
   IncrementClassState($player, $CS_NumControlledAurasDestroyed);
   // Refreshes the aura index with the Unique ID in case of aura destruction

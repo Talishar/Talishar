@@ -384,14 +384,16 @@ class prolonged_illness_blue extends Card {
   }
 
   function EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from) {
+		global $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed, $mainPlayer, $defPlayer;
     $Effect = new CurrentEffect($effectIndex);
     $Disease = new AuraCard($permIndex, $controller);
     if (!SubtypeContains($Disease->CardID(), "Disease")) return;
-    $diseaseName = GamestateSanitize(NameOverride($Disease->CardID(), $controller));
-    if ($diseaseName != "" && !DelimStringContains($Effect->AppliestoUniqueID(), $diseaseName)) {
-      $Effect->AddApplicationToUniqueID($diseaseName);
+    $diseaseName = NameOverride($Disease->CardID(), $controller);
+		$bloodrot = $diseaseName == "Bloodrot Pox" && GetClassState($mainPlayer, $CS_BloodrotDestroyed) + GetClassState($defPlayer, $CS_BloodrotDestroyed) == 0;
+		$frailty = $diseaseName == "Frailty" && GetClassState($mainPlayer, $CS_FrailtyDestroyed) + GetClassState($defPlayer, $CS_FrailtyDestroyed) == 0;
+		$inertia = $diseaseName == "Inertia" && GetClassState($mainPlayer, $CS_InertiaDestroyed) + GetClassState($defPlayer, $CS_InertiaDestroyed) == 0;
+    if ($bloodrot || $frailty || $inertia)
       AddLayer("TRIGGER", $this->controller, $this->cardID, $controller, $Disease->CardID());
-    }
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

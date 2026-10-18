@@ -455,6 +455,9 @@ $classStateDefaults = [
   "RunechantPreventPlan" => 0,
   "OppCardsBoosted" => 0,
   "BanishPlayMode" => "-",                    // Permission or alternative cost chosen for the current card played from banish
+  "FrailtyDestroyed" => 0,                    // tracked on mainPlayer, used for prolonged illness
+  "InertiaDestroyed" => 0,
+  "BloodrotDestroyed" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);
