@@ -149,6 +149,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "suraya_archangel_of_erudition" => "-",
     "themis_archangel_of_judgment" => "-",
     "victoria_archangel_of_triumph" => "-",
+    "suraya_archangel_of_endless_hope" => "-",
     "azvolai" => "-",
     "cromai" => "-",
     "dominia" => "-",
