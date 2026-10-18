@@ -2747,9 +2747,6 @@ function AttackDestroyed($attackID)
   $card = GetClass($attackID, $mainPlayer);
   if ($card != "-") $card->DestroyEffect();
   switch ($attackID) {
-    case "miraging_metamorph_red":
-      MirragingMetamorphDestroyed();
-      break;
     case "phantasmal_haze_red":
     case "phantasmal_haze_yellow":
     case "phantasmal_haze_blue":

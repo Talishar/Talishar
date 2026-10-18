@@ -251,8 +251,10 @@ class ChainCard {
     function StillThere() {
       global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
       if ($this->index != 0 && isset($this->chain[$this->index])) return true;
-      elseif ($this->index == 0)
+      elseif ($this->index == 0) {
+        if (($this->chain[$this->index + 10] ?? "-") == "PHANTASM") return false;
         return GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-";
+      }
       return false;
     }
 

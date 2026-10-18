@@ -204,7 +204,7 @@ function TargetAttack($player) {
 	$i = 0;
 	if ($CombatChain->HasCurrentLink()) {
 		$ChainCard = $CombatChain->Card($i, true);
-		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-")
+		if ($ChainCard->StillThere())
 			$targets[] = "COMBATCHAINLINK-" . $ChainCard->Index();
 	}
 

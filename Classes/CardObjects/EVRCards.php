@@ -1194,17 +1194,25 @@ class in_the_swing_blue extends Card {
 // }
 
 
-// class miraging_metamorph_red extends Card {
+class miraging_metamorph_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "miraging_metamorph_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "miraging_metamorph_red";
+		$this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function DestroyEffect() {
+		AddLayer("TRIGGER", $this->controller, $this->cardID);
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		MirragingMetamorphDestroyed();
+	}
+}
 
 
 // class nerves_of_steel_blue extends Card {
