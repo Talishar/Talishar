@@ -111,16 +111,6 @@ header('Cache-Control: no-cache');
 
 $lastUpdate = 0;
 $isGamePlayer = $playerID == 1 || $playerID == 2;
-$responseCacheVariant = 'player:' . $playerID;
-if ($playerID == 3) {
-  $responseFriendList = $sessionData['friendList'] ?? [];
-  sort($responseFriendList, SORT_STRING);
-  $responseCacheVariant = 'spectator:' . hash('sha256', json_encode([
-    $responseFriendList,
-    !empty($sessionData['viewerColorblindMode']),
-  ]));
-}
-$responseCacheVariant .= ':nolog';
 $logDelta = TryGet("logDelta", "") === "1";
 $logViewerID = filter_var($playerID, FILTER_VALIDATE_INT);
 $sentLogStart = 0;
@@ -156,6 +146,16 @@ ob_flush();
 flush();
 unset($initialState);
 gc_collect_cycles();
+
+$responseCacheVariant = 'player:' . $playerID;
+if ($playerID == 3) {
+  $responseCacheVariant = 'spectator:' . json_encode([
+    isset($sessionData['friendSet'][$p1uid]),
+    isset($sessionData['friendSet'][$p2uid]),
+    !empty($sessionData['viewerColorblindMode']),
+  ]);
+}
+$responseCacheVariant .= ':nolog';
 
 $sleepMs = 50;
 $otherP = $playerID == 1 ? 2 : 1;
