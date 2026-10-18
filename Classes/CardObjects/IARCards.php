@@ -1830,6 +1830,10 @@ class appalling_bearers extends Card {
     AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
     AddDecisionQueue("DISCARDCARD", $this->controller, "HAND-" . $this->controller, 1);
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class grasp_of_the_darknight extends Card {

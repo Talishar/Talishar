@@ -1479,6 +1479,10 @@ class runebleed_robe extends Card {
       return 1;
     }
   }
+
+  function DefaultActiveState() {
+    return 1;
+  }
 }
 
 class beckoning_haunt extends Card {
