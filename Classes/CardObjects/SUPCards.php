@@ -1,5 +1,113 @@
 <?php
 
+class rko extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $mainPlayer, $CombatChain;
+    if ($this->controller == $mainPlayer) {
+      //check to make sure they targeted the current chain link
+      $uid = $CombatChain->AttackCard()->UniqueID();
+      AddCurrentTurnEffect($this->cardID, $this->controller, $uid);
+    }
+    else {
+      $targetIndex = intval(explode("-", $target, 2)[1]);
+      $uid = $CombatChain->Card($targetIndex)->UniqueID();
+      AddCurrentTurnEffect($this->cardID, $this->controller, "", $uid);
+      ReEvalCombatChain();
+    }
+    return "";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer, $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
+      if ($this->controller == $mainPlayer) {
+        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) return true;
+        $previousLink = SearchCombatChainAttacks($this->controller, type:"AA") == "";
+        $currentLink = !TypeContains($attackID, "AA", $this->controller);
+        $unresolvedAttacks = SearchLayersCardType("AA") == "";
+        if ($previousLink && $currentLink && $unresolvedAttacks) return true;
+      }
+      else {
+        //for now only support buffing cards on the current chain link
+        $numOptions = GetChainLinkCards($this->controller, "AA", "C");
+        if ($numOptions == "") return true;
+      }
+      return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $mainPlayer;
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if ($this->controller == $mainPlayer) {
+      if (ShouldAutotargetOpponent($this->controller)) {
+        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "ACTIVEATTACK:type=AA");
+      }
+      else AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:type=AA&ACTIVEATTACK:type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack action card");
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+    }
+    else {
+      $numOptions = GetChainLinkCards($this->controller, "AA", "C");
+      if ($numOptions != "") {
+        $numOptions = explode(",", $numOptions);
+        $options = [];
+        foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
+        $options = implode(",", $options);
+        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending card to buff the power of");
+        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
+        AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+        AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+      }
+    }
+    $CharacterCard->TapForCost();
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PlayAura("vigor", $this->controller, isToken:true, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AbilityCost() {
+    return 4;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function BooTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
+
+class kayo_underhanded_cheat extends Card {
+  function __construct($controller) {
+    $this->cardID = "kayo_underhanded_cheat";
+    $this->controller = $controller;
+    $this->baseCard = new rko($this->cardID, $this->controller);
+  }
+}
+
+class kayo_strong_arm extends Card {
+  function __construct($controller) {
+    $this->cardID = "kayo_strong_arm";
+    $this->controller = $controller;
+    $this->baseCard = new rko($this->cardID, $this->controller);
+  }
+}
+
+
+
 class backspin_thrust_red extends Card {
 
   function __construct($controller) {

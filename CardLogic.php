@@ -4051,10 +4051,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "alpha_instinct_blue":
         PlayAura("might", $player, isToken:true, effectController:$player, effectSource:$parameter);
         break;
-      case "kayo_underhanded_cheat":
-      case "kayo_strong_arm":
-        PlayAura("vigor", $player, isToken:true, effectController:$player, effectSource:$parameter);
-        break;
       case "pleiades":
       case "pleiades_superstar":
         PlayAura("confidence", $player, isToken:true, effectController:$player, effectSource:$parameter);

@@ -1488,33 +1488,6 @@ function EquipPayAdditionalCosts($cardIndex)
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("SUSPENSE", $currentPlayer, "REMOVE", 1);
       break;
-    case "kayo_underhanded_cheat":
-    case "kayo_strong_arm":
-      if ($currentPlayer == $mainPlayer) {
-        if (ShouldAutotargetOpponent($currentPlayer)) {
-          AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "ACTIVEATTACK:type=AA");
-        }
-        else AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "COMBATCHAINATTACKS:type=AA&ACTIVEATTACK:type=AA");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack action card");
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-      }
-      else {
-        $numOptions = GetChainLinkCards($currentPlayer, "AA", "C");
-        if ($numOptions != "") {
-          $numOptions = explode(",", $numOptions);
-          $options = [];
-          foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
-          $options = implode(",", $options);
-          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a defending card to buff the power of");
-          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, $options, 1);
-          AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
-          AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
-        }
-      }
-      Tap("MYCHAR-$cardIndex", $currentPlayer);
-      break;
     case "coronet_peak":
       $options = "THEIRCHAR-0";
       if (!ShouldAutotargetOpponent($currentPlayer)) $options = "MYCHAR-0,$options";

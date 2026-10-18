@@ -3251,22 +3251,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return CheckTapped("MYCHAR-$index", $currentPlayer) || !$edgeThere;
     case "legacy_of_ikaru_blue":
       return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "NINJA", $player);
-    case "kayo_underhanded_cheat":
-    case "kayo_strong_arm":
-      if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
-      if ($currentPlayer == $mainPlayer) {
-        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) return true;
-        $previousLink = SearchCombatChainAttacks($currentPlayer, type:"AA") == "";
-        $currentLink = !TypeContains($attackID, "AA", $currentPlayer);
-        $unresolvedAttacks = SearchLayersCardType("AA") == "";
-        if ($previousLink && $currentLink && $unresolvedAttacks) return true;
-      }
-      else {
-        //for now only support buffing cards on the current chain link
-        $numOptions = GetChainLinkCards($currentPlayer, "AA", "C");
-        if ($numOptions == "") return true;
-      }
-      return false;
     case "pleiades":
     case "pleiades_superstar":
       if (CheckTapped("MYCHAR-$index", $currentPlayer)) return true;
@@ -3771,8 +3755,8 @@ function CharacterNumUsesPerTurn($cardID)
     "puffin_hightail" => 1, "hammerhead_harpoon_cannon" => 1, "spitfire" => 1,
     "compass_of_sunken_depths" => 1, "gravy_bones" => 1, "gravy_bones_shipwrecked_looter" => 1,
     "marlynn" => 1, "marlynn_treasure_hunter" => 1, "scurv_stowaway" => 1,
-    "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1, "kayo_underhanded_cheat" => 1,
-    "kayo_strong_arm" => 1, "pleiades" => 1, "pleiades_superstar" => 1, "tuffnut" => 1,
+    "lyath_goldmane" => 1, "lyath_goldmane_vile_savant" => 1,"pleiades" => 1, "pleiades_superstar" => 1,
+    "tuffnut" => 1,
     "tuffnut_bumbling_hulkster" => 1, "mbrio_base_digits" => 1, "farflight_longbow" => 1,
   ];
   if (isset($unlimitedUses[$cardID])) return 999;

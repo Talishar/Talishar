@@ -13,19 +13,6 @@
 // }
 
 
-// class kayo_underhanded_cheat extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "kayo_underhanded_cheat";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class lyath_goldmane_vile_savant extends Card {
 
 //   function __construct($controller) {

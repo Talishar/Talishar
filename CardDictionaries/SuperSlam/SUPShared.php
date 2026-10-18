@@ -5,8 +5,6 @@ function SUPAbilityType($cardID, $index=-1, $from="-"): string
   return match ($cardID) {
     "lyath_goldmane" => "I",
     "lyath_goldmane_vile_savant" => "I",
-    "kayo_underhanded_cheat" => "I",
-    "kayo_strong_arm" => "I",
     "tuffnut" => "I",
     "tuffnut_bumbling_hulkster" => "I",
     "pleiades_superstar" => "I",
@@ -21,8 +19,6 @@ function SUPAbilityCost($cardID): int
   return match ($cardID) {
     "lyath_goldmane" => 2,
     "lyath_goldmane_vile_savant" => 2,
-    "kayo_underhanded_cheat" => 4,
-    "kayo_strong_arm" => 4,
     "punching_gloves" => 2,
     default => 0
   };
@@ -49,7 +45,6 @@ function SUPCombatEffectActive($cardID, $attackID): bool
   global $mainPlayer;
   return match ($cardID) {
     "punching_gloves" => TypeContains($attackID, "AA", $mainPlayer),
-    "kayo_underhanded_cheat", "kayo_strong_arm" => true,
     default => false,
   };
 }
@@ -67,20 +62,6 @@ function SUPPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
     case "lyath_goldmane_vile_savant":
       BOO($currentPlayer);
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      break;
-    case "kayo_underhanded_cheat":
-    case "kayo_strong_arm":
-      if ($currentPlayer == $mainPlayer) {
-        //check to make sure they targeted the current chain link
-        $uid = $CombatChain->AttackCard()->UniqueID();
-        AddCurrentTurnEffect($cardID, $currentPlayer, $uid);
-      }
-      else {
-        $targetIndex = intval(explode("-", $target, 2)[1]);
-        $uid = $CombatChain->Card($targetIndex)->UniqueID();
-        AddCurrentTurnEffect($cardID, $currentPlayer, "", $uid);
-        ReEvalCombatChain();
-      }
       break;
     case "tuffnut":
     case "tuffnut_bumbling_hulkster":
@@ -262,8 +243,6 @@ function BOO($player)
     switch($heroID) {
       case "lyath_goldmane":
       case "lyath_goldmane_vile_savant":
-      case "kayo_underhanded_cheat":
-      case "kayo_strong_arm":
         AddLayer("TRIGGER", $player, $char[0]);
         break;
       default:
