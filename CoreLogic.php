@@ -2155,7 +2155,7 @@ function ClassOverride($cardID, $player, $owner="-")
     $mainCharacter = GetPlayerCharacter($player);
     $prefix = CardClass($mainCharacter[0]) . ",";
   }
-  if ($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius" && $Hero->Status() < 3)
+  if (($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius") && $Hero->Status() < 3)
     $prefix = "MECHANOLOGIST,";
   if (SearchCurrentTurnEffectsForIndex("phantasmal_symbiosis_yellow", $player) != -1
     && SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
