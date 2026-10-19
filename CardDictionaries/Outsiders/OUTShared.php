@@ -573,19 +573,6 @@ function OUTAbilityCost($cardID)
           AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
         }
         break;
-      case "barbed_undertow_red":
-        if(HasAimCounter() && IsHeroAttackTarget()) {
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a pitch value", 1);
-          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "1,2,3", 1);
-          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "barbed_undertow_red-", 1);
-          AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "<-", 1);
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
-          AddDecisionQueue("PREPENDLASTRESULT", $mainPlayer, "Cannot_pitch_", 1);
-          AddDecisionQueue("APPENDLASTRESULT", $mainPlayer, "_resource_cards_this_turn_and_next", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "<-", 1);
-        }
-        break;
       case "infecting_shot_red": case "infecting_shot_yellow": case "infecting_shot_blue":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;

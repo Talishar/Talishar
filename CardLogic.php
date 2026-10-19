@@ -947,7 +947,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "wander_with_purpose_yellow"=>true,
     "be_like_water_red"=>true,"be_like_water_yellow"=>true,"be_like_water_blue"=>true,
     "deadly_duo_red"=>true,"deadly_duo_yellow"=>true,"deadly_duo_blue"=>true,
-    "barbed_undertow_red"=>true,
     "infecting_shot_red"=>true,"infecting_shot_yellow"=>true,"infecting_shot_blue"=>true,
     "sedation_shot_red"=>true,"sedation_shot_yellow"=>true,"sedation_shot_blue"=>true,
     "withering_shot_red"=>true,"withering_shot_yellow"=>true,"withering_shot_blue"=>true,

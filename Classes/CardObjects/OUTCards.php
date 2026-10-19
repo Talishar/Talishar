@@ -179,17 +179,35 @@ class barbed_castaway extends Card {
 }
 
 
-// class barbed_undertow_red extends Card {
+class barbed_undertow_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "barbed_undertow_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "barbed_undertow_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (HasAimCounter()) return HeroHitTrigger($this->controller, $this->cardID, $check);
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a pitch value", 1);
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "1,2,3", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "barbed_undertow_red-", 1);
+    AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", $defPlayer, "<-", 1);
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "{0}", 1);
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "Cannot_pitch_", 1);
+    AddDecisionQueue("APPENDLASTRESULT", $this->controller, "_resource_cards_this_turn_and_next", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "<-", 1);
+  }
+}
 
 
 // class be_like_water_red extends Card {
