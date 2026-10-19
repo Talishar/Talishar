@@ -2632,7 +2632,8 @@ function EffectPlayCardRestricted($cardID, $type, $from, $revertNeeded = false, 
           break;
         case "WarmongersWar":
           // warmongers processing for meld cards handled in AddPrePitchDecisionQueue
-          if (DelimStringContains($type, "A") && !HasMeld($cardID) && CardType($cardID) != "W") $restrictedBy = "warmongers_diplomacy_blue";
+          $abilityTypes ??= GetAbilityTypes($cardID, from:$from);
+          if (DelimStringContains($type, "A") && !HasMeld($cardID) && !DelimStringContains($abilityTypes, "AA") && CardType($cardID) != "W") $restrictedBy = "warmongers_diplomacy_blue";
           break;
         case "WarmongersPeace":
           // str_contains(GetAbilityTypes($cardID, from:$from), "I") should allow discarding attack actions for instant abilities under peace
