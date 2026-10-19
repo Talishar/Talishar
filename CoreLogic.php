@@ -1318,7 +1318,15 @@ function UnsetTurnBanish()
   ReplaceBanishModifier($mainPlayer, "NTFromOtherPlayer", "TTFromOtherPlayer");
 }
 
-function ResetStolenCards()
+function ResetStolenCardsEOT()
+{
+  global $mainPlayer;
+  UnsetItemModifier($mainPlayer, "Temporary-EOT");
+  UnsetAllyModifier($mainPlayer, "Temporary-EOT");
+  UnsetAuraModifier($mainPlayer, "Temporary-EOT");
+}
+
+function ResetStolenCardsEndAction()
 {
   global $mainPlayer;
   UnsetItemModifier($mainPlayer, "Temporary");

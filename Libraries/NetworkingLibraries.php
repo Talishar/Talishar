@@ -2309,6 +2309,9 @@ function EndStep()
 {
   global $mainPlayer, $turn;
   $turn[0] = "ENDPHASE";
+  // end action phase abilities
+  ResetStolenCardsEndAction();
+  
   AddLayer("ENDPHASE", $mainPlayer, "-");
   MainCharacterBeginEndPhaseTriggers();
   AuraBeginEndPhaseTriggers();
@@ -2383,7 +2386,7 @@ function FinishTurnPass()
   if ($turn[0] == "OVER") return;
   ClearLog();
   ResetCombatChainState();
-  
+
   // Process end phase abilities
   QuellEndPhase(1);
   QuellEndPhase(2);
@@ -2449,7 +2452,7 @@ function FinalizeTurn()
   }
   $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
-  ResetStolenCards();
+  ResetStolenCardsEOT();
   LogEndTurnStats($mainPlayer);
   LogEndLifeStats();
   CurrentEffectEndTurnAbilities();

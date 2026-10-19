@@ -4970,7 +4970,7 @@ class tempt_over_yellow extends Card {
     $index = $choiceParts[1] ?? -1;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     if ($index != -1)
-      StealAura($otherPlayer, $index, $this->controller, $from, "Temporary");
+      StealAura($otherPlayer, $index, $this->controller, $from, "Temporary-EOT");
   }
 }
 
