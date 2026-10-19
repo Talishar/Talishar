@@ -2498,8 +2498,7 @@ function EffectDefenderPowerModifiers($cardID)
 
 function EffectAttackRestricted($cardID, $type, $from, $revertNeeded = false, $index = -1, $overrideType = "-")
 {
-  global $mainPlayer, $currentTurnEffects, $p2IsAI;
-  if ($p2IsAI) return false;
+  global $mainPlayer, $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $hasRestrictingEffect = false;
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
