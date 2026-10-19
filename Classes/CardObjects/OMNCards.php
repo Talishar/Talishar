@@ -1977,6 +1977,7 @@ class mercurial_skies extends BaseCard {
   function CombatEffectActive() {
     global $CombatChain;
     $AttackCard = $CombatChain->AttackCard()->ID();
+    if (!TypeContains($AttackCard, "AA")) return false;
     return ClassContains($AttackCard, "RUNEBLADE", $this->controller) || TalentContains($AttackCard, "LIGHTNING", $this->controller);
   }
 }
