@@ -2629,7 +2629,7 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
     case "boltn_shot_red":
     case "boltn_shot_yellow":
     case "boltn_shot_blue":
-      return CachedTotalPower() > PowerValue($attackID, $mainPlayer, "CC");
+      return CachedTotalPower() > LinkBasePower();
     case "swarming_gloomveil_red":
     case "runerager_swarm_red":
     case "runerager_swarm_yellow":
