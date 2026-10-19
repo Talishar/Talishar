@@ -1142,7 +1142,7 @@ function LoseHealth($amount, $player)
   PlayerLoseHealth($amount, $player);
 }
 
-function GainHealth($amount, $player, $silent = false, $preventable = true, $fromCardEffect = true)
+function GainHealth($amount, $player, $silent = false, $preventable = true)
 {
   global $mainPlayer, $CS_HealthGained;
   $otherPlayer = 3 - $player;
@@ -1179,7 +1179,6 @@ function GainHealth($amount, $player, $silent = false, $preventable = true, $fro
   if (!$silent) WriteLog("💚 Player " . $player . " gained " . $amount . " life");
   IncrementClassState($player, $CS_HealthGained, $amount);
   if($p2Char[0] != "DUMMY" || $player == 1) $health += $amount;
-  if ($fromCardEffect && $amount > 0) MarkKorshemTurnCondition($player);
   LogLifeGainedStats($player, $amount);
 
   if ($player == $mainPlayer) {

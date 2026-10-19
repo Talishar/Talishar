@@ -339,17 +339,10 @@ function RemoveDiscard($player, $index)
   return RemoveGraveyard($player, $index);
 }
 
-function MarkKorshemTurnCondition($player)
-{
-  global $CS_KorshemConditionMet;
-  if ($player == 1 || $player == 2) SetClassState($player, $CS_KorshemConditionMet, 1);
-}
-
-function GainResources($amount, $player, $fromCardEffect = true)
+function GainResources($amount, $player)
 {
   $resources = &GetResources($player);
   $resources[0] += $amount;
-  if ($fromCardEffect && $amount > 0) MarkKorshemTurnCondition($player);
 }
 
 function AddResourceCost($player, $amount)

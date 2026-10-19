@@ -135,10 +135,7 @@ class AuraCard {
   }
 
   function AddPowerCounters($n=1) {
-		if (isset($this->pieces[$this->index+3])) {
-      $this->pieces[$this->index+3] += $n;
-      if ($n > 0) PropertyModifierApplied($this->UniqueID(), "POWER", $n, "COUNTER", $this->controller, EffectiveGamePhase());
-    }
+		if (isset($this->pieces[$this->index+3])) $this->pieces[$this->index+3] += $n;
 		return $this->NumPowerCounters();
 	}
 

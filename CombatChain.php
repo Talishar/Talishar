@@ -1278,12 +1278,6 @@ function OnBlockEffects($index, $from)
       $card = GetClass($currentTurnEffects[$i], $currentPlayer);
       if ($card != "-") $remove = $card->EffectOnBlockModifier($i, $index, $from);
       switch ($currentTurnEffects[$i]) {
-        case "korshem_crossroad_of_elements-2":
-          if (TypeContains($chainCard->ID(), "A") || TypeContains($chainCard->ID(), "AA")) {
-            $chainCard->ModifyDefense(1, $currentTurnEffects[$i]);
-            $remove = true;
-          }
-          break;
         case "flic_flak_red":
         case "flic_flak_yellow":
         case "flic_flak_blue":
