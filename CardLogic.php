@@ -109,12 +109,6 @@ function AddCurrentTurnEffect($cardID, $player, $from = "", $uniqueID = -1)
       if (isset($chainLinkSummary[$powerIndex])) $chainLinkSummary[$powerIndex] += $powerModifier;
     }
   }
-  if ($uniqueID != -1 && $uniqueID != "ATTACK" && $powerModifier != 0) {
-    $isCurrentAttack = isset($CombatChain) && $CombatChain->HasCurrentAttack() && $CombatChain->AttackCard()->UniqueID() == $uniqueID;
-    // if (!$isCurrentAttack) {
-    //   PropertyModifierApplied($uniqueID, "POWER", $powerModifier, $cardID, $player, EffectiveGamePhase());
-    // }
-  }
   if (!IsCombatEffectLimited($ind) && IsCombatEffectActive($cardID)) {
     NotifyCurrentAttackPowerModifierApplied(EffectPowerModifier($cardID), $cardID);
     ReEvalCombatChain();
