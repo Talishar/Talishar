@@ -284,6 +284,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $isFaBMeta = str_contains($decklink, "fabmeta");
    $isFaBTCGMeta = str_contains($decklink, "fabtcgmeta");
    $isFaBBazaar = IsFaBBazaarHostLink($decklink);
+   $isGradely = str_contains($decklink, "gradely.io");
    if ($isFaBDB) {
      $decklinkArr = explode("/", $decklink);
      $slug = $decklinkArr[count($decklinkArr) - 1];
@@ -294,6 +295,14 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      parse_str($parsedUrl['query'] ?? "-", $queryParams);
      $deckId = $queryParams['deckName'] ?? $queryParams['deckId'] ?? '';
      $apiLink = "https://api.fabtcgmeta.com/api/talishar/deck/" . rawurlencode($deckId);
+   }
+   else if ($isGradely) {
+     if (!preg_match('~gradely\.io/decks/(public|precon|tournament)/([\w-]+)/?(?:[?#\s]|$)~', $decklink, $matches)) {
+       $response->error = "Invalid Gradely deck URL format. Expected a community, precon or tournament deck link, e.g. https://gradely.io/decks/public/DECK_ID";
+       echo (json_encode($response));
+       exit;
+     }
+     $apiLink = "https://api.gradely.io/api/v1/decks/" . $matches[1] . "/" . $matches[2] . "/export?format=talishar";
    }
    else if ($isFaBBazaar) {
      $deckId = ExtractFaBBazaarDeckId($decklink);
@@ -346,6 +355,18 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
    $deckObj = json_decode($apiDeck);
+   if ($isGradely) {
+     $httpCode = $apiInfo['http_code'];
+     if ($httpCode != 200) {
+       if ($httpCode == 404) $response->error = "Deck not found on Gradely. The deck may be private, unpublished or deleted, or the URL is incorrect.";
+       else if ($httpCode == 400) $response->error = "Only Flesh and Blood decks can be loaded from Gradely.";
+       else if ($httpCode >= 500) $response->error = "Gradely could not load this deck right now. Please try again in a minute.";
+       else $response->error = "Could not load deck from Gradely: " . ($deckObj->error->message ?? "HTTP " . $httpCode);
+       echo (json_encode($response));
+       die();
+     }
+     $deckObj = json_decode($deckObj->data->content ?? "null");
+   }
    if ($apiInfo['http_code'] == 401 && $isFaBBazaar) {
      $response->error = "API UNAUTHORIZED! FaB Bazaar API key is missing. Contact site administrator.";
      echo (json_encode($response));
