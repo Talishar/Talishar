@@ -2,7 +2,7 @@
 
 function ProcessMacros()
 {
-  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $decisionQueue, $numPass;
+  global $currentPlayer, $turn, $actionPoints, $mainPlayer, $defPlayer, $layers, $numPass;
   global $CCS_RequiredEquipmentBlock, $CS_PendingNAACard;
   $somethingChanged = true;
   $lastPhase = $turn[0];
@@ -21,9 +21,7 @@ function ProcessMacros()
 
       // Cache expensive function calls and counts
       $layerCount = count($layers);
-      $decisionQueueCount = count($decisionQueue);
       $firstLayer = $layerCount >= $layerPieces ? $layers[0] : null;
-      $lastLayer = $layerCount >= $layerPieces ? $layers[$layerCount - $layerPieces] : null;
 
       switch ($turn[0]) {
         case "A":
@@ -108,13 +106,7 @@ function ProcessMacros()
           break;
         default:
           if (!ProcessSpecificCardMacros()) {
-            if ($decisionQueueCount == 0 || $decisionQueue[0] == "INSTANT") {
-              if ($lastLayer == "ENDPHASE" && $layerCount < $layerPieces * 3) {
-                $somethingChanged = true;
-                PassInput();
-              }
-            }
-            if (!$somethingChanged && AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2] ?? "") == 1) {
+            if (AutopassPhaseWithOneOption($turn[0]) && SearchCount($turn[2] ?? "") == 1) {
               $somethingChanged = true;
               ContinueDecisionQueue($turn[2]);
             }
