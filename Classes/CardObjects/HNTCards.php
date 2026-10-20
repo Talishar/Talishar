@@ -3541,7 +3541,7 @@ class under_the_trap_door_blue extends Card {
 		if ($TargetCard->Index() != -1) {
 			$banishInd = $TargetCard->Banish("TT");
 			$banishCard = new BanishCard($this->controller, $banishInd);
-			AddCurrentTurnEffect("$this->cardID", $this->controller, "", $banishCard->CardID());
+			AddCurrentTurnEffect($this->cardID, $this->controller, "", $banishCard->UniqueID());
 		}
 	}
 

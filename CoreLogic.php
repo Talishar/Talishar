@@ -4619,7 +4619,7 @@ function ResolvePermanent($cardID, $from, $additionalCosts) {
 }
 
 //handles moving a card to where it's supposed to go *after* it resolves
-function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
+function ResolveCard($cardID, $from, $definedCardType, $additionalCosts, $uniqueID) {
   global $currentPlayer, $turn;
   if (!GoesOnCombatChain($turn[0], $cardID, $from, $currentPlayer) && $from != "PLAY" && $from != "EQUIP" && $from != "COMBATCHAINATTACKS" && $from != "PASTCHAINLINK" && $cardID != "quickdodge_flexors") {
     $cardSubtype = CardSubType($cardID);
@@ -4630,7 +4630,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts) {
     else if (DelimStringContains($cardSubtype, "Figment"));
     else if (DelimStringContains($cardSubtype, "Evo")); 
     else if ($definedCardType != "C" && $definedCardType != "E" && $definedCardType != "W" && $definedCardType != "Macro") {
-      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts);
+      $goesWhere = GoesWhereAfterResolving($cardID, $from, $currentPlayer, additionalCosts: $additionalCosts, uniqueID:$uniqueID);
       // make sure the card goes to the graveyard after it resolves
       Await($currentPlayer, "ResolveGoesWhere", cardID:$cardID, goesWhere:$goesWhere, from:$from, additionalCosts:$additionalCosts, final:true, subsequent:false);
     }

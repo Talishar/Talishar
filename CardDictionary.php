@@ -2058,7 +2058,7 @@ function CanBlockWithAura($cardID)
   }
 }
 
-function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom = "", $stillOnCombatChain = 1, $additionalCosts = "-")
+function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom = "", $stillOnCombatChain = 1, $additionalCosts = "-", $uniqueID = "-")
 {
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
   if ($player == "") $player = $currentPlayer;
@@ -2094,7 +2094,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
         return "THEIRDISCARD";
     }
   }
-  $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player);
+  $goesWhereEffect = GoesWhereEffectsModifier($cardID, $from, $player, $uniqueID);
   if ($goesWhereEffect != -1) return $goesWhereEffect;
   //hardcode in old favorite for now
   if (($from == "COMBATCHAIN" || $from == "CHAINCLOSING") && $player != $mainPlayer && CardType($cardID) != "DR" && $cardID != "old_favorite_yellow") return "GY"; //If it was blocking, don't put it where it would go if it was played
@@ -2199,13 +2199,14 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
   }
 }
 
-function GoesWhereEffectsModifier($cardID, $from, $player)
+function GoesWhereEffectsModifier($cardID, $from, $player, $uniqueID)
 {
   global $currentTurnEffects;
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $countCurrentTurnEffects - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] != $player) continue;
+    $Effect = new CurrentEffect($i);
     $effectID = ExtractCardID($currentTurnEffects[$i]);
     switch ($effectID) {
       case "blossoming_spellblade_red":
@@ -2222,8 +2223,8 @@ function GoesWhereEffectsModifier($cardID, $from, $player)
         }
         break;
       case "under_the_trap_door_blue":
-        if ($cardID == $currentTurnEffects[$i + 2] && $from == "CHAINCLOSING") {
-          RemoveCurrentTurnEffect($i);
+        if ($uniqueID == $Effect->AppliestoUniqueID()) {
+          $Effect->Remove();
           return "BANISH";
         }
       default:

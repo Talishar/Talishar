@@ -1620,7 +1620,8 @@ function ClearCombatChainAwait($player) {
         if ($j == 0 && !TypeContains($linkID, "AA", $player)) continue; //Don't do anything with attack proxies
         // $j + 7 instead of just $j to grab the "original CardID" in case the card became a copy
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
-        $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2]);
+        $uniqueID = $chainLinks[$i][$j + 8];
+        $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2], "-", $uniqueID);
         ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING", effectController:$chainLinks[$i][$j + 1] ?? "-");
       }
     }

@@ -2736,7 +2736,11 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (CardType($cardID, $from) == "AA" && $abilityType == "-" || $abilityType == "AA") EndResolutionStep();
       }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
-      $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID);
+      if (IsActivated($cardID, $from))
+        $layerUID = GetUniqueId($cardID, $player);
+      else
+        $layerUID = $uniqueID;
+      $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID, $layerUID);
       SetClassState($currentPlayer, $CS_LayerPlayIndex, $layerIndex);
       if ($layersCount > 0) {
         $lastLayerIndex = count($layers) - LayerPieces();
@@ -5031,7 +5035,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     if ($target == "MISSINGTARGET") CleanUpCombatEffects(isSpectraTarget: true);
   }
   // put it where  it needs to go (not combat chain)
-  ResolveCard($cardID, $from, $definedCardType,$additionalCosts);
+  ResolveCard($cardID, $from, $definedCardType ,$additionalCosts, $uniqueID);
   if ($CS_CharacterIndex != -1 && CanPlayAsInstant($cardID)) RemoveCharacterEffects($currentPlayer, GetClassState($currentPlayer, $CS_CharacterIndex), "INSTANT");
   //Now determine what needs to happen next
   SetClassState($currentPlayer, $CS_PlayIndex, -1);
