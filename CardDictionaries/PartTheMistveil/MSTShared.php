@@ -700,8 +700,14 @@ function MSTHitEffect($cardID, $from): void
       AddDecisionQueue("MZREVEAL", $mainPlayer, "-", 1);
       break;
     case "murky_water_red":
-      $trapsArr = explode(",", SearchDiscard($mainPlayer, subtype: "Trap", minCost:0));
-      if (count($trapsArr) >= 3) {
+      $Discard = new Discard($mainPlayer);
+      $count = 0;
+      for ($i = 0; $i < $Discard->NumCards(); ++$i) {
+        $DiscardCard = $Discard->Card($i, true);
+        if (SubtypeContains($DiscardCard->CardID(), "Trap") && !TypeContains($DiscardCard->CardID(), "E"))
+          ++$count;
+      }
+      if ($count >= 3) {
         AddDecisionQueue("YESNO", $mainPlayer, "if you want to banish traps");
         AddDecisionQueue("NOPASS", $mainPlayer, "-");
         AddDecisionQueue("FINDINDICES", $mainPlayer, "MULTITRAPSBANISH", 1);
