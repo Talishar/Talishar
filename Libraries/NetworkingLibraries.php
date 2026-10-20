@@ -2737,7 +2737,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
       if (IsActivated($cardID, $from) || $uniqueID == -1)
-        $layerUID = GetUniqueId($cardID, $player);
+        $layerUID = GetUniqueId($cardID, $currentPlayer);
       else
         $layerUID = $uniqueID;
       $layerIndex = AddLayer($cardID, $currentPlayer, $from, "-", "-", $uniqueID, $layerUID);
