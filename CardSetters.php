@@ -867,7 +867,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if ($from == "CHAR" && str_ends_with($cardID, '_equip')) {
     $cardID = GetCardIDBeforeTransform($cardID);
   }
-  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow" || (HasIncarnate($cardID) && $from == "PLAY")) return;
+  if (HasEphemeral($cardID) || TypeContains($cardID, "T", $player) || $cardID == "goldfin_harpoon_yellow" || (HasIncarnate($cardID) && str_contains($from, "PLAY"))) return;
   if (SubtypeContains($cardID, "Ally", $player)) {
     IncrementClassState($player, $CS_NumAllyPutInGraveyard);
   }
