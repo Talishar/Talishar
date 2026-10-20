@@ -4547,6 +4547,12 @@ function Rarity($cardID)
   if ($cardID == "the_hand_that_pulls_the_strings") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "minerva_themis") return $rarityCache[$cardID] = "R"; //downshift
   if ($cardID == "embrace_sin_yellow") return $rarityCache[$cardID] = "R"; //fabcube error
+  if ($cardID == "back_alley_bloodbank_red") return $rarityCache[$cardID] = "R"; //fabcube error
+  if ($cardID == "back_alley_bilebank_yellow") return $rarityCache[$cardID] = "R"; //fabcube error
+  if ($cardID == "back_alley_plasmabank_blue") return $rarityCache[$cardID] = "R"; //fabcube error
+  if ($cardID == "bloodrot_courier_red") return $rarityCache[$cardID] = "C"; //fabcube error
+  if ($cardID == "exertion_courier_yellow") return $rarityCache[$cardID] = "C"; //fabcube error
+  if ($cardID == "inertia_courier_blue") return $rarityCache[$cardID] = "C"; //fabcube error
   if ($set != "DUM") {
     return $rarityCache[$cardID] = GeneratedRarity($cardID);
   }
