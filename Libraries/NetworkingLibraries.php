@@ -3797,7 +3797,18 @@ function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
   $defPlayer = $mainPlayer == 1 ? 2 : 1;
   $numTargets = 0;
   // a new attack (on the stack or in the attack queue) doesn't share targets with the current chain link
-  $currentTargets = $attackQueue || $forLayer ? "-" : GetCombatChainState($CCS_AttackTarget);
+  if ($attackQueue || $forLayer) {
+    $attackLayer = $Stack->TopLayer($cardID);
+    $current = $attackLayer->Target();
+    $currentTargets = [];
+    foreach(explode(",", $current) as $target) {
+      $currentTargets[] = CleanTargetToIndex($mainPlayer, $target);
+    }
+    $currentTargets = implode(",", $currentTargets);
+  }
+  else {
+    $currentTargets = GetCombatChainState($CCS_AttackTarget);
+  }
   $processParam = $forLayer ? $cardID : "-";
   $heroRestricted = MomentsPeaceStopsWeapon(GetClassState($mainPlayer, $CS_PlayIndex), $mainPlayer, $cardID);
   if (!$heroRestricted && !str_contains($currentTargets, "THEIRCHAR-0")) {

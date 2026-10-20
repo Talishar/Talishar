@@ -2075,7 +2075,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return 1;
     case "ADDITIONALATTACKTARGET":
-      GetTargetOfAttack($parameter);
+      GetTargetOfAttack($parameter, forLayer:true);
       return $lastResult;
     case "STARTTURNABILITIES":
       StartTurnAbilities();
