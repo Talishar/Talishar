@@ -2736,7 +2736,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
         if (CardType($cardID, $from) == "AA" && $abilityType == "-" || $abilityType == "AA") EndResolutionStep();
       }
       SetClassState($currentPlayer, $CS_AbilityIndex, $index);
-      if (IsActivated($cardID, $from))
+      if (IsActivated($cardID, $from) || $uniqueID == -1)
         $layerUID = GetUniqueId($cardID, $player);
       else
         $layerUID = $uniqueID;
