@@ -53,6 +53,12 @@ if ($mode == 100015) {
   if (intval(GetCachePiece($gameName, $ackPiece)) == 1) exit;
 }
 
+if ($mode == 100026) {
+  if ($playerID != 1 && $playerID != 2) exit;
+  $chatCacheArr = ReadCacheArray($gameName);
+  if (intval($chatCacheArr[14] ?? 0) != 1 && intval($chatCacheArr[15] ?? 0) != 1) exit;
+}
+
 //We should also have some information on the type of command
 $buttonInput = isset($_GET["buttonInput"]) ? sanitizeString($_GET["buttonInput"]) : ""; //The player that is the target of the command - e.g. for changing life total
 $cardID = isset($_GET["cardID"]) ? sanitizeString($_GET["cardID"]) : "";

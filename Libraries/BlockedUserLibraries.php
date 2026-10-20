@@ -83,13 +83,19 @@ function IsUserBlocked($userId, $blockedUserId) {
   return $isBlocked;
 }
 
+include_once __DIR__ . "/ModerationLibraries.php";
+
+const BLOCK_NOTE_MAX_LENGTH = 300;
+
 /**
  * Block a user
  * @param int $userId
  * @param int $blockedUserId
+ * @param string|null $reason One of MODERATION_REASONS, seen only by moderators
+ * @param string|null $note Free text for moderators
  * @return array ['success' => bool, 'message' => string]
  */
-function BlockUser($userId, $blockedUserId) {
+function BlockUser($userId, $blockedUserId, $reason = null, $note = null) {
   global $conn;
   
   if (!$conn) {
@@ -122,15 +128,18 @@ function BlockUser($userId, $blockedUserId) {
     return ['success' => false, 'message' => 'User is already blocked'];
   }
   
+  $reason = NormalizeModerationReason($reason);
+  $note = NormalizeModerationNote($note, BLOCK_NOTE_MAX_LENGTH);
+
   // Insert block record
-  $insertQuery = "INSERT INTO blocked_users (userId, blockedUserId) VALUES (?, ?)";
-  
+  $insertQuery = "INSERT INTO blocked_users (userId, blockedUserId, reason, note) VALUES (?, ?, ?, ?)";
+
   $stmt = $conn->prepare($insertQuery);
   if (!$stmt) {
     return ['success' => false, 'message' => 'Database error'];
   }
-  
-  $stmt->bind_param("ii", $userId, $blockedUserId);
+
+  $stmt->bind_param("iiss", $userId, $blockedUserId, $reason, $note);
   $stmt->execute();
   $stmt->close();
   unset($_SESSION['_blockedCache'], $_SESSION['_blockedCacheAt']);

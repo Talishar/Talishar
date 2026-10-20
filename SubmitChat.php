@@ -92,6 +92,13 @@ if (tryGet("quickChat")) {
   $isGameDeleteKeepalive = (string)$_GET["quickChat"] === "25";
 } elseif (isset($_GET["chatText"]) && $_GET["chatText"] !== "") {
   $chatText = htmlspecialchars($_GET["chatText"]);
+  if (!$isMod) {
+    $chatCacheArr = ReadCacheArray($gameName);
+    if (intval($chatCacheArr[14] ?? 0) != 1 || intval($chatCacheArr[15] ?? 0) != 1) {
+      http_response_code(403);
+      die("Chat is off.");
+    }
+  }
 }
 
 // Don't write anything if there's no actual message

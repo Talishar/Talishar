@@ -76,9 +76,12 @@ const DBL_GET_DAILY_PUZZLE             = 73;
 const DBL_START_DAILY_PUZZLE           = 74;
 const DBL_RATE_DAILY_PUZZLE            = 75;
 const DBL_DAILY_PUZZLE_PROGRESS        = 76;
+const DBL_BLOCK_REPORTS                = 77;
+const DBL_SUBMIT_PLAYER_REPORT         = 78;
+const DBL_GET_PLAYER_REPORTS           = 79;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 76;
+const DBL_MAX_KEY = 79;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -155,4 +158,7 @@ const DBL_LABELS = [
     74 => 'APIs/StartDailyPuzzle.php',
     75 => 'APIs/RateDailyPuzzle.php',
     76 => 'Libraries/PuzzleDaily.php',
+    77 => 'APIs/BlockReports.php',
+    78 => 'APIs/SubmitPlayerReport.php',
+    79 => 'APIs/GetPlayerReports.php',
 ];

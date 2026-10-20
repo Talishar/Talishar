@@ -202,6 +202,8 @@ CREATE TABLE IF NOT EXISTS blocked_users (
   blockId INT AUTO_INCREMENT PRIMARY KEY,
   userId INT NOT NULL,
   blockedUserId INT NOT NULL,
+  reason VARCHAR(20) NULL DEFAULT NULL,
+  note VARCHAR(300) NULL DEFAULT NULL,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (userId) REFERENCES users(usersId) ON DELETE CASCADE,
   FOREIGN KEY (blockedUserId) REFERENCES users(usersId) ON DELETE CASCADE,
@@ -209,6 +211,25 @@ CREATE TABLE IF NOT EXISTS blocked_users (
   CHECK (userId != blockedUserId),
   INDEX idx_user_id (userId),
   INDEX idx_blocked_user_id (blockedUserId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `player_reports`
+--
+CREATE TABLE IF NOT EXISTS player_reports (
+  reportId INT AUTO_INCREMENT PRIMARY KEY,
+  gameName VARCHAR(32) NOT NULL,
+  reporterPlayerID TINYINT NOT NULL,
+  reporterUserId INT NULL DEFAULT NULL,
+  reportedName VARCHAR(64) NOT NULL,
+  reportedUserId INT NULL DEFAULT NULL,
+  reason VARCHAR(20) NULL DEFAULT NULL,
+  note VARCHAR(500) NULL DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_report (gameName, reporterPlayerID),
+  INDEX idx_created (createdAt),
+  INDEX idx_reported_user (reportedUserId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

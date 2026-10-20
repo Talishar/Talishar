@@ -1383,7 +1383,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       if (file_exists("./Games/$gameName/startChainLinkGamestate.txt")) copy("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
-      WriteLog("🚨Thank you for reporting a player. The chat log has been saved on the server. Please report it to a mod on Discord with the game number for reference ($gameName).", highlight: true);
+      WriteLog("🚨Thank you for reporting a player. The game log has been saved for the moderators (game $gameName). You can also contact a mod on Discord with this game number.", highlight: true);
       break;
     case 100015: //Request to enable chat
       include __DIR__ . "/../MenuFiles/ParseGamefile.php";
@@ -1430,6 +1430,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100020://Decline chat request
       WriteLog("🚫 Player " . $playerID . " declined the invitation to chat");
+      break;
+    case 100026://Turn chat off
+      if ($playerID != 1 && $playerID != 2) break;
+      SetCachePieces($gameName, [15 => 0, 16 => 0]);
+      WriteLog("🔇 Player " . $playerID . " turned chat off");
       break;
     case 100022:// Confirm chain link undo
       RevertGamestate("startChainLinkGamestate.txt");
@@ -1502,7 +1507,7 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true
   ];
   return isset($asyncModes[$mode]);
 }

@@ -85,6 +85,23 @@ if($action == "Request Chat")
   exit;
 }
 
+if($action == "Disable Chat")
+{
+  $cacheArr = ReadCacheArray($gameName);
+  if ($cacheArr !== null && (($cacheArr[14] ?? "") == 1 || ($cacheArr[15] ?? "") == 1)) {
+    $cacheArr[14] = 0;
+    $cacheArr[15] = 0;
+    WriteCache($gameName, implode("!", $cacheArr));
+    WriteLog("🔇 " . substr($playerID == 1 ? $p1uid : $p2uid, 0, 20) . " turned chat off", path: "../");
+  }
+  GamestateUpdated($gameName);
+
+  UnlockGamefile();
+  $response->success = true;
+  echo json_encode($response);
+  exit;
+}
+
 if ($action == "Unready Equipment") {
   $arenaRevealed = ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1");
   $didChangeEquipmentState = false;

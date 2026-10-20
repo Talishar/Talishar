@@ -53,7 +53,7 @@ switch ($action) {
     $blockedUser = $resolvedUser['user'];
 
     // Block user
-    $result = BlockUser($userId, $blockedUser['usersId']);
+    $result = BlockUser($userId, $blockedUser['usersId'], $_POST['reason'] ?? null, $_POST['note'] ?? null);
     if (ApplyActionResult($response, $result)) $response->blockedUser = $blockedUser;
     break;
 
