@@ -4501,7 +4501,7 @@ class embrace_ursur extends BaseCard {
 
   function ProcessAttackTrigger() {
     Await($this->controller, "MultiZoneIndices", search:"MYHAND", subsequent:0);
-    Await($this->controller, "ChooseMultiZone", context:"Banish a card (or pass)", may:true);
+    Await($this->controller, "ChooseMultiZone", context:"Banish a card (or pass)", exp_may:true);
     Await($this->controller, $this->cardID, final:true);
   }
 
