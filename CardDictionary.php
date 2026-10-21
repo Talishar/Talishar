@@ -3810,6 +3810,7 @@ function CharacterDefaultActiveState($cardID)
     "spellbound_creepers" => 1, "grimoire_of_the_haunt" => 1, "old_knocker" => 1,
     "dragonscaler_flight_path" => 1, "calming_gesture" => 1, 
     "prizeworn_pathfinders" => 1, "prizeworn_plating" => 1, "prizeworn_gauntlet" => 1,
+    "lightning_greaves" => 1,
   ];
   if (isset($state0[$cardID])) return 0;
   if (isset($state1[$cardID])) return 1;
