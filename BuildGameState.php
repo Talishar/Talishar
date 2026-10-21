@@ -936,7 +936,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0
       && ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction));
     $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
-    if ($myChar == "fyendals_spring_tunic" && ManualTunicSetting($playerID)) $border = 0;
+    if ($myChar == "fyendals_spring_tunic" && ManualTunicSetting($playerID) && $myCharacter[$i + 2] < 3) $border = 0;
     $manualDynamoRefresh = CanManuallyRefreshValiantDynamo($playerID, $i);
     $manualValdaToken = CanManuallyCreateValdaToken($playerID, $i);
     if ($manualValdaToken) $border = 0;
