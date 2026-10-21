@@ -7041,7 +7041,7 @@ class doomsaying_red extends Card {
     foreach ([$this->controller, $this->controller == 1 ? 2 : 1] as $player) {
       for ($i = 0; $i < $numCounters; ++$i) {
         $numRemaining = $numCounters - $i;
-        AddDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYAURAS");
         AddDecisionQueue("SETDQCONTEXT", $player, "Destroy $numRemaining aura(s) you control", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
         AddDecisionQueue("MZDESTROY", $player, "<-", 1);
