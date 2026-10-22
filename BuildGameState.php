@@ -1808,7 +1808,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->opponentPresence = $opponentPresence;
   }
 
-  $inactivityTimeout = InactivityTimeoutMs($buildCacheArr);
+  $inactivityTimeout = InactivityTimeoutMs($buildCacheArr, $gameName);
   $response->inactive = $inactivityTimeout > 0 ? $inactive : false;
 
   $lastActionTime = intval($buildCacheArr[5] ?? 0);

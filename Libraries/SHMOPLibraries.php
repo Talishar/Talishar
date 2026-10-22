@@ -215,13 +215,25 @@ function IncrementCachePiece($gameName, $piece)
 
 // Milliseconds without a gamestate update from the priority player before that player counts as inactive
 if (!defined('INACTIVITY_TIMEOUT_MS')) define('INACTIVITY_TIMEOUT_MS', 60 * 1000);
+if (!defined('RELAXED_INACTIVITY_TIMEOUT_MS')) define('RELAXED_INACTIVITY_TIMEOUT_MS', 90 * 1000);
 if (!defined('GAME_DELETE_TIMEOUT_MS')) define('GAME_DELETE_TIMEOUT_MS', 5 * 60 * 1000);
 
-function InactivityTimeoutMs($cacheArr)
+function InactivityTimeoutMs($cacheArr, $gameName = null)
 {
   if (!is_array($cacheArr)) return 0;
   $visibility = trim((string)($cacheArr[8] ?? ""));
-  return $visibility === "1" ? INACTIVITY_TIMEOUT_MS : 0;
+  if ($visibility !== "1") return 0;
+  return $gameName !== null && IsRelaxedTimerGame($gameName) ? RELAXED_INACTIVITY_TIMEOUT_MS : INACTIVITY_TIMEOUT_MS;
+}
+
+// The game description is not in the shmop cache, so read it from GameFile.txt once per process
+function IsRelaxedTimerGame($gameName)
+{
+  static $memo = [];
+  if (isset($memo[$gameName])) return $memo[$gameName];
+  $lines = @file(__DIR__ . "/../Games/" . $gameName . "/GameFile.txt", FILE_IGNORE_NEW_LINES);
+  if (!is_array($lines) || count($lines) < 14) return false;
+  return $memo[$gameName] = in_array(trim($lines[13]), ["New player learning the game", "Slow play OK"], true);
 }
 
 function GamestateUpdated($gameName, $resetTimer = true)

@@ -128,7 +128,7 @@ $cacheArr = null;
 $initialCacheArr = ReadCacheArrayCached($gameName, $lastCacheRaw, $cacheArr);
 $cacheVal = intval($initialCacheArr[0] ?? ""); // piece 1
 $lastUpdate = $cacheVal;
-$inactivityTimeoutMs = InactivityTimeoutMs($initialCacheArr);
+$inactivityTimeoutMs = InactivityTimeoutMs($initialCacheArr, $gameName);
 $lastUpdateTime = $initialCacheArr[5] ?? "";
 $previouslyInactive = $inactivityTimeoutMs > 0 && $lastUpdateTime !== ""
   && 1000 * microtime(true) - intval($lastUpdateTime) > $inactivityTimeoutMs;
