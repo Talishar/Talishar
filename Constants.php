@@ -302,6 +302,15 @@ function EventPieces()
   return 2;
 }
 
+function UndoRequestEventTypes()
+{
+  static $undoRequestTypes = [
+    "REQUESTUNDO" => true, "REQUESTTHISTURNUNDO" => true,
+    "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
+  ];
+  return $undoRequestTypes;
+}
+
 $SHMOP_CURRENTPLAYER = 9;
 $SHMOP_ISREPLAY = 10;//0 = not replay, 1 = replay
 

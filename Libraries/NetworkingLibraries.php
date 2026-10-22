@@ -5065,15 +5065,6 @@ function AddEvent($type, $value)
   $events[] = $value;
 }
 
-function UndoRequestEventTypes()
-{
-  static $undoRequestTypes = [
-    "REQUESTUNDO" => true, "REQUESTTHISTURNUNDO" => true,
-    "REQUESTLASTTURNUNDO" => true, "REQUESTCHAINLINKUNDO" => true,
-  ];
-  return $undoRequestTypes;
-}
-
 function ConsumeUndoRequestEvents()
 {
   global $events;

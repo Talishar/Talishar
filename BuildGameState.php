@@ -1670,6 +1670,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     for ($i = 0; $i < $eventsCount; $i += $eventPieces) {
       $eventType = $events[$i];
       $eventValue = $events[$i + 1] ?? null;
+      if ($isReplay && isset(UndoRequestEventTypes()[$eventType])) continue;
       // CLASHDASH: Dash's own deck reveal skip animation for Dash IO since they already see the top of their decks.
       if ($eventType == "CLASHDASH") {
         $clashParts = explode(":", $eventValue ?? "");
