@@ -811,7 +811,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 {
   global $otherPlayer, $CS_DamageTaken, $combatChainState, $CCS_AttackTotalDamage, $CS_ArcaneDamageTaken, $defPlayer, $mainPlayer;
   global $CS_DamageDealt, $CS_PowDamageDealt, $CS_DamageDealtToOpponent, $combatChain, $CS_ArcaneDamageDealtToOpponent;
-  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain, $dqVars;
+  global $CurrentTurnEffects, $CCS_AttackDamageDealtToHero, $CombatChain, $dqVars, $CS_AllDamageDealtToOpponent;
   $classState = &GetPlayerClassState($player);
   $otherPlayer = 3 - $player;
   if ($damage > 0) {
@@ -847,6 +847,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
       $allies = &GetAllies($otherPlayer);
       if($allyInd != -1) $allies[$allyInd + 10] += $damage;
     }
+    if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_AllDamageDealtToOpponent, $damage);
     // add ally tracking  here
     if ($type !== "COMBAT") SetClassState($playerSource, $CS_DamageDealt, GetClassState($playerSource, $CS_DamageDealt) + $damage);
     else SetClassState($otherPlayer, $CS_PowDamageDealt, GetClassState($otherPlayer, $CS_PowDamageDealt) + $damage);

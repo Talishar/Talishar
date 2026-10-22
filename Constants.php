@@ -458,6 +458,7 @@ $classStateDefaults = [
   "FrailtyDestroyed" => 0,                    // tracked on mainPlayer, used for prolonged illness
   "InertiaDestroyed" => 0,
   "BloodrotDestroyed" => 0,
+  "AllDamageDealtToOpponent" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);

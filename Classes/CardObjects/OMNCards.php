@@ -2524,10 +2524,10 @@ class arcanic_reproach_blue extends Card {
   }
 
   function PermanentDamageTakenAbility($player, $damage, $source, $playerSource) {
-    global $CS_DamageDealtToOpponent;
+    global $CS_AllDamageDealtToOpponent;
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $selfInflicted = $source == "bloodrot_pox" || $player == $playerSource;
-    if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0 && !$selfInflicted) {
+    if(GetClassState($otherPlayer, $CS_AllDamageDealtToOpponent) == 0 && $damage > 0 && !$selfInflicted) {
       AddLayer("TRIGGER", $this->controller, $this->cardID, "-");
     }
   }
