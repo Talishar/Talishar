@@ -307,7 +307,7 @@ function PayResourcesEffectAwait($player) {
 
 function PayResourcesAwait($player) {
   global $dqVars;
-  $amount = $dqVars["amount"];
+  $amount = $dqVars["amount"] ?? 1;
   PrependDecisionQueue("PAYRESOURCES", $player, $amount, 1);
   PrependDecisionQueue("PASSPARAMETER", $player, $amount, 1);
 }

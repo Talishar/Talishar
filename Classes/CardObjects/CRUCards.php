@@ -1391,14 +1391,15 @@ class plasma_purifier_red extends Card {
     function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
         global $CS_PlayIndex;
         if($from == "PLAY") {
-            $index = GetClassState($this->controller, $CS_PlayIndex);
-            $ItemCard = new ItemCard($index, $this->controller);
-            $Pistol = CleanTargetToObject($this->controller, $target);
-            if(ClassContains($ItemCard->CardID(), "MECHANOLOGIST", $this->controller) && $ItemCard->Status() == 2 && $additionalCosts == "PAID" && $Pistol != "") {
-                $ItemCard->SetStatus(1);
-                AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Pistol->UniqueID());
-            } elseif ($ItemCard->NumCounters() == 0)
-                $ItemCard->AddCounters(1);
+            if($additionalCosts == "Buff") {
+                $Pistol = MZIndexToObject($this->controller, $target);
+                if ($Pistol != "")
+                    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$Pistol->UniqueID());
+            } elseif ($additionalCosts == "Load") {
+                $ItemCard = MZIndexToObject($this->controller, $target);
+                if ($ItemCard != "" && $ItemCard->NumCounters() < 1)
+                    $ItemCard->AddCounters(1);
+            }
         }
         return "";
     }
@@ -1411,21 +1412,42 @@ class plasma_purifier_red extends Card {
         return true;
     }
 
-    function PayAdditionalCosts($from, $index = '-') {
+    function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
         $ItemCard = new ItemCard($index, $this->controller);
-        if ($from == "PLAY" && $ItemCard->NumCounters() > 0 && $ItemCard->Status() == 2) {
-            $ItemCard->AddCounters(-1);
-            AddAdditionalCost($this->controller, "PAID");
-            SetTargets($this->controller, $this->cardID, "MYCHAR:class=MECHANOLOGIST;subtype=Pistol", context:"Target a pistol to purify the plasma");
+        if ($from == "PLAY") {
+            $modes = "Load";
+            $foundPistol = SearchMultizone($this->controller, "MYCHAR:class=MECHANOLOGIST;subtype=Pistol");
+            if ($ItemCard->NumCounters() > 0 && $ItemCard->Status() == 2 && SearchCount($foundPistol) > 0)
+                $modes .= ",Buff";
+            AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an ability");
+            AddDecisionQueue("BUTTONINPUT", $this->controller, $modes);
+            Await($this->controller, $this->cardID, uniqueID: $ItemCard->UniqueID(), final:true);
+        }
+    }
+
+    function SpecificLogic() {
+        global $CS_AdditionalCosts, $dqVars;
+        $mode = $dqVars["LASTRESULT"] ?? "Load";
+        WriteLog(CardLink($this->cardID) . "'s $mode ability was chosen.");
+        $uid = $dqVars["uniqueID"] ?? "-";
+        $Items = new Items($this->controller);
+        $ItemCard = $Items->FindCardUID($uid);
+        SetClassState($this->controller, $CS_AdditionalCosts, $mode);
+        if ($mode == "Buff") {
+            if ($ItemCard->Index() != -1) {
+                $ItemCard->AddCounters(-1);
+                $ItemCard->SetStatus(1);
+            }
+            SetTargets($this->controller, $this->cardID, "MYCHAR:class=MECHANOLOGIST;subtype=Pistol");
+        }
+        else {
+            Await($this->controller, "SetLayerTarget", MZIndex:"MYITEMS-" . $ItemCard->Index(), layerID:$this->cardID, prepend:true);
+            Await($this->controller, "PayResources", prepend:true);
         }
     }
 
     function AbilityCost() {
-        global $CS_PlayIndex;
-        $items = &GetItems($this->controller); 
-        if ($items[GetClassState($this->controller, $CS_PlayIndex) + 2] < 2) return 1;
-        if ($items[GetClassState($this->controller, $CS_PlayIndex) + 1] > 0) return 0;
-        return 1;
+        return 0;
     }
 
     function AbilityType($index = -1, $from = '-') {
