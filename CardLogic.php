@@ -3211,48 +3211,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, "golden_cog", 1);
         AddDecisionQueue("PUTPLAY", $player, "0", 1);
         break;
-      case "evo_circuit_breaker_red_equip":
-        $i = SearchCharacterForUniqueID($target, $player);
-        if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
-          AddDecisionQueue("NOPASS", $player, "-");
-          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
-          MZMoveCard($player, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
-          AddDecisionQueue("SHUFFLEDECK", $player, "-", 1);
-          CharacterChooseSubcard($player, $i, isSubsequent:true);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
-      case "evo_atom_breaker_red_equip":
-        $i = SearchCharacterForUniqueID($target, $player);
-        if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
-          AddDecisionQueue("NOPASS", $player, "-");
-          AddDecisionQueue("GAINRESOURCES", $player, 2, 1);
-          CharacterChooseSubcard($player, $i, isSubsequent:true);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
-      case "evo_face_breaker_red_equip":
-        $i = SearchCharacterForUniqueID($target, $player);
-        if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
-          AddDecisionQueue("NOPASS", $player, "-");
-          AddDecisionQueue("ADDCURRENTTURNEFFECT", $player, "$parameter-BUFF", 1);
-          CharacterChooseSubcard($player, $i, isSubsequent:true);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
-      case "evo_mach_breaker_red_equip":
-        $i = SearchCharacterForUniqueID($target, $player);
-        if ($i != -1 && EvoHasUnderCard($player, $i)) {
-          AddDecisionQueue("YESNO", $player, "banish_a_card_from_under_".CardLink($parameter, $parameter));
-          AddDecisionQueue("NOPASS", $player, "-");
-          AddDecisionQueue("PLAYAURA", $player, "quicken", 1);
-          CharacterChooseSubcard($player, $i, isSubsequent:true);
-          AddDecisionQueue("ADDDISCARD", $player, "-", 1);
-        }
-        break;
       case "evo_magneto_blue_equip":
         $index = FindCharacterIndex($player, "evo_magneto_blue_equip");
         if ($index != -1) {

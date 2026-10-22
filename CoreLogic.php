@@ -4288,7 +4288,11 @@ function EvoHandling($cardID, $player, $from)
       }
     }
   }
-  if (!$replaced) {
+  if ($replaced) {
+    $card = GetClass($cardID, $player);
+    if ($card != "-") $card->TransformAbility();
+  }
+  else {
     if (substr($from, 0, 5) != "THEIR") AddGraveyard($cardID, $player, "HAND", $player);
     else AddGraveyard($cardID, $otherPlayer, "GRAVEYARD", $player);
     WriteLog("<b>🚫 *ERR0R* // No base of that type equipped //</b>");

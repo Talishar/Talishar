@@ -1787,19 +1787,9 @@ function CharacterBoostAbilities($player, $banishInd, $owner)
   $charCount = count($char);
   $characterPieces = CharacterPieces();
   for ($i = 0; $i < $charCount; $i += $characterPieces) {
+    if (intval($char[$i + 1]) < 2) continue;
     $card = GetClass($char[$i], $player);
     if ($card != "-") $card->PermanentBoostAbility($i, $banishInd, $owner);
-    if (intval($char[$i + 1]) < 2) continue;
-    switch ($char[$i]) {
-      case "evo_circuit_breaker_red_equip":
-      case "evo_atom_breaker_red_equip":
-      case "evo_face_breaker_red_equip":
-      case "evo_mach_breaker_red_equip":
-        if ($char[$i + 9] == 1) AddLayer("TRIGGER", $player, $char[$i], $char[$i+11]);
-        break;
-      default:
-        break;
-    }
   }
 }
 

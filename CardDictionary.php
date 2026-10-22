@@ -3787,8 +3787,6 @@ function CharacterDefaultActiveState($cardID)
     "spell_fray_cloak" => 1, "spell_fray_gloves" => 1, "spell_fray_leggings" => 1,
     "mask_of_the_pouncing_lynx" => 1, "beaten_trackers" => 1, "quiver_of_abyssal_depths" => 1,
     "quiver_of_rustling_leaves" => 1, "enchanted_quiver" => 1, "driftwood_quiver" => 1,
-    "evo_circuit_breaker_red_equip" => 1, "evo_atom_breaker_red_equip" => 1,
-    "evo_face_breaker_red_equip" => 1, "evo_mach_breaker_red_equip" => 1,
     "hide_tanner" => 1, "grains_of_bloodspill" => 1, "meridian_pathway" => 1,
     "longdraw_half_glove" => 1, "aether_crackers" => 1, "hard_knuckle" => 1,
     "arcanite_fortress" => 1, "widow_veil_respirator" => 1, "widow_back_abdomen" => 1,

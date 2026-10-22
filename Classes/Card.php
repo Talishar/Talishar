@@ -1412,4 +1412,10 @@ class Card {
       return $this->baseCard->BackAlleyTrigger();
     return;
   }
+
+  function TransformAbility() { // when a card transforms into this
+    if (isset($this->baseCard) && method_exists($this->baseCard, "TransformAbility"))
+      return $this->baseCard->TransformAbility();
+    return;
+  }
 }

@@ -1104,18 +1104,6 @@ function CurrentTurnEffectDamagePreventionAmount($player, $index, $damage, $type
         break;
       case "interlude_red":
         return 3;
-      case "evo_circuit_breaker_red":
-      case "evo_atom_breaker_red":
-      case "evo_face_breaker_red":
-      case "evo_mach_breaker_red": //Card
-      case "evo_circuit_breaker_red_equip":
-      case "evo_atom_breaker_red_equip":
-      case "evo_face_breaker_red_equip":
-      case "evo_mach_breaker_red_equip": //Equipment
-        if (!isset($effects[1]) || $effects[1] != "BUFF") {
-          return intval($effects[1]);
-        }
-        break;
       case "dissipation_shield_yellow":
       case "throw_caution_to_the_wind_blue":
       case "no_fear_red":
@@ -1356,19 +1344,6 @@ function CurrentEffectDamagePrevention($player, $index, $type, $damage, $source,
     case "sheltered_cove":
       if ($preventable) $preventedDamage += 2;
       RemoveCurrentTurnEffect($index);
-      break;
-    case "evo_circuit_breaker_red":
-    case "evo_atom_breaker_red":
-    case "evo_face_breaker_red":
-    case "evo_mach_breaker_red": //Card
-    case "evo_circuit_breaker_red_equip":
-    case "evo_atom_breaker_red_equip":
-    case "evo_face_breaker_red_equip":
-    case "evo_mach_breaker_red_equip": //Equipment
-      if (!isset($effects[1]) || $effects[1] != "BUFF") {
-        if ($preventable) $preventedDamage += intval($effects[1]);
-        RemoveCurrentTurnEffect($index);
-      }
       break;
     case "battered_not_broken_red":
       if ($preventable) {

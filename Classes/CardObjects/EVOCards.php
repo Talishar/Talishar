@@ -628,19 +628,6 @@ class already_dead_red extends Card {
 // }
 
 
-// class evo_atom_breaker_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "evo_atom_breaker_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class evo_battery_pack_yellow extends Card {
 
 //   function __construct($controller) {
@@ -744,31 +731,162 @@ class already_dead_red extends Card {
 //   }
 // }
 
+class evo_breaker extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
-// class evo_face_breaker_red extends Card {
+	function SpecialType() {
+		return str_contains($this->cardID, "equip") ? "I,E" : "I";
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "evo_face_breaker_red";
-//     $this->controller = $controller;
-//     }
+	function DefaultActiveState() {
+		return 1;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PermanentBoostAbility($index, $banishInd, $owner) {
+		$CharacterCard = new CharacterCard($index, $this->controller);
+		if ($CharacterCard->IsActive()) AddLayer("TRIGGER", $this->controller, $this->cardID, $CharacterCard->UniqueID());
+	}
 
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		$i = SearchCharacterForUniqueID($target, $this->controller);
+        if ($i != -1 && EvoHasUnderCard($this->controller, $i)) {
+          AddDecisionQueue("YESNO", $this->controller, "banish_a_card_from_under_".CardLink($this->cardID));
+          AddDecisionQueue("NOPASS", $this->controller, "-");
+		  switch($this->cardID) {
+			case "evo_face_breaker_red_equip":
+				AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "$this->cardID-BUFF", 1);
+				break;
+			case "evo_atom_breaker_red_equip":
+				AddDecisionQueue("GAINRESOURCES", $this->controller, 2, 1);
+				break;
+			case "evo_mach_breaker_red_equip":
+				AddDecisionQueue("PLAYAURA", $this->controller, "quicken", 1);
+				break;
+			case "evo_circuit_breaker_red_equip":
+				MZMoveCard($this->controller, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
+				MZMoveCard($this->controller, "MYBANISH:type=AA", "MYTOPDECK", may: false, isSubsequent: true);
+				AddDecisionQueue("SHUFFLEDECK", $this->controller, "-", 1);
+				break;
+			default:
+				break;
+		  }
+          CharacterChooseSubcard($this->controller, $i, isSubsequent:true);
+          AddDecisionQueue("ADDDISCARD", $this->controller, "-", 1);
+        }
+	}
 
-// class evo_mach_breaker_red extends Card {
+	function CurrentEffectDamagePrevention($type, $damage, $source, $index, &$remove, $preventable, $amount = false) {
+		$Effect = new CurrentEffect($index);
+		$effects = explode("-", $Effect->EffectID());
+		if (!isset($effects[1]) || $effects[1] != "BUFF") {
+			$remove = true;
+			return intval($effects[1]);
+        }
+		return 0;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "evo_mach_breaker_red";
-//     $this->controller = $controller;
-//     }
+	function TransformAbility() {
+		$searchResult = SearchCharacterForCards($this->cardID . "_equip", $this->controller);
+		if ($searchResult != "") {
+			$index = intval(explode(",", $searchResult, 2)[0]);
+			AddDecisionQueue("PASSPARAMETER", $this->controller, $index);
+			AddDecisionQueue("SETDQVAR", $this->controller, "0");
+			$maxRepeats = SearchCount(SearchItemsForCardName("Hyper Driver", $this->controller));
+			for ($i = 0; $i < $maxRepeats; $i++) {
+			AddDecisionQueue("MULTIZONEINDICES", $this->controller, "MYITEMS:isSameName=hyper_driver_red");
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a Hyper Driver to transform (or pass)", 1);
+			AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
+			AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+			AddDecisionQueue("SPECIFICCARD", $this->controller, "EVOBREAKER", 1);
+			}
+			return "Light up the gem under the equipment when you want to use the conditional effect❗";
+		}
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class evo_face_breaker_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_face_breaker_red";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "BUFF" ? 2 : 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $combatChainState, $CCS_IsBoosted;
+		return $parameter == "BUFF" && $combatChainState[$CCS_IsBoosted];
+	}
+}
+
+class evo_face_breaker_red_equip extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_face_breaker_red_equip";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+
+	function EffectPowerModifier($param, $attached = false) {
+		return $param == "BUFF" ? 2 : 0;
+	}
+
+	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+		global $combatChainState, $CCS_IsBoosted;
+		return $parameter == "BUFF" && $combatChainState[$CCS_IsBoosted];
+	}
+}
+
+class evo_atom_breaker_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_atom_breaker_red";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
+
+class evo_atom_breaker_red_equip extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_atom_breaker_red_equip";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
+
+class evo_mach_breaker_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_mach_breaker_red";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
+
+class evo_mach_breaker_red_equip extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_mach_breaker_red_equip";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
+
+class evo_circuit_breaker_red extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_circuit_breaker_red";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
+
+class evo_circuit_breaker_red_equip extends Card {
+	function __construct($controller) {
+		$this->cardID = "evo_circuit_breaker_red_equip";
+		$this->controller = $controller;
+		$this->baseCard = new evo_breaker($this->cardID, $this->controller);
+    }
+}
 
 
 // class evo_sentry_base_arms_red extends Card {
