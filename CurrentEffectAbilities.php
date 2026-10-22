@@ -2707,6 +2707,8 @@ function EffectsAttackYouControlModifiers($cardID, $player)
 
 function AdministrativeEffect($effectID)
 {
+  if ($effectID == "goldkiss_rum-PREVENTION")
+    return true;
   $cardID = ExtractCardID($effectID);
   switch ($cardID) {
     case "frostbite":
