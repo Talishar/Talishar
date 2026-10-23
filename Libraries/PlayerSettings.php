@@ -61,6 +61,7 @@ $SET_HideLayerGoAgain = 47; //Hide the go again icon on cards in the active laye
 $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge tokens
 $SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card in it is needed to pay the remaining cost
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
+$SET_LandscapeTipSeen = 51;
 
 function SettingsPieces()
 {
@@ -691,6 +692,7 @@ function SettingsIdMap()
     "ManualValda" => 48,
     "AutoPitchForced" => 49,
     "RequireYesNoAnswer" => 50,
+    "LandscapeTipSeen" => 51,
   ];
   return $settingsToId;
 }
@@ -748,7 +750,7 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -758,7 +760,7 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
-      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer,
+      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
     ], true);
   }
   return isset($persistable[$setting]);
