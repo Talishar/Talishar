@@ -2363,7 +2363,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
   global $CS_NumAttackCards, $CS_NumBloodDebtPlayed, $layers, $CS_HitsWithWeapon, $CS_AttacksWithWeapon, $CS_CardsEnteredGY, $CS_NumRedPlayed, $CS_NumPhantasmAADestroyed;
   global $CS_Num6PowDisc, $CS_HighestRoll, $CS_NumCrouchingTigerPlayedThisTurn, $chainLinks, $CS_NumInstantPlayed, $CS_PowDamageDealt;
   global $CS_TunicTicks, $CS_NumActionsPlayed, $CCS_NumUsedInReactions, $CS_NumAllyPutInGraveyard, $turn, $CS_PlayedNimblism, $CS_NumAttackCardsAttacked, $CS_NumAttackCardsBlocked;
-  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter;
+  global $CS_NumCardsDrawn, $chainLinkSummary, $CCS_AttackCost, $CS_HitCounter, $CS_Num6PowPutIntoBanish;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $currentPlayer;
   $character = &GetPlayerCharacter($player);
@@ -2557,7 +2557,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "graveling_growl_red":
     case "graveling_growl_yellow":
     case "graveling_growl_blue":
-      return GetClassState($player, $CS_Num6PowBan) == 0;
+      return GetClassState($player, $CS_Num6PowPutIntoBanish) == 0;
     case "endless_maw_red":
     case "endless_maw_yellow":
     case "endless_maw_blue":
