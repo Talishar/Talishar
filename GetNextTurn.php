@@ -27,6 +27,7 @@ include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
 include_once "Libraries/StatFunctions.php";
 include_once "Libraries/PlayerSettings.php";
+include_once "Libraries/SpectatorAccess.php";
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
 
@@ -81,6 +82,7 @@ foreach(PatreonCampaign::cases() as $campaign) {
 // depend on the frontend having loaded and forwarded its friend list first.
 $sessionData['friendList'] = [];
 $viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
+$sessionData['canSpectate'] = $playerID != 3 || CanSpectateGame($cacheArr ??= ReadCacheArray($gameName) ?? []);
 
 // Release the session lock NOW - before any file I/O or processing
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -90,6 +92,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 if ($playerID == 3 && (!$sessionData['userLoggedIn'] || empty($sessionData['userName']))) {
   http_response_code(401);
   echo json_encode(["errorMessage" => "Authentication required to spectate."]);
+  exit;
+}
+if (!$sessionData['canSpectate']) {
+  http_response_code(403);
+  echo json_encode(["errorMessage" => SPECTATE_LOCKED_MESSAGE]);
   exit;
 }
 if (is_numeric($viewerUserId)) {

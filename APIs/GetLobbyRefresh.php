@@ -58,6 +58,7 @@ include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/ModeratorList.inc.php";
 include_once "../Libraries/ValidationLibraries.php";
+include_once "../Libraries/SpectatorAccess.php";
 
 session_start();
 
@@ -66,6 +67,7 @@ else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["
 else if (isset($requestData["authKey"])) $authKey = $requestData["authKey"];
 $lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
 $spectatorLoggedIn = $playerID !== 3 || (IsUserLoggedIn() && !empty(LoggedInUserName()));
+$spectatorUnlocked = $playerID !== 3 || CanUserSpectate();
 
 session_write_close();
 
@@ -81,6 +83,9 @@ if (!file_exists("../Games/" . $gameName . "/")) {
 
 if (!$spectatorLoggedIn) {
   SendLobbyRefreshError(401, "Authentication required to spectate.");
+}
+if (!$spectatorUnlocked) {
+  SendLobbyRefreshError(403, SPECTATE_LOCKED_MESSAGE);
 }
 
 // Reject invalid player credentials before touching heartbeat state or entering the long poll.

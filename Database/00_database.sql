@@ -91,6 +91,7 @@ CREATE TABLE `users` (
   `metafyID` VARCHAR(128) DEFAULT NULL,
   `displayName` varchar(50) DEFAULT NULL,
   `lastNameChange` TIMESTAMP NULL DEFAULT NULL,
+  `createdAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`usersId`),
   KEY `usersUid` (`usersUid`),
   KEY `idx_metafy_access_token` (`metafyAccessToken`),

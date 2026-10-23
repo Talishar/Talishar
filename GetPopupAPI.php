@@ -64,6 +64,16 @@ if ($playerID == 3) {
       }
   }
 
+  include_once "./Libraries/SpectatorAccess.php";
+  if (!CanSpectateGame(ReadCacheArray($gameName) ?? [])) {
+    if (!isset($response)) {
+        $response = new stdClass();
+    }
+    $response->error = SPECTATE_LOCKED_MESSAGE;
+    echo json_encode($response);
+    exit;
+  }
+
   $sessionUserId = $_SESSION["userid"] ?? $sessionUserId;
   if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
 }
