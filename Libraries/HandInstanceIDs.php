@@ -28,6 +28,16 @@ function ReconcileHandInstanceIDs($prevHand, $prevIDs, $hand, &$counter, $remove
   }
   $prevCount = count($prevHand);
   $count = count($hand);
+  $common = 0;
+  $commonLimit = min($prevCount, $count);
+  while ($common < $commonLimit && $prevHand[$common] === $hand[$common]) ++$common;
+  if ($common == $prevCount) {
+    $ids = $prevIDs;
+    for ($j = 0; $j < $count; ++$j) {
+      if (!isset($ids[$j])) $ids[$j] = "h" . $counter++;
+    }
+    return $ids;
+  }
   $lcs = array_fill(0, $prevCount + 1, array_fill(0, $count + 1, 0));
   for ($i = $prevCount - 1; $i >= 0; --$i) {
     for ($j = $count - 1; $j >= 0; --$j) {
