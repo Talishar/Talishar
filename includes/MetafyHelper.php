@@ -112,7 +112,7 @@ if (!function_exists('MetafyApiGet')) {
       curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
       curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $accessToken,
-        'Content-Type: application/json'
+        'Accept: application/json'
       ]);
       curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
       $body = curl_exec($ch);

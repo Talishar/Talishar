@@ -1536,7 +1536,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
   if (!empty($staticBuffsArr)) {
     foreach ($staticBuffsArr as $effectID) {
-      $cardID = ExtractCardID($effecteffectIDSetID);
+      $cardID = ExtractCardID($effectID);
       if ($cardID != "") {
         $isFriendly = $playerID == $mainPlayer;
         if ($isFriendly) {

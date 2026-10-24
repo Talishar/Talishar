@@ -2055,8 +2055,8 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     $mod = GetBanishModifier($index);
     if (DelimStringContains($cardType, "I") && ($mod == "TCL" || $mod == "TT" || $mod == "TCC" || $mod == "NT" || $mod == "spew_shadow_red") || $mod == "INST" || $mod == "sonic_boom_yellow" || $mod == "blossoming_spellblade_red") return true;
     static $huxley = ["huxley" => true, "huxley_racketeer" => true];
-    $banishCard = new BanishCard($currentPlayer, $index);
     if ($CurrentTurnEffects->HasAnyEffectID($huxley)) {
+      $banishCard = new BanishCard($currentPlayer, $index);
       if ($CurrentTurnEffects->HasAnySpecificEffect($huxley, $banishCard->UniqueID(), $currentPlayer)) return true;
     }
   }
@@ -2154,8 +2154,9 @@ function ClassOverride($cardID, $player, $owner="-")
   if (!is_numeric($player) || (int)$player < 1 || (int)$player > 2) return CardClass($cardID);
   $player = (int)$player;
   $owner = $owner == "-" ? $player : $owner;
-  $Hero = new CharacterCard(0, $owner);
-  if (($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad") && $Hero->Status() < 3)
+  $ownerCharacter = GetPlayerCharacter($owner);
+  $heroID = $ownerCharacter[0] ?? "-";
+  if (($heroID == "min_mad" || $heroID == "min_half_mad") && ($ownerCharacter[1] ?? 0) < 3)
     return "";
   $prefix = "";
   // With the rules as of today it's correct. HVY Release Notes Disclaimer. CR2.6 - 6.3.6. Continuous effects that remove a property, or part of a property, from an object do not removeproperties, or parts of properties, that were added by another effect.
@@ -2163,7 +2164,7 @@ function ClassOverride($cardID, $player, $owner="-")
     $mainCharacter = GetPlayerCharacter($player);
     $prefix = CardClass($mainCharacter[0]) . ",";
   }
-  if (($Hero->CardID() == "min_genius" || $Hero->CardID() == "min_half_genius") && $Hero->Status() < 3)
+  if (($heroID == "min_genius" || $heroID == "min_half_genius") && ($ownerCharacter[1] ?? 0) < 3)
     $prefix = "MECHANOLOGIST,";
   if (SearchCurrentTurnEffectsForIndex("phantasmal_symbiosis_yellow", $player) != -1
     && SearchCurrentTurnEffects("phantasmal_symbiosis_yellow-" . GamestateSanitize(CardName($cardID)), $player)) { //Phantasmal Symbiosis
@@ -2348,8 +2349,9 @@ function TalentOverride($cardID, $player = "", $zone="-", $dedupe = false, $from
   global $currentTurnEffects;
 
   $owner = $owner == "-" ? $player : $owner;
-  $Hero = new CharacterCard(0, $owner);
-  if (($Hero->CardID() == "min_mad" || $Hero->CardID() == "min_half_mad") && $Hero->Status() < 3)
+  $ownerCharacter = GetPlayerCharacter($owner);
+  $heroID = $ownerCharacter[0] ?? "-";
+  if (($heroID == "min_mad" || $heroID == "min_half_mad") && ($ownerCharacter[1] ?? 0) < 3)
     return "";
   if ($cardID === "colors_of_aria_red" && ($zone === "HAND" || $zone === "DECK")) return "ELEMENTAL";
 
