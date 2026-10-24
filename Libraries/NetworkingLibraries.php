@@ -4494,6 +4494,9 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         $index = GetClassState($currentPlayer, $CS_CharacterIndex);
         CharacterChooseSubcard($currentPlayer, $index, count: $cardID == "teklovossen_the_mechropotent" ? 2 : 1);
         AddDecisionQueue("MULTIBANISH", $currentPlayer, "EQUIP,-", 1);
+        $CharacterCard = new CharacterCard($index, $currentPlayer);
+        $CharacterCard->SetUsed(2); // unlimited uses
+        $CharacterCard->AddUse(1);
       }
       break;
     case "no_fear_red":
