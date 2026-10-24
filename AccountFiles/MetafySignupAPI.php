@@ -128,7 +128,7 @@ function GetMetafyUserProfile($access_token)
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $access_token,
-    'Content-Type: application/json'
+    'Accept: application/json'
   ]);
   curl_setopt($ch, CURLOPT_USERAGENT, 'Talishar-App');
 
