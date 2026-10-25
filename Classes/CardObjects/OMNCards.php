@@ -2291,10 +2291,20 @@ class unmake_the_underlings_blue extends Card {
   }
 
   function ProcessAttackTrigger($target, $uniqueID) {
-    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRDISCARD:subtype=Ally", 1);
-    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Flip an ally facedown?", 1);
-    AddDecisionQueue("MAYCHOOSEMULTIZONE", $this->controller, "<-", 1);
-    AddDecisionQueue("MZOP", $this->controller, "FLIP", 1);
+    Await($this->controller, "MultiZoneIndices", search:"THEIRDISCARD:subtype=Ally");
+    Await($this->controller, "ChooseMultiZone", context: "Flip an ally facedown?");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $obj = MZIndexToObject($this->controller, $choice);
+    if ($obj != "") {
+      $cardID = $obj->CardID();
+      WriteLog(CardLink($cardID) . " was flipped facedown!");
+      $obj->Flip("DOWN");
+    }
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
