@@ -333,6 +333,8 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Chest"; // temporary
     case "phial_of_calamity":
       return "Off-Hand";
+    case "cadaver_handlers":
+      return "Arms";
     default:
       break;
   }
@@ -3447,6 +3449,7 @@ function HasBattleworn($cardID)
     case "prizeworn_pathfinders":
     case "longsword_leggings":
     case "undead_grasp":
+    case "cadaver_handlers":
       return true;
     case "heirloom_of_snake_hide":
       $char = &GetPlayerCharacter($defPlayer);

@@ -578,3 +578,72 @@ class phial_of_calamity extends Card {
 		return -2;
 	}
 }
+
+class cadaver_handlers extends Card {
+  function __construct($controller) {
+    $this->cardID = "cadaver_handlers";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
+      return;
+    for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+      $LinkCard = $CombatChain->Card($i, true);
+      AddCurrentTurnEffect($this->cardID, $LinkCard->PlayerID(), "", $LinkCard->UniqueID());
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    $Effect = new CurrentEffect($effectInd);
+    $LinkCard = new ChainCard($index);
+    return $Effect->AppliestoUniqueID() == $LinkCard->UniqueID() ? -1 : 0;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $defPlayer, $CombatChain;
+    // it can technically target previous chain links for no effect
+    if (!IsInfected($defPlayer)) return true;
+    if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller)) return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function DiscardStartTurnTrigger($index) {
+		SilverBuyback($this->controller, $index);
+	}
+
+  function SpecialName() {
+    return "Cadaver Handlers";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+}
