@@ -1528,12 +1528,16 @@ function AuraPlayAbilities($cardID, $from = "")
   $runechantCount = count($runechantUIDS);
   $atkPower = isset($layers[0]) ?  PowerValue($layers[0], $currentPlayer, "LAYERS") : 0;
   //if there are a lot of runechants, and there are enough runechants to probably be lethal
-  //assumes that every card in teh opponent's hand can prevent 3 damage, and the arsenal can prevent 4
+  //assumes that every card in the opponent's hand can prevent 3 damage, and the arsenal can prevent 4
   if ($runechantCount > 40 && $runechantCount > GetHealth($defPlayer) + 20 - $atkPower) {
     WriteLog("There appear to be enough runechants to win, ending the game to avoid a crash. If this is incorrect, please edit the game result on fabrary", highlight: true);
     LoseHealth(GetHealth($defPlayer), $defPlayer);
   }
   elseif ($runechantCount > 0) {
+    if ($runechantCount == 1)
+      WriteLog("Player $mainPlayer is sending one " . CardLink("runechant"));
+    else
+      WriteLog("Player $mainPlayer is sending $runechantCount " . CardLink("runechant") . "s!");
     for ($i = 0; $i < $runechantCount; $i++) {
       AddLayer("TRIGGER", $currentPlayer, "runechant", uniqueID:$runechantUIDS[$i]);
     }
