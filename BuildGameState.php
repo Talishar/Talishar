@@ -815,10 +815,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
       $facing = $myDiscard[$i + 2];
-      $playableFromGraveyard = PlayableFromGraveyard($myDiscard[$i], "-", $playerID, $i);
+      $playableFromGraveyard = PlayableFromGraveyard($myDiscard[$i], "-", $viewerSlotPlayerID, $i);
       $action = $currentPlayer == $playerID && (($playableFromGraveyard && !isFaceDownMod($facing)) || AbilityPlayableFromGraveyard($myDiscard[$i], $i)) && IsPlayable($myDiscard[$i], $turnPhase, "GY", $i) ? 36 : 0;
       $mod = strstr($facing, '-', true) ?: $facing;
-      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $playerID, $mod, $i, $playableFromGraveyard);
+      $border = CardBorderColor($myDiscard[$i], "GY", $action == 36, $viewerSlotPlayerID, $mod, $i, $playableFromGraveyard);
       $cardID = $myDiscard[$i];
       if($mod == "DOWN") {
         $overlay = 1;
@@ -829,7 +829,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
     }
   }
-  $myBlessingsCount = SearchCount(SearchDiscardForCard($playerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
+  $myBlessingsCount = SearchCount(SearchDiscardForCard($viewerSlotPlayerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
   if ($myBlessingsCount > 0) {
     $response->myBlessingsCount = $myBlessingsCount;
   }
@@ -876,8 +876,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //My Card Back
   $response->playerCardBack = JSONRenderedCard($MyCardBack);
 
-  $bottomPlayer = $otherPlayer == 1 ? 2 : 1;
-  $myPlayerID = $playerID == 3 ? $bottomPlayer : $playerID;
   //My Banish
   $playerBanishArr = [];
   for ($i = 0; $i < $myBanishCount; $i += $banishPieces) {
@@ -885,7 +883,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $overlay = 0;
     $action = $currentPlayer == $playerID && IsPlayable($myBanish[$i], $turnPhase, "BANISH", $i) ? 14 : 0;
     $mod = strstr($myBanish[$i + 1], '-', true) ?: $myBanish[$i + 1];
-    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $myPlayerID, $mod);
+    $border = CardBorderColor($myBanish[$i], "BANISH", $action > 0, $viewerSlotPlayerID, $mod);
     $cardID = $myBanish[$i];
     if($mod == "DOWN") {
       $overlay = 1;
@@ -904,13 +902,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->playerBanish = $playerBanishArr;
   unset($playerBanishArr);
 
-  $myBloodDebtCount = SearchCount(SearchBanish($myPlayerID, "", "", -1, -1, "", "", true));
+  $myBloodDebtCount = SearchCount(SearchBanish($viewerSlotPlayerID, "", "", -1, -1, "", "", true));
   if ($myBloodDebtCount > 0) {
     $response->myBloodDebtCount = $myBloodDebtCount;
-    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($myPlayerID);
+    $response->amIBloodDebtImmune = IsImmuneToBloodDebt($viewerSlotPlayerID);
   }
   if (GeneratedHasEssenceOfEarth($myCharacter[0])) {
-    $response->myEarthCount = SearchCount(SearchBanish($playerID, talent:"EARTH"));
+    $response->myEarthCount = SearchCount(SearchBanish($viewerSlotPlayerID, talent:"EARTH"));
   }
 
   //Now display my character and equipment
@@ -929,16 +927,16 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     if (($myCharacter[$i + 2] ?? 0) > 0) $counters = $myCharacter[$i + 2];
     if ($myCharacter[$i] == "teklovossen_the_mechropotent") {
       // overwrite the counters on teklo to just track the number of cards in his soul
-      $Hero = new CharacterCard($i, $playerID);
+      $Hero = new CharacterCard($i, $viewerSlotPlayerID);
       $counters = substr_count($Hero->Subcards(), ",") + 1;
     }
     $goldOrPitchChoice = isset($goldOrPitchChoices["MYCHAR-$i"]);
     $playable = $playerID == $currentPlayer && ($myCharacter[$i + 1] ?? 0) > 0
       && ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myChar, $turnPhase, "CHAR", $i, $restriction));
-    $border = CardBorderColor($myChar, "CHAR", $playable, $playerID);
+    $border = CardBorderColor($myChar, "CHAR", $playable, $viewerSlotPlayerID);
     if ($myChar == "fyendals_spring_tunic" && ManualTunicSetting($playerID) && $myCharacter[$i + 2] < 3) $border = 0;
-    $manualDynamoRefresh = CanManuallyRefreshValiantDynamo($playerID, $i);
-    $manualValdaToken = CanManuallyCreateValdaToken($playerID, $i);
+    $manualDynamoRefresh = $playerID != 3 && CanManuallyRefreshValiantDynamo($playerID, $i);
+    $manualValdaToken = $playerID != 3 && CanManuallyCreateValdaToken($playerID, $i);
     if ($manualValdaToken) $border = 0;
     $type = CardType($myChar);
     if (TypeContains($myChar, "D")) $type = "C";
@@ -953,10 +951,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         $type = "E";
         $sType = "Off-Hand";
       }
-      $label = WeaponHasGoAgainLabel($i, $playerID) ? "Go Again" : "";
+      $label = WeaponHasGoAgainLabel($i, $viewerSlotPlayerID) ? "Go Again" : "";
       $weaponPowerModifiers = [];
       if (!$playable) {
-          if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $playerID) > 0 ||
+          if (MainCharacterPowerModifiers($weaponPowerModifiers, $i, true, $viewerSlotPlayerID) > 0 ||
               CurrentTurnEffectHasUniqueID($myCharacter[$i + 11] ?? "-")) {
               $border = 5;
           }
@@ -964,9 +962,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       $powerCounters = $myCharacter[$i + 3] ?? 0;
     }
-    if($i == 0 && !$playable && $playerID == $mainPlayer) {
+    if($i == 0 && !$playable && $viewerSlotPlayerID == $mainPlayer) {
       $heroCard = $myCharacter[$i];
-      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($playerID, $CS_NumCardsDrawn) >= 1) {
+      if (($heroCard == "kassai_of_the_golden_sand" || $heroCard == "kassai") && GetClassState($viewerSlotPlayerID, $CS_NumCardsDrawn) >= 1) {
         $border = 5;
       }
     }
@@ -1111,7 +1109,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           controller: 2,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $playerID),
+          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $viewerSlotPlayerID),
           uniqueID: $myArsenal[$i + 5]
         );
       } else {
@@ -1129,7 +1127,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           restriction: $restriction,
           facing: $myArsenal[$i + 1],
           countersMap: (object) ["counters" => $myArsenal[$i + 3]],
-          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $playerID),
+          isFrozen: IsFrozenMZ($myArsenal, "ARS", $i, $viewerSlotPlayerID),
           powerCounters: $myArsenal[$i + 6] ?? 0,
           uniqueID: $myArsenal[$i + 5]
         );
@@ -1300,7 +1298,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $myAlliesOutput = [];
   $myAllies = GetAllies($playerID == 1 ? 1 : 2);
   $myAlliesCount = count($myAllies);
-  $myAurasObj = new Auras($playerID);
+  $myAurasObj = new Auras($viewerSlotPlayerID);
   $myAurasObj->BuildBoundIndex();
   for ($i = 0; $i + $allyPieces - 1 < $myAlliesCount; $i += $allyPieces) {
     $label = "";
@@ -1312,8 +1310,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $actionDataOverride = $actionType == 24 ? strval($i) : "";
     $uniqueID = $myAllies[$i+5];
     if(DelimStringContains($attackTargetUID, $uniqueID)) $label = "Targeted";
-    elseif($layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID)) $label = "Targeted";
-    elseif(isset($effectUIDSet[(string)$uniqueID])) $label = "Effect Active";
+    else {
+      $isTargeted = $layerTargetHaystack !== "" && str_contains($layerTargetHaystack, $uniqueID);
+      $hasActiveEffect = isset($effectUIDSet[(string)$uniqueID]);
+      if ($isTargeted && $hasActiveEffect) $label = "Targeted/Effect Active";
+      elseif ($hasActiveEffect) $label = "Effect Active";
+      elseif ($isTargeted) $label = "Targeted";
+    }
     $subcards = $myAllies[$i+4] != "-" ? $myAllies[$i+4] : NULL;
     $boundAuras = $myAurasObj->FindBoundAuras($uniqueID);
     $hasBoundAura = $boundAuras !== [];
