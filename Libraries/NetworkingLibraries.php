@@ -4045,14 +4045,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
       break;
-    case "demolition_crew_red":
-    case "demolition_crew_yellow":
-    case "demolition_crew_blue":
-      $indices = SearchHand($currentPlayer, "", "", -1, 2);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal");
-      AddDecisionQueue("CHOOSEHANDCANCEL", $currentPlayer, $indices);
-      AddDecisionQueue("REVEALHANDCARDS", $currentPlayer, "-");
-      break;
     case "flock_of_the_feather_walkers_red":
     case "flock_of_the_feather_walkers_yellow":
     case "flock_of_the_feather_walkers_blue":

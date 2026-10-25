@@ -5263,7 +5263,7 @@ class herald_of_victoria_yellow extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller == 1 ? 2 : 1);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }

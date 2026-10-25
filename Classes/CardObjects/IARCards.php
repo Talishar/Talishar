@@ -460,7 +460,7 @@ class runic_reaving_base extends Card {
     PlayAura("runechant", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 0;
   }
 
@@ -1024,7 +1024,7 @@ class blood_harvest extends Card {
     return ($from == "HAND");
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 3;
   }
@@ -2358,7 +2358,7 @@ class consuming_strength_yellow extends Card {
     return 2;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 2;
   }
@@ -2411,7 +2411,7 @@ class consuming_lash_yellow extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 2;
   }
@@ -2518,7 +2518,7 @@ class tribute_to_greater_power_red extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -3113,7 +3113,7 @@ class apex_buster_yellow extends Card {
       $Target->Destroy();
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 2;
     return 3;
   }
@@ -3679,7 +3679,7 @@ class runic_disposition_red extends Card {
     PlayAura("runechant", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -3735,7 +3735,7 @@ class runic_disposition_yellow extends Card {
     PlayAura("runechant", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -3791,7 +3791,7 @@ class runic_disposition_blue extends Card {
     PlayAura("runechant", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -4262,7 +4262,7 @@ class deadly_spinneret_red extends Card {
     EquipWeapon($this->controller, "graphene_chelicera", $this->cardID, num:$numZones);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 0;
   }
 
@@ -4637,7 +4637,7 @@ class consuming_appetite_yellow extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 3;
   }
@@ -5363,7 +5363,7 @@ class rise_to_the_challenge extends BaseCard {
     $this->archetype = new windup($this->cardID, $this->controller);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if ($from == "HAND" && GetResolvedAbilityType($this->cardID, $from) == "I") return 0;
     return GeneratedCardCost($this->cardID);
   }
@@ -6134,7 +6134,7 @@ class cleave_the_heavens extends BaseCard {
     return ($from == "HAND");
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -6187,7 +6187,7 @@ class cleave_the_heavens_red extends Card {
     return $this->baseCard->GoesOnCombatChain($phase, $from);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost($from);
   }
 
@@ -6227,7 +6227,7 @@ class cleave_the_heavens_yellow extends Card {
     return $this->baseCard->GoesOnCombatChain($phase, $from);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost($from);
   }
 
@@ -6267,7 +6267,7 @@ class cleave_the_heavens_blue extends Card {
     return $this->baseCard->GoesOnCombatChain($phase, $from);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost($from);
   }
 
@@ -6607,7 +6607,7 @@ class fallen_herald_yellow extends Card {
     return ($from == "HAND");
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }
@@ -7164,7 +7164,7 @@ class satiate_bloodthirst extends BaseCard {
     $this->archetype = new windup($this->cardID, $this->controller);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 3;
   }
@@ -7904,7 +7904,7 @@ class cogwerx_prong_bot_yellow extends Card {
     PutItemIntoPlayForPlayer("golden_cog", $this->controller, isToken: true, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 3;
   }

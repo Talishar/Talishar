@@ -774,7 +774,7 @@ class the_old_switcheroo_blue extends Card {
     AddCurrentTurnEffect("$this->cardID-DISCARD", $this->controller);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 0;
   }
 
@@ -1609,7 +1609,7 @@ class wind_up_the_crowd_blue extends Card {
     PlayAura("vigor", $this->controller, 1, true, effectController: $this->controller, effectSource: $this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->archetype->CardCost($from);
   }
 
@@ -3540,7 +3540,7 @@ class a_good_clean_fight_red extends Card {
     BlindPlayer($defPlayer, unblind:true);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 3; //fabcube error
   }
 }
@@ -3870,7 +3870,7 @@ class never_give_up_yellow extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if ($from == "GY") return 2;
     else return 0;
   }
@@ -5470,7 +5470,7 @@ class mage_hunter_arrow_red extends Card {
     return ($from == "ARS" && isset($arsenal[$index + 1]) && $arsenal[$index + 1] == "UP");
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "ARS") == "I" && $from == "ARS") return 0;
     return 1;
   }

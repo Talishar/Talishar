@@ -807,44 +807,65 @@ class dawnblade extends Card {
 //   }
 // }
 
+class demolition_crew extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class demolition_crew_red extends Card {
+  function PayAdditionalCosts($from, $index = '-') {
+    ChooseAndProcess($this->controller, "MYHAND:minCost=2", "Reveal a 2+ cost card", $this->cardID);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "demolition_crew_red";
-//     $this->controller = $controller;
-//     }
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    if ($choice == "-") {
+      WriteLog("An error occurred in revealing a card, reverting gamestate");
+      RevertGamestate();
+      return;
+    }
+    else {
+      $index = explode("-", $choice)[1];
+      $Hand = GetHand($this->controller);
+      RevealCards($Hand[$index]);
+    }
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (!CanRevealCards($this->controller)) return true;
+    return SearchCount(SearchHand($this->controller, "", "", -1, 2)) < 1;
+  }
+
+  function HasDominate() {
+    return true;
+  }
+}
+
+class demolition_crew_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "demolition_crew_red";
+    $this->controller = $controller;
+    $this->baseCard = new demolition_crew($this->cardID, $this->controller);
+  }
+}
 
 
-// class demolition_crew_yellow extends Card {
+class demolition_crew_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "demolition_crew_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new demolition_crew($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "demolition_crew_yellow";
-//     $this->controller = $controller;
-//     }
+class demolition_crew_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "demolition_crew_blue";
+    $this->controller = $controller;
+    $this->baseCard = new demolition_crew($this->cardID, $this->controller);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class demolition_crew_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "demolition_crew_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
 
 
 // class disable_red extends Card {

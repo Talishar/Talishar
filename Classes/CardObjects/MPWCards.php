@@ -840,7 +840,7 @@ class overwhelming_swing_yellow extends Card {
 		Await($this->controller, "SetLayerTarget", layerID:$this->cardID, final:true);
 	}
 
-	function CardCost($from = '-') {
+	function CardCost($from = '-',  $base = false) {
 		return NumCardsDefended();
 	}
 }
@@ -1115,7 +1115,7 @@ class shimmer_of_the_blade_red extends Card {
 		return $this->archetype->CanActivateAsInstant($index, $from);
 	}
 
-	function CardCost($from = '-') {
+	function CardCost($from = '-',  $base = false) {
 		if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
 		return 1;
 	}

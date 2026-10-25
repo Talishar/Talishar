@@ -930,3 +930,9 @@ function MultiZoneIndices($player, $parameter) {
   $rv = implode(",", array_keys(array_flip(explode(",", $rv))));
   return $rv == "" ? "PASS" : $rv;
 }
+
+function ChooseAndProcess($player, $search, $context, $cardID, $may=false, $exp_may=false) {
+  Await($player, "MultiZoneIndices", search:$search, may:$may, exp_may:$exp_may, subsequent:0);
+  Await($player, "ChooseMultizone", context:$context);
+  Await($player, $cardID, final:true);
+}

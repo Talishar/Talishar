@@ -579,7 +579,7 @@ function CardTalent($cardID, $from="-")
 }
 
 //Minimum cost of the card
-function CardCost($cardID, $from="-", $index=-1)
+function CardCost($cardID, $from="-", $index=-1, $base=false)
 {
   $cardID = BlindCard($cardID, true);
   $cardID = ShiyanaCharacter($cardID);
@@ -606,6 +606,7 @@ function CardCost($cardID, $from="-", $index=-1)
     case "fearless_confrontation_blue":
     case "burn_bare":
     case "light_up_the_leaves_red":
+      if ($base) return 3;
       if (GetResolvedAbilityType($cardID, "HAND") == "I" && $from == "HAND") return 0;
       return 3;
     case "MST000_inner_chi_blue":
@@ -660,7 +661,7 @@ function CardCost($cardID, $from="-", $index=-1)
   if ($card != "-") {
     $specialCost = $card->SpecialCost();
     if ($specialCost != -1) return $specialCost;
-    return $card->CardCost($from);
+    return $card->CardCost($from, $base);
   }
   if ($set != "DUM") {
     return $generatedCostCache[$cardID] = GeneratedCardCost($cardID);
@@ -2466,10 +2467,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       if (CardType($attackID) != "AA") return true;
       if (CardCost($attackID) > 1) return true;
       return false;
-    case "demolition_crew_red":
-    case "demolition_crew_yellow":
-    case "demolition_crew_blue":
-      return SearchCount(SearchHand($currentPlayer, "", "", -1, 2)) < 1;
     case "flock_of_the_feather_walkers_red":
     case "flock_of_the_feather_walkers_yellow":
     case "flock_of_the_feather_walkers_blue":    
@@ -4424,9 +4421,6 @@ function CanHaveDominate($cardID)
     case "open_the_center_blue":
     case "break_tide_yellow":
       return ComboActive() ? true : false;
-    case "demolition_crew_red":
-    case "demolition_crew_yellow":
-    case "demolition_crew_blue":
     case "herald_of_erudition_yellow":
     case "herald_of_tenacity_red":
     case "herald_of_tenacity_yellow":

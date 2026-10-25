@@ -284,7 +284,7 @@ class nebula_duality_red extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost();
   }
 }
@@ -328,7 +328,7 @@ class nebula_duality_yellow extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost();
   }
 }
@@ -372,7 +372,7 @@ class nebula_duality_blue extends Card {
     return true;
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return $this->baseCard->CardCost();
   }
 }
@@ -508,7 +508,7 @@ class voltbound_duality_red extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 0;
   }
@@ -553,7 +553,7 @@ class voltbound_duality_yellow extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 0;
   }
@@ -598,7 +598,7 @@ class voltbound_duality_blue extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 0;
   }
@@ -643,7 +643,7 @@ class cosmic_duality_red extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 2;
   }
@@ -687,7 +687,7 @@ class cosmic_duality_yellow extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 2;
   }
@@ -731,7 +731,7 @@ class cosmic_duality_blue extends Card {
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 1;
     return 2;
   }
@@ -2883,7 +2883,7 @@ class glide_through_starlight_red extends Card {
     return "";
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 1;
   }
 
@@ -2927,7 +2927,7 @@ class glide_through_starlight_yellow extends Card {
     return "";
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 1;
   }
 
@@ -2971,7 +2971,7 @@ class glide_through_starlight_blue extends Card {
     return "";
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     return 1;
   }
 

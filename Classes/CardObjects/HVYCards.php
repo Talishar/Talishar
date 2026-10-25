@@ -30,7 +30,8 @@ class windup {
     return ($from == "HAND");
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-', $base=false) {
+    if ($base) return 3;
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 3;
   }
@@ -2417,7 +2418,7 @@ class ripple_away_blue extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller, $from);
   }
 
-  function CardCost($from = '-') {
+  function CardCost($from = '-',  $base = false) {
     if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
     return 2;
   }

@@ -78,9 +78,9 @@ class Card {
     return GeneratedPowerValue($this->cardID);
   }
 
-  function CardCost($from="-") {
+  function CardCost($from="-", $base=false) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "CardCost"))
-      return $this->baseCard->CardCost($from);
+      return $this->baseCard->CardCost($from, $base);
     return GeneratedCardCost($this->cardID); 
   }
 

@@ -222,7 +222,7 @@ function SearchInner(
     }
     if ($subtype !== "" && !SubtypeContains($cardID, $subtype, $player)) continue;
     if ($maxCost !== -1 || $minCost !== -1) {
-      $cost = CardCost($cardID, $zone);
+      $cost = CardCost($cardID, $zone, base:true);
       if ($maxCost !== -1 && $cost > $maxCost) continue;
       if ($minCost !== -1 && $cost < $minCost) continue;
     }

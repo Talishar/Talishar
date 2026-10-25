@@ -3545,7 +3545,7 @@ class under_the_trap_door_blue extends Card {
 		}
 	}
 
-	function CardCost($from = '-') {
+	function CardCost($from = '-',  $base = false) {
 		return 0;
 	}
 
