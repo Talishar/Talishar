@@ -586,13 +586,10 @@ class cadaver_handlers extends Card {
   }
   
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
+    global $CombatChain, $defPlayer;
     if (!ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
       return;
-    for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
-      $LinkCard = $CombatChain->Card($i, true);
-      AddCurrentTurnEffect($this->cardID, $LinkCard->PlayerID(), "", $LinkCard->UniqueID());
-    }
+    AddCurrentTurnEffect($this->cardID, $defPlayer);
     return "";
   }
 
@@ -601,9 +598,7 @@ class cadaver_handlers extends Card {
   }
 
   function EffectBlockModifier($index, $from, $effectInd) {
-    $Effect = new CurrentEffect($effectInd);
-    $LinkCard = new ChainCard($index);
-    return $Effect->AppliestoUniqueID() == $LinkCard->UniqueID() ? -1 : 0;
+    return -1;
   }
 
   function AbilityType($index = -1, $from = '-') {

@@ -709,7 +709,6 @@ function RemoveThisLinkEffects($cardID="")
       case "blast_to_oblivion_yellow":
       case "blast_to_oblivion_blue":
       case "bone_barrier_blue":
-      case "cadaver_handlers":
         $remove = 1;
         break;
       default:
