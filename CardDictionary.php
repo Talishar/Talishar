@@ -3383,7 +3383,8 @@ function GoesOnCombatChain($phase, $cardID, $from, $currentPlayer)
   if (DelimStringContains($cardType, "I")) return false; //Instants as yet never go on the combat chain
   if (($phase == "A" || $phase == "D") && DelimStringContains($cardType, "A")) return false; //Non-attacks played as instants never go on combat chain
   if ($cardType == "AR") return false; // AR goes to the graveyard instead of remaining on the active chain link. CR 2.4.0 - 8.1.2b
-  if ($cardType == "DR") return true;
+  $activatedDRGoesOnChain = ["quickdodge_flexors" => true];
+  if ($cardType == "DR" && (!IsActivated($cardID, $from) || $activatedDRGoesOnChain[$cardID])) return true;
   if ($cardType == "AA" && (!TypeContains($cardID, "AA") || !IsActivated($cardID, $from))) return true; //If it's an attack action, it goes on the chain
   return false;
 }
