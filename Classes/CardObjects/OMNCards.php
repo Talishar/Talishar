@@ -218,8 +218,6 @@ class nebula_duality extends BaseCard {
   }
 
   function ProcessAbility($target) {
-    global $EffectContext;
-    $EffectContext = $this->cardID;
     DealArcane(1, source:"$this->cardID-ABILITY", player:$this->controller, resolvedTarget:$target);
     PlayAura("lightning_flow", $this->controller, effectSource:$this->cardID);
   }

@@ -1808,7 +1808,8 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 
 function ProcessAbility($player, $parameter, $uniqueID, $target = "-", $additionalCosts = "-", $from = "-")
 {
-  global $combatChain, $mainPlayer;
+  global $combatChain, $mainPlayer, $EffectContext;
+  $EffectContext = $parameter;
   $otherPlayer = 3 - $player;
   $card = GetClass($parameter, $player);
   if ($card != "-") return $card->ProcessAbility($uniqueID, $target, $additionalCosts, $from);
