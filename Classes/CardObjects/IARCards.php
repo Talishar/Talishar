@@ -8043,6 +8043,7 @@ class fresh_from_the_forge_red extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain, $CCS_NumPowerCounters;
     $Character = new PlayerCharacter($this->controller);
     $numCards = $Character->NumCards();
     for ($i = 0; $i < $numCards; ++$i) {
@@ -8051,6 +8052,9 @@ class fresh_from_the_forge_red extends Card {
       if (!SubtypeContains($CharacterCard->CardID(), "Dagger", $this->controller)) continue;
       Sharpen("MYCHAR-" . $CharacterCard->Index(), $this->controller);
     }
+    $AttackCard = $CombatChain->AttackCard()->ID();
+    if (SubtypeContains($AttackCard, "Dagger") && !TypeContains($AttackCard, "W"))
+      IncrementCombatChainState($CCS_NumPowerCounters);
     AddCurrentTurnEffect($this->cardID, $this->controller);
     return "";
   }
@@ -8069,12 +8073,19 @@ class fresh_from_the_forge_red extends Card {
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-    global $CCS_WeaponIndex;
+    global $CCS_WeaponIndex, $CombatChain, $CCS_NumPowerCounters;
     $index = GetCombatChainState($CCS_WeaponIndex);
-    if ($index == -1) return true;
+    $message = "if_you_want_to_remove_a_power_counter_to_mark_them";
+    if ($index == -1) {
+      if (GetCombatChainState($CCS_NumPowerCounters) > 0) {
+        $context = "Remove a +1 power counter from " . CardLink($CombatChain->AttackCard()->ID()) . " to mark your opponent?";
+        Await($this->controller, "YesNo", message: $message, context: $context, subsequent: 0);
+        Await($this->controller, $this->cardID, index: $index, final: true);
+      }
+      return true;
+    }
     $CharacterCard = new CharacterCard($index, $this->controller);
     if ($CharacterCard->NumPowerCounters() < 1) return true;
-    $message = "if_you_want_to_remove_a_power_counter_to_mark_them";
     $context = "Remove a +1 power counter from " . CardLink($CharacterCard->CardID()) . " to mark your opponent?";
     Await($this->controller, "YesNo", message: $message, context: $context, subsequent: 0);
     Await($this->controller, $this->cardID, index: $index, final: true);
@@ -8082,11 +8093,19 @@ class fresh_from_the_forge_red extends Card {
   }
 
   function SpecificLogic() {
-    global $dqVars;
-    $CharacterCard = new CharacterCard($dqVars["index"], $this->controller);
-    if ($CharacterCard->NumPowerCounters() < 1) return;
-    $CharacterCard->AddPowerCounters(-1);
-    WriteLog(CardLink($this->cardID) . " removed a +1 power counter from " . CardLink($CharacterCard->CardID()));
+    global $dqVars, $CCS_NumPowerCounters, $CombatChain;
+    $index = $dqVars["index"];
+    if ($index == -1) {
+      if (GetCombatChainState($CCS_NumPowerCounters) == 0) return;
+      IncrementCombatChainState($CCS_NumPowerCounters, -1);
+      WriteLog(CardLink($this->cardID) . " removed a +1 power counter from " . CardLink($CombatChain->AttackCard()->ID()));
+    }
+    else {
+      $CharacterCard = new CharacterCard($dqVars["index"], $this->controller);
+      if ($CharacterCard->NumPowerCounters() < 1) return;
+      $CharacterCard->AddPowerCounters(-1);
+      WriteLog(CardLink($this->cardID) . " removed a +1 power counter from " . CardLink($CharacterCard->CardID()));
+    }
     MarkHero(3 - $this->controller);
   }
 }
