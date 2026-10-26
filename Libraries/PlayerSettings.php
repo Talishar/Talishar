@@ -540,6 +540,7 @@ function GetCardBack($player)
     138 => "CBOddwillows",
     139 => "CBShine",
     140 => "CB_IndyFab",
+    141 => "CBBashAndFlood",
   ];
   $override = GetFavoriteDeckCosmeticOverride($player);
   $cardBackId = ($override !== null && $override['cardBack'] !== '0')
