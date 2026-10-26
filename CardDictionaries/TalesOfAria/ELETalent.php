@@ -165,7 +165,9 @@
           // targeting a past chain link, do nothing for now
         }
         //only add current turn effect if there's no target (ie. played in layer step)
-        elseif (IsLayerStep()) AddCurrentTurnEffect($cardID, $currentPlayer);
+        elseif (IsLayerStep()) {
+          AddCurrentTurnEffect($cardID, $mainPlayer);
+        }
         else return "FAILED"; // This shouldn't ever be reached, leave it here just in case
         return "";
       case "lightning_surge_red": case "lightning_surge_yellow": case "lightning_surge_blue":
