@@ -679,9 +679,9 @@ class demoralize_the_dracai_red extends Card {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Demoralize the Dracai";
-  // }
+  function SpecialName() {
+    return "Demoralize the Dracai";
+  }
 
   function SpecialCost() {
     return 1;
