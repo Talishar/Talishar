@@ -1932,6 +1932,7 @@ function ActiveOnHits(): bool
   if (MainCharacterHitEffects(check: true)) return true;
   if (ArsenalHitEffects(check: true)) return true;
   if (AuraHitEffects($attackCardID, check: true)) return true;
+  if (CombatChainHitEffects($attackCardID, $defPlayer, true)) return true;
   $target = IsHeroAttackTarget() ? $defPlayer : "-";
   $count = count($currentTurnEffects);
   $pieces = CurrentTurnEffectsPieces();
@@ -2141,35 +2142,42 @@ function LinkBasePower($check=false)
   return 0;
 }
 
-function CombatChainHitEffect($cardID, $sourceID="-", $targetPlayer="-") {
+function CombatChainHitEffect($cardID, $sourceID="-", $targetPlayer="-", $check=false) {
   global $CombatChain, $mainPlayer, $defPlayer;
   $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return false;
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") return $card->CombatChainHitEffect($sourceID, $targetPlayer, $check);
   switch ($cardID) {
     case "poisoned_blade_red":
     case "poisoned_blade_yellow":
     case "poisoned_blade_blue":
       if(IsHeroAttackTarget() && (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger") || SubtypeContains($sourceID, "Dagger"))) {
+        if ($check) return true;
         AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "EFFECTHITEFFECT", $source);
       }
       break;
     default:
       break;
   }
+  return false;
 }
 
-function CombatChainHitEffects($sourceID="-", $targetPlayer="-") {
+function CombatChainHitEffects($sourceID="-", $targetPlayer="-", $check=false) {
   global $CombatChain, $ChainLinks, $chainLinks;
 
   if ($CombatChain->HasCurrentLink()) {
-    CombatChainHitEffect($CombatChain->AttackCard()->ID(), $sourceID, $targetPlayer);
+    $foundHit = CombatChainHitEffect($CombatChain->AttackCard()->ID(), $sourceID, $targetPlayer, $check);
   }
+  if ($check && $foundHit) return true;
 
   $numLinks = $ChainLinks->NumLinks();
   for ($i = 0; $i < $numLinks; ++$i) {
     $attackCard = $chainLinks[$i][0] ?? "-";
-    CombatChainHitEffect($attackCard, $sourceID, $targetPlayer);
+    $foundHit = CombatChainHitEffect($attackCard, $sourceID, $targetPlayer, $check);
+    if ($check && $foundHit) return true;
   }
+  return false;
 }
 
 function LayerStepPower($player="") { //calculates the modified power of an attack in the layer step

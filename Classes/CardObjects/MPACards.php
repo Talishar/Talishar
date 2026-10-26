@@ -642,3 +642,56 @@ class cadaver_handlers extends Card {
     return "ASSASSIN";
   }
 }
+
+class demoralize_the_dracai_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "demoralize_the_dracai_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function CombatChainHitEffect($sourceID, $targetPlayer, $check) {
+    global $defPlayer;
+    $targetPlayer = $targetPlayer == "HERO" ? $defPlayer : $targetPlayer;
+    if (is_numeric($targetPlayer)) {
+      if (TypeContains($sourceID, "AA")) {
+        if (!$check)
+          AddLayer("TRIGGER", $this->controller, $this->cardID, $targetPlayer, "ONHITEFFECT");
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $deck = new Deck($target);
+    $deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "REDPITCH";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Demoralize the Dracai";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+}

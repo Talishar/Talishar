@@ -1418,4 +1418,10 @@ class Card {
       return $this->baseCard->TransformAbility();
     return;
   }
+
+  function CombatChainHitEffect($sourceID, $targetPlayer, $check) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "CombatChainHitEffect"))
+      return $this->baseCard->CombatChainHitEffect($sourceID, $targetPlayer, $check);
+    return false;
+  }
 }
