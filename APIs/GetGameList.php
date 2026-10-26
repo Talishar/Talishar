@@ -33,6 +33,7 @@ $canSeeQueue = IsUserLoggedIn();
 $response->canSeeQueue = $canSeeQueue;
 $canSpectate = CanUserSpectate();
 $response->canSpectate = $canSpectate;
+if (!$canSpectate) $response->spectateProgress = SpectateProgressResponse();
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
