@@ -4689,6 +4689,7 @@ function canBeAddedToChainDuringDR($cardID){
 
 function ExtractCardID($cardID) {
   if ($cardID === null) return "";
+  if (str_contains($cardID, "NAMEDCARD")) return "";
   $end = strcspn($cardID, ",-|");
   if ($end === strlen($cardID)) return $cardID;
   return substr($cardID, 0, $end);

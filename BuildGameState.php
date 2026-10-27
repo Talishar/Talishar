@@ -413,6 +413,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
 
     if ($i == 0) {
+      $label = "";
+      $targetedName = GamestateUnsanitize(GetAttackNamedCard());
+      if ($targetedName != "-") $label = $targetedName;
       $activeChainLink->attackingCard = JSONRenderedCard(
         cardNumber: $combatChain[$i],
         controller: $combatChain[$i + 1],
@@ -421,6 +424,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         borderColor: $borderColor,
         countersMap: $countersMap,
         subcard: GetChainCardSubcards($combatChain[$i + 1], $combatChain[$i + 8] ?? NULL, $combatChain[$i + 7] ?? NULL),
+        label: $label
       );
       continue;
     }

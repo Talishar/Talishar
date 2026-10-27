@@ -720,13 +720,7 @@ class tailored_targeting_red extends Card {
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
     global $defPlayer, $CombatChain;
     $Deck = new Deck($defPlayer);
-    $targetedName = "-";
-    $buffs = $CombatChain->AttackCard()->StaticBuffs();
-    foreach (explode(",", $buffs) as $buff) {
-      $prefix = explode("|", $buff)[0];
-      if ($prefix == "NAMEDCARD")
-        $targetedName = explode("|", $buff)[1];
-    }
+    $targetedName = GetAttackNamedCard();
     $banishedCard = $targetedName; // ensure you go through the process at least once
     while (!$Deck->Empty() && $banishedCard == $targetedName) {
       $cardID = $Deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);

@@ -10,5 +10,17 @@ function IsInfected($player) {
 	return false;
 }
 
+function GetAttackNamedCard() {
+	global $CombatChain;
+	$buffs = $CombatChain->AttackCard()->StaticBuffs();
+	$targetedName = "-";
+	foreach (explode(",", $buffs) as $buff) {
+		$prefix = explode("|", $buff)[0];
+		if ($prefix == "NAMEDCARD")
+		$targetedName = explode("|", $buff)[1];
+	}
+	return $targetedName;
+}
+
 static $Diseases = ["frailty", "inertia", "bloodrot_pox"];
 static $AllDiseases = ["frailty", "inertia", "bloodrot_pox", "exertion"];
