@@ -69,6 +69,8 @@ class golden_grail extends Card {
 	}
 
 	function AddPostTargetDecisionQueue($from, $index = -1, $facing = '-') {
+		if (SearchCurrentTurnEffects("heart_of_bladehold", $this->controller))
+			return; // the cost is already satisfied
 		PayGoldInstead($this->controller, $this->cardID);
 	}
 
