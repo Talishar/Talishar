@@ -86,6 +86,7 @@ function CheckAllyDeath($player)
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false, $skipClose = false, $mod = "-")
 {
   if ($index < 0) return "";
+  $otherPlayer = $player == 1 ? 2 : 1;
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
   if ($index % $allyPieces != 0 || !isset($allies[$index + $allyPieces - 1])) return "";
@@ -95,8 +96,9 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
-  AllyAddGraveyard($player, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
-  AllyAddGraveyard($player, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
+  $owner = $allies[$index+14] == "Temporary" ? $otherPlayer : $player;
+  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
+  AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
   RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
   return $cardID;
@@ -599,7 +601,6 @@ function AllyPayAdditionalCosts($cardIndex, $from)
         AddCurrentTurnEffect("polly_cranka", $currentPlayer);
       }
       DestroyAlly($currentPlayer, $cardIndex, skipDestroy:true, toBanished:true);
-      
       break;
     case "cutty_shark_quick_clip_yellow":
       if(GetResolvedAbilityType($cardID, $from, $currentPlayer) == "AA") {
