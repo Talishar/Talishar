@@ -3263,8 +3263,7 @@ function ResolveGoAgain($cardID, $player, $from="", $additionalCosts="-", $uniqu
     }
   }
   if ($player == $mainPlayer && $hasGoAgain && !$goAgainPrevented) {
-    $additionalCostsClassState = GetClassState($player, $CS_AdditionalCosts);
-    if(SearchCurrentTurnEffects("arc_lightning_yellow", $player) && !IsMeldInstantName($additionalCostsClassState) && ($additionalCostsClassState != "Both" || $from == "MELD")) {
+    if(SearchCurrentTurnEffects("arc_lightning_yellow", $player)) {
       $numEffects = $CurrentTurnEffects->NumEffects();
       for ($i = 0; $i < $numEffects; ++$i) {
         $Effect = $CurrentTurnEffects->Effect($i, true);
