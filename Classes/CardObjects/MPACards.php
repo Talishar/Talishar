@@ -695,3 +695,76 @@ class demoralize_the_dracai_red extends Card {
     return "ASSASSIN";
   }
 }
+
+class tailored_targeting_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tailored_targeting_red";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    AddCurrentTurnEffect($this->cardID, $this->controller); // holds the "when you hit this chain link" trigger
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+    if ($targetPlayer == $this->controller) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, false, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer, $CombatChain;
+    $Deck = new Deck($defPlayer);
+    $targetedName = "-";
+    $buffs = $CombatChain->AttackCard()->StaticBuffs();
+    foreach (explode(",", $buffs) as $buff) {
+      $prefix = explode("|", $buff)[0];
+      if ($prefix == "NAMEDCARD")
+        $targetedName = explode("|", $buff)[1];
+    }
+    $banishedCard = $targetedName; // ensure you go through the process at least once
+    while (!$Deck->Empty() && $banishedCard == $targetedName) {
+      $cardID = $Deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
+      $banishedCard = GamestateSanitize(NameOverride($cardID, $defPlayer));
+    }
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    //name the card
+    AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "<b>📣{0}</b> is being hunted!", 1);
+    //Adding the name to the card to track
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "NAMEDCARD|", 1);
+    AddDecisionQueue("ADDSTATICBUFF", $this->controller, 0, 1);
+  }
+
+  function ContractType($chosenName = '') {
+    return "NAMEDCARD-$chosenName";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Tailored Targeting";
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}

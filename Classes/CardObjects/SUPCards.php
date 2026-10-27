@@ -504,7 +504,7 @@ class hunter_or_hunted_blue extends Card {
   function __construct($controller) {
     $this->cardID = "hunter_or_hunted_blue";
     $this->controller = $controller;
-    }
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
