@@ -1139,5 +1139,22 @@ function TargetDaggerAttack($player) {
     if (SubtypeContains($cardID, "Dagger", $player))
       $choices[] = $attack;
   }
+  //Order the attacks like the daggers on the board so they line up with the equipped dagger popups
+  global $CombatChain, $ChainLinks;
+  $character = &GetPlayerCharacter($player);
+  $charCount = count($character);
+  $charPieces = CharacterPieces();
+  $charPositions = [];
+  for ($i = 0; $i < $charCount; $i += $charPieces) $charPositions[$character[$i + 11]] = $i;
+  $position = function($mz) use ($CombatChain, $ChainLinks, $charPositions) {
+    $parts = explode("-", $mz);
+    $uid = match($parts[0]) {
+      "COMBATCHAINLINK" => $CombatChain->AttackCard()->OriginUniqueID(),
+      "PASTCHAINLINK" => $ChainLinks->GetLink(intval($parts[2]))->GetLinkCard(intval($parts[1]))->OriginUniqueID(),
+      default => null
+    };
+    return $charPositions[$uid] ?? PHP_INT_MAX;
+  };
+  usort($choices, fn($a, $b) => $position($a) <=> $position($b));
   return implode(",", $choices);
 }
