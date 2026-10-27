@@ -107,7 +107,18 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   $theirHoldState = $defaultHoldState;
   if (!$activeStateTracked && $theirHoldState == 0 && HoldPrioritySetting($otherPlayer) == 1) $theirHoldState = 1;
   $theirHoldState = ApplyGemsOffDefault($theirHoldState, $otherPlayer);
-  
+  //New tokens take the gem state of a matching token already in play so they all share one gem
+  if ($isToken) {
+    $auraPieces = AuraPieces();
+    for ($j = count($auras) - $auraPieces; $j >= 0; $j -= $auraPieces) {
+      if ($auras[$j] == $cardID) {
+        $myHoldState = $auras[$j + 7];
+        $theirHoldState = $auras[$j + 8];
+        break;
+      }
+    }
+  }
+
   // Cache loop-invariant values outside loop to avoid repeated function calls
   $cachedAuraPlayCounters = AuraPlayCounters($cardID);
   $cachedAuraNumUses = AuraNumUses($cardID);
