@@ -64,9 +64,19 @@ function MZZoneCategory($zoneKey, $index) {
   }
 }
 
+function PromptEffectContext() {
+  global $EffectContext, $decisionQueue;
+  $dqCount = count($decisionQueue ?? []);
+  $dqPieces = DecisionQueuePieces();
+  for ($i = 0; $i < $dqCount; $i += $dqPieces) {
+    if ($decisionQueue[$i] == "RESUMEPAYING") return explode("-", (string)($decisionQueue[$i + 2] ?? ""), 2)[0] ?: "-";
+  }
+  return trim((string)$EffectContext);
+}
+
 function AddPromptCardContext($popup, $turnPhase, $playerID) {
   global $dqState, $myDeck, $theirDeck;
-  global $EffectContext, $decisionQueue, $turn;
+  global $EffectContext, $turn;
   $context = trim((string)$EffectContext);
   if ($turnPhase == "ORDERTRIGGERS") {
     $cardIDs = [];
@@ -83,14 +93,7 @@ function AddPromptCardContext($popup, $turnPhase, $playerID) {
   } else if (GetDQHelpText() == "Choose_a_target_for_the_attack") {
     $context = "ATTACKTARGET";
   } else {
-    $dqCount = count($decisionQueue ?? []);
-    $dqPieces = DecisionQueuePieces();
-    for ($i = 0; $i < $dqCount; $i += $dqPieces) {
-      if ($decisionQueue[$i] == "RESUMEPAYING") {
-        $context = explode("-", (string)($decisionQueue[$i + 2] ?? ""), 2)[0] ?: "-";
-        break;
-      }
-    }
+    $context = PromptEffectContext();
   }
   $sourceCard = explode("-", $context, 2)[0];
   $popup->sourceCard = CardName($sourceCard) != "" ? $sourceCard : "";
@@ -646,7 +649,10 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
         $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
         $chainAttackLabels = [];
+        $showUsedCharOverlay = true;
         if (str_contains($turnData, "CHAR-")) {
+          static $noUsedCharOverlaySources = ["long_whisker_loyalty_red" => true, "perforate_yellow" => true, "evo_thruster_yellow_equip" => true];
+          $showUsedCharOverlay = !isset($noUsedCharOverlaySources[explode("-", PromptEffectContext(), 2)[0]]);
           if ($hasCombatChainLink) $chainAttackLabels[$CombatChain->AttackCard()->OriginUniqueID()] = "Attacking";
           $numChainLinks = count($chainLinks);
           for ($j = $numChainLinks - 1; $j >= 0; --$j) {
@@ -914,7 +920,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $charArr = $isTheirChar ? $theirCharacter : $myCharacter;
             $tapped = $charArr[$index + 14] == 1;
             $powerCounters = $charArr[$index + 3];
-            $overlay = $charArr[$index + 1] != 2;
+            $overlay = $showUsedCharOverlay && $charArr[$index + 1] != 2;
             $charController = $isTheirChar ? $otherPlayer : $playerID;
             if ($label == "" && $charController == $mainPlayer) $label = $chainAttackLabels[$charArr[$index + 11] ?? "-"] ?? "";
           }
