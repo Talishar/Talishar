@@ -645,6 +645,15 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $singleMyDeckInTurnData = (substr_count($turnData, "MYDECK") == 1);
         $hasCombatChainLink = $CombatChain->HasCurrentLink();
         $weaponIndexValue = intval(GetCombatChainState($CCS_WeaponIndex));
+        $chainAttackLabels = [];
+        if (str_contains($turnData, "CHAR-")) {
+          if ($hasCombatChainLink) $chainAttackLabels[$CombatChain->AttackCard()->OriginUniqueID()] = "Attacking";
+          $numChainLinks = count($chainLinks);
+          for ($j = $numChainLinks - 1; $j >= 0; --$j) {
+            if (($chainLinks[$j][2] ?? 0) && !isset($chainAttackLabels[$chainLinks[$j][8] ?? "-"]))
+              $chainAttackLabels[$chainLinks[$j][8] ?? "-"] = "Chain link " . ($j + 1);
+          }
+        }
         $layerPieces = LayerPieces();
         $auraPieces = AuraPieces();
         $layersActive = ($layerCheckCount > 0 && $layers[0] != "");
@@ -906,6 +915,8 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             $tapped = $charArr[$index + 14] == 1;
             $powerCounters = $charArr[$index + 3];
             $overlay = $charArr[$index + 1] != 2;
+            $charController = $isTheirChar ? $otherPlayer : $playerID;
+            if ($label == "" && $charController == $mainPlayer) $label = $chainAttackLabels[$charArr[$index + 11] ?? "-"] ?? "";
           }
           if ($option0 == "THEIRARS" && $theirArsenal[$index + 1] == "DOWN" || $option0 == "THEIRCHAR" && $theirCharacter[$option[1] + 12] == "DOWN") {
             $card = $TheirCardBack;
