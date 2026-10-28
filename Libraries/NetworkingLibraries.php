@@ -1933,7 +1933,7 @@ function ResolveChainLink()
           $allyHealthBefore = max(0, intval($allies[$index + 2]));
           $allies[$index + 2] = intval($allies[$index + 2]) - (int)$allyDamageThreatened;
           if ($allyDamageThreatened > 0) {
-            LogDamagePreventedStats($defPlayer, $allyDamageThreatened);
+            LogAllyDamagePreventedStats($defPlayer, $allyDamageThreatened);
             AllyDamageTakenAbilities($defPlayer, $index);
           }
           $allyDamageDealt = min($allyDamageThreatened, $allyHealthBefore);

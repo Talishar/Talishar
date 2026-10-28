@@ -666,7 +666,7 @@ function DamageAlly($targetPlayer, $targetInd, $damage, $type, $countAsDamageDea
   $healthBefore = max(0, intval($allies[$targetInd + 2]));
   $allies[$targetInd + 2] -= $damage;
   if ($damage > 0) {
-    if ($countAsDamageDealtBy == 0) LogDamagePreventedStats($targetPlayer, $damage);
+    if ($countAsDamageDealtBy == 0) LogAllyDamagePreventedStats($targetPlayer, $damage);
     elseif ($countAsDamageDealtBy != $targetPlayer) {
       $creditedDamage = min($damage, $healthBefore);
       LogDamageStats($targetPlayer, $creditedDamage, $creditedDamage);
