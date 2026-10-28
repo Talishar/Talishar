@@ -1424,4 +1424,10 @@ class Card {
       return $this->baseCard->CombatChainHitEffect($sourceID, $targetPlayer, $check);
     return false;
   }
+
+  function AttackLeavesTrigger() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "AttackLeavesTrigger"))
+      return $this->baseCard->AttackLeavesTrigger();
+    return;
+  }
 }

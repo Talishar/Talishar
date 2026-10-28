@@ -757,6 +757,51 @@ class tailored_targeting_red extends Card {
   function SpecialClass() {
     return "ASSASSIN";
   }
+}
+
+class flip_the_script_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "flip_the_script_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AttackLeavesTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    if ($CombatChain->HasCurrentLink())
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function SpecialName() {
+    return "Flip the Script";
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
 
   function HasStealth() {
     return true;

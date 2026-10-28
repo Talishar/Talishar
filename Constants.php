@@ -647,7 +647,8 @@ function AttackReplaced($cardID, $player, $from)
   SetCombatChainState($CCS_AttackCost, -1);
   SetCombatChainState($CCS_CachedGoAgain, 0);
   SetCombatChainState($CCS_AttackDamageDealtToHero, 0);
-
+  $card = GetClass($combatChain[0], $mainPlayer);
+  if ($card != "-") $card->AttackLeavesTrigger();
   if (HasStealth($cardID)) IncrementClassState($player, $CS_NumStealthAttacks);
   $combatChain[0] = $cardID;
   $combatChain[2] = $from;
