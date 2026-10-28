@@ -641,6 +641,10 @@ class cadaver_handlers extends Card {
   function SpecialClass() {
     return "ASSASSIN";
   }
+
+  function SpecialPitch() {
+    return -1;
+  }
 }
 
 class demoralize_the_dracai_red extends Card {
@@ -797,6 +801,159 @@ class flip_the_script_blue extends Card {
 
   function SpecialPitch() {
     return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class bribe_the_guards_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "bribe_the_guards_blue";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $targetCard = MZIndexToObject($this->controller, $target);
+    if ($targetCard != "") {
+      $uid = $targetCard->OriginUniqueID();
+      if ($from == "PLAY" || $from == "COMBATCHAINATTACKS")
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
+      return "";
+    }
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    global $CombatChain, $ChainLinks;
+    $originUniqueID = IndexToBlockCardUID($index);
+    $Effect = new CurrentEffect($effectInd);
+    return $Effect->AppliestoUniqueID() == $originUniqueID ? -1 : 0;
+  }
+
+  function IsCombatEffectPersistent($mode) {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function RemoveEffectFromCombatChain($effectIndex) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    global $mainPlayer, $CombatChain, $ChainLinks;
+    if ($this->controller != $mainPlayer) return true;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
+    if ($from == "PLAY" || $from == "COMBATCHAINATTACKS") {
+      if ($this->GetTargets($from, $index) == "") return true;
+      return CountItemByName("Silver", $this->controller) == 0;
+    }
+    return false;
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+  }
+
+  private
+  function GetTargets($from, $index) {
+    global $CombatChain, $ChainLinks;
+    $targets = [];
+    if ($from == "CC") {
+      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $targets[] = "COMBATCHAINLINK-" . $CombatChain->Card($i, true)->Index();
+      }
+    }
+    elseif ($from == "COMBATCHAINATTACKS") {
+      $Link = $ChainLinks->GetLink($index);
+      for ($i = 1; $i < $Link->NumCards(); ++$i) {
+        $targets[] = "PASTCHAINLINK-" . $Link->GetLinkCard($i, true)->Index() . "-$index";
+      }
+    }
+    return implode(",", $targets);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
+      Await($this->controller, "MultiZoneIndices", search:"MYITEMS:isSameName=silver", subsequent:0);
+      Await($this->controller, "ChooseMultiZone", context:"Destroy a silver you control");
+      Await($this->controller, "MZDestroy", final:true);
+      $targets = $this->GetTargets($from, $index);
+      SetTargetsChoices($this->controller, $this->cardID, $targets, "Give a defending card -1 block");
+    }
+  }
+
+  // function SpecialName() {
+  //   return "Bribe the Guards";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class continued_coercion_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "continued_coercion_yellow";
+    $this->controller = $controller;
+  }
+  
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AttackLeavesTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain;
+    if ($CombatChain->HasCurrentLink())
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  // function SpecialName() {
+  //   return "Continued Coercion";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
   }
 
   function SpecialClass() {
