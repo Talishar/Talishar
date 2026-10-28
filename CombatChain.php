@@ -1799,7 +1799,7 @@ function CacheCombatResult()
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
-  global $CombatChain, $CCS_CachedGoAgain, $CCS_CachedVeilActive;
+  global $CombatChain, $CCS_CachedGoAgain, $CCS_CachedVeilActive, $CCS_CachedPreBlockValue, $turn, $currentPlayer, $defPlayer;
   if (count($combatChain) == 0) return;
   SetCombatChainState($CCS_CachedGoAgain, (DoesAttackHaveGoAgain() ? "1" : "0"));
   $oldPower = GetCombatChainState($CCS_CachedTotalPower);
@@ -1814,6 +1814,8 @@ function CacheCombatResult()
   $card = GetClass($CombatChain->AttackCard()->ID(), $mainPlayer);
   if (is_a($card, "SUPDwarfCard") && GetCombatChainState($CCS_CachedTotalPower) > LinkBasePower()) {
     IncrementCombatChainState($CCS_CachedTotalPower);
+    if ($turn[0] == "B" && $currentPlayer == $defPlayer && $CombatChain->NumCardsActiveLink() == 1)
+      SetCombatChainState($CCS_CachedPreBlockValue, GetCombatChainState($CCS_CachedTotalPower));
   }
   $currentTotalPower = GetCombatChainState($CCS_CachedTotalPower);
   if ($currentTotalPower > $oldPower && $currentTotalPower >= 6)
