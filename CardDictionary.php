@@ -2605,6 +2605,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
         // $LinkCard = $ChainLinks->GetLink($LinkNum)->GetLinkCard($ind);
         // return $LinkCard->NumTimesUsed() >= 1;
       }
+      else if ($from == "COMBATCHAINATTACKS") 
+        return true; // don't let the defender activate an attacking rally
       else return false;
     case "memorial_ground_red":
     case "memorial_ground_yellow":
