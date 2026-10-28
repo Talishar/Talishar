@@ -1755,7 +1755,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $dqVars[0] = $damage;
           $dqVars["ARCANEDEALT"] = $damage;
           if ($damage > 0) {
-            LogDamagePreventedStats($targetPlayer, $damage);
+            LogAllyDamagePreventedStats($targetPlayer, $damage);
             AllyDamageTakenAbilities($targetPlayer, $target[1]);
             DamageDealtAbilities("ALLY", $damage, "ARCANE", $sourceID);
             CurrentEffectDamageEffects(implode("-", $target), $source, "ARCANE", $damage, $player);
@@ -2774,7 +2774,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $allyHealthBefore = max(0, intval($allies[$mzIndex[1] + 2]));
           $allies[$mzIndex[1] + 2] = $allyHealthBefore - $allyDamage;
           if ($allyDamage > 0) {
-            LogDamagePreventedStats($target, $allyDamage);
+            LogAllyDamagePreventedStats($target, $allyDamage);
             if ($player != $target) LogDamageStats($target, $allyDamage, min($allyDamage, $allyHealthBefore));
             AllyDamageTakenAbilities($target, $mzIndex[1]);
           }

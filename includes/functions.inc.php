@@ -834,6 +834,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 	$arcaneDealt = ($player == 1 ? $p1ArcaneDamageDealt : $p2ArcaneDamageDealt) ?? [];
 	$arcaneTaken = ($player == 1 ? $p2ArcaneDamageDealt : $p1ArcaneDamageDealt) ?? [];
 	$cardsDisrupted = GetCardsDisrupted($player);
+	$allyDamagePrevented = GetAllyDamagePrevented($player);
 
 	$countTurnStats = count($turnStats);
 	$tsp = TurnStatPieces();
@@ -890,6 +891,7 @@ function PopulateTurnStatsAndAggregates(&$deck, &$turnStats, &$otherPlayerTurnSt
 		$entry["damageDealt"] = $damageDealt;
 		$entry["damageBlocked"] = $damageBlocked;
 		$entry["damagePrevented"] = $damagePrevented;
+		$entry["allyDamagePrevented"] = isset($allyDamagePrevented[$turnNo]) ? (int)$allyDamagePrevented[$turnNo] : 0;
 		$entry["damageTaken"] = $damageTaken;
 		$entry["arcaneDamageDealt"] = isset($arcaneDealt[$turnNo]) ? (int)$arcaneDealt[$turnNo] : 0;
 		$entry["arcaneDamageTaken"] = isset($arcaneTaken[$turnNo]) ? (int)$arcaneTaken[$turnNo] : 0;
@@ -938,6 +940,7 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 	if (empty($turnStats) || $countTurnStats < $tsp) return;
 
 	$cardsDisrupted = $player != 0 ? GetCardsDisrupted($player) : [];
+	$allyDamagePrevented = $player != 0 ? GetAllyDamagePrevented($player) : [];
 	$usedBlocks = UsedTurnStatBlocks($turnStats, $cardsDisrupted);
 
 	// Hand size drives how many cards were available to attack with. Falls back
@@ -953,9 +956,10 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 
 	$totals = function($blocks) use (&$turnStats, $TurnStats_DamageThreatened, $TurnStats_DamageDealt,
 		$TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked, $TurnStats_ResourcesUsed,
-		$TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented, $cardsDisrupted, $tsp) {
+		$TurnStats_CardsLeft, $TurnStats_LifeGained, $TurnStats_LifeLost, $TurnStats_DamagePrevented, $cardsDisrupted,
+		$allyDamagePrevented, $tsp) {
 		$t = ["threatened" => 0, "dealt" => 0, "resourcesUsed" => 0, "cardsLeft" => 0, "defensiveCards" => 0,
-			  "blocked" => 0, "lifeGained" => 0, "lifePrevented" => 0, "lifeLost" => 0, "disrupted" => 0];
+			  "blocked" => 0, "lifeGained" => 0, "lifePrevented" => 0, "lifeLost" => 0, "disrupted" => 0, "allyPrevented" => 0];
 		foreach($blocks as $i) {
 			$t["threatened"]     += $turnStats[$i + $TurnStats_DamageThreatened];
 			$t["dealt"]          += $turnStats[$i + $TurnStats_DamageDealt];
@@ -967,6 +971,7 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 			$t["lifePrevented"]  += $turnStats[$i + $TurnStats_DamagePrevented];
 			$t["lifeLost"]       += $turnStats[$i + $TurnStats_LifeLost];
 			$t["disrupted"]      += intval($cardsDisrupted[intdiv($i, $tsp)] ?? 0);
+			$t["allyPrevented"]  += intval($allyDamagePrevented[intdiv($i, $tsp)] ?? 0);
 		}
 		return $t;
 	};
@@ -999,6 +1004,9 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 		$deck["averageValuePerTurn$suffix"] = round($value / $numTurns, 2);
 		$deck["totalCardsDisrupted$suffix"] = $t["disrupted"];
 		$deck["averageValueWithDisruptionPerTurn$suffix"] = round(($value + DISRUPTION_VALUE_PER_CARD * $t["disrupted"]) / $numTurns, 2);
+		$deck["totalAllyDamagePrevented$suffix"] = $t["allyPrevented"];
+		$deck["averageValueWithoutAllyPreventedPerTurn$suffix"] = round(($value - $t["allyPrevented"]) / $numTurns, 2);
+		$deck["averageValueWithDisruptionWithoutAllyPreventedPerTurn$suffix"] = round(($value - $t["allyPrevented"] + DISRUPTION_VALUE_PER_CARD * $t["disrupted"]) / $numTurns, 2);
 	};
 	$blocksNoLast = $usedBlocks;
 	if (count($blocksNoLast) > 0) array_pop($blocksNoLast);
@@ -1227,6 +1235,8 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 	}
 	foreach (["", "_NoLast", "_NoFirst", "_NoFirst_NoLast"] as $suffix) {
 		unset($deck["totalCardsDisrupted$suffix"], $deck["averageValueWithDisruptionPerTurn$suffix"]);
+		unset($deck["totalAllyDamagePrevented$suffix"], $deck["averageValueWithoutAllyPreventedPerTurn$suffix"],
+			$deck["averageValueWithDisruptionWithoutAllyPreventedPerTurn$suffix"]);
 	}
 
 	// Exclude private fields if stats are disabled

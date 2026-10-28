@@ -286,6 +286,21 @@ function LogDamagePreventedStats($player, $damagePrevented)
   $preventedStats[$slot] = ($preventedStats[$slot] ?? 0) + (int)$damagePrevented;
 }
 
+function LogAllyDamagePreventedStats($player, $damage)
+{
+  global $p1AllyDamagePrevented, $p2AllyDamagePrevented;
+  LogDamagePreventedStats($player, $damage);
+  $turnIndex = GetStatTurnIndex($player);
+  if ($player == 1) AddTurnStat($p1AllyDamagePrevented, $turnIndex, $damage);
+  else AddTurnStat($p2AllyDamagePrevented, $turnIndex, $damage);
+}
+
+function GetAllyDamagePrevented($player)
+{
+  global $p1AllyDamagePrevented, $p2AllyDamagePrevented;
+  return ($player == 1 ? $p1AllyDamagePrevented : $p2AllyDamagePrevented) ?? [];
+}
+
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)
 {
   global $mainPlayer, $defPlayer, $TurnStats_DamageThreatened, $TurnStats_DamageBlocked, $TurnStats_Overblock;

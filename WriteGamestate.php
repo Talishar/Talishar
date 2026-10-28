@@ -117,7 +117,9 @@ array_push($gamestateLines,
   intval($p2ContractsCompleted ?? 0), // Contracts player 2 completed
   json_encode($p1CardsDisrupted ?? []), // Opponent cards player 1 disrupted, per turn
   json_encode($p2CardsDisrupted ?? []), // Opponent cards player 2 disrupted, per turn
-  json_encode(UpdateHandInstanceIDs())
+  json_encode(UpdateHandInstanceIDs()),
+  json_encode($p1AllyDamagePrevented ?? []), // Damage player 1's allies took, per turn
+  json_encode($p2AllyDamagePrevented ?? []) // Damage player 2's allies took, per turn
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";
