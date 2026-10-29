@@ -1761,11 +1761,12 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 function CurrentEffectGrantsGoAgain($cardToCheck = "")
 {
   global $currentTurnEffects, $mainPlayer, $CombatChain;
+  $isPreview = $cardToCheck != "";
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i)) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i, $isPreview)) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       $card = GetClass($effectBase, $mainPlayer);

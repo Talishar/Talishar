@@ -264,11 +264,14 @@ function AddNextTurnEffect($cardID, $player, $uniqueID = -1, $numTurns = 1)
   $nextTurnEffects[] = $numTurns;
 }
 
-function IsCombatEffectLimited($index)
+function IsCombatEffectLimited($index, $isPreview=false)
 {
   global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID, $CombatChain;
   global $CurrentTurnEffects;
   $Effect = $CurrentTurnEffects->Effect($index);
+  if ($isPreview) {
+    return $Effect->AppliestoUniqueID() != -1;
+  }
   if ($Effect->AppliestoUniqueID() == "ATTACK") return false; // it has been applied to the attack in the layer step, we're good
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
   // if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
