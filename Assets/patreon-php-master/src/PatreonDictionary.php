@@ -110,6 +110,7 @@ enum PatreonCampaign : string
   case Shine = "34";
   case IndyFab = "35";
   case BashAndFlood = "36";
+  case WeTakeCandy = "37";
   case Talishar = "7198186";
   case PushThePoint = "7579026";
   case GoAgainGaming = "7329070";
@@ -268,6 +269,7 @@ enum PatreonCampaign : string
       case "34": return "Shine";
       case "35": return "IndyFab";
       case "36": return "Bash and Flood";
+      case "37": return "We Take Candy From Strangers";
       case "7198186": return "Talishar";
       case "7579026": return "Push the Point";
       case "7329070": return "Go Again Gaming";
@@ -412,6 +414,8 @@ enum PatreonCampaign : string
       //Bash and Flood
       "36" => ["zerodois", "HosterX", "Lanless", "leozzato", "LilJosh", "Ruri", "spirus", "XandreBorges", "Marcel",
         "brunohm", "boanoite", "Patolouco4", "PvtVoid"],
+      "37" => ["iaPhiN", "IceJuggernaut", "mehall", "Synergistic", "drougal", "Anarchyplz", "Draco108",
+        "SJ1123", "NateFrautschy", "foxfirerandom", "Hugstimeover", "Aegisworn"],
       "279086" => ["brandaotcg", "OotTheMonk", "Aegisworn"],
       "1787491" => ["RedZoneRogue"],
       "1919413" => ["DMArmada"],
