@@ -801,9 +801,9 @@ class sick_intent_red extends Card {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Sick Intent";
-  // }
+  function SpecialName() {
+    return "Sick Intent";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -855,9 +855,9 @@ class concoct_agony_yellow extends Card {
     $Arsenal->BanishAll($this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Concoct Agony";
-  // }
+  function SpecialName() {
+    return "Concoct Agony";
+  }
 
   function SpecialPitch() {
     return 2;
