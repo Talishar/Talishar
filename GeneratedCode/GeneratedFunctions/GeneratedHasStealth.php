@@ -2,9 +2,6 @@
 function GeneratedHasStealth($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
-"patient_zero_red" => true,
-"patient_zero_yellow" => true,
-"patient_zero_blue" => true,
 "art_of_desire_body_red" => true,
 "art_of_desire_mind_blue" => true,
 "art_of_desire_soul_yellow" => true,
@@ -21,6 +18,8 @@ return match($cardID) {
 "bonds_of_memory_red" => true,
 "bonds_of_memory_yellow" => true,
 "bonds_of_memory_blue" => true,
+"bribe_the_guards_blue" => true,
+"continued_coercion_yellow" => true,
 "creep_red" => true,
 "deadly_spinneret_red" => true,
 "defang_the_dragon_red" => true,
@@ -31,6 +30,7 @@ return match($cardID) {
 "double_trouble_yellow" => true,
 "double_trouble_blue" => true,
 "extinguish_the_flames_red" => true,
+"flip_the_script_blue" => true,
 "graphene_chelicera" => true,
 "horrors_of_the_past_yellow" => true,
 "impulsive_desire_red" => true,
@@ -64,6 +64,9 @@ return match($cardID) {
 "minds_desire_red" => true,
 "minds_desire_yellow" => true,
 "minds_desire_blue" => true,
+"patient_zero_red" => true,
+"patient_zero_yellow" => true,
+"patient_zero_blue" => true,
 "persuasive_prognosis_blue" => true,
 "pick_to_pieces_red" => true,
 "pick_to_pieces_yellow" => true,

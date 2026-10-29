@@ -318,22 +318,6 @@ class seed extends BaseCard {
     PlayAura($disease, $otherPlayer);
     return "";
   }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
 }
 
 class seed_bloodrot_blue extends Card {
@@ -341,10 +325,6 @@ class seed_bloodrot_blue extends Card {
     $this->cardID = "seed_bloodrot_blue";
     $this->controller = $controller;
     $this->baseCard = new seed($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Seed Bloodrot";
   }
 }
 
@@ -354,10 +334,6 @@ class seed_frailty_blue extends Card {
     $this->controller = $controller;
     $this->baseCard = new seed($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Seed Frailty";
-  }
 }
 
 class seed_inertia_blue extends Card {
@@ -365,10 +341,6 @@ class seed_inertia_blue extends Card {
     $this->cardID = "seed_inertia_blue";
     $this->controller = $controller;
     $this->baseCard = new seed($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Seed Inertia";
   }
 }
 
@@ -399,26 +371,6 @@ class prolonged_illness_blue extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     PlayAura($additionalCosts, $target, effectSource:$this->cardID);
     WriteLog(CardLink($additionalCosts) . " has been prolonged!");
-  }
-
-  function SpecialName() {
-    return "Prolonged Disease";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "I";
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
   }
 }
 
@@ -470,26 +422,6 @@ class outbreak_blue extends Card {
     global $defPlayer, $CombatChain, $Diseases;
     foreach($Diseases as $disease)
       PlayAura($disease, $defPlayer, effectSource:$CombatChain->AttackCard()->ID(), effectAgent:$this->controller);
-  }
-
-  function SpecialName() {
-    return "Outbreak";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 3;
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
   }
 }
 
@@ -561,22 +493,6 @@ class phial_of_calamity extends Card {
 	function DiscardStartTurnTrigger($index) {
 		SilverBuyback($this->controller, $index);
 	}
-
-	function SpecialName() {
-		return "Phial of Calamity";
-	}
-
-	function SpecialType() {
-		return "E";
-	}
-
-	function SpecialSubType() {
-		return "Off-Hand";
-	}
-
-	function SpecialBlock() {
-		return -2;
-	}
 }
 
 class cadaver_handlers extends Card {
@@ -621,30 +537,6 @@ class cadaver_handlers extends Card {
   function DiscardStartTurnTrigger($index) {
 		SilverBuyback($this->controller, $index);
 	}
-
-  function SpecialName() {
-    return "Cadaver Handlers";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialPitch() {
-    return -1;
-  }
 }
 
 class demoralize_the_dracai_red extends Card {
@@ -681,22 +573,6 @@ class demoralize_the_dracai_red extends Card {
 
   function ContractCompleted() {
     PutItemIntoPlayForPlayer("silver", $this->controller);
-  }
-
-  function SpecialName() {
-    return "Demoralize the Dracai";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
   }
 }
 
@@ -749,18 +625,6 @@ class tailored_targeting_red extends Card {
   function ContractCompleted() {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
-
-  function SpecialName() {
-    return "Tailored Targeting";
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
 }
 
 class flip_the_script_blue extends Card {
@@ -789,26 +653,6 @@ class flip_the_script_blue extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     return 1;
-  }
-
-  function SpecialName() {
-    return "Flip the Script";
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function HasStealth() {
-    return true;
   }
 }
 
@@ -894,26 +738,6 @@ class bribe_the_guards_blue extends Card {
       SetTargetsChoices($this->controller, $this->cardID, $targets, "Give a defending card -1 block");
     }
   }
-
-  function SpecialName() {
-    return "Bribe the Guards";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function HasStealth() {
-    return true;
-  }
 }
 
 class continued_coercion_yellow extends Card {
@@ -941,26 +765,6 @@ class continued_coercion_yellow extends Card {
   }
 
   function CurrentEffectGrantsGoAgain($param) {
-    return true;
-  }
-
-  function SpecialName() {
-    return "Continued Coercion";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function HasStealth() {
     return true;
   }
 }
@@ -1023,5 +827,63 @@ class sick_intent_red extends Card {
 
   function SpecialType() {
     return "AA";
+  }
+}
+
+class concoct_agony_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "concoct_agony_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return NumAttackReactionsPlayed() >= 3 ? 3 : 0;
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (NumAttackReactionsPlayed() < 3) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $Arsenal = new Arsenal($defPlayer);
+    $Arsenal->BanishAll($this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Concoct Agony";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
   }
 }

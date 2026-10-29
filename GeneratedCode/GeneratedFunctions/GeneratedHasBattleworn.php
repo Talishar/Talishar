@@ -15,6 +15,7 @@ return match($cardID) {
 "braveforge_bracers" => true,
 "breaking_scales" => true,
 "breeze_rider_boots" => true,
+"cadaver_handlers" => true,
 "comeback_kicks" => true,
 "craterhoof" => true,
 "dealers_grip" => true,

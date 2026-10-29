@@ -2,15 +2,13 @@
 function GeneratedIs1H($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
-"paupers_knife" => true,
-"cogwerx_dueling_pistol" => true,
-"one_click_pinpointer" => true,
 "ball_breaker" => true,
 "beckoning_mistblade" => true,
 "brush_of_heavenly_rites" => true,
 "cintari_saber" => true,
 "cintari_saber_r" => true,
 "claw_of_vynserakai" => true,
+"cogwerx_dueling_pistol" => true,
 "flail_of_agony" => true,
 "gavel_of_natural_order" => true,
 "graphene_chelicera" => true,
@@ -38,9 +36,11 @@ return match($cardID) {
 "nerve_scalpel_r" => true,
 "obsidian_fire_vein" => true,
 "obsidian_fire_vein_r" => true,
+"one_click_pinpointer" => true,
 "orbitoclast" => true,
 "orbitoclast_r" => true,
 "parry_blade" => true,
+"paupers_knife" => true,
 "quicksilver_dagger" => true,
 "quicksilver_dagger_r" => true,
 "redwood_hammer" => true,
@@ -55,7 +55,6 @@ return match($cardID) {
 "winters_wail" => true,
 "zephyr_needle" => true,
 "zephyr_needle_r" => true,
-"placeholder_weapon" => true,
 default => false
 };
 }

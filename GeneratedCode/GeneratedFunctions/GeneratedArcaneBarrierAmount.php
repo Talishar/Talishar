@@ -19,6 +19,7 @@ return match($cardID) {
 "crown_of_everbloom" => 2,
 "crown_of_reflection" => 1,
 "double_cross_strap" => 1,
+"drop_dead_bodice" => 1,
 "dyadic_carapace" => 2,
 "enclosed_firemind" => 1,
 "evo_heartdrive_blue" => 1,
@@ -70,7 +71,6 @@ return match($cardID) {
 "widow_veil_respirator" => 1,
 "widow_web_crawler" => 1,
 "mbrio_base_vizier" => 1,
-"drop_dead_bodice" => 1,
 default => 0
 };
 }

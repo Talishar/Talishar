@@ -2,14 +2,13 @@
 function GeneratedHasBoost($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
-"madness_spiral_blue" => true,
-"bootlegger_bust_up_red" => true,
-"bootlegger_bust_up_yellow" => true,
-"bootlegger_bust_up_blue" => true,
 "big_bertha_red" => true,
 "big_bertha_yellow" => true,
 "big_bertha_blue" => true,
 "blast_rig_red" => true,
+"bootlegger_bust_up_red" => true,
+"bootlegger_bust_up_yellow" => true,
+"bootlegger_bust_up_blue" => true,
 "bull_bar_red" => true,
 "bull_bar_yellow" => true,
 "bull_bar_blue" => true,
@@ -57,6 +56,7 @@ return match($cardID) {
 "lay_waste_red" => true,
 "lay_waste_yellow" => true,
 "lay_waste_blue" => true,
+"madness_spiral_blue" => true,
 "metex_red" => true,
 "metex_yellow" => true,
 "metex_blue" => true,

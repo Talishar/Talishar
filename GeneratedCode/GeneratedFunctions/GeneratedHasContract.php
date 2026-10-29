@@ -7,6 +7,7 @@ return match($cardID) {
 "annihilate_the_armed_yellow" => true,
 "annihilate_the_armed_blue" => true,
 "defang_the_dragon_red" => true,
+"demoralize_the_dracai_red" => true,
 "eradicate_yellow" => true,
 "excessive_bloodloss_red" => true,
 "excessive_bloodloss_yellow" => true,
@@ -35,6 +36,7 @@ return match($cardID) {
 "slay_the_scholars_yellow" => true,
 "slay_the_scholars_blue" => true,
 "surgical_extraction_blue" => true,
+"tailored_targeting_red" => true,
 default => false
 };
 }

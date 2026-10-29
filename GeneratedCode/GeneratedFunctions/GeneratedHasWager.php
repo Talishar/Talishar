@@ -32,7 +32,6 @@ return match($cardID) {
 "wage_vigor_red" => true,
 "wage_vigor_yellow" => true,
 "wage_vigor_blue" => true,
-"reverse_psychology" => true,
 default => false
 };
 }

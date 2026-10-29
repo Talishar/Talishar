@@ -2,14 +2,6 @@
 function GeneratedCharacterHealth($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
-"min_genius" => 40,
-"min_mad" => 40,
-"vyle_catalyst_of_collapse" => 40,
-"huxley_racketeer" => 38,
-"huxley" => 19,
-"azalea_ace_of_spades" => 38,
-"azalea_lone_vigilante" => 19,
-"a_01_first_cogwarden" => 19,
 "aegis_archangel_of_protection" => 4,
 "aether_ashwing" => 1,
 "anka_drag_under_yellow" => 3,
@@ -21,6 +13,8 @@ return match($cardID) {
 "aurora_shooting_star" => 40,
 "avalon_archangel_of_rebirth" => 4,
 "azalea_ace_in_the_hole" => 40,
+"azalea_ace_of_spades" => 38,
+"azalea_lone_vigilante" => 19,
 "azvolai" => 3,
 "baalghor_omen_of_the_end" => 33,
 "barnacle_yellow" => 3,
@@ -61,6 +55,8 @@ return match($cardID) {
 "gallow_end_of_the_line_yellow" => 3,
 "gravy_bones_shipwrecked_looter" => 40,
 "hala_bladesaint_of_the_vow" => 40,
+"huxley" => 19,
+"huxley_racketeer" => 38,
 "ira_scarlet_revenger" => 40,
 "iyslander" => 18,
 "iyslander_stormbind" => 36,
@@ -83,6 +79,8 @@ return match($cardID) {
 "marlynn_treasure_hunter" => 40,
 "maxx_the_hype_nitro" => 40,
 "metis_archangel_of_tenacity" => 4,
+"min_genius" => 40,
+"min_mad" => 40,
 "miragai" => 4,
 "moray_le_fay_yellow" => 3,
 "nasreth_the_soul_harrower" => 6,
@@ -146,6 +144,7 @@ return match($cardID) {
 "victoria_archangel_of_triumph" => 4,
 "viserai_rune_blood" => 40,
 "viserai_the_forsaken" => 40,
+"vyle_catalyst_of_collapse" => 40,
 "vynnset_iron_maiden" => 40,
 "vynserakai" => 1,
 "wailer_humperdinck_yellow" => 7,
@@ -153,7 +152,7 @@ return match($cardID) {
 "yoji_royal_protector" => 22,
 "zen_tamer_of_purpose" => 40,
 "zyggy_starlight" => 40,
-"trained_saurian" => 3,
+"a_01_first_cogwarden" => 19,
 default => 20
 };
 }
