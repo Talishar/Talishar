@@ -143,6 +143,9 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $auras[] = $holoCounters; // holo counters
     $auras[] = "-"; //bound to
     $uniqueID = "-"; // reset the unique ID
+
+    if ($effectAgent != $player)
+      CheckInfectContracts($effectAgent, $cardID, $number);
   }
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if ($isToken) {

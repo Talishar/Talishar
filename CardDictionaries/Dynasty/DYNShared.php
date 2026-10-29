@@ -601,6 +601,43 @@ function ContractCompleted($player, $cardID)
   }
 }
 
+function CheckInfectContracts($player, $aura, $number) {
+  global $CombatChain, $chainLinks;
+  $numActiveLink = $CombatChain->NumCardsActiveLink();
+  for($i = 0; $i < $numActiveLink; ++$i) {
+    $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if ($chainCard->PlayerID() != $player) continue;
+    $contractType = ContractType($chainCard->ID());
+    if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainCard->ID());
+    if ($i == 0) {
+      $extraText = GetHorrorsBuff();
+      $contractType = ContractType($extraText);
+      if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $extraText);
+    }
+  }
+  $chainLinksCount = count($chainLinks);
+  $chainLinksPieces = ChainLinksPieces();
+  for($i = 0; $i < $chainLinksCount; ++$i) {
+    $linkCount = count($chainLinks[$i]);
+    for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
+      if($chainLinks[$i][$j+2] == 0) continue;
+      if($chainLinks[$i][$j+1] != $player) continue;
+      $contractType = ContractType($chainLinks[$i][$j]);
+      if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainLinks[$i][$j]);
+      if ($j == 0) {
+        $extraText = GetHorrorsBuff($i);
+        $contractType = ContractType($extraText);
+        if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $extraText);
+      }
+    }
+  }
+}
+
+function CheckInfectContract($contractType, $aura) {
+  if ($contractType == "INFECT") return SubtypeContains($aura, "Disease");
+  return false;
+}
+
 function CheckHitContracts($mainPlayer, $otherPlayer)
 {
   global $CombatChain, $chainLinks;
@@ -610,8 +647,6 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     $contractType = ContractType($chainCard->ID());
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
     if ($i == 0) {
-      // $foundHorrors = SearchCurrentTurnEffects("horrors_of_the_past_yellow", $mainPlayer, returnUniqueID:true);
-      // $extraText = $foundHorrors != -1 ? $foundHorrors : "-";
       $extraText = GetHorrorsBuff();
       $contractType = ContractType($extraText);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);

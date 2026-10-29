@@ -964,3 +964,64 @@ class continued_coercion_yellow extends Card {
     return true;
   }
 }
+
+class sick_intent_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sick_intent_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $Diseases, $defPlayer;
+    $diseaseChoices = [];
+    foreach ($Diseases as $disease)
+      $diseaseChoices[] = "CARDID-$disease";
+    $diseaseChoices = implode(",", $diseaseChoices);
+    Await($this->controller, "ChooseMultiZone", "cardID", indices:$diseaseChoices, context:"Infect your opponent", subsequent:0);
+    Await($defPlayer, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
+  }
+
+  function ContractType($chosenName = '') {
+    return "INFECT";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  // function SpecialName() {
+  //   return "Sick Intent";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
