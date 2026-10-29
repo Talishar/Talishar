@@ -166,6 +166,7 @@ function ParseAdStatsPayload($payload)
 function AdStatsUpsert($conn, $table, $keyColumns, $valueColumns, $rows, $types)
 {
   if (count($rows) == 0) return;
+  sort($rows);
   $columns = array_merge(["day"], $keyColumns, $valueColumns);
   $placeholder = "(" . implode(",", array_fill(0, count($columns), "?")) . ")";
   $updates = implode(", ", array_map(fn($column) => "$column = $column + VALUES($column)", $valueColumns));

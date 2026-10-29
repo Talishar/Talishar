@@ -261,7 +261,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->opponentEquipmentSubmitted = true;
   $response->canSubmitEquipment = false;
   $response->canUnreadyEquipment = false;
-  if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
+  if(isset($authKey) && IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
 } else {

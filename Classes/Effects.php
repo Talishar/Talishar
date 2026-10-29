@@ -31,7 +31,7 @@ class CurrentTurnEffects {
       }
       return new CurrentEffect(-1);
     }
-    for ($i = $count - 1; $i >= 0; $i -= $effectPieces) {
+    for ($i = $count - $effectPieces; $i >= 0; $i -= $effectPieces) {
       if ($player != $effects[$i + 1]) continue;
       if ($effects[$i] == $effectID) return new CurrentEffect($i);
     }
