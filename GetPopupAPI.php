@@ -174,7 +174,7 @@ switch ($popupType) {
     global $SET_HideGamesFromFriends;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen, $SET_FannedHandTipSeen;
     
     $response->Settings = [];
     
@@ -236,6 +236,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "AutoPitchForced", 49, $dbSettings);
       AddSettingFromDB($response->Settings, "RequireYesNoAnswer", 50, $dbSettings);
       AddSettingFromDB($response->Settings, "LandscapeTipSeen", 51, $dbSettings);
+      AddSettingFromDB($response->Settings, "FannedHandTipSeen", 52, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -283,6 +284,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "AutoPitchForced", $SET_AutoPitchForced, $playerSettings);
       AddSetting($response->Settings, "RequireYesNoAnswer", $SET_RequireYesNoAnswer, $playerSettings);
       AddSetting($response->Settings, "LandscapeTipSeen", $SET_LandscapeTipSeen, $playerSettings);
+      AddSetting($response->Settings, "FannedHandTipSeen", $SET_FannedHandTipSeen, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

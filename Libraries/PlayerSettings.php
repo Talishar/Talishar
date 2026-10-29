@@ -62,6 +62,7 @@ $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge to
 $SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card in it is needed to pay the remaining cost
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 $SET_LandscapeTipSeen = 51;
+$SET_FannedHandTipSeen = 52;
 
 function SettingsPieces()
 {
@@ -694,6 +695,7 @@ function SettingsIdMap()
     "AutoPitchForced" => 49,
     "RequireYesNoAnswer" => 50,
     "LandscapeTipSeen" => 51,
+    "FannedHandTipSeen" => 52,
   ];
   return $settingsToId;
 }
@@ -751,7 +753,7 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen, $SET_FannedHandTipSeen;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -761,7 +763,7 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
-      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
+      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen, $SET_FannedHandTipSeen,
     ], true);
   }
   return isset($persistable[$setting]);
