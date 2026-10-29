@@ -414,7 +414,7 @@ enum PatreonCampaign : string
       //Bash and Flood
       "36" => ["zerodois", "HosterX", "Lanless", "leozzato", "LilJosh", "Ruri", "spirus", "XandreBorges", "Marcel",
         "brunohm", "boanoite", "Patolouco4", "PvtVoid"],
-      "37" => ["iaPhiN", "IceJuggernaut", "mehall", "Synergistic", "drougal", "Anarchyplz", "Draco108",
+      "37" => ["iaphin", "IceJuggernaut", "mehall", "Synergistic", "drougal", "Anarchyplz", "Draco108",
         "SJ1123", "NateFrautschy", "foxfirerandom", "Hugstimeover", "Aegisworn"],
       "279086" => ["brandaotcg", "OotTheMonk", "Aegisworn"],
       "1787491" => ["RedZoneRogue"],
