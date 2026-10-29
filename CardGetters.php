@@ -336,14 +336,15 @@ function &GetCardStats($player)
   global $mainPlayerGamestateStillBuilt;
   if ($mainPlayerGamestateStillBuilt) {
     global $mainPlayer;
-    if ($player == $mainPlayer) { global $mainCardStats; return $mainCardStats; }
-    global $defCardStats;
-    return $defCardStats;
+    if ($player == $mainPlayer) { global $mainCardStats; $stats = &$mainCardStats; }
+    else { global $defCardStats; $stats = &$defCardStats; }
+  } else {
+    global $myStateBuiltFor;
+    if ($player == $myStateBuiltFor) { global $myCardStats; $stats = &$myCardStats; }
+    else { global $theirCardStats; $stats = &$theirCardStats; }
   }
-  global $myStateBuiltFor;
-  if ($player == $myStateBuiltFor) { global $myCardStats; return $myCardStats; }
-  global $theirCardStats;
-  return $theirCardStats;
+  if (is_string($stats)) $stats = $stats === "" ? [] : explode(" ", $stats);
+  return $stats;
 }
 
 function &GetCardTurnLog($player)
@@ -351,14 +352,15 @@ function &GetCardTurnLog($player)
   global $mainPlayerGamestateStillBuilt;
   if ($mainPlayerGamestateStillBuilt) {
     global $mainPlayer;
-    if ($player == $mainPlayer) { global $mainCardTurnLog; return $mainCardTurnLog; }
-    global $defCardTurnLog;
-    return $defCardTurnLog;
+    if ($player == $mainPlayer) { global $mainCardTurnLog; $log = &$mainCardTurnLog; }
+    else { global $defCardTurnLog; $log = &$defCardTurnLog; }
+  } else {
+    global $myStateBuiltFor;
+    if ($player == $myStateBuiltFor) { global $myCardTurnLog; $log = &$myCardTurnLog; }
+    else { global $theirCardTurnLog; $log = &$theirCardTurnLog; }
   }
-  global $myStateBuiltFor;
-  if ($player == $myStateBuiltFor) { global $myCardTurnLog; return $myCardTurnLog; }
-  global $theirCardTurnLog;
-  return $theirCardTurnLog;
+  if (is_string($log)) $log = json_decode($log, true) ?? [];
+  return $log;
 }
 
 function &GetTurnStats($player)
@@ -366,14 +368,15 @@ function &GetTurnStats($player)
   global $mainPlayerGamestateStillBuilt;
   if ($mainPlayerGamestateStillBuilt) {
     global $mainPlayer;
-    if ($player == $mainPlayer) { global $mainTurnStats; return $mainTurnStats; }
-    global $defTurnStats;
-    return $defTurnStats;
+    if ($player == $mainPlayer) { global $mainTurnStats; $stats = &$mainTurnStats; }
+    else { global $defTurnStats; $stats = &$defTurnStats; }
+  } else {
+    global $myStateBuiltFor;
+    if ($player == $myStateBuiltFor) { global $myTurnStats; $stats = &$myTurnStats; }
+    else { global $theirTurnStats; $stats = &$theirTurnStats; }
   }
-  global $myStateBuiltFor;
-  if ($player == $myStateBuiltFor) { global $myTurnStats; return $myTurnStats; }
-  global $theirTurnStats;
-  return $theirTurnStats;
+  if (is_string($stats)) $stats = $stats === "" ? [] : explode(" ", $stats);
+  return $stats;
 }
 
 function &GetAllies($player)

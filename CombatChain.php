@@ -1320,7 +1320,7 @@ function OnBlockEffects($index, $from)
         case "scale_peeler_r":
           if (TypeContains($chainCard->ID(), "E")) $chainCard->ModifyDefense(-1);
           break;
-        case $Card_BlockBanner:
+        case "banneret_of_resilience_yellow":
           if (DelimStringContains($cardType, "A") || $cardType == "AA") {
             $chainCard->ModifyDefense(1);
             $remove = true;

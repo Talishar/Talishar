@@ -168,164 +168,164 @@ enum PatreonCampaign : string
 
   public function SessionID(): string
   {
-    switch($this->value)
+    return match($this->value)
     {
-      case "7198186": return "isPatron";
-      case "7579026": return "isPtPPatron";
-      case "7329070": return "isGoAgainGamingPatron";
-      case "1787491": return "isRedZoneRoguePatron";
-      case "8997252": return "isFabraryPatron";
-      case "8955846": return "isManSantPatron";
-      case "6839952": return "isAttackActionPodcastPatreon";
-      case "7285727": return "isArsenalPassPatreon";
-      case "8635931": return "isTheTekloFoundryPatreon";
-      case "8736344": return "isFleshAndCommonBloodPatreon";
-      case "7593240": return "isSinOnStreamPatreon";
-      case "8458487": return "isFreshAndBudsPatreon";
-      case "6996822": return "isSloopdoopPatron";
-      case "1919413": return "isDMArmadaPatron";
-      case "7733166": return "isTheCardGuyzPatron";
-      case "7009853": return "isHomeTownTCGPatron";
-      case "8338817": return "isFleshAndPodPatron";
-      case "9361474": return "isKappoloPatron";
-      case "3828539": return "isLibrariansOfSolanaPatron";
-      case "8951973": return "isTheMetrixMetagamePatron";
-      case "9370276": return "isTheTablePitPatron";
-      case "9404423": return "isTCGTedPatron";
-      case "8040288": return "isCardAdvantagePatron";
-      case "10147920": return "isRavenousBabblePatron";
-      case "4006023": return "isBlackWingStudiosPatron";
-      case "10811477": return "isOnHitEffectPatron";
-      case "9851977": return "isDaganWhitePatron";
-      case "279086": return "isBrandaoTCGPatron";
-      case "11184392": return "isOffTheRailsTCGPatron";
-      case "11481720": return "isNxiPatron";
-      case "9408649": return "isPvtVoidPatron";
-      case "9734205": return "isWeMakeBestPatron";
-      case "9574942": return "isMnRCastPatron";
-      case "11561507": return "isOnTheBaublePatron";
-      case "9555916": return "isGorganianTomePatron";
-      case "8716783": return "isFABChaosPatron";
-      case "11266104": return "isDailyFabPatron";
-      case "12245100": return "isDropcastPatron";
-      case "12300349": return "IsFleshandBloodwithPabloPatron";
-      case "10956423": return "isChantsAndDaggersPatron";
-      case "12977197": return "isDazzyfizzlePatron";
-      case "13586904": return "isNikobruPatron";
-      case "13136013": return "isDashciplesPatron";
-      case "13969806": return "isBlitzkriegMephPatron";
-      case "13035399": return "isHamMan215Patron";
-      case "13905903": return "isNewHorizonsPatron";
-      case "11527692": return "isThreeFloatingPatron";
-      case "7330270": return "isSteelfurPatron";
-      case "13518995": return "isFleshAndBadPatron";
-      case "14460977": return "isSilvarisGardenPatron";
-      case "14951942": return "isFatAndFuriousPatron";
-      case "15323388": return "isOllinTogetherPatron";
-      case "15431936": return "isFabDadsPatron";
-      case "14707687": return "isScowlingFleshBagPatron";
-      default: return "";
-    }
+      "7198186" => "isPatron",
+      "7579026" => "isPtPPatron",
+      "7329070" => "isGoAgainGamingPatron",
+      "1787491" => "isRedZoneRoguePatron",
+      "8997252" => "isFabraryPatron",
+      "8955846" => "isManSantPatron",
+      "6839952" => "isAttackActionPodcastPatreon",
+      "7285727" => "isArsenalPassPatreon",
+      "8635931" => "isTheTekloFoundryPatreon",
+      "8736344" => "isFleshAndCommonBloodPatreon",
+      "7593240" => "isSinOnStreamPatreon",
+      "8458487" => "isFreshAndBudsPatreon",
+      "6996822" => "isSloopdoopPatron",
+      "1919413" => "isDMArmadaPatron",
+      "7733166" => "isTheCardGuyzPatron",
+      "7009853" => "isHomeTownTCGPatron",
+      "8338817" => "isFleshAndPodPatron",
+      "9361474" => "isKappoloPatron",
+      "3828539" => "isLibrariansOfSolanaPatron",
+      "8951973" => "isTheMetrixMetagamePatron",
+      "9370276" => "isTheTablePitPatron",
+      "9404423" => "isTCGTedPatron",
+      "8040288" => "isCardAdvantagePatron",
+      "10147920" => "isRavenousBabblePatron",
+      "4006023" => "isBlackWingStudiosPatron",
+      "10811477" => "isOnHitEffectPatron",
+      "9851977" => "isDaganWhitePatron",
+      "279086" => "isBrandaoTCGPatron",
+      "11184392" => "isOffTheRailsTCGPatron",
+      "11481720" => "isNxiPatron",
+      "9408649" => "isPvtVoidPatron",
+      "9734205" => "isWeMakeBestPatron",
+      "9574942" => "isMnRCastPatron",
+      "11561507" => "isOnTheBaublePatron",
+      "9555916" => "isGorganianTomePatron",
+      "8716783" => "isFABChaosPatron",
+      "11266104" => "isDailyFabPatron",
+      "12245100" => "isDropcastPatron",
+      "12300349" => "IsFleshandBloodwithPabloPatron",
+      "10956423" => "isChantsAndDaggersPatron",
+      "12977197" => "isDazzyfizzlePatron",
+      "13586904" => "isNikobruPatron",
+      "13136013" => "isDashciplesPatron",
+      "13969806" => "isBlitzkriegMephPatron",
+      "13035399" => "isHamMan215Patron",
+      "13905903" => "isNewHorizonsPatron",
+      "11527692" => "isThreeFloatingPatron",
+      "7330270" => "isSteelfurPatron",
+      "13518995" => "isFleshAndBadPatron",
+      "14460977" => "isSilvarisGardenPatron",
+      "14951942" => "isFatAndFuriousPatron",
+      "15323388" => "isOllinTogetherPatron",
+      "15431936" => "isFabDadsPatron",
+      "14707687" => "isScowlingFleshBagPatron",
+      default => "",
+    };
   }
 
   public function CampaignName(): string
   {
-    switch($this->value)
+    return match($this->value)
     {
-      case "0": return "Pummelowanko";
-      case "1": return "Dragon Shield Pro Team";
-      case "2": return "AscentGaming";
-      case "3": return "Eternal Oracles";
-      case "4": return "Luminaris";
-      case "5": return "FAB-LAB";
-      case "6": return "OnHit";
-      case "7": return "Second Cycle";
-      case "8": return "Sonic Doom";
-      case "9": return "Pummel 52100";
-      case "10": return "Team Emperors Rome";
-      case "11": return "Sunflower Samurai";
-      case "12": return "Cold Foil Control";
-      case "13": return "Righteous Gaming";
-      case "14": return "Team Talishar";
-      case "15": return "Team Tide Breakers";
-      case "16": return "Cup of TCG";
-      case "14707687": return "ScowlingFleshBag";
-      case "18": return "Thai Cards Shop";
-      case "19": return "Metal Fab";
-      case "20": return "Potato Squad";
-      case "21": return "Team Fabled Brazil";
-      case "22": return "Aggro Blaze";
-      case "23": return "Null";
-      case "24": return "Pitch Devils";
-      case "25": return "Mickz";
-      case "26": return "Snap Dragons";
-      case "27": return "FaBlazing";
-      case "28": return "Snow";
-      case "29": return "Red Line";
-      case "30": return "Skill Issue";
-      case "31": return "Winged Hussars";
-      case "32": return "Fab Insight";
-      case "33": return "Oddwillows";
-      case "34": return "Shine";
-      case "35": return "IndyFab";
-      case "36": return "Bash and Flood";
-      case "37": return "We Take Candy From Strangers";
-      case "7198186": return "Talishar";
-      case "7579026": return "Push the Point";
-      case "7329070": return "Go Again Gaming";
-      case "1787491": return "Red Zone Rogue";
-      case "8997252": return "Fabrary";
-      case "8955846": return "Man Sant";
-      case "6839952": return "Attack Action Podcast";
-      case "7285727": return "Arsenal Pass";
-      case "8635931": return "The Teklo Foundry";
-      case "8736344": return "Flesh and Common Blood";
-      case "7593240": return "Sin On Stream";
-      case "8458487": return "Fresh and Buds";
-      case "6996822": return "Sloopdoop";
-      case "1919413": return "DM Armada";
-      case "7733166": return "The Card Guyz";
-      case "7009853": return "HomeTownTCG";
-      case "8338817": return "Flesh And Pod";
-      case "9361474": return "Kappolo";
-      case "3828539": return "Librarians of Solana";
-      case "8951973": return "The Metrix Metagame";
-      case "9370276": return "The Table Pit";
-      case "9404423": return "TCG Ted";
-      case "8040288": return "Card Advantage";
-      case "10147920": return "Ravenous Babble";
-      case "4006023": return "Black Wing Studios";
-      case "10811477": return "On Hit Effect";
-      case "9851977": return "Dagan White";
-      case "279086": return "BrandaoTCG";
-      case "11184392": return "Off the Rails TCG";
-      case "11481720": return "Nxi";
-      case "9408649": return "PvtVoid";
-      case "9734205": return "WeMakeBest";
-      case "9574942": return "MnRCast";
-      case "11561507": return "OnTheBauble";
-      case "9555916": return "GorganianTome";
-      case "8716783": return "FABChaos";
-      case "11266104": return "DailyFab";
-      case "12144126": return "ThePlagueHive";
-      case "12245100": return "Dropcast";
-      case "12300349": return "Flesh and Blood with Pablo";
-      case "10956423": return "Chants and Daggers";
-      case "12977197": return "Dazzyfizzle";
-      case "13586904": return "Nikobru";
-      case "13136013": return "Dashciples";
-      case "13969806": return "Blitzkrieg Meph";
-      case "13035399": return "HamMan215";
-      case "13905903": return "New Horizons FAB";
-      case "11527692": return "Three Floating";
-      case "7330270": return "Steelfur";
-      case "13518995": return "Flesh and Bad";
-      case "14460977": return "Silvaris Garden";
-      case "14951942": return "Fat and Furious";
-      case "15323388": return "Ollin Together";
-      case "15431936": return "Fab Dads";
-      default: return "";
-    }
+      "0" => "Pummelowanko",
+      "1" => "Dragon Shield Pro Team",
+      "2" => "AscentGaming",
+      "3" => "Eternal Oracles",
+      "4" => "Luminaris",
+      "5" => "FAB-LAB",
+      "6" => "OnHit",
+      "7" => "Second Cycle",
+      "8" => "Sonic Doom",
+      "9" => "Pummel 52100",
+      "10" => "Team Emperors Rome",
+      "11" => "Sunflower Samurai",
+      "12" => "Cold Foil Control",
+      "13" => "Righteous Gaming",
+      "14" => "Team Talishar",
+      "15" => "Team Tide Breakers",
+      "16" => "Cup of TCG",
+      "14707687" => "ScowlingFleshBag",
+      "18" => "Thai Cards Shop",
+      "19" => "Metal Fab",
+      "20" => "Potato Squad",
+      "21" => "Team Fabled Brazil",
+      "22" => "Aggro Blaze",
+      "23" => "Null",
+      "24" => "Pitch Devils",
+      "25" => "Mickz",
+      "26" => "Snap Dragons",
+      "27" => "FaBlazing",
+      "28" => "Snow",
+      "29" => "Red Line",
+      "30" => "Skill Issue",
+      "31" => "Winged Hussars",
+      "32" => "Fab Insight",
+      "33" => "Oddwillows",
+      "34" => "Shine",
+      "35" => "IndyFab",
+      "36" => "Bash and Flood",
+      "37" => "We Take Candy From Strangers",
+      "7198186" => "Talishar",
+      "7579026" => "Push the Point",
+      "7329070" => "Go Again Gaming",
+      "1787491" => "Red Zone Rogue",
+      "8997252" => "Fabrary",
+      "8955846" => "Man Sant",
+      "6839952" => "Attack Action Podcast",
+      "7285727" => "Arsenal Pass",
+      "8635931" => "The Teklo Foundry",
+      "8736344" => "Flesh and Common Blood",
+      "7593240" => "Sin On Stream",
+      "8458487" => "Fresh and Buds",
+      "6996822" => "Sloopdoop",
+      "1919413" => "DM Armada",
+      "7733166" => "The Card Guyz",
+      "7009853" => "HomeTownTCG",
+      "8338817" => "Flesh And Pod",
+      "9361474" => "Kappolo",
+      "3828539" => "Librarians of Solana",
+      "8951973" => "The Metrix Metagame",
+      "9370276" => "The Table Pit",
+      "9404423" => "TCG Ted",
+      "8040288" => "Card Advantage",
+      "10147920" => "Ravenous Babble",
+      "4006023" => "Black Wing Studios",
+      "10811477" => "On Hit Effect",
+      "9851977" => "Dagan White",
+      "279086" => "BrandaoTCG",
+      "11184392" => "Off the Rails TCG",
+      "11481720" => "Nxi",
+      "9408649" => "PvtVoid",
+      "9734205" => "WeMakeBest",
+      "9574942" => "MnRCast",
+      "11561507" => "OnTheBauble",
+      "9555916" => "GorganianTome",
+      "8716783" => "FABChaos",
+      "11266104" => "DailyFab",
+      "12144126" => "ThePlagueHive",
+      "12245100" => "Dropcast",
+      "12300349" => "Flesh and Blood with Pablo",
+      "10956423" => "Chants and Daggers",
+      "12977197" => "Dazzyfizzle",
+      "13586904" => "Nikobru",
+      "13136013" => "Dashciples",
+      "13969806" => "Blitzkrieg Meph",
+      "13035399" => "HamMan215",
+      "13905903" => "New Horizons FAB",
+      "11527692" => "Three Floating",
+      "7330270" => "Steelfur",
+      "13518995" => "Flesh and Bad",
+      "14460977" => "Silvaris Garden",
+      "14951942" => "Fat and Furious",
+      "15323388" => "Ollin Together",
+      "15431936" => "Fab Dads",
+      default => "",
+    };
   }
 
   private static function TeamRosters(): array
