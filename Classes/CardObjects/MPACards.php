@@ -801,9 +801,9 @@ class sick_intent_red extends Card {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Sick Intent";
-  // }
+  function SpecialName() {
+    return "Sick Intent";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -855,9 +855,9 @@ class concoct_agony_yellow extends Card {
     $Arsenal->BanishAll($this->controller);
   }
 
-  // function SpecialName() {
-  //   return "Concoct Agony";
-  // }
+  function SpecialName() {
+    return "Concoct Agony";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -885,5 +885,144 @@ class concoct_agony_yellow extends Card {
 
   function HasStealth() {
     return true;
+  }
+}
+
+class sickening_exhaustion_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sickening_exhaustion_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    if (IsInfected($defPlayer)) {
+      $numToBottom = count(GetArsenal($defPlayer));
+      for ($i = 0; $i < $numToBottom; $i++) {
+        BottomDeckMultizone($defPlayer, "MYARS", "-", true, "Choose a card from your arsenal to add on the bottom of your deck");
+      }
+    }
+    return "";
+  }
+
+  function SpecialName() {
+    return "Sickening Exhaustion";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class sickening_rot_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "sickening_rot_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    if (IsInfected($defPlayer)) {
+      $hand = &GetHand($defPlayer);
+      $resources = &GetResources($defPlayer);
+      if ((Count($hand) > 0 || $resources[0] > 0) && !IsPlayerAI($defPlayer)) {
+        AddDecisionQueue("YESNO", $defPlayer, "if_you_want_to_pay_3_to_avoid_taking_2_damage", 0, 1);
+        AddDecisionQueue("NOPASS", $defPlayer, "-", 1);
+        AddDecisionQueue("PASSPARAMETER", $defPlayer, "3", 1);
+        AddDecisionQueue("PAYRESOURCES", $defPlayer, "3", 1);
+        AddDecisionQueue("ELSE", $defPlayer, "-");
+      }
+      AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-$this->cardID-DAMAGE-$defPlayer", 1);
+      AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
+    }
+    return "";
+  }
+
+  function SpecialName() {
+    return "Sickening Rot";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class sickening_weakness_blue extends Card {
+  // If the defending hero is infected, defending cards get -1{d} this chain link. (A hero is infected if they control a disease.)
+  function __construct($controller) {
+    $this->cardID = "sickening_weakness_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $defPlayer;
+    if (IsInfected($defPlayer)) {
+      AddCurrentTurnEffect($this->cardID, $defPlayer);
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    return -1;
+  }
+
+  function SpecialName() {
+    return "Sickening Weakness";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
   }
 }

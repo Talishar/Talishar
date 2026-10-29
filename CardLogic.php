@@ -63,9 +63,10 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   AddDecisionQueue("WRITELOG", $player, "Player $player did not sink a card", 1);
 }
 
-function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $context = "Choose a card to sink (or Pass)")
+function BottomDeckMultizone($player, $zone1, $zone2="-", $isMandatory = false, $context = "Choose a card to sink (or Pass)")
 {
-  AddDecisionQueue("MULTIZONEINDICES", $player, $zone1 . "&" . $zone2, 1);
+  $search = $zone2 != "-" ? "$zone1&$zone2" : $zone1;
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
   AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
   AddDecisionQueue($isMandatory ? "CHOOSEMULTIZONE" : "MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
