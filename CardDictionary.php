@@ -2064,6 +2064,7 @@ function CanBlockWithAura($cardID)
 function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFrom = "", $stillOnCombatChain = 1, $additionalCosts = "-", $uniqueID = "-")
 {
   global $currentPlayer, $CS_NumWizardNonAttack, $CS_NumBoosted, $mainPlayer, $CS_NumBluePlayed, $CS_NumAttacks;
+  global $CS_NumTimesHeroAttacked;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = $player == 2 ? 1 : 2;
   if (HasMeld($cardID) && $additionalCosts == "Both" && $from != "MELD") return "-";
@@ -2195,7 +2196,7 @@ function GoesWhereAfterResolving($cardID, $from = null, $player = "", $playedFro
       if (GetClassState($currentPlayer, $CS_NumBluePlayed) > 1) return "-";
       else return "GY";
     case "relentless_pursuit_blue":
-      if (GetClassState($currentPlayer, $CS_NumAttacks) > 0) return "BOTDECK";
+      if (GetClassState($otherPlayer, $CS_NumTimesHeroAttacked) > 0) return "BOTDECK";
       else return "GY";
     default:
       return "GY";

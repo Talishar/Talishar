@@ -3369,14 +3369,14 @@ class vigilant_dodgers extends Card {
 }
 
 class olde_leather_helm extends Card {
-  function __construct($controller) {
-    $this->cardID = "olde_leather_helm";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "olde_leather_helm";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		global $CS_NumTimesHeroAttacked;
