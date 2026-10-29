@@ -871,7 +871,7 @@ class bribe_the_guards_blue extends Card {
   function GetTargets($from, $index) {
     global $CombatChain, $ChainLinks;
     $targets = [];
-    if ($from == "CC") {
+    if ($from == "CC" || $from == "PLAY") {
       for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
         $targets[] = "COMBATCHAINLINK-" . $CombatChain->Card($i, true)->Index();
       }
