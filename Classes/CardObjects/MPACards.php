@@ -895,9 +895,9 @@ class bribe_the_guards_blue extends Card {
     }
   }
 
-  // function SpecialName() {
-  //   return "Bribe the Guards";
-  // }
+  function SpecialName() {
+    return "Bribe the Guards";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -944,9 +944,9 @@ class continued_coercion_yellow extends Card {
     return true;
   }
 
-  // function SpecialName() {
-  //   return "Continued Coercion";
-  // }
+  function SpecialName() {
+    return "Continued Coercion";
+  }
 
   function SpecialPitch() {
     return 2;
