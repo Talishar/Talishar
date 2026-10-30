@@ -6,7 +6,7 @@ $manualImageURLs = [
   "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/IAR257.webp" => "channel_stormgarden_yellow",
 ];
 
-function CheckImage($setID, $cardID, $isDuplicate=false, $manualImageURL="")
+function CheckImage($setID, $cardID, $isDuplicate=false, $manualImageURL="", $isHero=false)
 {
   $set = substr($setID, 0, 3);
   $number = substr($setID, 3);
@@ -84,6 +84,7 @@ function CheckImage($setID, $cardID, $isDuplicate=false, $manualImageURL="")
       $image = imagecreatefromwebp($cardImagesUploadedFolder);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
       if(!file_exists($cardCropsUploadedFolder)) imagewebp($image, $cardCropsMissingFolder);
+      if($isHero) imagepng($image, __DIR__ . "/../CardImages/media/missing/crops/" . $cardID . "_cropped.png"); // Shared replay link previews can only decode PNG crops
     }
   }
 }

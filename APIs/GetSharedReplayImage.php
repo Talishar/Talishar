@@ -5,7 +5,7 @@ include_once "../Libraries/ReplayLibraries.php";
 const SHARED_REPLAY_IMAGE_WIDTH = 600;
 const SHARED_REPLAY_IMAGE_HEIGHT = 315;
 const SHARED_REPLAY_IMAGE_SEAM = 30;
-const SHARED_REPLAY_IMAGE_VERSION = 2;
+const SHARED_REPLAY_IMAGE_VERSION = 3;
 
 function DecodeSharedReplayPng(string $data): ?array
 {
@@ -81,9 +81,9 @@ function EncodeSharedReplayPng(int $width, int $height, string $scanlines): stri
 
 function LoadSharedReplayHeroArt(string $heroCardId): ?array
 {
-  foreach ([$heroCardId, "UNKNOWNHERO"] as $cardId) {
-    if (preg_match('/^[A-Za-z0-9_-]+$/', $cardId) !== 1) continue;
-    $curl = curl_init("https://images.talishar.net/public/crops/{$cardId}_cropped.png");
+  if (preg_match('/^[A-Za-z0-9_-]+$/', $heroCardId) !== 1) return null;
+  foreach (["png", "webp"] as $extension) {
+    $curl = curl_init("https://images.talishar.net/public/crops/{$heroCardId}_cropped.$extension");
     curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5, CURLOPT_USERAGENT => "Talishar"]);
     $data = curl_exec($curl);
     $art = is_string($data) && curl_getinfo($curl, CURLINFO_RESPONSE_CODE) === 200 ? DecodeSharedReplayPng($data) : null;
@@ -191,8 +191,9 @@ $png = is_file($cacheFile) ? file_get_contents($cacheFile) : false;
 if ($png === false) {
   $p1Art = LoadSharedReplayHeroArt($p1Hero);
   $p2Art = LoadSharedReplayHeroArt($p2Hero);
+  $unknownArt = $p1Art === null || $p2Art === null ? LoadSharedReplayHeroArt("UNKNOWNHERO") : null;
   $logo = DecodeSharedReplayPng((string)@file_get_contents(__DIR__ . "/../Images/TalisharLogo.png"));
-  $png = RenderSharedReplayImage($p1Art, $p2Art, $logo);
+  $png = RenderSharedReplayImage($p1Art ?? $unknownArt, $p2Art ?? $unknownArt, $logo);
   if ($p1Art !== null && $p2Art !== null && (is_dir($cacheDirectory) || @mkdir($cacheDirectory, 0700, true))) {
     $tempFile = $cacheFile . "." . bin2hex(random_bytes(4)) . ".tmp";
     if (file_put_contents($tempFile, $png) !== false) @rename($tempFile, $cacheFile);
