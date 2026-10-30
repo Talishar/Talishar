@@ -2090,6 +2090,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   else {
     NonHitEffects($cardID);
   }
+  ResolveWagers(false);
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
   $charID = ShiyanaCharacter($charID);
@@ -2137,7 +2138,6 @@ function FinalizeChainLink($chainClosed = false)
   $chainLinkSummary[] = "";
   $resolvedValuesSlot = count($chainLinkSummary) - 1;
 
-  ResolveWagers($chainClosed);
   if (!$chainClosed) {
     ResolutionStepEffectTriggers();
     ResolutionStepCharacterTriggers();
