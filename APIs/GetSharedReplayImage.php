@@ -14,7 +14,7 @@ function LoadSharedReplayHeroArt(string $heroCardId)
   $context = stream_context_create(["http" => ["timeout" => 5, "user_agent" => "Talishar"]]);
   foreach ([$heroCardId, "UNKNOWNHERO"] as $cardId) {
     if (preg_match('/^[A-Za-z0-9_-]+$/', $cardId) !== 1) continue;
-    $data = @file_get_contents("https://images.talishar.net/public/crops/{$cardId}_cropped.webp", false, $context);
+    $data = @file_get_contents("https://images.talishar.net/public/crops/{$cardId}_cropped.png", false, $context);
     $art = $data === false ? false : @imagecreatefromstring($data);
     if ($art !== false) return $art;
   }
@@ -75,7 +75,7 @@ function RenderSharedReplayImage($p1Art, $p2Art): string
     ShadeSharedReplayImage($canvas, 0, $y, $width - 1, $y, 0.35 * (1 - $y / $topEnd) ** 2);
   }
 
-  $logo = @imagecreatefromwebp(__DIR__ . "/../Images/TalisharLogo.webp");
+  $logo = @imagecreatefrompng(__DIR__ . "/../Images/TalisharLogo.png");
   if ($logo !== false) {
     $logoWidth = SHARED_REPLAY_IMAGE_LOGO_WIDTH;
     $logoHeight = (int)round(imagesy($logo) * $logoWidth / imagesx($logo));
@@ -97,7 +97,7 @@ if ($metadata === null || ($metadata["type"] ?? "") === "snapshot") {
   exit;
 }
 
-if (!function_exists("imagecreatefromwebp")) {
+if (!function_exists("imagecreatefrompng") || !function_exists("imagejpeg")) {
   header("Location: " . SHARED_REPLAY_IMAGE_FALLBACK, true, 302);
   exit;
 }
