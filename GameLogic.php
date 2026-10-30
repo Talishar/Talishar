@@ -3283,11 +3283,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVESOUL":
       $selectedCards = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
       $selectedCards = array_values(array_filter($selectedCards, fn($cardID) => $cardID !== "" && $cardID !== "PASS"));
+      $removedCards = [];
       for ($i = count($selectedCards) - 1; $i >= 0; $i--) {
         $soulIndex = SearchSoulForIndex($selectedCards[$i], $player);
-        if ($soulIndex != -1) $lastResult = RemoveSoul($player, $soulIndex);
+        if ($soulIndex != -1) $removedCards[] = RemoveSoul($player, $soulIndex);
       }
-      return $lastResult;
+      return implode(",", $removedCards);
     case "REMOVECOUNTERAURAORDESTROY":
       $auras = &GetAuras($player);
       $index = SearchAurasForUniqueID($parameter, $player);

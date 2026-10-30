@@ -180,8 +180,8 @@ class LinkCard {
 	// Constructor
 	function __construct($linkNum, $index) {
 		global $chainLinks, $chainLinkSummary;
-		if ($index != -1)
-			$this->link = &$chainLinks[$linkNum] ?? [];
+		if ($index != -1 && isset($chainLinks[$linkNum]))
+			$this->link = &$chainLinks[$linkNum];
 		else
 			$this->link = [];
 		$this->index = $index;
