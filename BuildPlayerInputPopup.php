@@ -547,6 +547,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         for ($i = 0; $i < $optionsCount; ++$i) {
           if ($options[$i] != "" && $options[$i] != "PASS" && $options[$i] != "NOPASS") {
             if ($isMultiChooseDiscard) {
+              if (!isset($myDiscard[$options[$i]])) continue;
               $wateryGraveCounter = SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1;
               $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
             } else if ($isMultiChooseSubcards) {
@@ -918,9 +919,9 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if ($option0 == "THEIRCHAR" || $option0 == "MYCHAR") {
             $isTheirChar = ($option0 == "THEIRCHAR");
             $charArr = $isTheirChar ? $theirCharacter : $myCharacter;
-            $tapped = $charArr[$index + 14] == 1;
-            $powerCounters = $charArr[$index + 3];
-            $overlay = $showUsedCharOverlay && $charArr[$index + 1] != 2;
+            $tapped = ($charArr[$index + 14] ?? 0) == 1;
+            $powerCounters = $charArr[$index + 3] ?? 0;
+            $overlay = $showUsedCharOverlay && ($charArr[$index + 1] ?? 2) != 2;
             $charController = $isTheirChar ? $otherPlayer : $playerID;
             if ($label == "" && $charController == $mainPlayer) $label = $chainAttackLabels[$charArr[$index + 11] ?? "-"] ?? "";
           }

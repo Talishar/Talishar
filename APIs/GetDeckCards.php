@@ -46,6 +46,12 @@ if (empty($decklink)) {
 // Confirm this deck actually belongs to the logged-in user before hitting an
 // external deckbuilder API on their behalf.
 $conn = GetDBConnection(DBL_GET_DECK_CARDS);
+if (!$conn) {
+  http_response_code(503);
+  $response->message = "Service temporarily unavailable. Please try again later.";
+  echo json_encode($response);
+  exit;
+}
 $sql = "SELECT hero FROM favoritedeck WHERE decklink=? AND usersId=?";
 $stmt = mysqli_stmt_init($conn);
 $owned = false;
