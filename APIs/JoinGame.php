@@ -10,6 +10,7 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
+include_once "../Libraries/FormatCodes.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/MetafyHelper.php";
 include_once "../Assets/MetafyDictionary.php";
@@ -42,36 +43,6 @@ if (!function_exists("TypeContains")) {
   {
     $cardType = CardType($cardID);
     return DelimStringContains($cardType, $type);
-  }
-}
-
-if (!function_exists("FormatDisplayName")) {
-  function FormatDisplayName($format)
-  {
-    return match ($format) {
-      "cc" => "Classic Constructed",
-      "compcc" => "Competitive Classic Constructed",
-      "blitz" => "Blitz",
-      "compblitz" => "Competitive Blitz",
-      "futurecc" => "Future Classic Constructed",
-      "commoner" => "Commoner",
-      "sealed" => "Sealed",
-      "draft" => "Draft",
-      "llcc" => "Living Legend",
-      "llblitz" => "Living Legend Blitz",
-      "openformatblitz" => "Open Blitz",
-      "clash" => "Clash",
-      "futurell" => "Future Living Legend",
-      "openformatllblitz" => "Open Living Legend Blitz",
-      "compllcc" => "Competitive Living Legend",
-      "sage" => "Silver Age",
-      "compsage" => "Competitive Silver Age",
-      "futuresage" => "Future Silver Age",
-      "open" => "Open",
-      "gage" => "Golden Age",
-      "precon" => "Preconstructed Deck",
-      default => $format,
-    };
   }
 }
 
