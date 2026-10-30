@@ -1917,11 +1917,12 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($cardID == "nitro_mechanoida" || $cardID == "teklovossen_the_mechropotent") {
     if ($phase == "M" && $mainPlayer == $currentPlayer) {
       $charIndex = FindCharacterIndex($currentPlayer, $cardID);
+      $CharacterCard = new CharacterCard($charIndex, $currentPlayer);
       switch ($cardID) {
         case "nitro_mechanoida":
           return $character[$charIndex + 2] > 0;
         case "teklovossen_the_mechropotent":
-          return $character[$charIndex + 2] > 1;
+          return count(explode(",", $CharacterCard->Subcards())) > 1;
       }
     }
     return false;
