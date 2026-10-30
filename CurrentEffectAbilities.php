@@ -365,10 +365,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "target_totalizer":
       Draw($mainPlayer);
       break;
-    case $Card_LifeBanner:
+    case "banneret_of_salvation_yellow":
       GainHealth(1, $mainPlayer);
       return 1;
-    case $Card_ResourceBanner:
+    case "banneret_of_vigor_yellow":
       GainResources(1, $mainPlayer);
       return 1;
     case "hack_to_reality_yellow-HIT":
@@ -2273,8 +2273,8 @@ function IsCombatEffectPersistent($cardID)
     case "metis_archangel_of_tenacity":
     case "victoria_archangel_of_triumph":
     case "evo_steel_soul_memory_blue_equip":
-    case $Card_LifeBanner:
-    case $Card_ResourceBanner:
+    case "banneret_of_salvation_yellow":
+    case "banneret_of_vigor_yellow":
     case "stonewall_impasse":
     case "kassai_of_the_golden_sand":
     case "kassai":

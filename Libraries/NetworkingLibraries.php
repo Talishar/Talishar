@@ -578,7 +578,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput, 3);
-      foreach (explode(",", $input[1]) as $index) {
+      foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
         $Card = GetPermanent($input[0], $index, $playerID);
         $Card->ToggleGem();
@@ -586,7 +586,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 104: //Toggle other player permanent Active
       $input = explode("-", $buttonInput, 3);
-      foreach (explode(",", $input[1]) as $index) {
+      foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
         $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
         $Card->ToggleGem($playerID);

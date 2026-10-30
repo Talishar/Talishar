@@ -65,10 +65,10 @@ function ReplayCommandCount(string $commandFilename): int
   return substr_count($commands, "\n") + ($commands !== "" && $commands[-1] !== "\n" ? 1 : 0);
 }
 
-function SaveReplayStateSnapshot(string $gameDirectory, ?string $gamestate = null): ?int
+function SaveReplayStateSnapshot(string $gameDirectory, ?string $gamestate = null, ?int $pointer = null): ?int
 {
   $gameDirectory = rtrim($gameDirectory, "/\\") . "/";
-  $pointer = ReplayCommandCount($gameDirectory . "commandfile.txt");
+  $pointer ??= ReplayCommandCount($gameDirectory . "commandfile.txt");
   if ($pointer < 1) return null;
 
   if ($gamestate === null) {

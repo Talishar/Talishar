@@ -563,7 +563,10 @@ function HasPlayableCard($player, $phase)
   }
 
   for ($i = 0, $count = $CombatChain->NumCardsActiveLink(); $i < $count; ++$i) {
-    if(IsPlayable($CombatChain->Card($i, cardNumber:true)->ID(), $phase, "CC", $i, $restriction, $player)) return true;
+    $ChainCard = $CombatChain->Card($i, cardNumber:true);
+    $charIndex = $ChainCard->PlayerID() == $player ? FindCharacterIndexUniqueID($player, $ChainCard->OriginUniqueID()) : -1;
+    if ($charIndex != -1 && $character[$charIndex + 9] == 0) continue;
+    if(IsPlayable($ChainCard->ID(), $phase, "CC", $i, $restriction, $player)) return true;
   }
 
   $banish = &GetBanish($player);

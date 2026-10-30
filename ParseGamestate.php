@@ -12,6 +12,13 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
+function CardTurnLogJSON($log)
+{
+  if (!is_string($log)) return json_encode($log);
+  if (preg_match('/^\[(?:\[(?:0|[1-9][0-9]{0,17}),"[A-Za-z0-9_\-]*","[A-Za-z0-9_\-]*"\](?:,\[(?:0|[1-9][0-9]{0,17}),"[A-Za-z0-9_\-]*","[A-Za-z0-9_\-]*"\])*)?\]$/D', $log)) return $log;
+  return json_encode(json_decode($log, true) ?? []);
+}
+
 if(!is_numeric($gameName)) exit;
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
@@ -86,8 +93,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1ClassState = ClassStateFromString($gamestateContent[11]); // 12
   $p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
   $p1Soul = GetStringArray($gamestateContent[13]); // 14
-  $p1CardStats = GetStringArray($gamestateContent[14]); // 15
-  $p1TurnStats = GetStringArray($gamestateContent[15]); // 16
+  $p1CardStats = trim($gamestateContent[14]); // 15
+  $p1TurnStats = trim($gamestateContent[15]); // 16
   $p1Allies = GetStringArray($gamestateContent[16]); // 17
   $p1Permanents = GetStringArray($gamestateContent[17]); // 18
   $p1Settings = GetStringArray($gamestateContent[18]); // 19
@@ -107,8 +114,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2ClassState = ClassStateFromString($gamestateContent[29]); // 30
   $p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
   $p2Soul = GetStringArray($gamestateContent[31]); // 32
-  $p2CardStats = GetStringArray($gamestateContent[32]); // 33
-  $p2TurnStats = GetStringArray($gamestateContent[33]); // 34
+  $p2CardStats = trim($gamestateContent[32]); // 33
+  $p2TurnStats = trim($gamestateContent[33]); // 34
   $p2Allies = GetStringArray($gamestateContent[34]); // 35
   $p2Permanents = GetStringArray($gamestateContent[35]); // 36
   $p2Settings = GetStringArray($gamestateContent[36]); // 37
@@ -162,8 +169,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2IsAI = trim($gamestateContent[75+$numChainLinks]);
   $AIHasInfiniteHP = isset($gamestateContent[76+$numChainLinks]) ? trim($gamestateContent[76+$numChainLinks]) == "1" : false;
   if ($parseHistoricalStats) {
-    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
-    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? trim($gamestateContent[77+$numChainLinks]) : [];
+    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? trim($gamestateContent[78+$numChainLinks]) : [];
   } else {
     $p1CardTurnLog = [];
     $p2CardTurnLog = [];

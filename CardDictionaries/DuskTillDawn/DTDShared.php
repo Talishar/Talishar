@@ -133,8 +133,8 @@ function DTDCombatEffectActive($cardID, $attackID)
     case "runic_reckoning_red": return CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer);
     case "hack_to_reality_yellow": return true;
     case "hack_to_reality_yellow-HIT": return true;
-    case $Card_LifeBanner: return true;
-    case $Card_ResourceBanner: return true;
+    case "banneret_of_salvation_yellow": return true;
+    case "banneret_of_vigor_yellow": return true;
     case "metis_archangel_of_tenacity": return true;
     case "victoria_archangel_of_triumph": return CardType($attackID) == "AA";
     default:

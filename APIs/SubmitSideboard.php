@@ -86,7 +86,15 @@ if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
 }
 
 $submission = json_decode($submissionString);
-if ($submission === null || !isset($submission->hero)) {
+$isCardList = fn($list) => is_array($list) && count(array_filter($list, fn($card) => !is_string($card))) == 0;
+$validSubmission = is_object($submission) && isset($submission->hero) && is_string($submission->hero) && isset($submission->deck) && $isCardList($submission->deck);
+foreach (["quiver", "head", "chest", "arms", "legs", "offhand"] as $slot) {
+  if (isset($submission->$slot) && !is_string($submission->$slot)) $validSubmission = false;
+}
+foreach (["hands", "inventory"] as $list) {
+  if (isset($submission->$list) && !$isCardList($submission->$list)) $validSubmission = false;
+}
+if (!$validSubmission) {
   $response->error = "Invalid submission data";
   echo json_encode($response);
   exit;
@@ -117,19 +125,19 @@ $deck = (isset($submission->deck) ? implode(" ", $submission->deck) : "");
 
 if ($playerID == 1 && !$equipmentLocked) {
   $p1StartingEquipment = (object)[
-    'head'  => $submission->head,
-    'chest' => $submission->chest,
-    'arms'  => $submission->arms,
-    'legs'  => $submission->legs,
+    'head'  => $submission->head ?? null,
+    'chest' => $submission->chest ?? null,
+    'arms'  => $submission->arms ?? null,
+    'legs'  => $submission->legs ?? null,
   ];
 }
 
 if ($playerID == 2 && !$equipmentLocked) {
   $p2StartingEquipment = (object)[
-    'head'  => $submission->head,
-    'chest' => $submission->chest,
-    'arms'  => $submission->arms,
-    'legs'  => $submission->legs,
+    'head'  => $submission->head ?? null,
+    'chest' => $submission->chest ?? null,
+    'arms'  => $submission->arms ?? null,
+    'legs'  => $submission->legs ?? null,
   ];
 }
 

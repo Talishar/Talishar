@@ -110,7 +110,7 @@ if (!IsReplay() && isset($replayCommandCountBefore)) {
   AppendReplayLog($filepath, $replayLogLines ?? "");
   $replayCommandCountAfter = ReplayCommandCount($filepath . "commandfile.txt");
   if ($replayCommandCountAfter > $replayCommandCountBefore) {
-    $replayStatePointer = SaveReplayStateSnapshot($filepath);
+    $replayStatePointer = SaveReplayStateSnapshot($filepath, null, $replayCommandCountAfter);
     if ($replayStatePointer === null) {
       WriteLog("Replay state capture failed for input $replayCommandCountAfter.", highlight: true);
     } else {

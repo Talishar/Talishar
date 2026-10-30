@@ -1494,8 +1494,8 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "light_the_way_blue":
     case "lumina_lance_yellow-2":
     case "lumina_lance_yellow-3":
-    case $Card_LifeBanner:
-    case $Card_ResourceBanner:
+    case "banneret_of_salvation_yellow":
+    case "banneret_of_vigor_yellow":
     case "smash_and_grab_red":
     case "evo_command_center_yellow_equip":
     case "kassai_of_the_golden_sand":
@@ -2102,7 +2102,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "sigil_of_forethought_blue":
       case "sigil_of_cycles_blue":
       case "sigil_of_fyendal_blue":
-      case $CID_Frailty:
+      case "frailty":
       case "sharpened_senses_yellow":
       case "fealty":
         DestroyAuraUniqueID($player, $uniqueID);
@@ -3071,7 +3071,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $targetPlayer = str_contains($target, "THEIR") ? $mainPlayer : $player;
         Intimidate($targetPlayer);
         break;
-      case $CID_BloodRotPox:
+      case "bloodrot_pox":
         $hand = &GetHand($player);
         $resources = &GetResources($player);
         if ((Count($hand) > 0 || $resources[0] > 0) && !IsPlayerAI($mainPlayer)) {
@@ -3085,7 +3085,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
-      case $CID_Inertia:
+      case "inertia":
         $deck = new Deck($player);
         WriteLog("Processing the end of turn effect of " . CardLink("inertia", "inertia") . ".");
         $numToBottom = count(GetArsenal($player)) + count(GetHand($player));
