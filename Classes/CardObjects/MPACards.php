@@ -314,8 +314,8 @@ class seed extends BaseCard {
       default => ""
     };
     $otherPlayer = $this->controller == 1 ? 2 : 1;
-    PlayAura($disease, $this->controller);
-    PlayAura($disease, $otherPlayer);
+    PlayAura($disease, $this->controller, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
+    PlayAura($disease, $otherPlayer, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
     return "";
   }
 }
