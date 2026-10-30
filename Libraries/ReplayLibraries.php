@@ -32,6 +32,18 @@ function UserReplayPath(string $userId, int $replayNumber, bool $trailingSlash =
   return $trailingSlash ? $path . "/" : $path;
 }
 
+function SharedReplayMetadata(string $token): ?array
+{
+  if (strlen($token) !== 64 || !ctype_xdigit($token)) return null;
+  $tokenData = json_decode((string)@file_get_contents("../Replays/shared/$token.json"), true);
+  if (!is_array($tokenData)) return null;
+  $userId = (string)($tokenData["userId"] ?? "");
+  $replayNumber = ParsePositiveReplayNumber($tokenData["replayNumber"] ?? null);
+  if (!IsValidReplayUserId($userId) || $replayNumber === null) return null;
+  $metadata = json_decode((string)@file_get_contents(UserReplayPath($userId, $replayNumber) . "replayMetadata.json"), true);
+  return is_array($metadata) ? $metadata : null;
+}
+
 function ReplayStateFilename(string $directory, int $pointer): string
 {
   return rtrim($directory, "/\\") . "/replayState_$pointer.txt.gz";

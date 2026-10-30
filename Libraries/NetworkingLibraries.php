@@ -1267,6 +1267,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
         "p2HeroName" => $p2Hero === "" ? "" : CardName($p2Hero),
+        "format" => trim($gameFile[3] ?? ""),
         "formatVersion" => REPLAY_FORMAT_VERSION,
         "stateCount" => count(ReplayStatePointers($replayPath)),
         "favorite" => false,
