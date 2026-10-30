@@ -2290,14 +2290,15 @@ function CombatChainPlayCardAbilities($cardID, $from) {
 function IndexToBlockCardUID($index) {
   global $CombatChain, $ChainLinks;
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
-  $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
+  $fromPlay = $blockCard->From() == "EQUIP" || $blockCard->From() == "PLAY";
+  $uniqueID = $blockCard != "-" ? ($fromPlay ? $blockCard->OriginUniqueID() : $blockCard->UniqueID()) : "-";
   if ($blockCard == "-" && str_contains($index, ",")) {
     $indexParts = explode(",", $index, 2);
     $i = $indexParts[0];
     $j = $indexParts[1];
     $Link = $ChainLinks->GetLink($i);
     $blockCard = $Link->GetLinkCard($j);
-    $originUniqueID = $blockCard->OriginUniqueID();
+    $uniqueID = $blockCard->UniqueID();
   }
-  return $originUniqueID;
+  return $uniqueID;
 }

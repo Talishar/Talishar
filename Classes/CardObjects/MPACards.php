@@ -665,7 +665,8 @@ class bribe_the_guards_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $targetCard = MZIndexToObject($this->controller, $target);
     if ($targetCard != "") {
-      $uid = $targetCard->OriginUniqueID();
+      $fromPlay = $targetCard->From() == "EQUIP" || $targetCard->From() == "PLAY";
+      $uid = $fromPlay ? $targetCard->OriginUniqueID() : $targetCard->UniqueID();
       if ($from == "PLAY" || $from == "COMBATCHAINATTACKS")
         AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$uid);
       return "";
@@ -673,10 +674,9 @@ class bribe_the_guards_blue extends Card {
   }
 
   function EffectBlockModifier($index, $from, $effectInd) {
-    global $CombatChain, $ChainLinks;
-    $originUniqueID = IndexToBlockCardUID($index);
+    $uniqueID = IndexToBlockCardUID($index);
     $Effect = new CurrentEffect($effectInd);
-    return $Effect->AppliestoUniqueID() == $originUniqueID ? -1 : 0;
+    return $Effect->AppliestoUniqueID() == $uniqueID ? -1 : 0;
   }
 
   function IsCombatEffectPersistent($mode) {
