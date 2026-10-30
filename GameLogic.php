@@ -313,7 +313,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GY":
           $inds = [];
           $Discard = new Discard($player);
-          for ($i = 0; $i < $Discard->NumCards(); ++$i) {
+          for ($i = 0; $i < $Discard->TotalCards(); ++$i) {
             $DiscardCard = $Discard->Card($i, true);
             if (!isFaceDownMod($DiscardCard->Facing()))
               $inds[] = $DiscardCard->Index();
