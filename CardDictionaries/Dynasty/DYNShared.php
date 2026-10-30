@@ -607,6 +607,7 @@ function CheckInfectContracts($player, $aura, $number) {
   for($i = 0; $i < $numActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if ($chainCard->PlayerID() != $player) continue;
+    if ($i > 0 && !TypeContains($chainCard->ID(), "DR")) continue; // only dreacts are active while defending
     $contractType = ContractType($chainCard->ID());
     if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainCard->ID());
     if ($i == 0) {
@@ -622,6 +623,7 @@ function CheckInfectContracts($player, $aura, $number) {
     for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
       if($chainLinks[$i][$j+2] == 0) continue;
       if($chainLinks[$i][$j+1] != $player) continue;
+      if ($i > 0 && !TypeContains($chainLinks[$i][$j], "DR")) continue; // only dreacts are active while defending
       $contractType = ContractType($chainLinks[$i][$j]);
       if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainLinks[$i][$j]);
       if ($j == 0) {
