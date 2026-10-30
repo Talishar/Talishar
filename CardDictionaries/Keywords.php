@@ -383,10 +383,9 @@
   }
 
   function ProcessWager($cardID, $player, $wonWager, $uniqueID) {
-    global $mainPlayer, $ChainLinks;
+    global $mainPlayer, $CombatChain;
     $amount = 1;
-    $Link = $ChainLinks->LastLink();
-    $attackCard = $Link->AttackCard()->ID();
+    $attackCard = $CombatChain->AttackCard()->ID();
     if(SearchCurrentTurnEffects("double_down_red", $wonWager))
       $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
     $lostWager = $wonWager == 1 ? 2 : 1;
