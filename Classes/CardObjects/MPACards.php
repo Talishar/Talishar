@@ -1026,3 +1026,59 @@ class sickening_weakness_blue extends Card {
     return "AR";
   }
 }
+
+class spike_slasher_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spike_slasher_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
+    return TypeContains($cardID, "AR") ? -1 : 0;
+  }
+
+  function SpecialName() {
+    return "Spike Slasher";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
