@@ -1050,9 +1050,9 @@ class spike_slasher_red extends Card {
     return TypeContains($cardID, "AR") && !IsActivated($cardID, $from) ? -1 : 0;
   }
 
-  // function SpecialName() {
-  //   return "Spike Slasher";
-  // }
+  function SpecialName() {
+    return "Spike Slasher";
+  }
 
   function SpecialPitch() {
     return 1;
