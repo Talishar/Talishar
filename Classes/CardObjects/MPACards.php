@@ -1047,7 +1047,7 @@ class spike_slasher_red extends Card {
   }
 
   function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
-    return TypeContains($cardID, "AR") ? -1 : 0;
+    return TypeContains($cardID, "AR") && !IsActivated($cardID, $from) ? -1 : 0;
   }
 
   // function SpecialName() {
