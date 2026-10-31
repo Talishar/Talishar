@@ -2266,6 +2266,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
         else $addedEffects .= "," . $currentTurnEffects[$i];
       }
     }
+    if (!$weaponSwap) {
+      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+      if ($card != "-" && $card->RemoveEffectLinkResolves()) $effectsToRemove[] = $i;
+    }
     if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") $effectsToRemove[] = $i;
     switch ($currentTurnEffects[$i]) {
       case "rally_the_rearguard_red":

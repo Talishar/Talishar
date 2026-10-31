@@ -1042,7 +1042,7 @@ class spike_slasher_red extends Card {
     AddCurrentTurnEffect($this->cardID, $this->controller);
   }
 
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+  function RemoveEffectLinkResolves() {
     return true;
   }
 
@@ -1050,9 +1050,9 @@ class spike_slasher_red extends Card {
     return TypeContains($cardID, "AR") ? -1 : 0;
   }
 
-  function SpecialName() {
-    return "Spike Slasher";
-  }
+  // function SpecialName() {
+  //   return "Spike Slasher";
+  // }
 
   function SpecialPitch() {
     return 1;

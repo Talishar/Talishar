@@ -1430,4 +1430,10 @@ class Card {
       return $this->baseCard->AttackLeavesTrigger();
     return;
   }
+
+  function RemoveEffectLinkResolves() { // used for effects that apply to "this link", but not to the attack
+    if (isset($this->baseCard) && method_exists($this->baseCard, "RemoveEffectLinkResolves"))
+      return $this->baseCard->RemoveEffectLinkResolves();
+    return false;
+  }
 }
