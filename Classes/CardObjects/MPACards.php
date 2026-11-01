@@ -1127,9 +1127,9 @@ class painful_choice_red extends Card {
     return 4;
   }
 
-  // function SpecialName() {
-  //   return "Painful Choice";
-  // }
+  function SpecialName() {
+    return "Painful Choice";
+  }
 
   function SpecialPitch() {
     return 1;
