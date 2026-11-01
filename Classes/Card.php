@@ -1329,9 +1329,9 @@ class Card {
     return;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-", $owner="-") {
     if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentAddGraveyardAbility"))
-      return $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID);
+      return $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID, $owner);
     return;
   }
 

@@ -921,23 +921,26 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   if ((HasWateryGrave($cardID) && $from == "PLAY") || ($cardID == "beneath_the_surface_yellow" && $from == "CC")) {
     AddLayer("TRIGGER", $player, "WATERYGRAVE", target:$DisCard->UniqueID());
   }
-  $Character = new PlayerCharacter($player);
+  // "dies" triggers belong to whoever controlled the permanent, which isn't always the graveyard's owner
+  $hookPlayer = ($cardController != "" && str_contains($from, "PLAY")) ? $cardController : $player;
+  $hookFrom = $from == "THEIRPLAY" ? "PLAY" : $from;
+  $Character = new PlayerCharacter($hookPlayer);
   for ($i = 0; $i < $Character->NumCards(); ++$i) {
     $CharacterCard = $Character->Card($i, true);
-    $card = GetClass($CharacterCard->CardID(), $player);
-    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $CharacterCard->Index(), $from, $uniqueID);
+    $card = GetClass($CharacterCard->CardID(), $hookPlayer);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $CharacterCard->Index(), $hookFrom, $uniqueID, $player);
   }
-  $Allies = new Allies($player);
+  $Allies = new Allies($hookPlayer);
   for ($i = 0; $i < $Allies->NumAllies(); ++$i) {
     $AllyCard = $Allies->Card($i, true);
-    $card = GetClass($AllyCard->CardID(), $player);
-    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AllyCard->Index(), $from, $uniqueID);
+    $card = GetClass($AllyCard->CardID(), $hookPlayer);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AllyCard->Index(), $hookFrom, $uniqueID, $player);
   }
-  $Auras = new Auras($player);
+  $Auras = new Auras($hookPlayer);
   for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
     $AuraCard = $Auras->Card($i, true);
-    $card = GetClass($AuraCard->CardID(), $player);
-    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AuraCard->Index(), $from, $uniqueID);
+    $card = GetClass($AuraCard->CardID(), $hookPlayer);
+    if ($card != "-") $card->PermanentAddGraveyardAbility($DisCard->Index(), $AuraCard->Index(), $hookFrom, $uniqueID, $player);
   }
   
   return $grave[$graveLastIndex];

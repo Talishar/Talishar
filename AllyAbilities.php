@@ -97,7 +97,7 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
     CloseCombatChain();
   }
   $owner = $allies[$index+14] == "Temporary" ? $otherPlayer : $player;
-  AllyAddGraveyard($owner, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
+  AllyAddGraveyard($player, $cardID, toBanished:$toBanished, mod:$mod, index:$index);
   AllyAddGraveyard($owner, $allies[$index + 4], toBanished:$toBanished, mod:$mod);
   RemoveAllyBoundAuras($player, $index);
   array_splice($allies, $index, $allyPieces);
@@ -133,9 +133,11 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
   $owner = $player;
   if ($AllyCard->Modifier() == "Temporary")
     $owner = $owner == 1 ? 2 : 1;
-  if (str_contains($AllyCard->From(), "THEIR"))
+  $from = "PLAY";
+  if (str_contains($AllyCard->From(), "THEIR")) {
     $owner = $owner == 1 ? 2 : 1;
-  $from = $owner == $player ? "PLAY" : "THEIRPLAY";
+    $from = "THEIRPLAY";
+  }
   $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";
   if (!TypeContains($cardID, "T")) {
     if (SubtypeContains($cardID, "Ash", $owner)) AddGraveyard($cardID, $owner, $from, $player);
@@ -167,7 +169,7 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
       "sticky_fingers_ally" => "sticky_fingers",
       default => $cardID
     };
-    if (!$toBanished) AddGraveyard($id, $owner, $from, $player, uniqueID:$uid);
+    if (!$toBanished) AddGraveyard($id, $owner, $from, $player, $player, uniqueID:$uid);
     else BanishCardForPlayer($id, $owner, $from, $mod, uniqueID:$uid);
   }
 }
