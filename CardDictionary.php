@@ -3429,6 +3429,7 @@ function HasBladeBreak($cardID)
     case $CID_TekloArms:
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
+    case "bloodied_shield":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

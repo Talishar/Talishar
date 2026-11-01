@@ -475,7 +475,7 @@ function GetAuraObject($player, $location, $index) {
 function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true, $destroyedBy = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer, $CombatChain, $CS_NumControlledAurasDestroyed;
-  global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed, $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed;
+  global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed, $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed, $CS_ExertionDestroyed;
   $AuraCard = GetAuraObject($player, $location, $index);
   $isToken = ($location == "EQUIP") ? true : $AuraCard->IsToken() == 1;
   if ($uniqueID != "") {
@@ -503,6 +503,9 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
       break;
     case "inertia":
       IncrementClassState($player, $CS_InertiaDestroyed);
+      break;
+    case "exertion":
+      IncrementClassState($player, $CS_ExertionDestroyed);
       break;
     default:
       break;

@@ -994,6 +994,14 @@ class exertion_courier_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new courier($this->cardID, $this->controller);
   }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
 }
 
 class inertia_courier_blue extends Card {
@@ -1001,6 +1009,14 @@ class inertia_courier_blue extends Card {
     $this->cardID = "inertia_courier_blue";
     $this->controller = $controller;
     $this->baseCard = new courier($this->cardID, $this->controller);
+  }
+
+  function SpecialCost() {
+    return 4;
+  }
+
+  function SpecialPower() {
+    return 4;
   }
 }
 

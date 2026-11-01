@@ -2949,7 +2949,7 @@ class frail_swingline_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
-    PlayAura("frailty", $targetPlayer);
+    PlayAura("frailty", $targetPlayer, effectController:$this->controller, effectSource:$this->cardID);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
