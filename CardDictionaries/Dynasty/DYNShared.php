@@ -677,6 +677,7 @@ function CheckHitContract($contractType, $otherPlayer)
   switch($contractType) {
     case "HITMARKEDFANG": return CheckMarked($otherPlayer) & CardNameContains($otherChar[0], "Fang");
     case "HITMARKEDCINDRA": return CheckMarked($otherPlayer) & CardNameContains($otherChar[0], "Cindra");
+    case "INFECTEDHIT": return IsInfected($otherPlayer);
     default: return false;
   }
 }

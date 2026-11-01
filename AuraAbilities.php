@@ -51,6 +51,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       return;
     }
   }
+  if (SubtypeContains($cardID, "Disease") && SearchCurrentTurnEffects("plague_mask", $player)) {
+    WriteLog("The " . CardLink("plague_mask") . " protects player $player from " . CardLink($cardID) . "!");
+    return;
+  }
   $MainAuras = new Auras($mainPlayer);
   $DefAuras = new Auras($defPlayer);
   $foundSanctuary = $MainAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1 || $DefAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1;

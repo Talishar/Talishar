@@ -4,9 +4,7 @@ class mortimer_base extends BaseCard {
   function PlayAbility($from, $target) {
     $abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
     if ($abilityType == "I") {
-      Await($this->controller, "MultiZoneIndices", "indices", search:"THEIRAURAS:subtype=Disease", subsequent:0);
-      Await($this->controller, "ChooseMultiZone", "MZInd", context:"Kindly cure your opponent's disease");
-      Await($this->controller, "MZDestroy");
+      CureThem($this->controller);
       Await($this->controller, "PlayItem", cardID:"silver", final:true);
     }
     elseif ($abilityType == "AR") {

@@ -22,5 +22,25 @@ function GetAttackNamedCard() {
 	return $targetedName;
 }
 
+function NumDaggerHits() {
+	global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
+    $numDaggerHits = 0;
+    $count = count($chainLinks);
+    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
+    for($i=0; $i<$count; ++$i)
+    {
+      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
+        ++$numDaggerHits;
+    }
+    $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
+	return $numDaggerHits;
+}
+
+function CureThem($player, $final=false) {
+	Await($player, "MultiZoneIndices", "indices", search:"THEIRAURAS:subtype=Disease", subsequent:0);
+	Await($player, "ChooseMultiZone", "MZInd", context:"Kindly cure your opponent's disease");
+	Await($player, "MZDestroy", final:$final);
+}
+
 static $Diseases = ["frailty", "inertia", "bloodrot_pox"];
 static $AllDiseases = ["frailty", "inertia", "bloodrot_pox", "exertion"];

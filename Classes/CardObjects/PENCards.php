@@ -2120,17 +2120,8 @@ class song_of_larinkmorth_white_blue extends Card {
 
 class knife_through extends BaseCard {
   function DoesAttackHaveGoAgain() {
-    global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
-    $numDaggerHits = 0;
-    $count = count($chainLinks);
-    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
-    for($i=0; $i<$count; ++$i)
-    {
-      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
-        ++$numDaggerHits;
-    }
-    $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
-    return $numDaggerHits > 0;
+    
+    return NumDaggerHits() > 0;
   }
 }
 

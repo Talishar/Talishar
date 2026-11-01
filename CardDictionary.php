@@ -327,14 +327,14 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Evo";
     case "kiss_of_death_red":
       return "Dagger,Attack";
-    case "suraya_archangel_of_knowledge":
-      return "Angel,Ally";
-    case "drop_dead_bodice":
-      return "Chest"; // temporary
-    case "phial_of_calamity":
-      return "Off-Hand";
-    case "cadaver_handlers":
+    case "second_salvos": //temporary
+      return "Legs";
+    case "plague_mask":
+      return "Head";
+    case "surgical_gloves":
       return "Arms";
+    case "isolation_vestment":
+      return "Chest";
     default:
       break;
   }
@@ -3424,6 +3424,9 @@ function HasBladeBreak($cardID)
     case $CID_TekloLegs:
     case "mask_of_malicious_manifestations":
     case "bloodied_shield":
+    case "second_salvos":
+    case "isolation_vestment":
+    case "plague_mask":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
