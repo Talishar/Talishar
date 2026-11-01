@@ -389,3 +389,14 @@ function CuttingIndicesAwait($player) {
   $rv = implode(",", $rv);
   return $rv == "" ? "PASS" : $rv;
 }
+
+function AuraCount($player) {
+  $auraCount = intdiv(count(GetAuras($player)), AuraPieces());
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    if (SubtypeContains($CharacterCard->CardID(), "Aura"))
+      ++$auraCount;
+  }
+  return $auraCount;
+}
