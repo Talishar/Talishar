@@ -1899,12 +1899,6 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
     else if (CanPlayInstant($phase)) return true;
     else return false;
   }
-  if ($cardID == "Cutty_Shark_Quick_Clip_Yellow" && $from == "PLAY") {
-    $ally = GetAllies($currentPlayer);
-    if (CheckTapped("MYALLY-$index", $currentPlayer) && $ally[$index + 1] != 2) return false;
-    else if ($currentPlayer == $mainPlayer && $actionPoints > 0) return true;
-    else return false;
-  }
   if ($cardID == "the_hand_that_pulls_the_strings" && $from == "ARS" && SearchArsenalForCard($currentPlayer, $cardID, "DOWN") != "" && $phase == "A") return true;
   if (CanPlayInstant($phase) && (DelimStringContains($cardType, "I") || CanPlayAsInstant($cardID, $index, $from))) return true;
   if (($from == "PLAY" || $from == "COMBATCHAINATTACKS" || $from == "PASTCHAINLINK") && AbilityPlayableFromCombatChain($cardID, $index) && CanPlayInstant($phase)) {
