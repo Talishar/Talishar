@@ -406,7 +406,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
       break;
     case "burn_up__shock_red":
-      if (IsHeroAttackTarget()) DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
+      if (IsHeroAttackTarget()) {
+        DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
+      }
       return 1;
     case "arakni_black_widow-HIT":
       AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");

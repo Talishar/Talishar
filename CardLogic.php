@@ -1324,7 +1324,7 @@ function AddTowerEffectTrigger($cardID)
   return false;
 }
 
-function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", $effectInd = -1) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
   global $mainPlayer, $defPlayer, $CombatChain, $combatChain;
   $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
@@ -1360,10 +1360,19 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "chill_to_the_bone_red":
     case "chill_to_the_bone_yellow":
     case "chill_to_the_bone_blue":
-    case "burn_up__shock_red":
     case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    case "burn_up__shock_red":
+      if (IsHeroAttackTarget()) {
+        $uid = "-";
+        if ($effectInd != -1) {
+          $Effect = new CurrentEffect($effectInd);
+          $uid = $Effect->AppliestoUniqueID();
+        }
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $uid);
       }
       break;
     case "mask_of_shifting_perspectives":
@@ -4816,6 +4825,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken, $Stack;
+  global $CS_ResolvingLayerUniqueID;
   $otherPlayer = 3 - $player;
   $cardID = $parameter;
   switch ($cardID) {
@@ -4840,7 +4850,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
       }
       break;
     case "burn_up__shock_red":
-      AddCurrentTurnEffect($parameter, $player);
+      AddCurrentTurnEffect($parameter, $player, uniqueID:GetClassState($player, $CS_ResolvingLayerUniqueID));
       break;
     case "rampant_growth__life_yellow":
       $ampAmount = GetClassState($player, $CS_HealthGained);
