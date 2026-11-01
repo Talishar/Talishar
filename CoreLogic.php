@@ -2884,7 +2884,12 @@ function RemoveCharacter($player, $index, $skipClose=false)
       CloseCombatChain();
     }
   }
+  if (TypeContains($CharCard->CardID(), "C")) { // player lost their hero
+    WriteLog("Player $player has lost their hero!", highlight:true);
+    LoseHealth(GetHealth($player), $player);
+  }
   array_splice($char, $index, CharacterPieces());
+  
   return $ret;
 }
 

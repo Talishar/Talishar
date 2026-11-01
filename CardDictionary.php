@@ -133,7 +133,7 @@ function CardType($cardID, $from="", $controller="-", $additionalCosts="-", $ind
     "nitro_mechanoida" => "W",
     "nitro_mechanoidb" => "E",
     "teklovossen_the_mechropotentb" => "E",
-    "teklovossen_the_mechropotent" => "C",
+    "teklovossen_the_mechropotent" => "C,E",
     "levia_redeemed" => "D",
     "blasmophet_levia_consumed" => "D",
     "suraya_archangel_of_knowledge" => "-",
