@@ -468,6 +468,7 @@ $classStateDefaults = [
   "InertiaDestroyed" => 0,
   "BloodrotDestroyed" => 0,
   "AllDamageDealtToOpponent" => 0,
+  "ExertionDestroyed" => 0,
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);
