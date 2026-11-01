@@ -2796,6 +2796,20 @@ function AttackDestroyedEffects($attackID)
   }
 }
 
+function IsReactionLayer($Layer)
+{
+  $cardID = $Layer->ID();
+  if ($cardID == "" || isAdministrativeStep($cardID) || $cardID == "TRIGGER" || $cardID == "PRETRIGGER" || $cardID == "ABILITY") return false;
+  $params = explode("|", $Layer->Parameter());
+  $from = $params[0];
+  $abilityIndex = $params[2] ?? "-";
+  $abilityTypes = GetAbilityTypes($cardID, -1, $from);
+  if ($abilityTypes != "" && is_numeric($abilityIndex)) $type = explode(",", $abilityTypes)[intval($abilityIndex)] ?? "";
+  elseif ($from == "PLAY" || $from == "EQUIP") $type = GetAbilityType($cardID, -1, $from, $Layer->PlayerID());
+  else return TypeContains($cardID, "DR") || TypeContains($cardID, "AR");
+  return $type == "AR" || $type == "DR";
+}
+
 function CloseCombatChain($chainClosed = true)
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers, $Stack;
@@ -2806,13 +2820,11 @@ function CloseCombatChain($chainClosed = true)
     $Step = $Stack->FindCardID($step);
     if ($Step != "") $Step->Negate();
   }
-  $layerCount = $Stack->NumLayers();
-  for ($i = 0; $i < $layerCount; $i++) { //7.7.3
+  for ($i = $Stack->NumLayers() - 1; $i >= 0; --$i) { //7.7.3, backwards so negating doesn't skip the next layer
     $Layer = $Stack->Card($i, true);
-    $layerID = $Layer->ID();
-    if (TypeContains($layerID, "DR") || TypeContains($layerID, "AR")) {
-      $Layer->Negate("GY");
-    }
+    if (!IsReactionLayer($Layer)) continue;
+    $from = $Layer->From();
+    $Layer->Negate($from == "PLAY" || $from == "EQUIP" ? "-" : "GY");
   }
   $resolutionStep = $Stack->FindCardID("FINALIZECHAINLINK");
   $closeStep = $Stack->FindCardID("CLOSESTEP");
