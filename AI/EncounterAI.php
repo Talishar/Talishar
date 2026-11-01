@@ -102,6 +102,15 @@ function EncounterAI()
       else if($turn[0] == "B")//The player is attacking the AI
       {
         if($AIDebug) WriteLog("AI Branch - Block");
+        if(!BotIsPuzzle())
+        {
+          $blocker = BotNextPlannedDefender(BotBestBlockPlan($currentPlayer));
+          if($blocker !== null) BotDefendWith($blocker);
+          else PassInput();
+          ProcessMacros();
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+          continue;
+        }
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -202,6 +211,15 @@ function EncounterAI()
       else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//Defense reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Defense Reactions");
+        if(!BotIsPuzzle())
+        {
+          $reaction = BotNextPlannedDefender(BotBestReactionPlan($currentPlayer));
+          if($reaction !== null) BotDefendWith($reaction);
+          else PassInput();
+          ProcessMacros();
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+          continue;
+        }
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -225,6 +243,14 @@ function EncounterAI()
       else if($turn[0] == "P")//pitch phase - the AI also pays here while defending, e.g. for a taxed defense reaction
       {
         if($AIDebug) WriteLog("AI Branch - Pitch");
+        $pitchIndex = BotIsPuzzle() ? null : BotChoosePitchIndex($currentPlayer, max(1, intval($resources[1] ?? 0) - intval($resources[0] ?? 0)));
+        if($pitchIndex !== null)
+        {
+          PitchCardAttempt([$hand[$pitchIndex], "Hand", $pitchIndex, 1]);
+          ProcessMacros();
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+          continue;
+        }
         $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Pitch");
         //LogPriorityArray($priortyArray);
         $found = false;
@@ -305,6 +331,27 @@ function EncounterAI()
       }
     }
   }
+}
+
+function BotNextPlannedDefender($plan)
+{
+  static $refused = [];
+  if ($plan === null || $plan["score"] <= -1000000) return null;
+  foreach ($plan["set"] as $card) {
+    $key = $card["zone"] . ":" . $card["index"] . ":" . $card["id"] . ":" . CachedTotalBlock();
+    if (isset($refused[$key])) continue;
+    $refused[$key] = true;
+    return $card;
+  }
+  return null;
+}
+
+function BotDefendWith($card)
+{
+  $zone = match ($card["zone"]) { "HAND" => "Hand", "CHAR" => "Character", default => "Arsenal" };
+  $node = [$card["id"], $zone, $card["index"], 1];
+  if ($zone == "Arsenal" || CardType($card["id"]) == "DR") PlayCardAttempt($node);
+  else BlockCardAttempt($node);
 }
 
 function ShouldBlock($found, $storedPriorityNode)

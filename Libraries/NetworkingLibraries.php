@@ -680,6 +680,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       )) {
         break;
       }
+      if (!in_array($buttonInput, ["beginTurnGamestate.txt", "startChainLinkGamestate.txt", "lastTurnGamestate.txt"], true)) break;
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
