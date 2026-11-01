@@ -34,7 +34,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
-  global $CS_OriginalHero;
+  global $CS_OriginalHero, $CS_DrawOffered;
   global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
@@ -1151,12 +1151,52 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
       include_once __DIR__ . "/../includes/dbh.inc.php";
       include_once __DIR__ . "/../includes/functions.inc.php";
-      $otherPlayer = $playerID == 1 ? 2 : 1;
-      if (!IsGameOver())
-        PlayerWon($playerID);
+      PlayerWon($playerID);
       WriteLog("🚩 The opponent forfeited due to inactivity.");
+      break;
+    case 100030: //Claim Draw when opponent is inactive
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      WriteLog("🤝 Player $playerID claimed a draw because the opponent was inactive.");
+      PlayerWon(0, true);
+      break;
+    case 100027: //Offer Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($playerID, $CS_DrawOffered) == 1)
+        break;
+      if (IsPlayerAI($otherPlayer)) {
+        WriteLog("🤖 The bot declined the draw.");
+        break;
+      }
+      SetClassState($playerID, $CS_DrawOffered, 1);
+      WriteLog("🤝 Player $playerID offered a draw.", highlight: true, highlightColor: "darkblue");
+      AddEvent("REQUESTDRAW", $playerID);
+      break;
+    case 100028: //Accept Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("🤝 Player $playerID accepted the draw.");
+      PlayerWon(0, true);
+      break;
+    case 100029: //Decline Draw
+      if (($playerID != 1 && $playerID != 2) || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("Player $playerID declined the draw offer.", highlight: true);
       break;
     case 100012: //Create Replay
       $replaySaveResult = [
@@ -1509,7 +1549,8 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true,
+  100027 => true, 100028 => true, 100029 => true, 100030 => true
   ];
   return isset($asyncModes[$mode]);
 }

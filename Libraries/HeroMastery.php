@@ -54,6 +54,7 @@ function IsHeroMasteryFormatEligible($format): bool
 function HeroMasteryEligiblePlayers(bool $conceded, int $winner, int $currentTurn): array
 {
   if (!$conceded) return [1, 2];
+  if ($winner === 0) return $currentTurn < 2 ? [] : [1, 2];
   $concedingPlayer = $winner === 1 ? 2 : 1;
   if ($currentTurn < 1) return [];
   if ($currentTurn < 2) return [$concedingPlayer === 1 ? 2 : 1];

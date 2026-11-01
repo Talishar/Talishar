@@ -469,6 +469,7 @@ $classStateDefaults = [
   "BloodrotDestroyed" => 0,
   "AllDamageDealtToOpponent" => 0,
   "ExertionDestroyed" => 0,
+  "DrawOffered" => 0,                         // this player has an open draw offer, so it expires at the end of the turn
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero"];
 $classStateNames = array_keys($classStateDefaults);

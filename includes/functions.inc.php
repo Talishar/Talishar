@@ -1124,7 +1124,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	$deck["deckId"] = $DeckLink;
 	$deck["turns"] = CountAttackingTurns($player);
 	$deck["result"] = ($player == $winner ? 1 : 0);
-	if($winner == "1" || $winner == "2") {
+	if($winner == "1" || $winner == "2" || IsGameOver()) {
 		$deck["winner"] = intval($winner);
 	}
 	$deck["firstPlayer"] = ($player == $firstPlayer ? 1 : 0);

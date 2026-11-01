@@ -5,7 +5,8 @@ include_once __DIR__ . "/PuzzleAnalysis.php";
 
 const PUZZLE_SOLVER_VERSION = 1;
 const PUZZLE_SOLVER_SKIP_MODES = ["10000" => true, "10001" => true, "10003" => true, "100002" => true, "100007" => true,
-  "100016" => true, "100018" => true, "100019" => true, "100022" => true, "101" => true];
+  "100016" => true, "100018" => true, "100019" => true, "100022" => true, "100027" => true, "100028" => true,
+  "100029" => true, "100030" => true, "101" => true];
 const PUZZLE_SOLVER_END_PHASES = ["ARS" => true, "PDECK" => true];
 const PUZZLE_SOLVER_MAX_SUBSETS = 32;
 const PUZZLE_SOLVER_MAX_DEPTH = 120;
