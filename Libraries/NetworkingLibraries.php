@@ -2062,7 +2062,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-          AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+          AddCardEffectHitTrigger($currentTurnEffects[$i], effectInd:$i); // Effects that do not gives it's effect to the attack
         }
       }
 
