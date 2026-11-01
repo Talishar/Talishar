@@ -1082,3 +1082,80 @@ class spike_slasher_red extends Card {
     return true;
   }
 }
+
+class painful_choice_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "painful_choice_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    Await($this->controller, "MultiZoneIndices", search:"MYHAND", subsequent:0);
+    $context = "Put a card from your hand on the bottom to give the opponent a " . CardLink($this->cardID);
+    Await($this->controller, "ChooseMultiZone", context:$context, may:true);
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $defPlayer, $dqVars;
+    $MZindex = $dqVars["MZIndex"] ?? "-";
+    $index = explode("-", $MZindex)[1] ?? -1;
+    if ($index != -1) {
+      $cardID = RemoveHand($this->controller, $index);
+      $Deck = new Deck($this->controller);
+      $Deck->AddBottom($cardID, "HAND");
+
+      PrependDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+      PrependDecisionQueue("ELSE", $this->controller, "-");
+      Await($defPlayer, "MZRemoveAndBanish", banisher:$this->controller, prepend:true);
+      $context = "Choose a card to be banished (or pass and give the attack +4)";
+      Await($defPlayer, "ChooseMultiZone", may:true, context:$context, prepend:true);
+      Await($defPlayer, "MultiZoneIndices", search:"MYHAND", prepend:true, subsequent:0);
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 4;
+  }
+
+  // function SpecialName() {
+  //   return "Painful Choice";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
