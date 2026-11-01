@@ -3,6 +3,7 @@
 include_once __DIR__ . "/PuzzleVerify.php";
 
 const PUZZLE_SCRIPT_FILE = "puzzleScript.json";
+const PUZZLE_POLICY_FILE = "puzzlePolicy.json";
 
 // The attacker of a survive puzzle replays its recorded inputs. A recorded input whose situation is gone is
 // skipped, an extra priority window the defender opened is passed, and a prompt the recording never saw is
@@ -22,6 +23,24 @@ function ReadPuzzleScript($gameName)
 function WritePuzzleScript($gameName, $player, $line, $next = 0)
 {
   file_put_contents(PuzzleScriptPath($gameName), json_encode(["player" => intval($player), "line" => $line, "next" => $next]), LOCK_EX);
+}
+
+function WritePuzzlePolicy($gameName, $policy)
+{
+  file_put_contents(__DIR__ . "/../Games/$gameName/" . PUZZLE_POLICY_FILE, $policy, LOCK_EX);
+}
+
+// The solver's attack for the current position, or null when the game has no policy or the position is not in it.
+function PuzzlePolicyInput($gameName)
+{
+  static $policies = [];
+  $policy = $policies[$gameName] ??= json_decode((string)@file_get_contents(__DIR__ . "/../Games/$gameName/" . PUZZLE_POLICY_FILE), true) ?? [];
+  if (count($policy) == 0) return null;
+  include_once __DIR__ . "/PuzzleSolver.php";
+  CacheCombatResult();
+  $key = PuzzleSolverKey();
+  if (!isset($policy[$key])) error_log("Puzzle policy miss in game $gameName");
+  return $policy[$key] ?? null;
 }
 
 function ResetPuzzleScript($gameName)
@@ -87,6 +106,11 @@ function PuzzleScriptAct()
     return;
   }
   $player = intval($script["player"]);
+  $policyInput = PuzzlePolicyInput($gameName);
+  if ($policyInput !== null) {
+    PuzzleScriptInput($player, $policyInput);
+    return;
+  }
   $line = $script["line"];
   $next = intval($script["next"] ?? 0);
   while (true) {

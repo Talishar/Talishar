@@ -5,6 +5,7 @@ include_once __DIR__ . "/PuzzleGame.php";
 include_once __DIR__ . "/PuzzleVerify.php";
 include_once __DIR__ . "/PuzzleScript.php";
 include_once __DIR__ . "/PuzzleAnalysis.php";
+include_once __DIR__ . "/PuzzleSolver.php";
 include_once __DIR__ . "/FormatCodes.php";
 
 // Everything a puzzle game needs besides its gamestate. A daily puzzle freezes this when it is scheduled.
@@ -20,12 +21,14 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
   $player = intval($row["player"]);
   $proof = $verified["proof"] ?? CurrentPuzzleProof($row["proof"], $row["kind"]);
   $baseline = $verified["baseline"] ?? CurrentPuzzleBaseline($row["baseline"]);
-  $proven = ($proof["status"] ?? "") === "proven";
+  $solve = CurrentPuzzleSolve($row["solve"]);
+  $solved = ($solve["status"] ?? "") === "sound";
+  $proven = $solved || ($proof["status"] ?? "") === "proven";
   $healths = explode(" ", trim(explode("\r\n", $content)[0]));
   $realLife = intval($healths[($kind == PUZZLE_KIND_SURVIVE ? $player : 3 - $player) - 1] ?? 0);
-  $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
+  $steps = $solved ? $solve["steps"] : ($proven ? json_decode($row["solution"] ?? "", true) : null);
   $lesson = $proven ? PuzzleLesson($kind, $steps, $baseline) : null;
-  $analysis = AnalyzePuzzlePosition($content, $player, json_decode($row["meta"] ?? "", true), $proof, $baseline, $kind, $steps);
+  $analysis = PuzzleApplySolve(AnalyzePuzzlePosition($content, $player, json_decode($row["meta"] ?? "", true), $proof, $baseline, $kind, $steps), $solve);
 
   $bars = null;
   if ($mode === "damage") {
@@ -36,7 +39,7 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
     "candidateId" => intval($candidateID),
     "mode" => $mode,
     "player" => $player,
-    "life" => $mode === "damage" ? PUZZLE_DAMAGE_LIFE : ($proven ? intval($proof["life"]) : $realLife),
+    "life" => $mode === "damage" ? PUZZLE_DAMAGE_LIFE : ($solved ? intval($solve["life"]) : ($proven ? intval($proof["life"]) : $realLife)),
     "realLife" => $realLife,
     "format" => $row["format"],
     "hero" => $row["hero"],
@@ -44,6 +47,7 @@ function BuildPuzzleSetup($conn, $candidateID, $mode)
     "opponentHero" => $row["opponent_hero"],
     "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
     "proven" => $proven,
+    "solvedLife" => $solved ? intval($solve["life"]) : null,
     "difficulty" => $analysis["difficulty"],
     "score" => $analysis["score"],
     "interest" => $analysis["rubric"]["percent"],
@@ -165,6 +169,8 @@ function CreatePuzzleGameFromSetup($setup, $row, $useruid, $userId, $daily = nul
     [, $script] = PuzzleCandidateLines($row);
     if ($script === null) return ["error" => "This survive puzzle has no recorded attack."];
     WritePuzzleScript($gameName, $script["player"], $script["line"]);
+    $policy = $row["policy"] === null ? false : @gzuncompress($row["policy"]);
+    if ($policy !== false && intval($setup["solvedLife"] ?? -1) == intval($setup["life"])) WritePuzzlePolicy($gameName, $policy);
   }
 
   $currentTime = round(microtime(true) * 1000);
