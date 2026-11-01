@@ -34,7 +34,12 @@ if (!$authKey) {
   else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
 }
 session_write_close();
-$action = $_POST["action"]; //"Go First" to choose to go first, anything else will choose to go second
+$action = $_POST["action"] ?? ""; //"Go First" to choose to go first, anything else will choose to go second
+if ($action === "") {
+  $response->error = "Parameters were not passed";
+  echo json_encode($response);
+  exit;
+}
 
 if (!IsGameNameValid($gameName)) {
   echo ("Invalid game name.");

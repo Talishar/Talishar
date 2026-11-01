@@ -3,9 +3,9 @@
 // Picks the daily puzzle when nobody scheduled one. Needs the engine loaded (Libraries/PuzzleEngine.php).
 include_once __DIR__ . "/PuzzlePlay.php";
 include_once __DIR__ . "/PuzzleDaily.php";
+include_once __DIR__ . "/PuzzleSolver.php";
 
 const PUZZLE_AUTO_POOL = 500;
-const PUZZLE_AUTO_CHECKS = 6;
 const PUZZLE_AUTO_MIN_INTEREST = 65;
 const PUZZLE_AUTO_LOCK = "talishar_daily_puzzle";
 const PUZZLE_AUTO_LOCK_WAIT = 20;
@@ -13,59 +13,30 @@ const PUZZLE_AUTO_LOCK_WAIT = 20;
 function PuzzleAutoAnalysis($row)
 {
   $content = @gzuncompress($row["gamestate"]);
-  if ($content === false) return null;
-  $proof = CurrentPuzzleProof($row["proof"], $row["kind"]);
-  $baseline = CurrentPuzzleBaseline($row["baseline"]);
-  $proven = ($proof["status"] ?? "") === "proven";
-  $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
-  $analysis = AnalyzePuzzlePosition($content, intval($row["player"]), json_decode($row["meta"] ?? "", true), $proof, $baseline,
-    intval($row["kind"]), $steps);
+  $solve = CurrentPuzzleSolve($row["solve"]);
+  if ($content === false || ($solve["status"] ?? "") !== "sound") return null;
+  $analysis = PuzzleApplySolve(AnalyzePuzzlePosition($content, intval($row["player"]), json_decode($row["meta"] ?? "", true),
+    CurrentPuzzleProof($row["proof"], $row["kind"]), CurrentPuzzleBaseline($row["baseline"]), intval($row["kind"]), $solve["steps"]), $solve);
   return [
     "id" => intval($row["id"]),
     "kind" => intval($row["kind"]),
-    "checked" => $proof !== null && (!$proven || ($baseline !== null &&
-      (intval($row["kind"]) != PUZZLE_KIND_SURVIVE || isset($baseline["plain"])))),
-    "proven" => $proven,
     "filtered" => $analysis["filtered"],
-    "interest" => $analysis["rubric"]["percent"],
-    "potential" => $analysis["rubric"]["potential"]
+    "interest" => $analysis["rubric"]["percent"]
   ];
 }
 
-function PuzzleAutoRows($conn, $where, $types = "", ...$values)
-{
-  return DailyPuzzleQuery($conn, "SELECT id, kind, player, meta, proof, baseline, solution, gamestate FROM puzzle_candidates
-    WHERE status = " . PUZZLE_CANDIDATE_NEW . " AND winning_line IS NOT NULL $where", $types, ...$values);
-}
-
-function PuzzleAutoBetter($a, $b)
-{
-  if ($a["filtered"] || $a["interest"] < PUZZLE_AUTO_MIN_INTEREST) return false;
-  if ($b === null) return true;
-  return $a["interest"] > $b["interest"];
-}
-
-// Only proven, unfiltered positions above the quality floor can fill a day. Unchecked positions are checked in
-// order of potential, at most a few per day; an easy fallback would turn a bad position into a daily puzzle.
+// Only positions the solver proved, above the quality floor, can fill a day. Solving happens from the mod page, so a day
+// with nothing solved stays empty rather than getting an unchecked position.
 function PickDailyPuzzleCandidate($conn)
 {
-  $ranked = [];
-  foreach (PuzzleAutoRows($conn, "ORDER BY id DESC LIMIT " . PUZZLE_AUTO_POOL) as $row) {
-    $entry = PuzzleAutoAnalysis($row);
-    if ($entry !== null && (!$entry["checked"] || $entry["proven"])) $ranked[] = $entry;
-  }
+  EnsurePuzzleCandidatesTable($conn);
   $best = null;
-  foreach ($ranked as $entry) if ($entry["checked"] && $entry["proven"] && PuzzleAutoBetter($entry, $best)) $best = $entry;
-
-  $unchecked = array_values(array_filter($ranked, fn($entry) => !$entry["checked"] &&
-    $entry["potential"] >= PUZZLE_AUTO_MIN_INTEREST));
-  usort($unchecked, fn($a, $b) => $b["potential"] <=> $a["potential"] ?: $b["id"] <=> $a["id"]);
-  foreach (array_slice($unchecked, 0, PUZZLE_AUTO_CHECKS) as $entry) {
-    if ($best !== null && $entry["potential"] <= $best["interest"]) break;
-    VerifyPuzzleCandidate($conn, $entry["id"]);
-    $row = PuzzleAutoRows($conn, "AND id = ?", "i", $entry["id"])[0] ?? null;
-    $entry = $row === null ? null : PuzzleAutoAnalysis($row);
-    if ($entry !== null && $entry["proven"] && PuzzleAutoBetter($entry, $best)) $best = $entry;
+  $rows = DailyPuzzleQuery($conn, "SELECT id, kind, player, meta, proof, baseline, solve, gamestate FROM puzzle_candidates
+    WHERE status = " . PUZZLE_CANDIDATE_NEW . " AND solve IS NOT NULL ORDER BY id DESC LIMIT " . PUZZLE_AUTO_POOL);
+  foreach ($rows as $row) {
+    $entry = PuzzleAutoAnalysis($row);
+    if ($entry === null || $entry["filtered"] || $entry["interest"] < PUZZLE_AUTO_MIN_INTEREST) continue;
+    if ($best === null || $entry["interest"] > $best["interest"]) $best = $entry;
   }
   return $best;
 }

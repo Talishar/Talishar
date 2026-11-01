@@ -621,9 +621,9 @@ class celestial_kimono extends Card {
 		return "";
 	}
 
-	function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-') {
+	function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-', $owner = '-') {
 		if ($from != "PLAY" && $from != "CHAR") return;
-		$DisCard = new DiscardCard($discardIndex, $this->controller);
+		$DisCard = new DiscardCard($discardIndex, $owner == "-" ? $this->controller : $owner);
 		$CharacterCard = new CharacterCard($permIndex, $this->controller);
 		$isToken = TypeContains($DisCard->CardID(), "T");
 		if (!$isToken && SubtypeContains($DisCard->CardID(), "Aura")) { // check if it was a token copy

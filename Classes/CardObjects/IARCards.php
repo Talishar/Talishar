@@ -50,17 +50,20 @@ class malice_base extends BaseCard {
   }
 
   function ProcessTrigger($target) {
-    $Discard = new Discard($this->controller);
-    $TargetCard = $Discard->FindCardUID($target);
-    if ($TargetCard->Index() != -1) {
-      BanishCardForPlayer($TargetCard->CardID(), $this->controller, "DISCARD", "DOWN");
-      $TargetCard->Remove();
+    foreach ([$this->controller, 3 - $this->controller] as $owner) {
+      $Discard = new Discard($owner);
+      $TargetCard = $Discard->FindCardUID($target);
+      if ($TargetCard->Index() != -1) {
+        BanishCardForPlayer($TargetCard->CardID(), $owner, "DISCARD", "DOWN");
+        $TargetCard->Remove();
+        break;
+      }
     }
     BanishCardForPlayer("corrupted_corpse", $this->controller, "-", created:true);
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $charIndex, $from) {
-    $DisCard = new DiscardCard($discardIndex, $this->controller);
+  function PermanentAddGraveyardAbility($discardIndex, $charIndex, $from, $owner="-") {
+    $DisCard = new DiscardCard($discardIndex, $owner == "-" ? $this->controller : $owner);
     $Hero = new CharacterCard($charIndex, $this->controller);
     $cardID = $DisCard->CardID();
     if (SubtypeContains($cardID, "Zombie") && $from == "PLAY" && $Hero->Status() == 2)
@@ -113,8 +116,8 @@ class malice extends Card {
     return true;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-", $owner="-") {
+    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $owner);
   }
 }
 
@@ -155,8 +158,8 @@ class malice_domina_of_the_dead extends Card {
     return true;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from);
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-", $owner="-") {
+    $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $owner);
   }
 }
 
@@ -4847,8 +4850,8 @@ class restless_templar_red extends Card {
     return "";
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
-    $DisCard = new DiscardCard($discardIndex, $this->controller);
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-", $owner="-") {
+    $DisCard = new DiscardCard($discardIndex, $owner == "-" ? $this->controller : $owner);
     $cardID = $DisCard->CardID();
     // this probably shouldn't trigger when restless templar itself dies, could an AI fix this?
     if (SubtypeContains($cardID, "Zombie") && HasDecay($cardID) && $from == "PLAY")

@@ -8,6 +8,7 @@ include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/PuzzleHarvest.php';
 include_once '../Libraries/PuzzleAnalysis.php';
 include_once '../Libraries/PuzzleVerify.php';
+include_once '../Libraries/PuzzleSolver.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -37,7 +38,7 @@ try {
   $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM puzzle_candidates" . $where);
   $response["total"] = (int)(mysqli_fetch_assoc($result)["total"] ?? 0);
 
-  $sql = "SELECT id, created_at, format, kind, turn_number, player, hero, opponent_hero, status, meta, proof, baseline, solution,
+  $sql = "SELECT id, created_at, format, kind, turn_number, player, hero, opponent_hero, status, meta, proof, baseline, solution, solve,
     winning_line IS NOT NULL AS has_line, gamestate FROM puzzle_candidates" . $where . " ORDER BY id DESC LIMIT 300";
   $result = mysqli_query($conn, $sql);
   while ($row = mysqli_fetch_assoc($result)) {
@@ -47,6 +48,8 @@ try {
     $proof = CurrentPuzzleProof($row["proof"], $row["kind"]);
     $proven = ($proof["status"] ?? "") === "proven";
     $steps = $proven ? json_decode($row["solution"] ?? "", true) : null;
+    $solve = CurrentPuzzleSolve($row["solve"]);
+    $solved = ($solve["status"] ?? "") === "sound";
     $response["candidates"][] = [
       "id" => (int)$row["id"],
       "createdAt" => $row["created_at"],
@@ -58,9 +61,9 @@ try {
       "opponentHeroName" => GeneratedCardName($row["opponent_hero"]),
       "status" => (int)$row["status"],
       "hasLine" => (bool)$row["has_line"],
-      "solution" => $proven ? PuzzleSolution($row["solution"]) : null
-    ] + AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof, CurrentPuzzleBaseline($row["baseline"]),
-      (int)$row["kind"], $steps);
+      "solution" => $solved ? PuzzleSolution(json_encode($solve["steps"])) : ($proven ? PuzzleSolution($row["solution"]) : null)
+    ] + PuzzleApplySolve(AnalyzePuzzlePosition($content, (int)$row["player"], $meta, $proof, CurrentPuzzleBaseline($row["baseline"]),
+      (int)$row["kind"], $solved ? $solve["steps"] : $steps), $solve);
   }
 } catch (Throwable $e) {
   error_log("GetPuzzleCandidates failed: " . $e->getMessage());

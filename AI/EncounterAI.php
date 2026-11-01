@@ -26,6 +26,7 @@ function EncounterAI()
       global $turn;
       if($scriptPlayer == $currentPlayer)
       {
+        if(!empty($GLOBALS["puzzleSolverHold"])) break;
         PuzzleScriptAct();
         ProcessMacros();
         $currentPlayerIsAI = IsPlayerAI($currentPlayer) && !IsGameOver();

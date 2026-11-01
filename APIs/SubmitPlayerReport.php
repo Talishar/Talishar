@@ -19,6 +19,7 @@ include_once "../includes/dbh.inc.php";
 include_once "../Libraries/ModerationLibraries.php";
 
 const PLAYER_REPORT_NOTE_MAX_LENGTH = 500;
+const PLAYER_REPORT_CHAT_LINES = 30;
 
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 $reporterUserId = isset($_SESSION["userid"]) && is_numeric($_SESSION["userid"]) ? intval($_SESSION["userid"]) : null;
@@ -43,6 +44,7 @@ $reportedName = substr(trim($gameFile[$playerID == 1 ? 10 : 9]), 0, 64);
 if ($reportedName === "") $reportedName = "-";
 $reason = NormalizeModerationReason(TryPOSTData("reason", null, $postData));
 $note = NormalizeModerationNote(TryPOSTData("note", "", $postData), PLAYER_REPORT_NOTE_MAX_LENGTH);
+$chatLog = json_encode(ReadRecentChat($gameName, PLAYER_REPORT_CHAT_LINES), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
 
 $conn = GetDBConnection(DBL_SUBMIT_PLAYER_REPORT);
 if (!$conn) ExitJsonResponse(["error" => "Database connection failed"], 500);
@@ -58,11 +60,11 @@ if ($reportedName !== "-") {
 }
 
 $stmt = $conn->prepare("
-  INSERT INTO player_reports (gameName, reporterPlayerID, reporterUserId, reportedName, reportedUserId, reason, note)
-  VALUES (?, ?, ?, ?, ?, ?, ?)
-  ON DUPLICATE KEY UPDATE reason = VALUES(reason), note = VALUES(note), createdAt = CURRENT_TIMESTAMP
+  INSERT INTO player_reports (gameName, reporterPlayerID, reporterUserId, reportedName, reportedUserId, reason, note, chatLog)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  ON DUPLICATE KEY UPDATE reason = VALUES(reason), note = VALUES(note), chatLog = VALUES(chatLog), createdAt = CURRENT_TIMESTAMP
 ");
-$stmt->bind_param("siisiss", $gameName, $playerID, $reporterUserId, $reportedName, $reportedUserId, $reason, $note);
+$stmt->bind_param("siisisss", $gameName, $playerID, $reporterUserId, $reportedName, $reportedUserId, $reason, $note, $chatLog);
 $stmt->execute();
 $stmt->close();
 mysqli_close($conn);

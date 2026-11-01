@@ -1920,13 +1920,13 @@ function ResolveChainLink()
       $index = intval($target[1]);
       if (substr($target[1], 0, 2) != "-1") { //check to make sure target is still there
         $allies = &GetAllies($defPlayer);
-        $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-        if ($totalPower > 0)
-          $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        $allyPower = $totalPower + CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        if ($allyPower > 0)
+          $allyPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         if ($reorderedCount == 1) // if there is only one target, it's possible for cards to end up blocking for allies
-          $allyDamageThreatened = max(0, $totalPower - $totalDefense);
+          $allyDamageThreatened = max(0, $allyPower - $totalDefense);
         else //if there are multiple targets, any blocking cards would be blocking for the hero
-          $allyDamageThreatened = max(0, $totalPower);
+          $allyDamageThreatened = max(0, $allyPower);
         $allyDamageThreatened = AllyDamagePrevention($defPlayer, $index, $allyDamageThreatened, "COMBAT", $combatChain[0]);
         if ($allyDamageThreatened < 0)
           $allyDamageThreatened = 0;

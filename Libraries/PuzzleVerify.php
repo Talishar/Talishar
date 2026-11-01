@@ -810,7 +810,7 @@ function PuzzleCandidateLines($row)
 function LoadPuzzleCandidate($conn, $candidateID)
 {
   $stmt = mysqli_prepare($conn, "SELECT id, kind, player, format, hero, opponent_hero, proof, baseline, solution, meta,
-    winning_line, gamestate FROM puzzle_candidates WHERE id = ?");
+    winning_line, gamestate, solve, policy FROM puzzle_candidates WHERE id = ?");
   mysqli_stmt_bind_param($stmt, "i", $candidateID);
   mysqli_stmt_execute($stmt);
   $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));

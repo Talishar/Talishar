@@ -44,7 +44,9 @@ function EnsurePuzzleCandidatesTable($conn)
     "winning_line" => "ADD COLUMN winning_line MEDIUMBLOB NULL AFTER proof",
     "solution" => "ADD COLUMN solution TEXT NULL",
     "kind" => "ADD COLUMN kind TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER format",
-    "baseline" => "ADD COLUMN baseline TEXT NULL"
+    "baseline" => "ADD COLUMN baseline TEXT NULL",
+    "solve" => "ADD COLUMN solve TEXT NULL",
+    "policy" => "ADD COLUMN policy MEDIUMBLOB NULL"
   ];
   foreach ($missing as $name => $definition) {
     if (!isset($existing[$name])) mysqli_query($conn, "ALTER TABLE puzzle_candidates $definition");

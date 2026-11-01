@@ -13,6 +13,7 @@ if (IsUserLoggedIn() && $decklink != "") {
   $sql = "DELETE FROM favoritedeck WHERE decklink=? AND usersId=?";
 
   $conn = GetDBConnection(DBL_DELETE_DECK_API);
+  if (!$conn) ExitJsonResponse(["message" => "Service temporarily unavailable. Please try again later."], 503);
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     $userID = LoggedInUser();
