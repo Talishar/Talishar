@@ -2050,7 +2050,7 @@ class battered_beaten_and_broken_yellow extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    $auraCount = AuraCount($this->controller);
     if (IsHeroAttackTarget() && $auraCount >= 3) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
@@ -2059,7 +2059,7 @@ class battered_beaten_and_broken_yellow extends Card {
   }
 
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    $auraCount = AuraCount($this->controller);
     return $auraCount >= 3 ? 3 : 0;
   }
 
