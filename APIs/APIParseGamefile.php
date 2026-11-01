@@ -73,6 +73,7 @@ $p1EquipmentSubmitted = trim(fgets($gameFileHandler) ?: '');
 $p2EquipmentSubmitted = trim(fgets($gameFileHandler) ?: '');
 if ($p1EquipmentSubmitted === '') $p1EquipmentSubmitted = ($p1SideboardSubmitted == "1" ? "1" : "0");
 if ($p2EquipmentSubmitted === '') $p2EquipmentSubmitted = ($p2SideboardSubmitted == "1" ? "1" : "0");
+$openHands = trim(fgets($gameFileHandler) ?: '');
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;

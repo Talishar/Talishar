@@ -62,6 +62,7 @@ $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge to
 $SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card in it is needed to pay the remaining cost
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 $SET_LandscapeTipSeen = 51;
+$SET_OpenHands = 52; //Teaching mode: hand and arsenal are face up to the opponent. Set from the lobby at game start, never by the client
 
 function SettingsPieces()
 {
@@ -622,6 +623,12 @@ function IsHideHandFromFriends($player)
   return SettingValue($player, $SET_HideHandFromFriends, "0") == "1";
 }
 
+function IsOpenHands($player)
+{
+  global $SET_OpenHands;
+  return SettingValue($player, $SET_OpenHands, "0") == "1";
+}
+
 function IsStreamerMode($player)
 {
   global $SET_StreamerMode;
@@ -695,6 +702,7 @@ function SettingsIdMap()
     "AutoPitchForced" => 49,
     "RequireYesNoAnswer" => 50,
     "LandscapeTipSeen" => 51,
+    "OpenHands" => 52,
   ];
   return $settingsToId;
 }
@@ -707,7 +715,8 @@ function ParseSettingsStringValueToIdInt(string $value)
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
   global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_AutoPassTurn, $SET_CasterMode, $layerPriority, $gameName;
-  global $SET_DisableHoldToAutoPass;
+  global $SET_DisableHoldToAutoPass, $SET_OpenHands;
+  if ($setting == $SET_OpenHands) return;
   if ($setting == $SET_AutoPassTurn && $value == "1" && HoldToAutoPassDisabled($player)) return;
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
