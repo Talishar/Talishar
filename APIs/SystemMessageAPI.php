@@ -53,7 +53,7 @@ if (!$conn) {
 
 switch ($action) {
   case 'sendToPlayer':
-    handleSendToPlayer($conn, $input);
+    handleSendToPlayer($conn, $input, $useruid);
     break;
   case 'sendToAll':
     handleSendToAll($conn, $input);
@@ -70,7 +70,7 @@ switch ($action) {
 mysqli_close($conn);
 exit;
 
-function handleSendToPlayer($conn, $input) {
+function handleSendToPlayer($conn, $input, $moderatorUid) {
   if (!isset($input['username']) || !isset($input['message'])) {
     http_response_code(400);
     echo json_encode(["error" => "Missing username or message"]);
@@ -114,6 +114,14 @@ function handleSendToPlayer($conn, $input) {
   }
 
   mysqli_stmt_close($stmt);
+
+  if (!empty($input['warning'])) {
+    $stmt = mysqli_prepare($conn, "INSERT INTO player_warnings (userId, moderatorUid, message) SELECT usersId, ?, ? FROM users WHERE usersUid = ? LIMIT 1");
+    mysqli_stmt_bind_param($stmt, "sss", $moderatorUid, $message, $username);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+  }
+
   echo json_encode(["success" => true, "message" => "System message sent to $username"]);
 }
 

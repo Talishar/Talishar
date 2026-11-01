@@ -41,7 +41,8 @@ $summaryQuery = "
     SUM(b.reason = 'insulting') AS insulting,
     SUM(b.reason = 'unsporting') AS unsporting,
     SUM(b.reason = 'other') AS other,
-    MAX(b.createdAt) AS lastBlockedAt
+    MAX(b.createdAt) AS lastBlockedAt,
+    (SELECT MAX(w.createdAt) FROM player_warnings w WHERE w.userId = u.usersId) AS lastWarnedAt
   FROM blocked_users b
   JOIN users u ON u.usersId = b.blockedUserId
   WHERE b.createdAt >= NOW() - INTERVAL ? DAY
@@ -71,6 +72,7 @@ foreach ($rows as $row) {
       'other' => (int)$row['other'],
     ],
     'lastBlockedAt' => $row['lastBlockedAt'],
+    'lastWarnedAt' => $row['lastWarnedAt'],
     'notes' => [],
   ];
 }

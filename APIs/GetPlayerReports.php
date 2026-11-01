@@ -36,10 +36,15 @@ if (!$conn) {
 $query = "
   SELECT r.reportId, r.gameName, r.reporterPlayerID, reporter.usersUid AS reporterName,
     r.reportedName, r.reportedUserId, reported.isBanned AS reportedIsBanned,
-    r.reason, r.note, r.createdAt, counts.reportCount
+    r.reason, r.note, r.chatLog, r.createdAt, counts.reportCount, warnings.lastWarnedAt
   FROM player_reports r
   LEFT JOIN users reporter ON reporter.usersId = r.reporterUserId
   LEFT JOIN users reported ON reported.usersId = r.reportedUserId
+  LEFT JOIN (
+    SELECT userId, MAX(createdAt) AS lastWarnedAt
+    FROM player_warnings
+    GROUP BY userId
+  ) warnings ON warnings.userId = r.reportedUserId
   JOIN (
     SELECT reportedName, COUNT(*) AS reportCount
     FROM player_reports
@@ -63,13 +68,16 @@ foreach ($rows as $row) {
     'reportId' => (int)$row['reportId'],
     'gameName' => $row['gameName'],
     'reporterName' => $row['reporterName'] ?? null,
+    'reporterPlayerID' => (int)$row['reporterPlayerID'],
     'reportedName' => $row['reportedName'],
     'reportedHasAccount' => $row['reportedUserId'] !== null,
     'reportedIsBanned' => (int)($row['reportedIsBanned'] ?? 0) === 1,
     'reason' => $row['reason'],
     'note' => $row['note'],
+    'chatLog' => json_decode($row['chatLog'] ?? 'null', true),
     'createdAt' => $row['createdAt'],
     'reportCount' => (int)$row['reportCount'],
+    'lastWarnedAt' => $row['lastWarnedAt'],
   ];
 }
 
