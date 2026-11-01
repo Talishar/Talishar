@@ -1158,7 +1158,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
     return false;
   }
-  if ((SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade") && $preventable) && $health > $otherHealth) {
+  if ($preventable && (SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade")) && $health > $otherHealth) {
     WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life</span>");
     return false;
   }
