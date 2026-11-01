@@ -3188,6 +3188,11 @@ function CanPassPhase($phase)
   }
 }
 
+function CanUnblockFrom($from)
+{
+  return $from == "HAND" || $from == "EQUIP" || $from == "ARS" || $from == "PLAY";
+}
+
 //Returns true if done for that player
 function EndTurnPitchHandling($player)
 {

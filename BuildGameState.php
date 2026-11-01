@@ -397,13 +397,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($goldOrPitchChoice) $goldOrPitchChoices[$goldOrPitchChoice] = true;
     }
   }
+  $canUnblock = $turnPhase == "B" && $currentPlayer == $playerID && $playerID == $defPlayer && count($layers) == 0;
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieceCount) {
     $action = $currentPlayer == $playerID && $turnPhase != "P" &&
       $currentPlayer == $combatChain[$i + 1] &&
       AbilityPlayableFromCombatChain($combatChain[$i]) &&
       IsPlayable($combatChain[$i], $turnPhase, "PLAY", $i) ? 21 : 0;
+    if ($action == 0 && $i > 0 && $canUnblock && $combatChain[$i + 1] == $playerID && CanUnblockFrom($combatChain[$i + 2])) $action = 10021;
 
-    $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    $borderColor = $action == 10021 ? 8 : ($action != 0 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2));
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
     $countersMap = null;

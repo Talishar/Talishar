@@ -83,7 +83,7 @@ function IsPuzzleManualMode($mode)
   if ($mode === "MANUALDECK") return true;
   if (!is_numeric($mode)) return false;
   $mode = intval($mode);
-  return $mode == 10002 || ($mode >= 10004 && $mode <= 10020);
+  return $mode == 10002 || ($mode >= 10004 && $mode <= 10021);
 }
 
 function IsPuzzleIgnoredMode($mode)

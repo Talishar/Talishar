@@ -667,6 +667,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
       break;
+    case 10021: //Take back one blocking card
+      UnblockCard($playerID, intval($cardID));
+      break;
     case 10002:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . $manualCount . " action point" . ($manualCount > 1 ? "s" : ""), highlight: true, highlightColor: "darkblue");
@@ -1540,6 +1543,86 @@ function ManualModeCount($input)
   $count = intval($input);
   if ($count < 1) return 1;
   return min($count, 999);
+}
+
+function UnblockCommand($player, $cardID, $from, $originUniqueID)
+{
+  switch ($from) {
+    case "HAND":
+      $index = array_search($cardID, GetHand($player), true);
+      return $index === false ? null : [27, $index];
+    case "EQUIP":
+      $zone = GetPlayerCharacter($player);
+      $pieces = CharacterPieces();
+      $uidOffset = 11;
+      $mode = 3;
+      break;
+    case "ARS":
+      $zone = GetArsenal($player);
+      $pieces = ArsenalPieces();
+      $uidOffset = 5;
+      $mode = 5;
+      break;
+    case "PLAY":
+      $zone = GetItems($player);
+      $pieces = ItemPieces();
+      $uidOffset = 4;
+      $mode = 10;
+      break;
+    default:
+      return null;
+  }
+  for ($i = 0, $count = count($zone); $i < $count; $i += $pieces) {
+    if ($zone[$i] == $cardID && $zone[$i + $uidOffset] == $originUniqueID) return [$mode, $i];
+  }
+  return null;
+}
+
+function UnblockCard($player, $chainIndex)
+{
+  global $combatChain, $turn, $layers, $currentPlayer, $defPlayer, $filepath, $gameName, $skipWriteGamestate;
+  global $events, $animations, $logWriteBuffer;
+  $pieces = CombatChainPieces();
+  if ($turn[0] != "B" || $player != $defPlayer || $currentPlayer != $player || count($layers) > 0) return;
+  if ($chainIndex < $pieces || $chainIndex % $pieces != 0 || ($combatChain[$chainIndex + 1] ?? "") != $player) return;
+  if (!CanUnblockFrom($combatChain[$chainIndex + 2]) || !file_exists($filepath . "preBlockBackup.txt")) return;
+  $defending = [];
+  for ($i = $pieces, $count = count($combatChain); $i < $count; $i += $pieces) {
+    $defending[$i] = [$combatChain[$i], $combatChain[$i + 1], $combatChain[$i + 2], $combatChain[$i + 8]];
+  }
+  DoGamestateUpdate();
+  $original = ReadGamestateCache($gameName);
+  $savedLogBuffer = $logWriteBuffer;
+  $savedReplayLogLines = $GLOBALS['replayLogLines'] ?? "";
+
+  RevertGamestate("preBlockBackup.txt");
+  ParseGamestate();
+  $events = [];
+  $animations = [];
+  $base = count($combatChain);
+  $replayed = $chainIndex >= $base;
+  foreach ($defending as $index => [$cardID, $controller, $from, $originUniqueID]) {
+    if (!$replayed) break;
+    if ($index < $base || $index == $chainIndex) continue;
+    $command = $controller == $player ? UnblockCommand($player, $cardID, $from, $originUniqueID) : null;
+    $chainCount = count($combatChain);
+    $replayed = $command !== null && ProcessInput($player, $command[0], "", $command[1], 0, "") !== false &&
+      $turn[0] == "B" && $currentPlayer == $player && count($layers) == 0 &&
+      count($combatChain) == $chainCount + $pieces && $combatChain[$chainCount] == $cardID;
+  }
+
+  $logWriteBuffer = $savedLogBuffer;
+  $GLOBALS['replayLogLines'] = $savedReplayLogLines;
+  if (!$replayed) {
+    WriteGamestateFileAtomic($filepath . "gamestate.txt", $original);
+    WriteGamestateCache($gameName, $original);
+    $GLOBALS['lastWrittenGamestate'] = $original;
+    ParseGamestate();
+    $events = [];
+    $animations = [];
+    WriteLog("That card can't be taken back on its own. Use Undo Block instead.");
+  }
+  $skipWriteGamestate = false;
 }
 
 function IsModeAsync($mode)
