@@ -295,7 +295,7 @@ class mutually_assured_destruction_red extends Card {
     global $mainPlayer, $defPlayer;
     $players = [$mainPlayer, $defPlayer];
     foreach ($players as $player) 
-      PlayAura("bloodrot_pox", $player);
+      PlayAura("bloodrot_pox", $player, effectController:$this->controller, effectSource:$this->cardID);
     foreach($players as $player) {
       $deck = new Deck($player);
       if($deck->Empty()) 
@@ -356,7 +356,7 @@ class prolonged_illness_blue extends Card {
   }
 
   function EffectDestroyedEffect($cardID, $controller, $effectIndex, $permIndex, $from) {
-		global $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed, $mainPlayer, $defPlayer;
+		global $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed, $CS_ExertionDestroyed, $mainPlayer, $defPlayer;
     $Effect = new CurrentEffect($effectIndex);
     $Disease = new AuraCard($permIndex, $controller);
     if (!SubtypeContains($Disease->CardID(), "Disease")) return;
@@ -364,12 +364,13 @@ class prolonged_illness_blue extends Card {
 		$bloodrot = $diseaseName == "Bloodrot Pox" && GetClassState($mainPlayer, $CS_BloodrotDestroyed) + GetClassState($defPlayer, $CS_BloodrotDestroyed) == 0;
 		$frailty = $diseaseName == "Frailty" && GetClassState($mainPlayer, $CS_FrailtyDestroyed) + GetClassState($defPlayer, $CS_FrailtyDestroyed) == 0;
 		$inertia = $diseaseName == "Inertia" && GetClassState($mainPlayer, $CS_InertiaDestroyed) + GetClassState($defPlayer, $CS_InertiaDestroyed) == 0;
-    if ($bloodrot || $frailty || $inertia)
+		$exertion = $diseaseName == "Exertion" && GetClassState($mainPlayer, $CS_ExertionDestroyed) + GetClassState($defPlayer, $CS_ExertionDestroyed) == 0;
+    if ($bloodrot || $frailty || $inertia || $exertion)
       AddLayer("TRIGGER", $this->controller, $this->cardID, $controller, $Disease->CardID());
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    PlayAura($additionalCosts, $target, effectSource:$this->cardID);
+    PlayAura($additionalCosts, $target, effectController:$this->controller, effectSource:$this->cardID);
     WriteLog(CardLink($additionalCosts) . " has been prolonged!");
   }
 }
@@ -948,7 +949,7 @@ class sickening_rot_blue extends Card {
         AddDecisionQueue("PAYRESOURCES", $defPlayer, "3", 1);
         AddDecisionQueue("ELSE", $defPlayer, "-");
       }
-      AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-$this->cardID-DAMAGE-$defPlayer", 1);
+      AddDecisionQueue("PASSPARAMETER", $defPlayer, "2-$this->cardID-DAMAGE-$this->controller", 1);
       AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
     }
     return "";
