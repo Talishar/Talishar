@@ -928,6 +928,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "MURKYWATER":
       $discard = GetDiscard($player);
+      if (!is_array($lastResult) || count($lastResult) < 3) return "";
+      for ($i = 0; $i < 3; ++$i) {
+        if (!isset($discard[$lastResult[$i]])) return "";
+      }
       $cardList = [];
       for ($i = 2; $i >= 0; $i--) {
         $banishedCard = $discard[$lastResult[$i]];
