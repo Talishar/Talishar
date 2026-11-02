@@ -1135,7 +1135,7 @@ class swap_spit extends BaseCard {
       $obj = CleanTargetToObject($this->controller, $chosenDisease);
       if ($obj != "") {
         $srcPlayer = str_contains($chosenDisease, "MY") ? $this->controller : $otherPlayer;
-        $destPlayer = $srcPlayer == 1 ? 2 : 1;
+        $destPlayer = OtherPlayer($srcPlayer);
         WriteLog("Player $srcPlayer gave their " . CardLink($obj->CardID()) . " to Player $destPlayer!");
         StealAura($srcPlayer, $obj->Index(), $destPlayer, "-", realSteal:false);
       }

@@ -316,7 +316,7 @@ function JSONRenderedCard(
   
   //Volzar Amp icon
   if($controller != NULL && $cardNumber == "volzar_the_lightning_rod" && $lightningPlayed == NULL) {
-    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($playerID);
     if($controller == $playerID) {
       $lightningCount = GetClassState($playerID, $CS_NumLightningPlayed);
       if($lightningCount > 0) {
@@ -336,7 +336,7 @@ function JSONRenderedCard(
 
   //Current Turn Effects amp amount
   if($showAmpAmount !== false && str_starts_with($showAmpAmount, "Effect")) {
-    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($playerID);
     $ampOwn = 0;
     $ampOther = 0;
     foreach (array_slice(explode("-", $showAmpAmount), 1) as $index) {
@@ -590,7 +590,7 @@ function CardLink($caption, $cardNumber="-", $recordMenu = false)
         }
     }
   }
-  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode($playerID == 1 ? 2 : 1)) $pitchText = "";
+  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode(OtherPlayer($playerID))) $pitchText = "";
   $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
   return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
 }

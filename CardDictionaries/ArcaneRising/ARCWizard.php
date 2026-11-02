@@ -3,7 +3,7 @@
 function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $additionalCosts = "")
 {
   global $currentPlayer, $CS_NextWizardNAAInstant, $CS_ArcaneDamageTaken, $CS_CardsInDeckBeforeOpt;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   switch ($cardID) {
     case "kano_dracai_of_aether":
     case "kano":

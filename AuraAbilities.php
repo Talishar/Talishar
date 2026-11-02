@@ -40,7 +40,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
-    $player = $player == 1 ? 2 : 1;
+    $player = OtherPlayer($player);
   }
   $auras = &GetAuras($player);
   $numMinusTokens = 0;

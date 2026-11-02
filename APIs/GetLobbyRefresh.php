@@ -205,9 +205,15 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   }
 
   if ($disconnectedPlayer == 2 && $kickSignal !== "kicked") {
-    $numP2Disconnects = IncrementCachePiece($gameName, 11);
-    if ($numP2Disconnects >= 3) {
-      WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
+    $leaverKey = $p2id !== "" ? "id:" . $p2id : "ip:" . $joinerIP;
+    $leaversFile = "../Games/" . $gameName . "/lobbyLeavers.txt";
+    $leavers = file_exists($leaversFile) ? file($leaversFile, FILE_IGNORE_NEW_LINES) : [];
+    if (!in_array($leaverKey, $leavers, true)) {
+      file_put_contents($leaversFile, $leaverKey . "\n", FILE_APPEND);
+      $numP2Disconnects = IncrementCachePiece($gameName, 11);
+      if ($numP2Disconnects >= 3) {
+        WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.", path: "../");
+      }
     }
   }
 
@@ -238,6 +244,7 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   }
 
   WriteGameFile();
+  FlushLogBuffer();
 }
 
 $response = new stdClass();

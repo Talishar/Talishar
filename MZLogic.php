@@ -498,7 +498,7 @@ function MZFreeze($target, $player="-", $freezeState=1)
   global $currentPlayer;
   if ($player == "-") $player = $currentPlayer;
   $pieces = explode("-", $target, 2);
-  $player = (str_starts_with($pieces[0], "MY") ? $player : ($player == 1 ? 2 : 1));
+  $player = (str_starts_with($pieces[0], "MY") ? $player : (OtherPlayer($player)));
   $zone = &GetMZZone($player, $pieces[0]);
   if (!is_numeric($pieces[1] ?? "-"))
     return;
@@ -575,7 +575,7 @@ function MZPlayerID($me, $MZIndex)
 {
   $indexArr = explode("-", $MZIndex, 2);
   if (str_starts_with($indexArr[0], "MYCHAR")) return $me;
-  if (str_starts_with($indexArr[0], "THEIRCHAR")) return $me == 1 ? 2 : 1;
+  if (str_starts_with($indexArr[0], "THEIRCHAR")) return OtherPlayer($me);
   return -1;
 }
 

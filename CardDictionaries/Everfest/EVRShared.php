@@ -181,7 +181,7 @@
     global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
     global $layers;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     $rv = "";
     switch($cardID)
     {
@@ -199,7 +199,7 @@
       case "high_roller_red": case "high_roller_yellow": case "high_roller_blue":
         $rv = "Intimidates";
         Intimidate();
-        $targetHigh = match($cardID) { "high_roller_red" => 4, "high_roller_yellow" => 5, default => 6 };
+        $targetHigh = ByColor($cardID, 4, 5, 6);
         if(GetClassState($currentPlayer, $CS_HighestRoll) >= $targetHigh) Intimidate();
         return "";
       case "bare_fangs_red": case "bare_fangs_yellow": case "bare_fangs_blue":
@@ -400,7 +400,7 @@
         return "";
       case "pry_red": case "pry_yellow": case "pry_blue":
         if($mainPlayer != $currentPlayer) $numReveal = count(GetHand($otherPlayer));
-        else $numReveal = match($cardID) { "pry_red" => 3, "pry_yellow" => 2, default => 1 };
+        else $numReveal = ByColor($cardID, 3, 2, 1);
         AddDecisionQueue("PASSPARAMETER", $mainPlayer, $numReveal);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
@@ -461,7 +461,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "pick_a_card_any_card_red": case "pick_a_card_any_card_yellow": case "pick_a_card_any_card_blue":
-        $times = match($cardID) { "pick_a_card_any_card_red" => 4, "pick_a_card_any_card_yellow" => 3, default => 2 };
+        $times = ByColor($cardID, 4, 3, 2);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
@@ -476,7 +476,7 @@
         if($from == "ARS") AddCurrentTurnEffect($cardID . "-2", $currentPlayer);
         return "";
       case "even_bigger_than_that_red": case "even_bigger_than_that_yellow": case "even_bigger_than_that_blue":
-        $opt = match($cardID) { "even_bigger_than_that_red" => 3, "even_bigger_than_that_yellow" => 2, default => 1 };
+        $opt = ByColor($cardID, 3, 2, 1);
         global $CS_DamageDealt;
         PlayerOpt($currentPlayer, $opt, DQContext:"Choose a card to add to the deck top or bottom. Damage Dealt: " . GetClassState($currentPlayer, piece: $CS_DamageDealt));
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT-".$cardID);

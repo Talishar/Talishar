@@ -4,7 +4,7 @@
   {
     global $currentPlayer, $CS_PlayIndex, $CS_NumRedPlayed;
     $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     switch($cardID)
     {
       case "flamescale_furnace":
@@ -52,11 +52,11 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "arctic_incarceration_red": case "arctic_incarceration_yellow": case "arctic_incarceration_blue":
-        $numFrostbites = match($cardID) { "arctic_incarceration_red" => 3, "arctic_incarceration_yellow" => 2, default => 1 };
-        PlayAura("frostbite", $currentPlayer == 1 ? 2 : 1, $numFrostbites, effectController: $currentPlayer);
+        $numFrostbites = ByColor($cardID, 3, 2, 1);
+        PlayAura("frostbite", OtherPlayer($currentPlayer), $numFrostbites, effectController: $currentPlayer);
         return "";
       case "cold_snap_red": case "cold_snap_yellow": case "cold_snap_blue":
-        $cost = match($cardID) { "cold_snap_red" => 3, "cold_snap_yellow" => 2, default => 1 };
+        $cost = ByColor($cardID, 3, 2, 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");
         AddPayPrompt("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -90,7 +90,7 @@
         if(PlayerHasLessHealth($currentPlayer)) { GainHealth(1, $currentPlayer); }
         return "";
       case "sift_red": case "sift_yellow": case "sift_blue":
-        $numCards = match($cardID) { "sift_red" => 4, "sift_yellow" => 3, default => 2 };
+        $numCards = ByColor($cardID, 4, 3, 2);
         AddDecisionQueue("FINDINDICES", $currentPlayer, "HAND");
         AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, $numCards . "-", 1);
         AddDecisionQueue("MULTICHOOSEHAND", $currentPlayer, "<-", 1);
@@ -99,7 +99,7 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "SIFT", 1);
         return "";
       case "strategic_planning_red": case "strategic_planning_yellow": case "strategic_planning_blue":
-        $maxCost = match($cardID) { "strategic_planning_red" => 2, "strategic_planning_yellow" => 1, default => 0 };
+        $maxCost = ByColor($cardID, 2, 1, 0);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer,"MYDISCARD:maxCost=".$maxCost.";type=AA&MYDISCARD:maxCost=".$maxCost.";type=A&THEIRDISCARD:maxCost=".$maxCost.";type=AA&THEIRDISCARD:maxCost=".$maxCost.";type=A");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a graveyard card", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
@@ -114,7 +114,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "healing_balm_red": case "healing_balm_yellow": case "healing_balm_blue":
-        $amount = match($cardID) { "healing_balm_red" => 3, "healing_balm_yellow" => 2, default => 1 };
+        $amount = ByColor($cardID, 3, 2, 1);
         GainHealth($amount, $currentPlayer);
         return "";
       default: return "";

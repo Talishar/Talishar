@@ -769,7 +769,7 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddDecisionQueue("MZADDCOUNTER", $currentPlayer, "-", 1);
       return "";
     case "shriek_razors":
-      $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "AA");
+      $options = GetChainLinkCards((OtherPlayer($currentPlayer)), "AA");
       if ($options != "") {
         AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
         AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, -1, 1);

@@ -86,7 +86,7 @@ function CheckAllyDeath($player)
 function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false, $uniqueID = "", $toBanished = false, $skipClose = false, $mod = "-")
 {
   if ($index < 0) return "";
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($player);
   $allies = &GetAllies($player);
   $allyPieces = AllyPieces();
   if ($index % $allyPieces != 0 || !isset($allies[$index + $allyPieces - 1])) return "";
@@ -132,10 +132,10 @@ function AllyAddGraveyard($player, $cardID, $toBanished=false, $mod="-", $index=
   $AllyCard = new AllyCard($index, $player);
   $owner = $player;
   if ($AllyCard->Modifier() == "Temporary")
-    $owner = $owner == 1 ? 2 : 1;
+    $owner = OtherPlayer($owner);
   $from = "PLAY";
   if (str_contains($AllyCard->From(), "THEIR")) {
-    $owner = $owner == 1 ? 2 : 1;
+    $owner = OtherPlayer($owner);
     $from = "THEIRPLAY";
   }
   $uid = $AllyCard->Index() != -1 ? $AllyCard->UniqueID() : "-";

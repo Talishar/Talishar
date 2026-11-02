@@ -8,7 +8,7 @@ function GiveDisease($player) {
 
 function GiveAuraAwait($player) {
 	global $dqVars;
-	$otherPlayer = $player == 1 ? 2 : 1;
+	$otherPlayer = OtherPlayer($player);
 	$MZIndex = $dqVars["MZIndex"] ?? "-";
 	$Disease = MZIndexToObject($player, $MZIndex);
 	if ($Disease != "") {

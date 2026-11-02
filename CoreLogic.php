@@ -1053,7 +1053,7 @@ function CombatChainDamageModifiers($player, $source, $type)
 function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSource)
 {
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
-  $otherPlayer = ($target == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($target));
   $sourceType = CardType($source);
   if ($sourceType == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   $AttackCard = $CombatChain->AttackCard();
@@ -1084,7 +1084,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))
-          MZMoveCard($target == 1 ? 2 : 1, "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
+          MZMoveCard(OtherPlayer($target), "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
         break;
       case "sigil_of_permafrost_red":
       case "sigil_of_permafrost_yellow":
@@ -3668,7 +3668,7 @@ function IsAlternativeCostPaid($cardID, $from)
 function BanishCostModifier($from, $index, $cost)
 {
   global $currentPlayer;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   if ($from != "BANISH" && $from != "THEIRBANISH") return 0;
   $from == "BANISH" ? $banish = GetBanish($currentPlayer) : $banish = GetBanish($otherPlayer);
   $mod = explode("-", $banish[$index + 1]);
@@ -3981,7 +3981,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     LogPlayCardStats($currentPlayer, "vestige_of_sol", "EQUIP", "PASSIVE");
   }
   if ($pitchValue == 1) {
-    $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);
+    $talismanOfRecompenseIndex = SearchItemForIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
       WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);

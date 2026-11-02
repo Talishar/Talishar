@@ -3,7 +3,7 @@
   function MONRunebladePlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
   {
     global $currentPlayer, $CombatChain;
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     switch($cardID)
     {
       case "invert_existence_blue":

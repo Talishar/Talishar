@@ -1608,19 +1608,9 @@ function CurrentEffectPlayAbility($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_yellow":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_blue":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= ByColor($currentTurnEffects[$i], 0, 1, 2)) {
             ++$actionPoints;
             $remove = true;
           }
@@ -1628,21 +1618,6 @@ function CurrentEffectPlayAbility($cardID, $from)
         default:
           break;
       }
-      if ($remove) RemoveCurrentTurnEffect($i);
-    }
-  }
-  return false;
-}
-
-function CurrentEffectPlayOrActivateAbility($cardID, $from) // currently deprecated
-{
-  global $currentTurnEffects, $currentPlayer;
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = false;
-      $commaPos = strpos($currentTurnEffects[$i], ',');
-      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
@@ -2363,7 +2338,7 @@ function BeginEndPhaseEffects()
         break;
       case "sanctuary_of_aria-1":
         $player = $currentTurnEffects[$i+1];
-        $sanctuaryIndex = GetItemIndex("sanctuary_of_aria", $player);
+        $sanctuaryIndex = SearchItemForIndex("sanctuary_of_aria", $player);
         DestroyItemForPlayer($player, $sanctuaryIndex, true);
         break;
       default:

@@ -13,7 +13,7 @@
         }
         if(SearchCardList($additionalCosts, $currentPlayer, talent:"ICE") != "")
         {
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          $otherPlayer = (OtherPlayer($currentPlayer));
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("CHOOSEHAND", $otherPlayer, "<-", 1);
           AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);

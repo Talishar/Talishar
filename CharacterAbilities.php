@@ -468,7 +468,7 @@ function MainCharacterHitTrigger($cardID = "-", $targetPlayer = -1, $flicked = f
   global $CombatChain, $combatChainState, $CCS_WeaponIndex, $mainPlayer, $chainLinks, $defPlayer;
   $attackID = $CombatChain->AttackCard()->ID();
   if (IsHeroAttackTarget()) {
-    $targetPlayer = $targetPlayer == -1 ? ($mainPlayer == 1 ? 2 : 1) : $targetPlayer;
+    $targetPlayer = $targetPlayer == -1 ? (OtherPlayer($mainPlayer)) : $targetPlayer;
   }
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $Character = new PlayerCharacter($mainPlayer);
@@ -633,7 +633,7 @@ function MainCharacterPowerModifiers(&$powerModifiers, $index = -1, $onlyBuffs =
   $mainCharacter = &GetPlayerCharacter($mainPlayer);
   $mainCharCount = count($mainCharacter);
   $characterPieces = CharacterPieces();
-  $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($mainPlayer));
   for ($i = 0; $i < $mainCharCount; $i += $characterPieces) {
     $characterID = ShiyanaCharacter($mainCharacter[$i]);
     if ($characterID == "tiger_stripe_shuko") {
@@ -768,7 +768,7 @@ function CharacterCostModifier($cardID, $from, $cost)
         break;
       case "nuu_alluring_desire":
       case "nuu":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($currentPlayer));
         if ($from == "THEIRBANISH" && ColorContains($cardID, 3, $otherPlayer) && SearchCurrentTurnEffectsAny(["nuu_alluring_desire", "nuu"], $currentPlayer)) $modifier -= $cost;
         break;
       case "enigma_ledger_of_ancestry":

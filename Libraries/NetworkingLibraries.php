@@ -38,7 +38,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $CS_OriginalHero, $CS_DrawOffered;
   global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   switch ($mode) {
     case 40: //Manually remove a defense counter from Valiant Dynamo
       $index = intval($cardID);
@@ -503,7 +503,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 36: //Play card from graveyard
       $index = $cardID;
       $discard = &GetDiscard($playerID);
-      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      $theirChar = &GetPlayerCharacter(OtherPlayer($playerID));
       if ($index < 0 || $index >= count($discard)) {
         echo("Graveyard Index " . $index . " Invalid Input<BR>");
         return false;
@@ -593,7 +593,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $input = explode("-", $buttonInput, 3);
       foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
-        $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
+        $Card = GetPermanent($input[0], $index, OtherPlayer($playerID));
         $Card->ToggleGem($playerID);
       }
       break;
@@ -743,7 +743,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $health += $manualCount;
       break;
     case 10007:
-      $targetPlayer = $playerID == 1 ? 2 : 1;
+      $targetPlayer = OtherPlayer($playerID);
       if (IsPlayerAI($targetPlayer) || IsDevEnvironment()) {
         $manualCount = ManualModeCount($buttonInput);
         WriteLog("Manually subtracting " . $manualCount . " life from AI opponent", highlight: true, highlightColor: "darkblue");
@@ -756,7 +756,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10008:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to their opponent", highlight: true, highlightColor: "darkblue");
-      $health = &GetHealth($playerID == 1 ? 2 : 1);
+      $health = &GetHealth(OtherPlayer($playerID));
       $health += $manualCount;
       break;
     case 10009:
@@ -767,7 +767,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10010:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for their opponent", highlight: true, highlightColor: "darkblue");
-      for ($i = 0; $i < $manualCount; ++$i) Draw(($playerID == 1 ? 2 : 1), false);
+      for ($i = 0; $i < $manualCount; ++$i) Draw((OtherPlayer($playerID)), false);
       break;
     case 10011:
       $cardList = explode(";", $cardID);
@@ -905,11 +905,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10013:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their opponent's pool", highlight: true, highlightColor: "darkblue");
-      $resources = &GetResources($playerID == 1 ? 2 : 1);
+      $resources = &GetResources(OtherPlayer($playerID));
       $resources[0] += $manualCount;
       break;
     case 10014:
-      $resources = &GetResources($playerID == 1 ? 2 : 1);
+      $resources = &GetResources(OtherPlayer($playerID));
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources[0] -= $manualCount;
@@ -922,7 +922,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10016:
     case 10017:
-      $arsenalPlayer = $mode == 10016 ? $playerID : ($playerID == 1 ? 2 : 1);
+      $arsenalPlayer = $mode == 10016 ? $playerID : (OtherPlayer($playerID));
       if (ArsenalEmpty($arsenalPlayer)) break;
 
       $whoseArsenal = $arsenalPlayer == $playerID ? "their arsenal" : "their opponent's arsenal";
@@ -1079,7 +1079,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10020:
       global $practiceDummyWeaponPower;
-      $opponent = $playerID == 1 ? 2 : 1;
+      $opponent = OtherPlayer($playerID);
       $opponentCharacter = &GetPlayerCharacter($opponent);
       if (in_array("wrenchtastic", $opponentCharacter, true)) {
         $practiceDummyWeaponPower = max(0, min(100, intval($numMode)));
@@ -1091,7 +1091,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       $char = &GetPlayerCharacter($otherPlayer);
       if (!IsPlayerAI($otherPlayer)) {
         QueueRematchPrompt($otherPlayer, "if you want a <b>Quick Rematch</b>?");
@@ -1119,7 +1119,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $conceded = true;
       if (!IsGameOver()) {
         WriteLog("🏳️ Player $playerID conceded the game.");
-        PlayerWon($playerID == 1 ? 2 : 1, true);
+        PlayerWon(OtherPlayer($playerID), true);
       }
       break;
     case 100003: //Report Bug
@@ -1132,7 +1132,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID sent a rematch invitation.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
         StartRematch();
@@ -1147,7 +1147,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID offered to swap heroes and rematch.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
         StartRematch(true);
@@ -2152,7 +2152,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       }
 
       if (IsHeroAttackTarget()) {
-        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($mainPlayer));
         CheckHitContracts($mainPlayer, $otherPlayer);
       }
 
@@ -2212,7 +2212,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
     }
     
     if (IsHeroAttackTarget()) {
-      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($mainPlayer));
       if (CheckMarked($otherPlayer)) {
         WriteLog("Player " . $otherPlayer . " loses their mark");
         RemoveMark($otherPlayer);
@@ -2547,7 +2547,7 @@ function PassTurn()
     BuildMainPlayerGameState();
   }
   $MainHand = GetHand($mainPlayer);
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
     $heaveChoiceResolved = ($turn[2] ?? "-") == "HEAVECHOSEN";
     // Asking here makes the Heave pause indistinguishable from the normal arsenal pause.
@@ -2688,14 +2688,14 @@ function FinalizeTurn()
   $nextTurnEffects = $newNextTurnEffects;
   // this is needed to reset the defending player's class state even if their turn is getting skipped
   $defPlayer = $mainPlayer;
-  $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $mainPlayer = (OtherPlayer($mainPlayer));
   $currentPlayer = $mainPlayer;
   BuildMainPlayerGameState();
   ResetMainClassState();
 
   if ($extraTurn) {
     $defPlayer = $mainPlayer;
-    $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+    $mainPlayer = (OtherPlayer($mainPlayer));
     $currentPlayer = $mainPlayer;
     BuildMainPlayerGameState();
   }
@@ -3941,7 +3941,7 @@ function ApplyAttackTargets($player, $attackTargets)
 function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex, $Stack;
-  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $defPlayer = OtherPlayer($mainPlayer);
   $numTargets = 0;
   // a new attack (on the stack or in the attack queue) doesn't share targets with the current chain link
   if ($attackQueue || $forLayer) {
@@ -4243,7 +4243,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "shiyana_diamond_gemini":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($currentPlayer));
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
         PayAdditionalCosts($otherCharacter[0], $from, $index);
@@ -4743,7 +4743,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         WriteLog("A previous chain link was targeted");
         break;
       }
-      $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
+      $numOptions = GetChainLinkCards((OtherPlayer($currentPlayer)), "", "C");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
@@ -5119,7 +5119,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   else ResolvePermanent($cardID, $from, $additionalCosts);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
-    CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       CharacterPlayCardAbilities($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
