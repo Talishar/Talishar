@@ -12,6 +12,7 @@ include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "Libraries/CacheLibraries.php";
+include_once "Libraries/GameHealthLog.php";
 include_once "includes/MetafyHelper.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
@@ -283,6 +284,7 @@ if (SaveReplay() && !IsReplay()) {
   fwrite($commandFile, "$playerID $mode $buttonInput $cardID $chkCount " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
+LogGameHealthInput($playerID, $mode, $buttonInput);
 
 //Now we can process the command
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);

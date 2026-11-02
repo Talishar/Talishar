@@ -81,9 +81,11 @@ const DBL_SUBMIT_PLAYER_REPORT         = 78;
 const DBL_GET_PLAYER_REPORTS           = 79;
 const DBL_DELETE_PLAYER_REPORT         = 80;
 const DBL_SOLVE_PUZZLE_CANDIDATES      = 81;
+const DBL_FLUSH_GAME_HEALTH_LOG        = 82;
+const DBL_GET_GAME_HEALTH_REPORT       = 83;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 81;
+const DBL_MAX_KEY = 83;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -165,4 +167,6 @@ const DBL_LABELS = [
     79 => 'APIs/GetPlayerReports.php',
     80 => 'APIs/DeletePlayerReport.php',
     81 => 'APIs/SolvePuzzleCandidates.php',
+    82 => 'Libraries/GameHealthLog.php::FlushGameHealthLog',
+    83 => 'APIs/GetGameHealthReport.php',
 ];
