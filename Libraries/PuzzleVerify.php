@@ -829,6 +829,7 @@ function VerifyPuzzleCandidate($conn, $candidateID)
   if ($proof !== null && ($proof["status"] !== "proven" || ($baseline !== null &&
     ($kind != PUZZLE_KIND_SURVIVE || isset($baseline["plain"]))))) return ["proof" => $proof, "baseline" => $baseline];
 
+  PuzzleKeepConnectionAlive($conn);
   $player = intval($row["player"]);
   $content = @gzuncompress($row["gamestate"]);
   [$line, $script] = PuzzleCandidateLines($row);
@@ -851,6 +852,12 @@ function VerifyPuzzleCandidate($conn, $candidateID)
     PuzzleUpdateCandidate($conn, $candidateID, ["proof" => json_encode($proof)]);
   }
   return ["proof" => $proof, "baseline" => $baseline];
+}
+
+// Proving and solving leave the connection idle for longer than the server's wait_timeout.
+function PuzzleKeepConnectionAlive($conn)
+{
+  mysqli_query($conn, "SET SESSION wait_timeout = 600");
 }
 
 function PuzzleUpdateCandidate($conn, $candidateID, $columns)
