@@ -104,9 +104,11 @@ foreach ($deckCardIds as $cardID) {
 
 // Add the deck to favorites without validation
 // If we couldn't extract hero, pass empty string - database will handle it
-addFavoriteDeck($userID, $decklink, $deckName, $heroID, $deckFormat);
+$insertedRows = addFavoriteDeck($userID, $decklink, $deckName, $heroID, $deckFormat);
 
-$response->success = true;
-$response->message = "Deck added to favorites.";
+$response->success = $insertedRows > 0;
+if ($insertedRows > 0) $response->message = "Deck added to favorites.";
+else if ($insertedRows == 0) $response->message = "This deck is already in your favorites.";
+else $response->message = "Could not save the deck. Please try again.";
 
 echo json_encode($response);

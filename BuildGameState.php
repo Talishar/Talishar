@@ -1535,6 +1535,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $effectCardIds = [];
   $adminEffectIdx = [];
   $fancyCountersCache = [];
+  $friendlyEffectIdx = [];
+  $opponentEffectIdx = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $raw = $currentTurnEffects[$i];
@@ -1555,11 +1557,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $friendlyCounts[$cardID]++;
           if (!isset($friendlyComponentCounts[$cardID][$raw])) $friendlyComponentCounts[$cardID][$raw] = 0;
           $friendlyComponentCounts[$cardID][$raw]++;
+          $friendlyEffectIdx[$cardID][] = $i;
       } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
           if (!isset($opponentComponentCounts[$cardID][$raw])) $opponentComponentCounts[$cardID][$raw] = 0;
           $opponentComponentCounts[$cardID][$raw]++;
+          $opponentEffectIdx[$cardID][] = $i;
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1617,7 +1621,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
                 $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
               }
               $friendlyRenderedEffects[$cardID] = true;
-              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
+              $ampIdx = $doesStack ? [$i] : ($friendlyEffectIdx[$cardID] ?? [$i]);
+              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
           }
       } elseif (!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || $doesStack) {
           $card = GetClass($cardID, 0);
@@ -1633,7 +1638,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
             $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
           }
           $opponentRenderedEffects[$cardID] = true;
-          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
+          $ampIdx = $doesStack ? [$i] : ($opponentEffectIdx[$cardID] ?? [$i]);
+          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
       }
   }
   if (!empty($staticBuffsArr)) {

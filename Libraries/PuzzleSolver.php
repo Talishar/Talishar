@@ -377,6 +377,7 @@ function SolvePuzzleCandidate($conn, $candidateID, $seconds)
   $row = LoadPuzzleCandidate($conn, $candidateID);
   $content = $row ? @gzuncompress($row["gamestate"]) : false;
   if ($content === false) return null;
+  PuzzleKeepConnectionAlive($conn);
   $solve = SolvePuzzlePosition($content, intval($row["player"]), intval($row["kind"]), $row["format"], $seconds);
   $policy = $solve["policy"] ?? null;
   unset($solve["policy"]);

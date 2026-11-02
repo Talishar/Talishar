@@ -337,14 +337,17 @@ function JSONRenderedCard(
   //Current Turn Effects amp amount
   if($showAmpAmount !== false && str_starts_with($showAmpAmount, "Effect")) {
     $otherPlayer = $playerID == 1 ? 2 : 1;
-    $index = explode("-", $showAmpAmount, 2)[1];
-    $ampOwn = ArcaneModifierAmount($cardNumber, $playerID, $index);
+    $ampOwn = 0;
+    $ampOther = 0;
+    foreach (array_slice(explode("-", $showAmpAmount), 1) as $index) {
+      $ampOwn += ArcaneModifierAmount($cardNumber, $playerID, $index);
+      $ampOther += ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    }
     if($ampOwn > 0) {
       $countersMap ??= new stdClass();
       $countersMap->amp = $ampOwn;
       $countersMap->counters = 0;
     }
-    $ampOther = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
     if($ampOther > 0) {
       $countersMap ??= new stdClass();
       $countersMap->amp = $ampOther;
