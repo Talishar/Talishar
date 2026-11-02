@@ -580,6 +580,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $input = explode("-", $buttonInput, 3);
       foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
+        if ($input[0] == "GY") {
+          ToggleGraveyardGem($playerID, $index);
+          continue;
+        }
         $Card = GetPermanent($input[0], $index, $playerID);
         $Card->ToggleGem();
       }

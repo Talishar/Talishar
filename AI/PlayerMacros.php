@@ -582,6 +582,7 @@ function HasPlayableCard($player, $phase)
   $discard = GetDiscard($player);
   $discardPieces = DiscardPieces();
   for($i=0, $count=count($discard); $i<$count; $i+=$discardPieces) {
+    if (HasGraveyardGem($discard[$i]) && !IsGraveyardGemActive($player, $discard[$i+1])) continue;
     if(IsPlayable($discard[$i], $phase, "GY", $i, $restriction, $player)) return true;
   }
 

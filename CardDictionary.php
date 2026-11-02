@@ -4241,6 +4241,32 @@ function ActivatedFromGraveyard($cardID) {
   };
 }
 
+function HasGraveyardGem($cardID) {
+  return $cardID == "graven_call";
+}
+
+function IsGraveyardGemActive($player, $uniqueID) {
+  global $CS_GraveyardGemsOff;
+  return !in_array($uniqueID, explode(",", GetClassState($player, $CS_GraveyardGemsOff)), true);
+}
+
+function ToggleGraveyardGem($player, $index) {
+  global $CS_GraveyardGemsOff;
+  if (!is_numeric($index)) return;
+  $DiscardCard = new DiscardCard(intval($index), $player);
+  if (!HasGraveyardGem($DiscardCard->ID())) return;
+  $toggledID = $DiscardCard->UniqueID();
+  $wasOff = !IsGraveyardGemActive($player, $toggledID);
+  $off = explode(",", GetClassState($player, $CS_GraveyardGemsOff));
+  $discard = GetDiscard($player);
+  $kept = [];
+  for ($i = 0, $count = count($discard); $i < $count; $i += DiscardPieces()) {
+    $uniqueID = $discard[$i + 1] ?? "-";
+    if ($uniqueID == $toggledID ? !$wasOff : in_array($uniqueID, $off, true)) $kept[] = $uniqueID;
+  }
+  SetClassState($player, $CS_GraveyardGemsOff, count($kept) > 0 ? implode(",", $kept) : "-");
+}
+
 function RequiresDieRoll($cardID, $from, $player): bool
 {
   global $turn;

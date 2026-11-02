@@ -844,6 +844,11 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $discardCard = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
       $pile = isFaceDownMod($mod) ? "DOWN" : GraveyardPile($myDiscard[$i], $viewerSlotPlayerID, $myGYPileHero);
       if ($pile !== "") $discardCard->pile = $pile;
+      if ($playerID != 3 && $overlay != 1 && HasGraveyardGem($cardID)) {
+        $discardCard->gem = IsGraveyardGemActive($viewerSlotPlayerID, $myDiscard[$i + 1]) ? 1 : 2;
+        $discardCard->zone = "GY";
+        $discardCard->controller = $playerID;
+      }
       $playerDiscardArr[] = $discardCard;
     }
   }
