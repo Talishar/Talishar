@@ -435,17 +435,18 @@ function GetDeckBuilderId($uid, $decklink)
 function addFavoriteDeck($userID, $decklink, $deckName, $heroID, $format = "")
 {
 	$conn = GetDBConnection(DBL_ADD_FAVORITE_DECK);
-	if (!$conn) return;
+	if (!$conn) return -1;
 	$deckName = str_replace(['"', "'"], '', $deckName);
-	$values = "'" . $decklink . "'," . $userID . ",'" . $deckName . "','" . $heroID . "','" . $format . "'";
 	$sql = "INSERT IGNORE INTO favoritedeck (decklink, usersId, name, hero, format) VALUES (?, ?, ?, ?, ?);";
 	$stmt = mysqli_stmt_init($conn);
+	$insertedRows = -1;
 	if (mysqli_stmt_prepare($stmt, $sql)) {
 		mysqli_stmt_bind_param($stmt, "sssss", $decklink, $userID, $deckName, $heroID, $format);
-		mysqli_stmt_execute($stmt);
+		if (mysqli_stmt_execute($stmt)) $insertedRows = mysqli_stmt_affected_rows($stmt);
 		mysqli_stmt_close($stmt);
 	}
 	mysqli_close($conn);
+	return $insertedRows;
 }
 
 function LoadFavoriteDecks($userID)
