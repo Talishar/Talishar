@@ -311,7 +311,7 @@ class seed extends BaseCard {
       "seed_inertia_blue" => "inertia",
       default => ""
     };
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($this->controller);
     PlayAura($disease, $this->controller, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
     PlayAura($disease, $otherPlayer, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
     return "";

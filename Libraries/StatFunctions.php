@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ . "/CoreLibraries.php";
 
 define('CARD_STAT_PIECES', 10);
 define('TURN_STAT_PIECES', 15);
