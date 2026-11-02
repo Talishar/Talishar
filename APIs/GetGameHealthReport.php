@@ -18,6 +18,8 @@ session_write_close();
 
 const GAME_HEALTH_REPORT_ROWS = 300;
 const GAME_HEALTH_REPORT_CONTEXTS = 5;
+const GAME_HEALTH_REPORT_MIN_INPUTS = 20;
+const GAME_HEALTH_REPORT_MIN_FIX_GAMES = 2;
 
 $days = intval($_GET["days"] ?? 7);
 if (!in_array($days, [1, 7, 30, 90], true)) $days = 7;
@@ -70,6 +72,7 @@ try {
       SUM(fast_undos) AS fastUndos, SUM(undo_ms) AS undoMs
     FROM game_health_misclicks WHERE day >= ? GROUP BY phase, input_mode, context", $since);
   foreach ($misclickRows as $row) {
+    if (!IsGameHealthPromptPhase($row["phase"])) continue;
     $inputs = (int)$row["inputs"];
     $undos = (int)$row["undos"];
     $fastUndos = (int)$row["fastUndos"];
@@ -110,7 +113,8 @@ try {
     unset($group["undoMs"]);
     $misclicks[] = $group;
   }
-  usort($misclicks, fn($a, $b) => [$b["score"], $b["fastUndos"]] <=> [$a["score"], $a["fastUndos"]]);
+  usort($misclicks, fn($a, $b) => [$b["inputs"] >= GAME_HEALTH_REPORT_MIN_INPUTS, $b["score"], $b["fastUndos"]]
+    <=> [$a["inputs"] >= GAME_HEALTH_REPORT_MIN_INPUTS, $a["score"], $a["fastUndos"]]);
   $response["misclicks"] = array_slice($misclicks, 0, GAME_HEALTH_REPORT_ROWS);
 
   $fixSums = implode(", ", array_map(fn($kind) => "SUM($kind) AS $kind", GAME_HEALTH_FIX_KINDS));
@@ -128,7 +132,8 @@ try {
     $card["score"] = round(GameHealthWilsonLow($card["fixGames"], $card["games"]), 5);
     $cards[] = $card;
   }
-  usort($cards, fn($a, $b) => [$b["score"], $b["fixGames"]] <=> [$a["score"], $a["fixGames"]]);
+  usort($cards, fn($a, $b) => [$b["fixGames"] >= GAME_HEALTH_REPORT_MIN_FIX_GAMES, $b["score"], $b["fixGames"]]
+    <=> [$a["fixGames"] >= GAME_HEALTH_REPORT_MIN_FIX_GAMES, $a["score"], $a["fixGames"]]);
   $response["cards"] = array_slice($cards, 0, GAME_HEALTH_REPORT_ROWS);
 } catch (mysqli_sql_exception $e) {
   if ($e->getCode() != 1146) {

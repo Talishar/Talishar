@@ -356,7 +356,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
-    if(!file_exists($filepath . $filename)) return;
+    if(!file_exists($filepath . $filename)) return false;
     // apply current settings to the backup, they are preferences and not game state
     $gamestateBackup = file($filepath . $filename);
     if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
@@ -366,16 +366,16 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $skipWriteGamestate = true;
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
-    return;
+    return true;
   }
-  
+
   // Multi-level undo: Revert to backup N steps back
   $targetBackup = $stepsBack - 1; // stepsBack=1 means backup_0, stepsBack=2 means backup_1, etc.
   $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
   
   if(!file_exists($backupFile)) {
     WriteLog("Cannot undo further: Please revert to start of this/previous turn instead.");
-    return;
+    return false;
   }
   // apply current settings to the backup
   $gamestateBackup = file($backupFile);
@@ -394,7 +394,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestate = implode('', $gamestateBackup);
   if (!file_exists($backupFile)) {
     WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
-    return;
+    return false;
   }
   // Restore the target backup as current gamestate
   WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
@@ -417,6 +417,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   }
   $result = SaveGamestateSnapshot($filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
+  return true;
 }
 
 function SaveReplay() {
