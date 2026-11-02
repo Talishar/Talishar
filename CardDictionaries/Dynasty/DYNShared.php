@@ -734,6 +734,10 @@ function CheckContract($contractType, $cardBanished, $player)
       return ShareName(NameOverride($cardBanished, $otherPlayer), GamestateUnsanitize($chosenName));
     case "BANISHINFECTED": return IsInfected($otherPlayer);
     case "ASSASSIN": return ClassContains($cardBanished, "ASSASSIN", $otherPlayer);
+    case "GENERIC": 
+      $class = ClassOverride($cardBanished, $otherPlayer);
+      $talent = TalentOverride($cardBanished, $otherPlayer);
+      return ($class == "" || $class == "GENERIC") && ($talent == "" || $talent == "NONE");
     default: return false;
     }
 }

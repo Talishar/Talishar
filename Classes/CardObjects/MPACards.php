@@ -2207,14 +2207,31 @@ class wristcuff_injectors extends Card {
 class slice_the_sickly extends BaseCard {
   // Contract - You are contracted to banish infected opponents' cards. Whenever you complete this contract, create a Silver token. (A hero is infected if they control a disease.)
   // When this hits a hero, banish the top card of their deck.
-  // TODO: keyword Contract
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Slice the Sickly";
-  // }
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $deck->BanishTop(banisher:$this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "BANISHINFECTED";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Slice the Sickly";
+  }
 
   function SpecialCost() {
     return 0;
@@ -2284,12 +2301,17 @@ class slice_the_sickly_blue extends Card {
 class in_the_hot_zone extends BaseCard {
   // When this attacks, create a Bloodrot Pox token under your control.
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
     return "";
   }
 
-  // function SpecialName() {
-  //   return "In the Hot Zone";
-  // }
+  function ProcessAttackTrigger($target, $uniqueID) {
+    PlayAura("bloodrot_pox", $this->controller);
+  }
+
+  function SpecialName() {
+    return "In the Hot Zone";
+  }
 
   function SpecialCost() {
     return 1;
@@ -2362,9 +2384,13 @@ class feverish_strike extends BaseCard {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Feverish Strike";
-  // }
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return IsInfected($this->controller) ? 1 : 0;
+  }
+
+  function SpecialName() {
+    return "Feverish Strike";
+  }
 
   function SpecialCost() {
     return 2;
@@ -2439,12 +2465,40 @@ class festering_rot_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if (ClassContains($attackID, "ASSASSIN", $this->controller) && TypeContains($attackID, "AA"))
+      AddEffectToCurrentAttack($this->cardID);
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Festering Rot";
-  // }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+		return HeroHitTrigger($this->controller, $this->cardID, $check, true, $target);
+	}
+
+	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+		global $defPlayer;
+		$target = !is_numeric($target) ? $defPlayer : $target;
+		PlayAura("bloodrot_pox", $target, effectSource:$source, effectController:$this->controller, effectAgent:$this->controller);
+	}
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return !(ClassContains($attackID, "ASSASSIN", $this->controller) && TypeContains($attackID, "AA"));
+  }
+
+  function SpecialName() {
+    return "Festering Rot";
+  }
 
   function SpecialPitch() {
     return 2;
@@ -2475,9 +2529,9 @@ class decapitate_the_disloyal extends BaseCard {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Decapitate the Disloyal";
-  // }
+  function SpecialName() {
+    return "Decapitate the Disloyal";
+  }
 
   function SpecialCost() {
     return 2;
@@ -2501,6 +2555,24 @@ class decapitate_the_disloyal_red extends Card {
     $this->cardID = "decapitate_the_disloyal_red";
     $this->controller = $controller;
     $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
+  }
+
+  function ContractType($chosenName = '') {
+    return "GENERIC";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $deck->BanishTop(banisher:$this->controller);
   }
 
   function SpecialPitch() {
