@@ -3428,6 +3428,7 @@ function HasBladeBreak($cardID)
     case "second_salvos":
     case "isolation_vestment":
     case "plague_mask":
+    case "wristcuff_injectors":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
