@@ -621,9 +621,11 @@ class isolation_vestment extends Card {
   }
 
   function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
-    global $defPlayer;
+    global $defPlayer, $Stack;
+    $Layer = $Stack->TopLayer($cardID);
+    $attackTarget = CleanTargetToObject($this->controller, $Layer->Target());
+    if (!TypeContains($attackTarget->CardID(), "C")) return 0;
     if (TypeContains($cardID, "AA") && ClassContains($cardID, "ASSASSIN", $this->controller)) {
-      // IsHeroAttackTarget doesn't seem to be working here, need some other way to check
       return IsInfected($defPlayer) ? -1 : 0;
     }
     return 0;
