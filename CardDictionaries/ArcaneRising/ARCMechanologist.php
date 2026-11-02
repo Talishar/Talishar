@@ -45,7 +45,7 @@ function ARCMechanologistPlayAbility($cardID, $from, $resourcesPaid, $target = "
       }
       return $rv;
     case "pour_the_mold_red": case "pour_the_mold_yellow": case "pour_the_mold_blue":
-      $maxCost = match($cardID) { "pour_the_mold_red" => 2, "pour_the_mold_yellow" => 1, default => 0 };
+      $maxCost = ByColor($cardID, 2, 1, 0);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:subtype=Item;maxCost=$maxCost;class=MECHANOLOGIST");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
@@ -127,7 +127,7 @@ function Boost($cardID)
 function DoBoost($player, $cardID, $boostCount=1, $boostOpp=false)
 {
   global $CS_NumBoosted, $CCS_NumBoosted, $CS_OppCardsBoosted, $CS_EvosBoosted, $CS_AdditionalCosts;
-  $otherPlayer = $player == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($player);
   $owner = $boostOpp ? $otherPlayer : $player;
   $deck = new Deck($owner);
   $isGoAgainGranted = false;

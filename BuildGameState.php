@@ -95,7 +95,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response = new stdClass();
   $response->playerInventory = [];
 
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   $viewerSlotPlayerID = $playerID == 1 ? 1 : 2;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
@@ -1093,7 +1093,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           action: $action,
           overlay: $overlay,
           borderColor: $border,
-          controller: $playerID == 1 ? 2 : 1,
+          controller: OtherPlayer($playerID),
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
           isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -1103,7 +1103,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         );
       } else $theirArse[] = JSONRenderedCard(
         cardNumber: $TheirCardBack,
-        controller: $playerID == 1 ? 2 : 1,
+        controller: OtherPlayer($playerID),
         facing: $theirArsenal[$i + 1],
         countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
         isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -1117,7 +1117,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($combatChain[$j + 1] == $otherPlayer && $combatChain[$j + 2] == "ARS") {
         $theirArse[] = JSONRenderedCard(
           cardNumber: $TheirCardBack,
-          controller: $playerID == 1 ? 2 : 1,
+          controller: OtherPlayer($playerID),
           facing: "DOWN", // Technically false, but we currently do not store the facing of an arsenal card once it left the arsenal zone. Likely will be reported as bug at some point
           uniqueID: $combatChain[$j + 7]
         );
@@ -1182,10 +1182,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Their Allies
   $theirAlliesOutput = [];
-  $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
+  $theirAllies = GetAllies(OtherPlayer($playerID));
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
-  $theirAurasObj = new Auras($playerID == 1 ? 2 : 1);
+  $theirAurasObj = new Auras(OtherPlayer($playerID));
   $theirAurasObj->BuildBoundIndex();
 
   $layerTargetHaystack = "";
@@ -1316,7 +1316,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Their Permanents
   $theirPermanentsOutput = [];
-  $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
+  $theirPermanents = GetPermanents(OtherPlayer($playerID));
   $theirPermanentsCount = count($theirPermanents);
   $permanentPieces = PermanentPieces();
   for ($i = 0; $i + $permanentPieces - 1 < $theirPermanentsCount; $i += $permanentPieces) {
@@ -1759,7 +1759,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
   $response->turnPlayer = $mainPlayer;
-  $response->otherPlayer = $playerID == 1 ? 2 : 1;
+  $response->otherPlayer = OtherPlayer($playerID);
   $response->firstPlayer = $firstPlayer;
   $response->turnNo = $currentTurn;
   $response->clock = $p1TotalTime + $p2TotalTime;

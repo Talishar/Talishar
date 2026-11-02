@@ -285,7 +285,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $currentPlayer, $CS_ArcaneDamagePrevention, $CS_NumSeismicSurgeDestroyed, $CombatChain, $CS_NumRedPlayed, $CS_AttacksWithWeapon, $CS_NumAttackCardsAttacked;
   global $CS_NumBoosted, $CS_AdditionalCosts, $CS_DamageDealtToOpponent;
   global $chainLinks, $combatChain;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   switch ($cardID) {
     case "arakni_black_widow":
     case "arakni_funnel_web":
@@ -467,7 +467,7 @@ function HNTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       else if (SubtypeContains($CombatChain->AttackCard()->ID(), "Dagger", $currentPlayer)) AddCurrentTurnEffect($cardID, $currentPlayer);
       break;
     case "provoke_blue":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($currentPlayer));
       if (TypeContains($CombatChain->AttackCard()->ID(), "W", $currentPlayer) && CanRevealCards($otherPlayer)) {
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose a card from hand, action card will be blocked with, non-actions discarded");

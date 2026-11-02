@@ -177,7 +177,7 @@
 
   function WonClashAbility($playerID, $cardID, $effectController="", $switchedPlayers=[false, false]) {
     global $mainPlayer, $CS_NumClashesWon, $combatChainState, $CCS_WeaponIndex, $defPlayer;
-    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($playerID);
     
     $switched = $switchedPlayers[0] || $switchedPlayers[1];
     if (!$switched) {
@@ -305,7 +305,7 @@
   }
 
   function VictorAbility($playerID, $cardID, $effectController="") {
-    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($playerID);
     $char = &GetPlayerCharacter($playerID);
     $hero = ShiyanaCharacter($char[0], $playerID);
     if($char[1] == 2 && ($hero == "victor_goldmane_high_and_mighty" || $hero == "victor_goldmane") && CountItem("gold", $playerID) > 0) {
@@ -388,7 +388,7 @@
     $attackCard = $CombatChain->AttackCard()->ID();
     if(SearchCurrentTurnEffects("double_down_red", $wonWager))
       $amount += CountCurrentTurnEffects("double_down_red", $wonWager);
-    $lostWager = $wonWager == 1 ? 2 : 1;
+    $lostWager = OtherPlayer($wonWager);
     $hand = GetHand($mainPlayer);
     if($lostWager == $mainPlayer && SearchCurrentTurnEffects("cheating_scoundrel_red-WAGER", $mainPlayer, true) && count($hand) > 0) {
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You're about to lose a wager! Do you want to discard a card to win it instead?");

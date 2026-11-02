@@ -602,7 +602,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
-          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+          $otherPlayer = OtherPlayer($currentPlayer);
           BuildMyGamestate($currentPlayer);
         }
         $layerPriority[0] = ShouldHoldPriority(1);
@@ -865,7 +865,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
   global $combatChainState, $CCS_AttackFused;
-  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $defPlayer = OtherPlayer($mainPlayer);
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
@@ -3525,7 +3525,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "harvest_season_red":
       case "harvest_season_yellow":
       case "harvest_season_blue":
-        $numHealthPointsGained = match ($parameter) {"harvest_season_red" => 3, "harvest_season_yellow" => 2, "harvest_season_blue" => 1};
+        $numHealthPointsGained = ByColor($parameter, 3, 2, 1);
         DestroyAuraUniqueID($player, $uniqueID);
         GainHealth($numHealthPointsGained, $player);
         break;
@@ -3572,7 +3572,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "arcane_cussing_red":
       case "arcane_cussing_yellow":
       case "arcane_cussing_blue":
-        $numRunechantsCreated = match ($parameter) {"arcane_cussing_red" => 3, "arcane_cussing_yellow" => 2, "arcane_cussing_blue" => 1};
+        $numRunechantsCreated = ByColor($parameter, 3, 2, 1);
         PlayAura("runechant", $player, $numRunechantsCreated);
         break;
       case "aether_bindings_of_the_third_age":

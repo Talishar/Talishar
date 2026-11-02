@@ -330,7 +330,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
     case "CHOOSETOPOPPONENT":
       if ($turn[1] == $playerID) {
         $playerInputPopup->active = true;
-        $otherPlayer = $playerID == 1 ? 2 : 1;
+        $otherPlayer = OtherPlayer($playerID);
         $options = explode(",", $turn[2]);
         $optCards = [];
         foreach ($options as $option) {

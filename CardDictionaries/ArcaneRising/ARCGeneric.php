@@ -28,7 +28,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
       AddDecisionQueue("WRITELOG", $currentPlayer, "📣<b>{0}</b> was chosen");
-      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", ($currentPlayer == 1 ? 2 : 1), "chains_of_eminence_red,{0}");
+      AddDecisionQueue("ADDCURRENTANDNEXTTURNEFFECT", (OtherPlayer($currentPlayer)), "chains_of_eminence_red,{0}");
       return "";
     case "plunder_run_red": case "plunder_run_yellow": case "plunder_run_blue":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
@@ -38,7 +38,7 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       }
       return $rv;
     case "eirinas_prayer_red": case "eirinas_prayer_yellow": case "eirinas_prayer_blue":
-      $prevent = match($cardID) { "eirinas_prayer_red" => 6, "eirinas_prayer_yellow" => 5, default => 4 };
+      $prevent = ByColor($cardID, 6, 5, 4);
       $deck = new Deck($currentPlayer);
       if($deck->Reveal(1)) {
         $prevent -= PitchValue($deck->Top());
@@ -65,12 +65,12 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "sun_kiss_red": case "sun_kiss_yellow": case "sun_kiss_blue":
-      $health = match($cardID) { "sun_kiss_red" => 3, "sun_kiss_yellow" => 2, default => 1 };
+      $health = ByColor($cardID, 3, 2, 1);
       GainHealth($health, $currentPlayer);
       if(SearchCurrentTurnEffects("moon_wish_red-GA", $currentPlayer)) Draw($currentPlayer);
       return "";
     case "whisper_of_the_oracle_red": case "whisper_of_the_oracle_yellow": case "whisper_of_the_oracle_blue":
-      $opt = match($cardID) { "whisper_of_the_oracle_red" => 4, "whisper_of_the_oracle_yellow" => 3, default => 2 };
+      $opt = ByColor($cardID, 4, 3, 2);
       PlayerOpt($currentPlayer, $opt);
       return "";
     default: return "";

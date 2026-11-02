@@ -70,7 +70,7 @@ function GetMZZoneUIDIndex($zone)
 
 function &GetRelativeMZZone($player, $zone)
 {
-  if (substr($zone, 0, 5) == "THEIR") $player = $player == 1 ? 2 : 1;
+  if (substr($zone, 0, 5) == "THEIR") $player = OtherPlayer($player);
   $rv = &GetMZZone($player, $zone);
   return $rv;
 }

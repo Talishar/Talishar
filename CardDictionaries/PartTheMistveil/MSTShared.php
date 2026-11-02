@@ -67,7 +67,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   global $combatChain, $defPlayer, $CombatChain, $chainLinks, $CS_NumAttacks;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   $hand = &GetHand($currentPlayer);
   switch ($cardID) {
     case "mistcloak_gully":

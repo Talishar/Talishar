@@ -145,7 +145,7 @@ function DTDCombatEffectActive($cardID, $attackID)
 function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCosts)
 {
   global $currentPlayer, $defPlayer, $CS_NumCharged, $CS_NumCardsDrawn, $combatChain, $CombatChain;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   switch($cardID) {
     case "prism_awakener_of_sol": case "prism_advent_of_thrones":
       $uniqueID = explode("-", $target, 2)[1];
@@ -203,7 +203,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       break;
     case "celestial_reprimand_red": case "celestial_reprimand_yellow": case "celestial_reprimand_blue":
-      $amount = match($cardID) { "celestial_reprimand_red" => -3, "celestial_reprimand_yellow" => -2, default => -1 };
+      $amount = ByColor($cardID, -3, -2, -1);
       if($target != "-") $CombatChain->Card(intval($target))->ModifyPower($amount);
       return "";
     case "celestial_resolve_red": case "celestial_resolve_yellow": case "celestial_resolve_blue":

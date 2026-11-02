@@ -160,7 +160,7 @@ function Smoldering($player, $cardID, $zone="AURAS", $number=1, $effectSource=""
 
 function TargetTokenAuras($player="-") {
   global $currentPlayer;
-  $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($currentPlayer);
   $players = $player == "-" ? [$currentPlayer, $otherPlayer] : [$player];
   $ret = [];
   foreach ($players as $player) {

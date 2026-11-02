@@ -330,7 +330,7 @@ class blast_to_oblivion extends BaseCard {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $targetParts = explode("-", $target);
     $targetedPlayer = intval($targetParts[0]);
-    $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+    $notTargetedPlayer = OtherPlayer($targetedPlayer);
     $uID = $targetParts[1];
     $Auras = new Auras($targetedPlayer);
     $AuraCard = $Auras->FindCardUID($uID);

@@ -1984,7 +1984,7 @@ class reckless_stampede_red extends Card {
       AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
       $otherPlayer = $this->controller == 1 ? 2 : 1;
       $revealedCardController = $otherPlayer;
-      $revealedCardController = $otherPlayer == 1 ? 2 : 1;
+      $revealedCardController = OtherPlayer($otherPlayer);
       AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
       AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose if you want to sink <0>", 1);

@@ -35,6 +35,18 @@ function StringContainsWholeWords($str, $find)
   return preg_match($pattern, $str) === 1;
 }
 
+function OtherPlayer($player)
+{
+  return $player == 1 ? 2 : 1;
+}
+
+function ByColor($cardID, $red, $yellow, $blue)
+{
+  if (str_ends_with($cardID, "_red")) return $red;
+  if (str_ends_with($cardID, "_yellow")) return $yellow;
+  return $blue;
+}
+
 function GetRandom($low=-1, $high=-1, $reroll=false)
 {
   global $randomSeeded;

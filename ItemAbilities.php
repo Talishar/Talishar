@@ -267,7 +267,7 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
     $itemPieces = ItemPieces();
     if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
-      if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
+      if (str_contains($items[$index + 9], "THEIR")) $destPlayer = OtherPlayer($player);
       else $destPlayer = $player;
       if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
         AddGraveyard($items[$index], $destPlayer, "PLAY");

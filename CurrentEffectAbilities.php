@@ -1608,19 +1608,9 @@ function CurrentEffectPlayAbility($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_yellow":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_blue":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= ByColor($currentTurnEffects[$i], 0, 1, 2)) {
             ++$actionPoints;
             $remove = true;
           }

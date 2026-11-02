@@ -403,7 +403,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
 function PlayerTargetedAbility($player, $card, $lastResult)
 {
   global $dqVars;
-  $target = ($lastResult == "Target_Opponent" ? ($player == 1 ? 2 : 1) : $player);
+  $target = ($lastResult == "Target_Opponent" ? (OtherPlayer($player)) : $player);
   $params = explode("-", $card);
   switch($params[0])
   {
@@ -417,7 +417,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       if($lastResult == "Target_Opponent" || $lastResult == "Target_Both_Heroes")
       {
         if(IsRoyal($player)) ImperialWarHorn($player, "THEIR");
-        else ImperialWarHorn($player == 1 ? 2 : 1, "MY");
+        else ImperialWarHorn(OtherPlayer($player), "MY");
       }
       if($lastResult == "Target_Yourself" || $lastResult == "Target_Both_Heroes") ImperialWarHorn($player, "MY");
       return "";

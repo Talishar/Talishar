@@ -152,7 +152,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
 {
   global $currentPlayer, $CS_PlayIndex, $CS_NumContractsCompleted, $CCS_NumBoosted;
   global $CombatChain, $ChainLinks;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   $rv = "";
   switch($cardID) {
     case "emperor_dracai_of_aesir":
@@ -186,7 +186,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "reinforce_steel_red": case "reinforce_steel_yellow": case "reinforce_steel_blue":
-      $maxDef = match($cardID) { "reinforce_steel_red" => 3, "reinforce_steel_yellow" => 2, default => 1 };
+      $maxDef = ByColor($cardID, 3, 2, 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=E;subtype=Off-Hand;hasNegCounters=true;maxDef=" . $maxDef . ";class=GUARDIAN");
       AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZOP", $currentPlayer, "GETCARDINDEX", 1);
@@ -206,7 +206,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "predatory_streak_red": case "predatory_streak_yellow": case "predatory_streak_blue":
-      $amount = match($cardID) { "predatory_streak_red" => 3, "predatory_streak_yellow" => 2, default => 1 };
+      $amount = ByColor($cardID, 3, 2, 1);
       for($i=0; $i < $amount; $i++) BanishCardForPlayer("crouching_tiger", $currentPlayer, "-", "TT", $currentPlayer, created:true);
       return "";
     case "merciless_battleaxe":
@@ -229,11 +229,11 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
 		case "felling_swing_red": case "felling_swing_yellow": case "felling_swing_blue":
-      $amount = match($cardID) { "felling_swing_red" => 3, "felling_swing_yellow" => 2, default => 1 };
+      $amount = ByColor($cardID, 3, 2, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "visit_the_imperial_forge_red": case "visit_the_imperial_forge_yellow": case "visit_the_imperial_forge_blue":
-      $amount = match($cardID) { "visit_the_imperial_forge_red" => 3, "visit_the_imperial_forge_yellow" => 2, default => 1 };
+      $amount = ByColor($cardID, 3, 2, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "bios_update_red":
@@ -247,7 +247,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "shred_red": case "shred_yellow": case "shred_blue":
-      $amount = match($cardID) { "shred_red" => -4, "shred_yellow" => -3, default => -2 };
+      $amount = ByColor($cardID, -4, -3, -2);
       if ($target != "-") {
         $targetCard = GetMZCard($currentPlayer, $target);
         $targetParts = explode("-", $target, 3);
@@ -265,7 +265,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return "";
     case "cut_to_the_chase_red": case "cut_to_the_chase_yellow": case "cut_to_the_chase_blue":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($currentPlayer));
       AddDecisionQueue("DECKCARDS", $otherPlayer, "0", 1);
       AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want sink <0>", 1);
@@ -336,7 +336,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") DealArcane(1, 2, "PLAYCARD", $cardID);
       return "";
     case "runic_reaping_red": case "runic_reaping_yellow": case "runic_reaping_blue":
-      $amount = match($cardID) { "runic_reaping_red" => 3, "runic_reaping_yellow" => 2, default => 1 };
+      $amount = ByColor($cardID, 3, 2, 1);
       AddCurrentTurnEffect($cardID . "-HIT", $currentPlayer);
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") AddCurrentTurnEffect($cardID . "-BUFF", $currentPlayer);
       return "";
@@ -368,10 +368,10 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "tranquil_passing_red": case "tranquil_passing_yellow": case "tranquil_passing_blue":
       if($from == "PLAY") return "";
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($currentPlayer));
       $auras = &GetAuras($currentPlayer);
       $uniqueID = $auras[count($auras) - AuraPieces() + 6];
-      $maxCost = match($cardID) { "tranquil_passing_red" => 3, "tranquil_passing_yellow" => 2, default => 1 };
+      $maxCost = ByColor($cardID, 3, 2, 1);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRAURAS:maxCost=" . $maxCost);
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZBANISH", $currentPlayer, "AURAS," . $cardID . "-" . $uniqueID, 1);
@@ -391,7 +391,7 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         if(IsRoyal($currentPlayer))
         {
           $rv .= "👁️‍🗨️" .CardLink($cardID, $cardID) . " revealed the opponent's hand";
-          $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+          $otherPlayer = (OtherPlayer($currentPlayer));
           AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
           AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
         }
@@ -733,7 +733,7 @@ function CheckContract($contractType, $cardBanished, $player)
 
 function Shred($currentPlayer, $amount)
 {
-  $options = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
+  $options = GetChainLinkCards((OtherPlayer($currentPlayer)), "", "C");
   if($options != "") {
     AddDecisionQueue("CHOOSECOMBATCHAIN", $currentPlayer, $options);
     AddDecisionQueue("COMBATCHAINDEFENSEMODIFIER", $currentPlayer, $amount, 1);

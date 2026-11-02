@@ -177,7 +177,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
-  $playerSource = $player == 1 ? 2 : 1;
+  $playerSource = OtherPlayer($player);
   $baseIndex    = GetStatTurnIndex($playerSource) * TURN_STAT_PIECES;
   $damagerStats = &GetTurnStats($playerSource);
   //WriteLog("DEBUG: Logging damage for player $playerSource at turn " . (GetStatTurnIndex($playerSource)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
@@ -190,7 +190,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
 function LogArcaneDamageStats($player, $damageDealt)
 {
   global $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
-  $playerSource = $player == 1 ? 2 : 1;
+  $playerSource = OtherPlayer($player);
   $turnIndex = GetStatTurnIndex($playerSource);
   if ($playerSource == 1) {
     AddTurnStat($p1ArcaneDamageDealt, $turnIndex, $damageDealt);

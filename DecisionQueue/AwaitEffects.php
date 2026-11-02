@@ -248,7 +248,7 @@ function SetLayerTargetAwait($player) {
   $targ = $dqVars["index"] ?? "-";
   if ($targ == "-" && isset($dqVars["MZIndex"])) $targ = $dqVars["MZIndex"];
   if ($cardID == "-" || $targ == "-") return "PASS";
-  $targetPlayer = substr($targ, 0, 5) == "THEIR" ? ($player == 1 ? 2 : 1) : $player;
+  $targetPlayer = substr($targ, 0, 5) == "THEIR" ? (OtherPlayer($player)) : $player;
   WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
   $cleanTarget = CleanTarget($player, $targ);
   $numLayers = $Stack->NumLayers();
@@ -271,7 +271,7 @@ function DealDamageAwait($player) {
   $playerSource = $dqVars["playerSource"] ?? $player;
   $preventable = CanDamageBePrevented($player, $damage, $type, $source);
   $targetArr = explode("-", $target);
-  $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+  $targetPlayer = $targetArr[0] == "MYCHAR" || $targetArr[0] == "MYALLY" ? $player : (OtherPlayer($player));
   if ($targetArr[0] == "THEIRALLY" || $targetArr[0] == "MYALLY") {
     return DamageAlly($targetPlayer, $targetArr[1], $damage, $type);
   } else {

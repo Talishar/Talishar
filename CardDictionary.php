@@ -939,7 +939,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   if (!$cardID) return 0;
   $set = CardSet($cardID);
   $subtype = CardSubtype($cardID);
-  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $defPlayer = OtherPlayer($mainPlayer);
   $player = $player == "-" ? $mainPlayer : $player;
   $lyathActive = false;
   $lyathShoes = false;
@@ -1589,7 +1589,7 @@ function CanAttack($cardID, $from, $index=-1, $zone="-", $isWeapon=false, $type=
   // kabuto stops attacking in general, so it can stop activated or queued attacks
   if ($isWeapon && SearchCurrentTurnEffects("kabuto_of_imperial_authority", $currentPlayer)) return false;
   if (SubtypeContains($cardID, "Sword") && $index != -1 && MomentsPeaceStopsWeapon($index, $mainPlayer, $cardID)) {
-    if (!HasNonHeroAttackTarget($mainPlayer == 1 ? 2 : 1)) return false;
+    if (!HasNonHeroAttackTarget(OtherPlayer($mainPlayer))) return false;
   }
   if ($index != -1) {
     switch($zone) {
@@ -4150,7 +4150,7 @@ function PlayableFromBanish($cardID, $mod = "", $nonLimitedOnly = false, $player
     case "hungering_demigon_red":
     case "hungering_demigon_yellow":
     case "hungering_demigon_blue":
-      $soul = &GetSoul($player == 1 ? 2 : 1);
+      $soul = &GetSoul(OtherPlayer($player));
       return count($soul) > 0;
     default:
       break;
@@ -4738,7 +4738,7 @@ function CountAllies($player)
 //Function used for cosmetic effect to show when something is active. e.g. Hold the Line
 function HasEffectActive($cardID) {
   global $CS_NumCardsDrawn, $playerID;
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   switch ($cardID) {
     case "phoenix_form_red": return NumChainLinksWithName("Phoenix Flame") >= 3;
     case "hold_the_line_blue": return GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2;
