@@ -2106,7 +2106,7 @@ function FinalizeChainLink($chainClosed = false)
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AttacksWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalPower, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
-  global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects;
+  global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects, $CS_ResolvingLayerUniqueID;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
     $attackID = $combatChain[0] ?? "";
@@ -2237,6 +2237,8 @@ function FinalizeChainLink($chainClosed = false)
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
+    SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUID);
+    SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUID);
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
     return;
   }

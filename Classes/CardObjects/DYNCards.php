@@ -2030,17 +2030,46 @@ class leave_no_witnesses_red extends Card {
 // }
 
 
-// class pulsewave_harpoon_red extends Card {
+class pulsewave_harpoon_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "pulsewave_harpoon_red";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "pulsewave_harpoon_red";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		if (IsHeroAttackTarget())
+			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+		return "";
+	}
+
+	function ProcessAttackTrigger($target, $uniqueID) {
+		global $CCS_NumBoosted;
+		$numBoosted = GetCombatChainState($CCS_NumBoosted);
+		$otherPlayer = ($this->controller == 1 ? 2 : 1);
+		$otherPlayerHand = GetHand($otherPlayer);
+		if($numBoosted > 0 && count($otherPlayerHand) > 0)
+		{
+			$numToReveal = min($numBoosted, count($otherPlayerHand));
+			AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
+			AddDecisionQueue("SETDQVAR", $this->controller, "0");
+			AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+			AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+			AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
+			AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Select exactly $numToReveal card(s) from your hand to reveal", 1);
+			AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+			AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+			AddDecisionQueue("SETDQVAR", $this->controller, "1");
+			AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
+			AddDecisionQueue("PASSPARAMETER", $this->controller, "{1}", 1);
+			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a revealed action card with $numBoosted or less defense to add as a defending card", 1);
+			AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
+			AddDecisionQueue("CHOOSETHEIRHAND", $this->controller, "<-", 1);
+			AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+			AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
+		}
+	}
+}
 
 
 // class puncture_red extends Card {

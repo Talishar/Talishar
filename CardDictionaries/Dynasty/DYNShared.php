@@ -236,31 +236,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $amount = match($cardID) { "visit_the_imperial_forge_red" => 3, "visit_the_imperial_forge_yellow" => 2, default => 1 };
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "pulsewave_harpoon_red":
-      $numBoosted = GetCombatChainState($CCS_NumBoosted);
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
-      $otherPlayerHand = GetHand($otherPlayer);
-      if(IsHeroAttackTarget() && $numBoosted > 0 && count($otherPlayerHand) > 0)
-      {
-        $numToReveal = min($numBoosted, count($otherPlayerHand));
-        AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "0");
-        AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-        AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
-        AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
-        AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Select exactly $numToReveal card(s) from your hand to reveal", 1);
-        AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
-        AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
-        AddDecisionQueue("SETDQVAR", $currentPlayer, "1");
-        AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
-        AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a revealed action card with $numBoosted or less defense to add as a defending card", 1);
-        AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
-        AddDecisionQueue("CHOOSETHEIRHAND", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-        AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
-      }
-      return "";
     case "bios_update_red":
       AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
       AddCurrentTurnEffect($cardID . "-2", $currentPlayer);

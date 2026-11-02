@@ -325,7 +325,7 @@ function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-
 
 function ResolveAttackQueue() {
   // resolving AttackQueue
-  global $attackQueue, $CS_AbilityIndex, $turn;
+  global $attackQueue, $CS_AbilityIndex, $turn, $CS_ResolvingLayerUniqueID;
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
@@ -343,6 +343,8 @@ function ResolveAttackQueue() {
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
+    SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUID);
+    SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUID);
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
   }
 }
