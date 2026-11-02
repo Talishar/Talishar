@@ -239,7 +239,7 @@ function GetLegalHeroes($format) {
 function GetMasteryHeroGroups() {
   $toSetIds = function ($heroes) {
     return array_values(array_unique(array_filter(array_map(
-      fn($hero) => function_exists('SetID') ? SetID($hero['heroId']) : '',
+      fn($hero) => function_exists('SetID') ? HeroMasteryHeroId(SetID($hero['heroId'])) : '',
       $heroes
     ))));
   };

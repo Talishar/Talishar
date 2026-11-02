@@ -470,8 +470,9 @@ $classStateDefaults = [
   "AllDamageDealtToOpponent" => 0,
   "ExertionDestroyed" => 0,
   "DrawOffered" => 0,                         // this player has an open draw offer, so it expires at the end of the turn
+  "GraveyardGemsOff" => "-",                  // unique IDs of this player's graveyard cards whose gem is switched off
 ];
-$persistentClassStates = ["ArsenalFacing", "OriginalHero"];
+$persistentClassStates = ["ArsenalFacing", "OriginalHero", "GraveyardGemsOff"];
 $classStateNames = array_keys($classStateDefaults);
 foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;
 unset($classStateName, $classStateDefault);

@@ -5,6 +5,15 @@ function HeroMasteryMilestones(): array
   return [5, 10, 15, 25, 35, 50, 75, 100, 150, 200, 250, 350, 500, 750, 1000];
 }
 
+function HeroMasteryHeroId(string $heroId): string
+{
+  static $aliases = [
+    "OBK406" => "OBK006",
+    "OBK407" => "OBK007",
+  ];
+  return $aliases[$heroId] ?? $heroId;
+}
+
 function HeroMasteryLevel(int $games): int
 {
   $level = 0;
@@ -89,7 +98,7 @@ function AwardHeroMastery(bool $conceded = false): void
     $hero = $originalHero !== "" && $originalHero !== "-"
       ? $originalHero
       : ($character[0] ?? "");
-    $heroId = $hero !== "" ? SetID($hero) : "";
+    $heroId = $hero !== "" ? HeroMasteryHeroId(SetID($hero)) : "";
     if ($heroId === "") continue;
     $awardCandidates[] = ["userId" => $userId, "heroId" => $heroId];
   }
