@@ -624,6 +624,7 @@ class isolation_vestment extends Card {
     global $defPlayer, $Stack;
     $Layer = $Stack->TopLayer($cardID);
     $attackTarget = CleanTargetToObject($this->controller, $Layer->Target());
+    if ($attackTarget == "") return 0;
     if (!TypeContains($attackTarget->CardID(), "C")) return 0;
     if (TypeContains($cardID, "AA") && ClassContains($cardID, "ASSASSIN", $this->controller)) {
       return IsInfected($defPlayer) ? -1 : 0;

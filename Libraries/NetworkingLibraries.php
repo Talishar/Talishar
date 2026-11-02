@@ -4259,16 +4259,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "boltyn":
       BanishFromSoul($currentPlayer);
       break;
-    case "beacon_of_victory_yellow":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-      AddDecisionQueue("WRITELASTRESULT", $currentPlayer, CardLink($cardID, $cardID)." was paid with an additional cost of ", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
-      break;
     case "v_of_the_vanguard_yellow":
       AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
       break;

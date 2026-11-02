@@ -2540,7 +2540,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
       return count(GetSoul($player)) == 0 || !HasIncreasedAttack();
-    case "beacon_of_victory_yellow":
     case "radiant_view":
     case "radiant_raiment":
     case "radiant_touch":

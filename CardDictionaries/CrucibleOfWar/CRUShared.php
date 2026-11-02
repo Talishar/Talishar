@@ -416,6 +416,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Draw($currentPlayer, num: $count);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");
     case "snag_blue":
+      AddCurrentTurnEffect("snag_blue", $currentPlayer);
       AddCurrentTurnEffect("snag_blue", ($currentPlayer == 1 ? 2 : 1));
       return "";
     case "promise_of_plenty_red": case "promise_of_plenty_yellow": case "promise_of_plenty_blue":

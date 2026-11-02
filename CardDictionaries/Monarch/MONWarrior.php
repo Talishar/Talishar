@@ -9,16 +9,6 @@
       case "ser_boltyn_breaker_of_dawn": case "boltyn":
         if(HasIncreasedAttack()) GiveAttackGoAgain();
         return "";
-      case "beacon_of_victory_yellow":
-        AddDecisionQueue("POWERMODIFIER", $currentPlayer, intval($additionalCosts), 1);
-        if(GetClassState($currentPlayer, $CS_NumCharged) > 0) {
-          AddDecisionQueue("FINDINDICES", $currentPlayer, "beacon_of_victory_yellow-2", 1);
-          AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
-          AddDecisionQueue("MULTIADDHAND", $currentPlayer, "-", 1);
-          AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        }
-        return "";
       case "lumina_ascension_yellow":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         $character = &GetPlayerCharacter($currentPlayer);
