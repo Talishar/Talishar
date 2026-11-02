@@ -63,9 +63,6 @@ function ARCGenericPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $a
       return $rv;
     case "lead_the_charge_red": case "lead_the_charge_yellow": case "lead_the_charge_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      if($cardID == "lead_the_charge_red") $cost = 0;
-      else if($cardID == "lead_the_charge_yellow") $cost = 1;
-      else $cost = 2;
       return "";
     case "sun_kiss_red": case "sun_kiss_yellow": case "sun_kiss_blue":
       $health = match($cardID) { "sun_kiss_red" => 3, "sun_kiss_yellow" => 2, default => 1 };

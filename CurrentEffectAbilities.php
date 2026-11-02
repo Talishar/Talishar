@@ -1634,21 +1634,6 @@ function CurrentEffectPlayAbility($cardID, $from)
   return false;
 }
 
-function CurrentEffectPlayOrActivateAbility($cardID, $from) // currently deprecated
-{
-  global $currentTurnEffects, $currentPlayer;
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = false;
-      $commaPos = strpos($currentTurnEffects[$i], ',');
-      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
-      if ($remove) RemoveCurrentTurnEffect($i);
-    }
-  }
-  return false;
-}
-
 function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 {
   global $currentTurnEffects, $currentPlayer;

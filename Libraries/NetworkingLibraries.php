@@ -5119,7 +5119,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   else ResolvePermanent($cardID, $from, $additionalCosts);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
-    CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       CharacterPlayCardAbilities($cardID, $from);
       ArsenalPlayCardAbilities($cardID);
