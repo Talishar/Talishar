@@ -288,6 +288,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   $response->visibility = $visibility;
   $response->isPrivateLobby = ($visibility != "public");
+  $response->openHands = ($openHands ?? "") === "openhands";
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->format = $format;
     $response->gameDescription = $gameDescription;

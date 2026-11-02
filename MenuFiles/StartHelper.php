@@ -6,7 +6,7 @@ include_once __DIR__ . "/../Libraries/PlayerSettings.php";
 function initializePlayerState($handler, $deckHandler, $player)
 {
   global $p1IsPatron, $p2IsPatron, $p1IsChallengeActive, $p2IsChallengeActive, $p1id, $p2id;
-  global $SET_Mute, $SET_IsPatron, $SET_GemsOffByDefault, $p1Inventory, $p2Inventory;
+  global $SET_Mute, $SET_IsPatron, $SET_GemsOffByDefault, $SET_OpenHands, $p1Inventory, $p2Inventory, $openHands;
   global $classStateDefaults;
   $charEquip = GetArray($deckHandler);
   $deckCards = GetArray($deckHandler);
@@ -75,8 +75,9 @@ function initializePlayerState($handler, $deckHandler, $player)
   $savedSettingsCount = count($savedSettings);
   for($i=0; $i<$savedSettingsCount; $i+=2)
   {
-    $settingArray[$savedSettings[$i]] = $savedSettings[$i+1]; 
+    $settingArray[$savedSettings[$i]] = $savedSettings[$i+1];
   }
+  $settingArray[$SET_OpenHands] = ($openHands ?? "") === "openhands" ? "1" : "0";
   ksort($settingArray);
   fwrite($handler, implode(" ", $settingArray) . "\r\n"); //Settings
 }

@@ -226,6 +226,15 @@ function InactivityTimeoutMs($cacheArr, $gameName = null)
   return $gameName !== null && IsRelaxedTimerGame($gameName) ? RELAXED_INACTIVITY_TIMEOUT_MS : INACTIVITY_TIMEOUT_MS;
 }
 
+function IsInactivityDeadlinePassed($gameName)
+{
+  $cacheArr = ReadCacheArray($gameName);
+  $timeout = InactivityTimeoutMs($cacheArr, $gameName);
+  $lastActionTime = intval($cacheArr[5] ?? 0);
+  if ($timeout <= 0 || $lastActionTime <= 0) return false;
+  return round(microtime(true) * 1000) >= $lastActionTime + $timeout - 2000;
+}
+
 // The game description is not in the shmop cache, so read it from GameFile.txt once per process
 function IsRelaxedTimerGame($gameName)
 {

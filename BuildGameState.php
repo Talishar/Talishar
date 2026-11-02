@@ -397,13 +397,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($goldOrPitchChoice) $goldOrPitchChoices[$goldOrPitchChoice] = true;
     }
   }
+  $canUnblock = $turnPhase == "B" && $currentPlayer == $playerID && $playerID == $defPlayer && count($layers) == 0;
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieceCount) {
     $action = $currentPlayer == $playerID && $turnPhase != "P" &&
       $currentPlayer == $combatChain[$i + 1] &&
       AbilityPlayableFromCombatChain($combatChain[$i]) &&
       IsPlayable($combatChain[$i], $turnPhase, "PLAY", $i) ? 21 : 0;
+    if ($action == 0 && $i > 0 && $canUnblock && $combatChain[$i + 1] == $playerID && CanUnblockFrom($combatChain[$i + 2])) $action = 10021;
 
-    $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    $borderColor = $action == 10021 ? 8 : ($action != 0 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2));
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
     $countersMap = null;
@@ -565,7 +567,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
+  $theirHandOpen = IsOpenHands($otherPlayer);
+  $showTheirHand = $isGameOver || $isReplay || $theirHandOpen || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
   
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
@@ -772,7 +775,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $handPieces = HandPieces();
   $handChoiceIndices = "," . $turn[2] . ",";
   $myHandIDs = HandInstanceIDsFor($playerID);
-  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay || IsOpenHands(2));
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     $label = "";
     if ($playerID == 3) {
@@ -1056,11 +1059,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $theirArsenalCount = count($theirArsenal);
     for ($i = 0; $i < $theirArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $theirArsenal[$i + 1] = "UP";
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends)) {
+      $theirArsenalRevealed = $theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
+      if ($theirArsenalRevealed || $theirHandOpen) {
         $overlay = 0;
         $border = 0;
         $cardID = $theirArsenal[$i];
-        $action = $currentPlayer == $playerID && IsPlayable($cardID, $turnPhase, "THEIRARS", $i) ? 37 : 0;
+        $action = $theirArsenalRevealed && $currentPlayer == $playerID && IsPlayable($cardID, $turnPhase, "THEIRARS", $i) ? 37 : 0;
         $border = CardBorderColor($cardID, "THEIRARS", $action > 0, $playerID);
         $theirArse[] = JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
@@ -1107,7 +1111,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myArsenalCount = count($myArsenal);
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $myArsenal[$i + 1] = "UP";
-      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !$isReplay && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends)) {
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !$isReplay && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) && !IsOpenHands(2)) {
         $myArse[] = JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,

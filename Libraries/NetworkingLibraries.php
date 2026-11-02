@@ -34,7 +34,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
-  global $CS_OriginalHero;
+  global $CS_OriginalHero, $CS_DrawOffered;
   global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = $playerID == 1 ? 2 : 1;
@@ -667,6 +667,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
       break;
+    case 10021: //Take back one blocking card
+      UnblockCard($playerID, intval($cardID));
+      break;
     case 10002:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . $manualCount . " action point" . ($manualCount > 1 ? "s" : ""), highlight: true, highlightColor: "darkblue");
@@ -1151,12 +1154,52 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
       include_once __DIR__ . "/../includes/dbh.inc.php";
       include_once __DIR__ . "/../includes/functions.inc.php";
-      $otherPlayer = $playerID == 1 ? 2 : 1;
-      if (!IsGameOver())
-        PlayerWon($playerID);
+      PlayerWon($playerID);
       WriteLog("🚩 The opponent forfeited due to inactivity.");
+      break;
+    case 100030: //Claim Draw when opponent is inactive
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      WriteLog("🤝 Player $playerID claimed a draw because the opponent was inactive.");
+      PlayerWon(0, true);
+      break;
+    case 100027: //Offer Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($playerID, $CS_DrawOffered) == 1)
+        break;
+      if (IsPlayerAI($otherPlayer)) {
+        WriteLog("🤖 The bot declined the draw.");
+        break;
+      }
+      SetClassState($playerID, $CS_DrawOffered, 1);
+      WriteLog("🤝 Player $playerID offered a draw.", highlight: true, highlightColor: "darkblue");
+      AddEvent("REQUESTDRAW", $playerID);
+      break;
+    case 100028: //Accept Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("🤝 Player $playerID accepted the draw.");
+      PlayerWon(0, true);
+      break;
+    case 100029: //Decline Draw
+      if (($playerID != 1 && $playerID != 2) || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("Player $playerID declined the draw offer.", highlight: true);
       break;
     case 100012: //Create Replay
       $replaySaveResult = [
@@ -1502,6 +1545,86 @@ function ManualModeCount($input)
   return min($count, 999);
 }
 
+function UnblockCommand($player, $cardID, $from, $originUniqueID)
+{
+  switch ($from) {
+    case "HAND":
+      $index = array_search($cardID, GetHand($player), true);
+      return $index === false ? null : [27, $index];
+    case "EQUIP":
+      $zone = GetPlayerCharacter($player);
+      $pieces = CharacterPieces();
+      $uidOffset = 11;
+      $mode = 3;
+      break;
+    case "ARS":
+      $zone = GetArsenal($player);
+      $pieces = ArsenalPieces();
+      $uidOffset = 5;
+      $mode = 5;
+      break;
+    case "PLAY":
+      $zone = GetItems($player);
+      $pieces = ItemPieces();
+      $uidOffset = 4;
+      $mode = 10;
+      break;
+    default:
+      return null;
+  }
+  for ($i = 0, $count = count($zone); $i < $count; $i += $pieces) {
+    if ($zone[$i] == $cardID && $zone[$i + $uidOffset] == $originUniqueID) return [$mode, $i];
+  }
+  return null;
+}
+
+function UnblockCard($player, $chainIndex)
+{
+  global $combatChain, $turn, $layers, $currentPlayer, $defPlayer, $filepath, $gameName, $skipWriteGamestate;
+  global $events, $animations, $logWriteBuffer;
+  $pieces = CombatChainPieces();
+  if ($turn[0] != "B" || $player != $defPlayer || $currentPlayer != $player || count($layers) > 0) return;
+  if ($chainIndex < $pieces || $chainIndex % $pieces != 0 || ($combatChain[$chainIndex + 1] ?? "") != $player) return;
+  if (!CanUnblockFrom($combatChain[$chainIndex + 2]) || !file_exists($filepath . "preBlockBackup.txt")) return;
+  $defending = [];
+  for ($i = $pieces, $count = count($combatChain); $i < $count; $i += $pieces) {
+    $defending[$i] = [$combatChain[$i], $combatChain[$i + 1], $combatChain[$i + 2], $combatChain[$i + 8]];
+  }
+  DoGamestateUpdate();
+  $original = ReadGamestateCache($gameName);
+  $savedLogBuffer = $logWriteBuffer;
+  $savedReplayLogLines = $GLOBALS['replayLogLines'] ?? "";
+
+  RevertGamestate("preBlockBackup.txt");
+  ParseGamestate();
+  $events = [];
+  $animations = [];
+  $base = count($combatChain);
+  $replayed = $chainIndex >= $base;
+  foreach ($defending as $index => [$cardID, $controller, $from, $originUniqueID]) {
+    if (!$replayed) break;
+    if ($index < $base || $index == $chainIndex) continue;
+    $command = $controller == $player ? UnblockCommand($player, $cardID, $from, $originUniqueID) : null;
+    $chainCount = count($combatChain);
+    $replayed = $command !== null && ProcessInput($player, $command[0], "", $command[1], 0, "") !== false &&
+      $turn[0] == "B" && $currentPlayer == $player && count($layers) == 0 &&
+      count($combatChain) == $chainCount + $pieces && $combatChain[$chainCount] == $cardID;
+  }
+
+  $logWriteBuffer = $savedLogBuffer;
+  $GLOBALS['replayLogLines'] = $savedReplayLogLines;
+  if (!$replayed) {
+    WriteGamestateFileAtomic($filepath . "gamestate.txt", $original);
+    WriteGamestateCache($gameName, $original);
+    $GLOBALS['lastWrittenGamestate'] = $original;
+    ParseGamestate();
+    $events = [];
+    $animations = [];
+    WriteLog("That card can't be taken back on its own. Use Undo Block instead.");
+  }
+  $skipWriteGamestate = false;
+}
+
 function IsModeAsync($mode)
 {
   static $asyncModes = [
@@ -1509,7 +1632,8 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true,
+  100027 => true, 100028 => true, 100029 => true, 100030 => true
   ];
   return isset($asyncModes[$mode]);
 }
