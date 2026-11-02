@@ -2222,6 +2222,10 @@ class edge_laden_plate extends Card {
 		}
 		return count($targets) == 0;
 	}
+
+	function DefaultActiveState() {
+		return 1;
+	}
 }
 
 class duelist_gauntlets extends Card {
