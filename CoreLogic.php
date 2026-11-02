@@ -3981,7 +3981,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     LogPlayCardStats($currentPlayer, "vestige_of_sol", "EQUIP", "PASSIVE");
   }
   if ($pitchValue == 1) {
-    $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);
+    $talismanOfRecompenseIndex = SearchItemForIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
       WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);

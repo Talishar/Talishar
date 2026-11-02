@@ -2279,7 +2279,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $number = $mzArr[1];
       $itemsLeftToDestroy = $mzArr[1];
       for ($i = 0; $i < $number; ++$i) {
-        $index = GetItemIndex($cardID, $player);
+        $index = SearchItemForIndex($cardID, $player);
         if ($index != -1) {
           DestroyItemForPlayer($player, $index);
           --$itemsLeftToDestroy;

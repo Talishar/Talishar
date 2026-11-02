@@ -178,7 +178,7 @@ function ForcedPitchIndex($player)
   if ($handCount == 0) return -1;
 
   // Pitch-time resource bonuses make the pitch order matter, so let the player choose
-  if (GetItemIndex("talisman_of_recompense_yellow", $player) > -1) return -1;
+  if (SearchItemForIndex("talisman_of_recompense_yellow", $player) > -1) return -1;
   if (GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol")) return -1;
 
   $resources = &GetResources($player);
@@ -601,7 +601,7 @@ function HasPlayableCard($player, $phase)
 function PlayerMacrosCardPlayed()
 {
   global $turn, $currentPlayer, $SET_PassDRStep;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   if($turn[0] == "A")
   {
     ChangeSetting($otherPlayer, $SET_PassDRStep, 0);

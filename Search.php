@@ -354,18 +354,34 @@ function isAdministrativeStep($cardID)
   }
 }
 
-function SearchHandForCard($player, $card)
+function ZoneFind(array $zone, int $pieces, int $offset, $value, bool $fromEnd = false): int
 {
-  $hand = &GetHand($player);
-  $count = count($hand);
-  $pieces = HandPieces();
+  $count = count($zone);
+  if ($fromEnd) {
+    for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+      if (($zone[$i + $offset] ?? null) == $value) return $i;
+    }
+    return -1;
+  }
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if (($zone[$i + $offset] ?? null) == $value) return $i;
+  }
+  return -1;
+}
+
+function ZoneFindAll(array $zone, int $pieces, int $offset, $value): string
+{
+  $count = count($zone);
   $indices = [];
   for ($i = 0; $i < $count; $i += $pieces) {
-    if ($hand[$i] == $card) {
-      $indices[] = $i;
-    }
+    if (($zone[$i + $offset] ?? null) == $value) $indices[] = $i;
   }
   return implode(",", $indices);
+}
+
+function SearchHandForCard($player, $card)
+{
+  return ZoneFindAll(GetHand($player), HandPieces(), 0, $card);
 }
 
 function SearchHandForCardName($player, $name)
@@ -548,16 +564,7 @@ function SearchAlliesActive($player, ...$cards)
 
 function SearchPermanentsForCard($player, $card)
 {
-  $permanents = &GetPermanents($player);
-  $count = count($permanents);
-  $pieces = PermanentPieces();
-  $indices = [];
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($permanents[$i] == $card) {
-      $indices[] = $i;
-    }
-  }
-  return implode(",", $indices);
+  return ZoneFindAll(GetPermanents($player), PermanentPieces(), 0, $card);
 }
 
 function SearchCharacterAlive($player, $cardID)
@@ -955,13 +962,7 @@ function SearchPitchForNumCosts($player)
 
 function SearchPitchForCard($playerID, $cardID)
 {
-  $pitch = GetPitch($playerID);
-  $count = count($pitch);
-  $pitchPieces = PitchPieces();
-  for ($i = 0; $i < $count; $i += $pitchPieces) {
-    if ($pitch[$i] == $cardID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetPitch($playerID), PitchPieces(), 0, $cardID);
 }
 
 function SearchBanishForCard($playerID, $cardID)
@@ -1109,24 +1110,12 @@ function GetEquipmentIndices($player, $maxBlock = -1, $minBlock = -1, $onCombatC
 
 function SearchAuras($cardID, $player)
 {
-  $auras = &GetAuras($player);
-  $count = count($auras);
-  $pieces = AuraPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID) return true;
-  }
-  return false;
+  return ZoneFind(GetAuras($player), AuraPieces(), 0, $cardID) != -1;
 }
 
 function SearchAurasForIndex($cardID, $player)
 {
-  $auras = &GetAuras($player);
-  $count = count($auras);
-  $pieces = AuraPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($auras[$i] == $cardID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetAuras($player), AuraPieces(), 0, $cardID);
 }
 
 function SearchAurasForCard($cardID, $player, $selfReferential = true)
@@ -1195,16 +1184,7 @@ function SearchAurasForCardName($cardName, $player, $selfReferential = true)
 function SearchCharacterForCards($cardID, $player, $selfReferential = true)
 {
   if (!$selfReferential && SearchCurrentTurnEffects("amnesia_red", $player)) return "";
-  $char = &GetPlayerCharacter($player);
-  $count = count($char);
-  $pieces = CharacterPieces();
-  $indices = [];
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($char[$i] == $cardID) {
-      $indices[] = $i;
-    }
-  }
-  return implode(",", $indices);
+  return ZoneFindAll(GetPlayerCharacter($player), CharacterPieces(), 0, $cardID);
 }
 
 function SearchZoneForUniqueID($uniqueID, $player, $zone)
@@ -1241,12 +1221,7 @@ function SearchForUniqueID($uniqueID, $player)
 function SearchLayersForUniqueID($uniqueID)
 {
   global $layers;
-  $count = count($layers);
-  $pieces = LayerPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($layers[$i + 6] == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind($layers, LayerPieces(), GetMZZoneUIDIndex("LAYER"), $uniqueID);
 }
 
 function SearchLayersForTargetUniqueID($uniqueID)
@@ -1262,13 +1237,7 @@ function SearchLayersForTargetUniqueID($uniqueID)
 
 function SearchAurasForUniqueID($uniqueID, $player)
 {
-  $auras = &GetAuras($player);
-  $count = count($auras);
-  $pieces = AuraPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (($auras[$i + 6] ?? "-") == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetAuras($player), AuraPieces(), GetMZZoneUIDIndex("MYAURAS"), $uniqueID);
 }
 
 function SearchDiscardForUniqueID($uniqueID, $player)
@@ -1284,13 +1253,7 @@ function SearchDiscardForUniqueID($uniqueID, $player)
 
 function SearchArsenalForUniqueID($uniqueID, $player)
 {
-  $arsenal = &GetArsenal($player);
-  $count = count($arsenal);
-  $pieces = ArsenalPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($arsenal[$i + 5] == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetArsenal($player), ArsenalPieces(), GetMZZoneUIDIndex("MYARS"), $uniqueID);
 }
 
 function SearchCharacterForUniqueID($uniqueID, $player)
@@ -1306,46 +1269,23 @@ function SearchCharacterForUniqueID($uniqueID, $player)
 
 function SearchItemsForUniqueID($uniqueID, $player)
 {
-  $items = &GetItems($player);
-  $count = count($items);
-  $pieces = ItemPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (isset($items[$i + 4]) && $items[$i + 4] == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetItems($player), ItemPieces(), GetMZZoneUIDIndex("MYITEMS"), $uniqueID);
 }
 
 function SearchAlliesForUniqueID($uniqueID, $player)
 {
-  $allies = &GetAllies($player);
-  $count = count($allies);
-  $pieces = AllyPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (($allies[$i + 5] ?? "-") == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetAllies($player), AllyPieces(), GetMZZoneUIDIndex("MYALLY"), $uniqueID);
 }
 
 function SearchCurrentTurnEffectsForUniqueID($uniqueID)
 {
   global $currentTurnEffects;
-  $count = count($currentTurnEffects);
-  $pieces = CurrentTurnEffectPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($currentTurnEffects[$i + 2] == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind($currentTurnEffects, CurrentTurnEffectPieces(), 2, $uniqueID);
 }
 
 function SearchPermanentsForUniqueID($uniqueID, $player)
 {
-  $perms = GetPermanents($player);
-  $count = count($perms);
-  $pieces = PermanentPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (($perms[$i + 3] ?? null) == $uniqueID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetPermanents($player), PermanentPieces(), 3, $uniqueID);
 }
 
 function SearchCurrentTurnEffectsForPartialId($partial)
@@ -1379,16 +1319,7 @@ function SearchUniqueIDForCurrentTurnEffects($index)
 
 function SearchItemsForCard($cardID, $player)
 {
-  $items = &GetItems($player);
-  $count = count($items);
-  $pieces = ItemPieces();
-  $indices = [];
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($items[$i] == $cardID) {
-      $indices[] = $i;
-    }
-  }
-  return implode(",", $indices);
+  return ZoneFindAll(GetItems($player), ItemPieces(), 0, $cardID);
 }
 
 function SearchItemsForCardName($cardName, $player)
@@ -1408,28 +1339,12 @@ function SearchItemsForCardName($cardName, $player)
 
 function SearchItemForIndex($cardID, $player)
 {
-  $items = &GetItems($player);
-  $count = count($items);
-  $pieces = ItemPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($items[$i] == $cardID) {
-      return $i;
-    }
-  }
-  return -1;
+  return ZoneFind(GetItems($player), ItemPieces(), 0, $cardID);
 }
 
 function SearchItemForLastIndex($cardID, $player)
 {
-  $items = &GetItems($player);
-  $count = count($items);
-  $pieces = ItemPieces();
-  for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-    if ($items[$i] == $cardID) {
-      return $i;
-    }
-  }
-  return -1;
+  return ZoneFind(GetItems($player), ItemPieces(), 0, $cardID, fromEnd: true);
 }
 
 function SearchItemForModalities($modality, $player, $cardID)
@@ -1460,25 +1375,13 @@ function SearchAuraForModalities($modality, $player, $cardID)
 
 function SearchInventoryForCard($player, $cardID)
 {
-  $inventory = &GetInventory($player);
-  $count = count($inventory);
-  $pieces = InventoryPieces();
-  $indices = [];
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($inventory[$i] == $cardID) $indices[] = $i;
-  }
-  return implode(",", $indices);
+  return ZoneFindAll(GetInventory($player), InventoryPieces(), 0, $cardID);
 }
 
 function SearchLandmark($cardID)
 {
   global $landmarks;
-  $count = count($landmarks);
-  $pieces = LandmarkPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($landmarks[$i] == $cardID) return true;
-  }
-  return false;
+  return ZoneFind($landmarks, LandmarkPieces(), 0, $cardID) != -1;
 }
 
 function CountAura($cardID, $player)
@@ -1505,17 +1408,6 @@ function CountAuraPowerCounters($player)
     if ($auras[$i + 3] > 0) $total += $auras[$i + 3];
   }
   return $total;
-}
-
-function GetItemIndex($cardID, $player)
-{
-  $items = &GetItems($player);
-  $count = count($items);
-  $pieces = ItemPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($items[$i] == $cardID) return $i;
-  }
-  return -1;
 }
 
 function GetCombatChainIndex($cardID, $player)
@@ -1969,7 +1861,7 @@ function SearchMultizone($player, $searches)
         }
       }
     }
-    $searchPlayer = substr($zone, 0, 2) == "MY" ? $player : ($player == 1 ? 2 : 1);
+    $searchPlayer = substr($zone, 0, 2) == "MY" ? $player : (OtherPlayer($player));
     $searchResult = "";
     if (!$isCardID && !$isSameName) {
       switch ($zone) {
@@ -2130,23 +2022,13 @@ function SearchGetLastIndex($search)
 function SearchLayersForCardID($cardID)
 {
   global $layers;
-  $count = count($layers);
-  $pieces = LayerPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if ($layers[$i + 2] == $cardID) return $i;
-  }
-  return -1;
+  return ZoneFind($layers, LayerPieces(), 2, $cardID);
 }
 
 function SearchLayersForPhase($phase)
 {
   global $layers;
-  $count = count($layers);
-  $pieces = LayerPieces();
-  for ($i = 0; $i < $count; $i += $pieces) {
-    if (($layers[$i] ?? "-") == $phase) return $i;
-  }
-  return -1;
+  return ZoneFind($layers, LayerPieces(), 0, $phase);
 }
 
 function GetPlayerNumEquipment($player, $face = "UP")
@@ -2240,13 +2122,7 @@ function RemoveDuplicateCards($player, $stringCardsIndex, $zone)
 
 function SearchSoulForIndex($cardID, $player)
 {
-  $souls = &GetSoul($player);
-  $countSouls = count($souls);
-  $soulPieces = SoulPieces();
-  for ($i = 0; $i < $countSouls; $i += $soulPieces) {
-    if ($souls[$i] == $cardID) return $i;
-  }
-  return -1;
+  return ZoneFind(GetSoul($player), SoulPieces(), 0, $cardID);
 }
 
 function SearchCombatChainDefendingCards($player, $cardType = "-")

@@ -2363,7 +2363,7 @@ function BeginEndPhaseEffects()
         break;
       case "sanctuary_of_aria-1":
         $player = $currentTurnEffects[$i+1];
-        $sanctuaryIndex = GetItemIndex("sanctuary_of_aria", $player);
+        $sanctuaryIndex = SearchItemForIndex("sanctuary_of_aria", $player);
         DestroyItemForPlayer($player, $sanctuaryIndex, true);
         break;
       default:
