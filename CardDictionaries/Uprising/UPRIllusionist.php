@@ -126,7 +126,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       $index = explode("-", $target);
       $Permanents = new Permanents($player);
       $targetPerm = $Permanents->FindCardUID($index[1]);
-      if ($targetPerm != "") {
+      if ($targetPerm->Index() != -1) {
         if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
           AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
           AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);

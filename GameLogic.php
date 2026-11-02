@@ -20,6 +20,7 @@ include "Classes/Inventory.php";
 include "Classes/Hand.php";
 include "Classes/Discard.php";
 include "Classes/Character.php";
+include "Classes/ZoneObjects.php";
 include "Classes/Items.php";
 include "Classes/Auras.php";
 include "Classes/Allies.php";
