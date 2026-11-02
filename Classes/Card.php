@@ -1436,4 +1436,10 @@ class Card {
       return $this->baseCard->RemoveEffectLinkResolves();
     return false;
   }
+
+  function ContractCompleteEffect($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "ContractCompleteEffect"))
+      return $this->baseCard->ContractCompleteEffect($index);
+    return false;
+  }
 }

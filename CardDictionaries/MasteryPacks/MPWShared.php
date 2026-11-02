@@ -105,13 +105,16 @@ function TargetSwordAttack($player) {
   return implode(",", $choices);
 }
 
-function DrawAndPutBack($player, $cardID) {
+function DrawAndPutBack($player, $cardID, $bottom=false) {
   Draw($player, effectSource:$cardID);
   $hand = GetHand($player);
   Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
   Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
   Await($player, "MZRemove", "cardID");
-  Await($player, "AddTopDeck", final:true);
+  if (!$bottom)
+    Await($player, "AddTopDeck", final:true);
+  else
+    Await($player, "AddBotDeck", final:true);
   $unique = [];
   for ($i = 0; $i < count($hand); $i += HandPieces()) {
     if (!in_array($hand[$i], $unique))

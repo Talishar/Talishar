@@ -1158,3 +1158,1388 @@ class painful_choice_red extends Card {
     return true;
   }
 }
+
+class patrons_lockbox_valuables_blue extends Card {
+  // Go again
+  // When you complete a contract, destroy this. If you do, create 2 Silver tokens.
+  function __construct($controller) {
+    $this->cardID = "patrons_lockbox_valuables_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ContractCompleteEffect($index) {
+    $Item = new ItemCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $Item->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Items = new Items($this->controller);
+    $Item = $Items->FindCardUID($target);
+    if ($Item->Index() != -1) {
+      $Item->Destroy();
+      PutItemIntoPlayForPlayer("silver", $this->controller, number:2, effectSource:$this->cardID);
+    }
+  }
+
+  function SpecialName() {
+    return "Patron's Lockbox: Valuables";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function SpecialSubType() {
+    return "Item";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+
+class mask_of_one_million_eyes extends Card {
+  // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
+  // Attack Reaction - Destroy this: Draw a card, then put a card from your hand on the bottom of your deck.
+  function __construct($controller) {
+    $this->cardID = "mask_of_one_million_eyes";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DrawAndPutBack($this->controller, $this->cardID, bottom:true);
+    return "";
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function SpecialName() {
+    return "Mask of One Million Eyes";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+}
+
+class break_down_the_bloodline extends BaseCard {
+  // Contract - If you are Arakni, you are contracted to banish opponents' Assassin cards. Whenever you complete this contract, create a Silver token.
+  // If you are Arakni, this gets "When this hits a hero, banish the top card of their deck."
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ContractType($chosenName = '') {
+    $Hero = new CharacterCard(0, $this->controller);
+    if (str_contains(NameOverride($Hero->CardID(), $this->controller), "Arakni"))
+      return "ASSASSIN";
+    return "";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $Hero = new CharacterCard(0, $this->controller);
+    if (!str_contains(NameOverride($Hero->CardID(), $this->controller), "Arakni")) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); return; }
+    $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
+  }
+
+  function SpecialName() {
+    return "Break Down the Bloodline";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class break_down_the_bloodline_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "break_down_the_bloodline_red";
+    $this->controller = $controller;
+    $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class break_down_the_bloodline_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "break_down_the_bloodline_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class break_down_the_bloodline_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "break_down_the_bloodline_blue";
+    $this->controller = $controller;
+    $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class triple_blind extends BaseCard {
+  // If you are Mortimer, this gets "When this hits a hero, they choose Frailty, Inertia, or Bloodrot Pox. Create that token under their control."
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    $Hero = new CharacterCard(0, $this->controller);
+    if (!str_contains(NameOverride($Hero->CardID(), $this->controller), "Mortimer")) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $Diseases, $defPlayer;
+		$target = !is_numeric($target) ? $defPlayer : $target;
+		$indices = [];
+		foreach($Diseases as $disease)
+			$indices[] = "CARDID-$disease";
+		$indices = implode(",", $indices);
+		$context = "infect yourself";
+		Await($defPlayer, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
+		Await($defPlayer, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
+  }
+
+  function SpecialName() {
+    return "Triple Blind";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class triple_blind_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "triple_blind_red";
+    $this->controller = $controller;
+    $this->baseCard = new triple_blind($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class triple_blind_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "triple_blind_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new triple_blind($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class triple_blind_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "triple_blind_blue";
+    $this->controller = $controller;
+    $this->baseCard = new triple_blind($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class spawn_disease extends BaseCard {
+  // When this hits an Assassin hero, create an Inertia token under their control.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    global $defPlayer;
+    $Hero = new CharacterCard(0, $defPlayer);
+    if (!ClassContains($Hero->CardID(), "ASSASSIN", $defPlayer)) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $disease = match($this->cardID) {
+      "spawn_inertia_red" => "inertia",
+      "spawn_frailty_red" => "frailty",
+      "spawn_bloodrot_red" => "bloodrot_pox",
+      default => "-"
+    };
+    if ($disease != "-")
+      PlayAura($disease, $defPlayer, effectAgent:$this->controller);
+  }
+
+  function SpecialName() {
+    return "Spawn Inertia";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class spawn_inertia_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spawn_inertia_red";
+    $this->controller = $controller;
+    $this->baseCard = new spawn_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class spawn_frailty_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spawn_frailty_red";
+    $this->controller = $controller;
+    $this->baseCard = new spawn_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class spawn_bloodrot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spawn_bloodrot_red";
+    $this->controller = $controller;
+    $this->baseCard = new spawn_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+
+class desperate_drive extends BaseCard {
+  // Stealth
+  // If you are infected, this gets go again. (A hero is infected if they control a disease.)
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Desperate Drive";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class desperate_drive_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "desperate_drive_red";
+    $this->controller = $controller;
+    $this->baseCard = new desperate_drive($this->cardID, $this->controller);
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return IsInfected($this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class desperate_drive_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "desperate_drive_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new desperate_drive($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class desperate_drive_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "desperate_drive_blue";
+    $this->controller = $controller;
+    $this->baseCard = new desperate_drive($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class free_of_burdens extends BaseCard {
+  // Once per Turn Instant - Destroy an aura token you control: This gets +1 power.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") {
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    }
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 1;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from="", $index=-1, $resolutionCheck=false) {
+    global $mainPlayer, $CombatChain, $ChainLinks;
+    if ($this->controller != $mainPlayer) return true;
+    if ($from != "PLAY" && $from != "COMBATCHAINATTACKS") return false;
+    if (AuraCount($this->controller) == 0) return true;
+    if ($from == "PLAY" && $CombatChain->AttackCard()->NumTimesUsed() >= 1) return true;
+    if ($from == "COMBATCHAINATTACKS") {
+      $Link = $ChainLinks->GetLink($index);
+      return $Link->AttackCard()->NumTimesUsed() >= 1;
+    }
+    return false;
+  }
+
+  function AbilityPlayableFromCombatChain($index="-") {
+    global $mainPlayer;
+    return $this->controller == $mainPlayer;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return ($from == "PLAY" || $from == "COMBATCHAINATTACKS") ? "I": "AA";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CombatChain, $ChainLinks;
+    if (is_numeric($index)) {
+      if ($from == "CC") {
+        $i = 0;
+      }
+      else {
+        $i = intdiv($index, ChainLinksPieces());
+      }
+      if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
+        if ($from == "COMBATCHAINATTACKS") $ChainLinks->GetLink($i)->AttackCard()->AddUse(1);
+        else $CombatChain->AttackCard()->AddUse(1);
+        Await($this->controller, "MultiZoneIndices", search:"MYAURAS", subsequent:0);
+        Await($this->controller, "ChooseMultiZone", context:"Destroy an aura you control");
+        Await($this->controller, "MZDestroy", final:true);
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Free of Burdens";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class free_of_burdens_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "free_of_burdens_red";
+    $this->controller = $controller;
+    $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class free_of_burdens_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "free_of_burdens_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class free_of_burdens_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "free_of_burdens_blue";
+    $this->controller = $controller;
+    $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class pinpoint_elimination_blue extends Card {
+  // Name a card, then the defending hero reveals the top card of their deck. If it's the named card, banish it and create a Silver token.
+  function __construct($controller) {
+    $this->cardID = "pinpoint_elimination_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $defPlayer;
+    $choice = $dqVars["LASTRESULT"] ?? "-";
+    if ($choice != "-") {
+      WriteLog("<b>📣$choice</b> is being hunted!");
+      $deck = new Deck($defPlayer);
+      if ($deck->Reveal()) {
+        $topCard = $deck->Top();
+        if (NameOverride($topCard, $defPlayer) == $choice) {
+          $deck->BanishTop(banisher:$this->controller);
+          PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+        }
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Pinpoint Elimination";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class easy_prey_blue extends Card {
+  // Target Assassin attack gets +1 power while it's attacking an infected hero. (A hero is infected if they control a disease.)
+  function __construct($controller) {
+    $this->cardID = "easy_prey_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    global $defPlayer;
+    return IsHeroAttackTarget() && IsInfected($defPlayer) ? 1 : 0;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    return !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller);
+  }
+
+  function SpecialName() {
+    return "Easy Prey";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class expense_not_spared_yellow extends Card {
+  // As an additional cost to play this, destroy 2 Silver you control.
+  // Target Assassin attack action card gets +5 power.
+  function __construct($controller) {
+    $this->cardID = "expense_not_spared_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CombatChain;
+    if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
+      AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 5;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    if (!ClassContains($attackID, "ASSASSIN", $this->controller)) return true;
+    if (!TypeContains($attackID, "AA")) return true;
+    if (CountItemByName("silver", $this->controller) < 2) return true;
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
+    AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
+  }
+
+  function SpecialName() {
+    return "Expense Not Spared";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class repeat_reconnaissance extends BaseCard {
+  // Stealth
+  // If you are Uzuri, this gets "When this is defended by 2 or more cards, you may put an attack action card with cost 2 from your graveyard on the bottom of your deck."
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AttackGetsBlockedEffect($start) {
+    global $combatChain;
+    $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
+    $Hero = new CharacterCard(0, $this->controller);
+    if ($numBlocking >= 2 && str_contains(NameOverride($Hero->CardID(), $this->controller), "Uzuri"))
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $context = "Put a 2 cost attack on the bottom of your deck (or pass)";
+    ChooseAndProcess($this->controller, "MYDISCARD:minCost=2;maxCost=2", $context, $this->cardID, true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $DisCard = MZIndexToObject($this->controller, $choice);
+    if ($DisCard != "") {
+      WriteLog(CardLink($DisCard->CardID()) . " was put on the bottom of the deck!");
+      AddBottomDeck($DisCard->CardID(), $this->controller, "DISCARD");
+      $DisCard->Remove();
+    }
+  }
+
+  function SpecialName() {
+    return "Repeat Reconnaissance";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class repeat_reconnaissance_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "repeat_reconnaissance_red";
+    $this->controller = $controller;
+    $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class repeat_reconnaissance_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "repeat_reconnaissance_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class repeat_reconnaissance_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "repeat_reconnaissance_blue";
+    $this->controller = $controller;
+    $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class the_spiders_cut extends BaseCard {
+  // As an additional cost to play this, destroy a Silver you control.
+  // When this hits a hero, create 2 Silver tokens.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    PutItemIntoPlayForPlayer("silver", $this->controller, number:2);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return CountItemByName("silver", $this->controller) == 1;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-1", 1);
+    AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
+  }
+
+  function SpecialName() {
+    return "The Spider's Cut";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class the_spiders_cut_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "the_spiders_cut_red";
+    $this->controller = $controller;
+    $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class the_spiders_cut_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "the_spiders_cut_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class the_spiders_cut_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "the_spiders_cut_blue";
+    $this->controller = $controller;
+    $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class wristcuff_injectors extends Card {
+  // Action - Destroy this: The next Assassin attack action card you play this turn gets "When this hits a hero, create a Frailty, Inertia, or Bloodrot Pox token under their control." Activate this only if you are Mortimer. Go again
+  // Blade Break
+  function __construct($controller) {
+    $this->cardID = "wristcuff_injectors";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return ClassContains($attackID, "ASSASSIN", $this->controller) && TypeContains($attackID, "AA");
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $Diseases, $defPlayer;
+    $indices = [];
+		foreach($Diseases as $disease)
+			$indices[] = "CARDID-$disease";
+		$indices = implode(",", $indices);
+		$context = "infect your opponent";
+		Await($this->controller, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
+		Await($defPlayer, "PlayAura", effectController:$this->controller, effectSource:$source, effectAgent:$this->controller, final:true);
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Hero = new CharacterCard(0, $this->controller);
+    return !str_contains(NameOverride($Hero->CardID(), $this->controller), "Mortimer"); 
+  }
+
+  function SpecialName() {
+    return "Wristcuff Injectors";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+}
+
+class slice_the_sickly extends BaseCard {
+  // Contract - You are contracted to banish infected opponents' cards. Whenever you complete this contract, create a Silver token. (A hero is infected if they control a disease.)
+  // When this hits a hero, banish the top card of their deck.
+  // TODO: keyword Contract
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Slice the Sickly";
+  // }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class slice_the_sickly_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "slice_the_sickly_red";
+    $this->controller = $controller;
+    $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class slice_the_sickly_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "slice_the_sickly_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class slice_the_sickly_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "slice_the_sickly_blue";
+    $this->controller = $controller;
+    $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class in_the_hot_zone extends BaseCard {
+  // When this attacks, create a Bloodrot Pox token under your control.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "In the Hot Zone";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class in_the_hot_zone_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "in_the_hot_zone_red";
+    $this->controller = $controller;
+    $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class in_the_hot_zone_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "in_the_hot_zone_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class in_the_hot_zone_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "in_the_hot_zone_blue";
+    $this->controller = $controller;
+    $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class feverish_strike extends BaseCard {
+  // If you are infected, this gets +1 power. (A hero is infected if they control a disease.)
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Feverish Strike";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class feverish_strike_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "feverish_strike_red";
+    $this->controller = $controller;
+    $this->baseCard = new feverish_strike($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class feverish_strike_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "feverish_strike_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new feverish_strike($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class feverish_strike_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "feverish_strike_blue";
+    $this->controller = $controller;
+    $this->baseCard = new feverish_strike($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class festering_rot_yellow extends Card {
+  // Target Assassin attack action card gets go again and "When this hits a hero, create a Bloodrot Pox token under their control."
+  function __construct($controller) {
+    $this->cardID = "festering_rot_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Festering Rot";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class decapitate_the_disloyal extends BaseCard {
+  // Contract - You are contracted to banish opponents' cards with no class or talent. Whenever you complete this contract, create a Silver token.
+  // When this hits a hero, banish the top card of their deck.
+  // TODO: keyword Contract
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Decapitate the Disloyal";
+  // }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class decapitate_the_disloyal_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "decapitate_the_disloyal_red";
+    $this->controller = $controller;
+    $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class decapitate_the_disloyal_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "decapitate_the_disloyal_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class decapitate_the_disloyal_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "decapitate_the_disloyal_blue";
+    $this->controller = $controller;
+    $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}

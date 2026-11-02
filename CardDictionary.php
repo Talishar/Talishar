@@ -330,8 +330,10 @@ function CardSubType($cardID, $uniqueID = -1)
     case "second_salvos": //temporary
       return "Legs";
     case "plague_mask":
+    case "mask_of_one_million_eyes":
       return "Head";
     case "surgical_gloves":
+    case "wristcuff_injectors":
       return "Arms";
     case "isolation_vestment":
       return "Chest";

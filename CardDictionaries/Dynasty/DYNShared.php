@@ -552,6 +552,12 @@ function ContractCompleted($player, $cardID)
   IncrementClassState($player, $CS_NumContractsCompleted);
   LogContractCompletedStats($player, $cardID);
   if($EffectContext == "coercive_tendency_blue") AddCurrentTurnEffect("coercive_tendency_blue", $player);
+  $Items = new Items($player);
+  for ($i = 0; $i < $Items->NumItems(); ++$i) {
+    $ItemCard = $Items->Card($i, true);
+    $itemobject = GetClass($ItemCard->CardID(), $player);
+    if ($itemobject != "-") $itemobject->ContractCompleteEffect($ItemCard->Index());
+  }
   $card = GetClass($cardID, $player);
   if ($card != "-") {
     return $card->ContractCompleted();
@@ -727,6 +733,7 @@ function CheckContract($contractType, $cardBanished, $player)
     case "NAMEDCARD":
       return ShareName(NameOverride($cardBanished, $otherPlayer), GamestateUnsanitize($chosenName));
     case "BANISHINFECTED": return IsInfected($otherPlayer);
+    case "ASSASSIN": return ClassContains($cardBanished, "ASSASSIN", $otherPlayer);
     default: return false;
     }
 }

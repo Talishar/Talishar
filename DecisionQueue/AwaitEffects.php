@@ -441,6 +441,15 @@ function AddTopDeckAwait($player) {
   return $Deck->AddTop($cardID, $from, $deckIndexModifier);
 }
 
+function AddBotDeckAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"];
+  $from = $dqVars["from"] ?? "GY";
+  $deckIndexModifier = $dqVars["deckIndexModifier"] ?? 0;
+  $Deck = new Deck($player);
+  return $Deck->AddBottom($cardID, $from);
+}
+
 function ResolveGoAgainAwait($player) {
   global $dqVars;
   $cardID = $dqVars["cardID"];
