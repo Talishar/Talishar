@@ -666,7 +666,11 @@ function CheckContracts($banishedBy, $cardBanished)
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if($chainCard->PlayerID() != $banishedBy) continue;
     if(CardType($chainCard->ID()) == "AA" && $i > 0) continue; //blocking AA don't generate contracts
-    $chosenName = explode("|", $chainCard->StaticBuffs(), 2)[1] ?? "-";
+    $chosenName = "-";
+    foreach(explode(",", $chainCard->StaticBuffs()) as $buff) {
+      if (str_contains($buff, "NAMEDCARD"))
+        $chosenName = explode("|", $buff, 2)[1] ?? "-";
+    }
     $contractType = ContractType($chainCard->ID(), $chosenName);
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
