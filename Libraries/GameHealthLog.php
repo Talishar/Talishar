@@ -24,7 +24,7 @@ function GameHealthFixKind($mode)
 function IsGameHealthLoggedMode($mode)
 {
   if ($mode < 10000) return !IsModeAsync($mode);
-  return $mode == 10000 || $mode == 10003 || GameHealthFixKind($mode) !== null;
+  return GameHealthFixKind($mode) !== null;
 }
 
 function IsGameHealthPromptPhase($phase)
@@ -64,21 +64,37 @@ function GameHealthPromptContext($phase)
   return $context === "" ? "-" : $context;
 }
 
-function LogGameHealthInput($player, $mode, $buttonInput = "")
+function WriteGameHealthLine($player, $mode, $context)
 {
   global $turn, $gameName, $lastPlayed, $SET_DisableFabInsights;
-  $mode = (int)$mode;
-  if (($player != 1 && $player != 2) || IsReplay() || !IsGameHealthLoggedMode($mode)) return;
+  if (($player != 1 && $player != 2) || IsReplay()) return;
   if (SettingValue($player, $SET_DisableFabInsights, "0") == "1") return;
 
   $phase = substr((string)($turn[0] ?? ""), 0, 48);
+  $context = substr(str_replace(["\t", "\r", "\n"], " ", $context), 0, 96);
+  $line = (int)(microtime(true) * 1000) . "\t$player\t$mode\t$phase\t$context\t" . trim((string)($lastPlayed[0] ?? "")) . "\n";
+  @file_put_contents(__DIR__ . "/../Games/$gameName/" . GAME_HEALTH_LOG_FILE, $line, FILE_APPEND);
+}
+
+function LogGameHealthInput($player, $mode, $buttonInput = "")
+{
+  global $turn;
+  $mode = (int)$mode;
+  if (!IsGameHealthLoggedMode($mode)) return;
+
+  $phase = (string)($turn[0] ?? "");
   $context = "-";
   if ($mode == 27) $context = (string)$buttonInput;
   else if ($mode < 10000 && IsGameHealthPromptPhase($phase)) $context = GameHealthPromptContext($phase);
-  $context = substr(str_replace(["\t", "\r", "\n"], " ", $context), 0, 96);
+  WriteGameHealthLine($player, $mode, $context);
+}
 
-  $line = (int)(microtime(true) * 1000) . "\t$player\t$mode\t$phase\t$context\t" . trim((string)($lastPlayed[0] ?? "")) . "\n";
-  @file_put_contents(__DIR__ . "/../Games/$gameName/" . GAME_HEALTH_LOG_FILE, $line, FILE_APPEND);
+// Undos are logged where the engine acts on them: 10000 for a revert (context
+// "request" when it only asked the opponent), 100016 for an accepted request
+// (logged for the requester), 10003 for a revert to an earlier turn or link.
+function LogGameHealthUndo($player, $mode, $context = "-")
+{
+  WriteGameHealthLine($player, $mode, $context);
 }
 
 function SummarizeGameHealthLog($lines)
@@ -86,6 +102,7 @@ function SummarizeGameHealthLog($lines)
   $misclicks = [];
   $cards = [];
   $undoStacks = [1 => [], 2 => []];
+  $undoRequests = [];
   $recentCards = [];
 
   foreach ($lines as $line) {
@@ -104,22 +121,31 @@ function SummarizeGameHealthLog($lines)
     }
 
     if ($mode < 10000) {
-      $key = "$phase\t$mode\t$context";
-      if (!isset($misclicks[$key])) $misclicks[$key] = [$phase, $mode, $context, 0, 0, 0, 0];
-      ++$misclicks[$key][3];
+      $key = null;
+      if (IsGameHealthPromptPhase($phase)) {
+        $key = "$phase\t$mode\t$context";
+        if (!isset($misclicks[$key])) $misclicks[$key] = [$phase, $mode, $context, 0, 0, 0, 0];
+        ++$misclicks[$key][3];
+      }
       $undoStacks[$player][] = [$key, $ms];
       if (count($undoStacks[$player]) > GAME_HEALTH_UNDO_DEPTH) array_shift($undoStacks[$player]);
     }
-    else if ($mode == 10000) {
+    else if ($mode == 10000 && $context == "request") {
+      $undoRequests[$player] = $ms;
+    }
+    else if ($mode == 10000 || $mode == 100016) {
+      $undoMs = $mode == 100016 ? ($undoRequests[$player] ?? $ms) : $ms;
+      unset($undoRequests[$player]);
       $undone = array_pop($undoStacks[$player]);
-      if ($undone === null) continue;
-      $gap = max(0, $ms - $undone[1]);
+      if ($undone === null || $undone[0] === null) continue;
+      $gap = max(0, $undoMs - $undone[1]);
       ++$misclicks[$undone[0]][4];
       if ($gap < GAME_HEALTH_FAST_UNDO_MS) ++$misclicks[$undone[0]][5];
       $misclicks[$undone[0]][6] += min($gap, GAME_HEALTH_MAX_UNDO_MS);
     }
     else if ($mode == 10003) {
       $undoStacks = [1 => [], 2 => []];
+      $undoRequests = [];
     }
     else {
       $kind = GameHealthFixKind($mode);
@@ -219,7 +245,7 @@ function FlushGameHealthLog($gameName)
   if (!$lines) return;
 
   [$misclicks, $cards] = SummarizeGameHealthLog($lines);
-  if (count($misclicks) == 0) return;
+  if (count($misclicks) == 0 && count($cards) == 0) return;
 
   include_once __DIR__ . "/../includes/dbh.inc.php";
   $conn = GetDBConnection(DBL_FLUSH_GAME_HEALTH_LOG);

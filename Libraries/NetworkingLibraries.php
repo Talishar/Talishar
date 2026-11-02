@@ -2,6 +2,7 @@
 include_once __DIR__ . "/ReplayLibraries.php";
 include_once __DIR__ . "/SnapshotLibraries.php";
 include_once __DIR__ . "/RematchLibraries.php";
+include_once __DIR__ . "/GameHealthLog.php";
 
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
@@ -649,7 +650,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || $turn[0] == "PAYGOLDORPITCH" || $turn[0] == "CHOOSEGOLDTOPAY" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate(stepsBack: $undoSteps);
+        if (RevertGamestate(stepsBack: $undoSteps)) LogGameHealthUndo($playerID, 10000);
         $skipWriteGamestate = true;
         WriteLog("Player " . $playerID . " undid their last action");
       }
@@ -664,6 +665,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         else {
           WriteLog("Player " . $playerID . " requests to undo the last action");
           AddEvent("REQUESTUNDO", $playerID);
+          LogGameHealthUndo($playerID, 10000, "request");
         }
       }
       break;
@@ -697,7 +699,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       IncrementClassState($playerID, $CS_NumUndoesThisTurn);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate($buttonInput);
+        if (RevertGamestate($buttonInput)) LogGameHealthUndo($playerID, 10003);
         if ($buttonInput == "startChainLinkGamestate.txt")
           WriteLog("Player " . $playerID . " reverted to the start of the chain link");
         else
@@ -1455,7 +1457,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100016://Confirm Undo
       $undoSteps = UndoStepsBack();
-      if ($undoSteps > 0) RevertGamestate(stepsBack: $undoSteps);
+      if ($undoSteps > 0 && RevertGamestate(stepsBack: $undoSteps)) LogGameHealthUndo($otherPlayer, 100016);
       WriteLog("Player " . $playerID . " allowed undoing the last action");
       ConsumeUndoRequestEvents();
       break;
@@ -1468,12 +1470,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ConsumeUndoRequestEvents();
       break;
     case 100018://Confirm this turn undo
-      RevertGamestate("beginTurnGamestate.txt");
+      if (RevertGamestate("beginTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the turn");
       ConsumeUndoRequestEvents();
       break;
     case 100019://Confirm last turn undo
-      RevertGamestate("lastTurnGamestate.txt");
+      if (RevertGamestate("lastTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the last turn");
       ConsumeUndoRequestEvents();
       break;
@@ -1486,7 +1488,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("🔇 Player " . $playerID . " turned chat off");
       break;
     case 100022:// Confirm chain link undo
-      RevertGamestate("startChainLinkGamestate.txt");
+      if (RevertGamestate("startChainLinkGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the chain link");
       ConsumeUndoRequestEvents();
       break;
