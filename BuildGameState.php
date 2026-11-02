@@ -592,13 +592,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = [];
   $theirGYSubtypes = IsNecromancerHero($theirCharacter[0] ?? "", $otherPlayer);
+  $theirGYPileHero = GraveyardPileHero($theirCharacter[0] ?? "", $otherPlayer);
   for ($i = 0; $i < $theirDiscardCount; $i += $discardPieces) {
     if (isset($theirDiscard[$i + 2])) {
       $mod = $theirDiscard[$i + 2];
       $isFaceDown = isFaceDownMod($mod);
       $cardID = $isFaceDown ? $TheirCardBack : $theirDiscard[$i];
       $sType = ($theirGYSubtypes && !$isFaceDown) ? CardSubType($cardID) : "";
-      $opponentDiscardArray[] = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
+      $discardCard = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
+      $pile = $isFaceDown ? "DOWN" : GraveyardPile($cardID, $otherPlayer, $theirGYPileHero);
+      if ($pile !== "") $discardCard->pile = $pile;
+      $opponentDiscardArray[] = $discardCard;
     }
   }
   $response->opponentDiscard = $opponentDiscardArray;
@@ -651,7 +655,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $otherPlayer, $mod);
 
-    $opponentBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $banishCard = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $pile = BanishPile($theirBanish[$i], $mod, $otherPlayer);
+    if ($pile !== "") $banishCard->pile = $pile;
+    $opponentBanishArr[] = $banishCard;
   }
   $response->opponentBanish = $opponentBanishArr;
 
@@ -818,6 +825,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $playerDiscardArr = [];
   $myDiscardCount = count($myDiscard);
   $myGYSubtypes = IsNecromancerHero($myCharacter[0] ?? "", $playerID == 1 ? 1 : 2);
+  $myGYPileHero = GraveyardPileHero($myCharacter[0] ?? "", $viewerSlotPlayerID);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
@@ -833,7 +841,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = $MyCardBack;
       $sType = ($myGYSubtypes && $overlay != 1 && $cardID != $MyCardBack) ? CardSubType($cardID) : "";
-      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
+      $discardCard = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
+      $pile = isFaceDownMod($mod) ? "DOWN" : GraveyardPile($myDiscard[$i], $viewerSlotPlayerID, $myGYPileHero);
+      if ($pile !== "") $discardCard->pile = $pile;
+      $playerDiscardArr[] = $discardCard;
     }
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($viewerSlotPlayerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
@@ -902,9 +913,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $label = "Intimidated";
     }
     if (isset($myBanish[$i + 2])) {
-      $label = GetCardEffectLabel($myBanish[$i + 2], $currentTurnEffects);
+      $label = GetCardEffectLabel($myBanish[$i + 2], $currentTurnEffects) ?: $label;
     }
-    $playerBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $banishCard = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $pile = BanishPile($myBanish[$i], $mod, $viewerSlotPlayerID);
+    if ($pile !== "") $banishCard->pile = $pile;
+    $playerBanishArr[] = $banishCard;
   }
   $response->playerBanish = $playerBanishArr;
   unset($playerBanishArr);

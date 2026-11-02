@@ -585,6 +585,44 @@ function isFaceDownMod($mod)
   return isset($faceDownMods[$mod]);
 }
 
+function BanishPile($cardID, $mod, $player)
+{
+  static $playMods = ["TT" => true, "TCC" => true, "TCL" => true, "INST" => true, "TTFromOtherPlayer" => true];
+  static $playNextMods = ["NT" => true, "NTFromOtherPlayer" => true];
+  if ($mod == "INT" || $mod == "TRAPDOOR") return $mod;
+  if (isFaceDownMod($mod)) return "DOWN";
+  if (isset($playMods[$mod])) return "PLAY";
+  if (isset($playNextMods[$mod])) return "PLAYNEXT";
+  if ($mod !== "" && ctype_lower($mod[0])) {
+    $name = CardName($mod);
+    if ($name !== "") return $name;
+  }
+  if (HasBloodDebt($cardID, $player)) return "BLOODDEBT";
+  return "";
+}
+
+function GraveyardPileHero($heroID, $player)
+{
+  static $leviaHeroes = ["levia" => true, "levia_shadowborn_abomination" => true, "blasmophet_levia_consumed" => true, "levia_redeemed" => true];
+  $heroID = ShiyanaCharacter($heroID, $player);
+  if ($heroID === "") return ["shadowBrute" => false, "earth" => false];
+  $talent = CardTalent($heroID);
+  return [
+    "shadowBrute" => isset($leviaHeroes[$heroID]) || (DelimStringContains(CardClass($heroID), "BRUTE") && DelimStringContains($talent, "SHADOW")),
+    "earth" => DelimStringContains($talent, "EARTH") || GeneratedHasEssenceOfEarth($heroID),
+  ];
+}
+
+function GraveyardPile($cardID, $player, $pileHero)
+{
+  if ($pileHero["shadowBrute"]) {
+    if (ModifiedPowerValue($cardID, $player, "GY") >= 6) return "POWER6";
+    if (HasBloodDebt($cardID, $player)) return "BLOODDEBT";
+  }
+  if ($pileHero["earth"] && TalentContains($cardID, "EARTH", $player)) return "EARTH";
+  return "";
+}
+
 function IsNecromancerHero($heroID, $player)
 {
   return DelimStringContains(CardClass(ShiyanaCharacter($heroID, $player)), "NECROMANCER");
