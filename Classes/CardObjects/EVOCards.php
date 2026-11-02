@@ -29,7 +29,7 @@ class already_dead_red extends Card {
 	}
 
 	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-		global $defPlayer;
+		global $defPlayer, $chainLinks;
 		if (IsHeroAttackTarget()) {
 			$deck = new Deck($defPlayer);
 			if ($deck->Empty()) {
@@ -37,39 +37,53 @@ class already_dead_red extends Card {
 				return ;
 			}
 			$deck->BanishTop(banishedBy: $cardID, banisher:$this->controller);
-			AddDecisionQueue("SEARCHCOMBATCHAIN", $this->controller, "-");
+			$choices = GetChainLinkCards($defPlayer, exclCardTypes: "C", asMZInd: true);
+			$chainLinkPieces = ChainLinksPieces();
+			$chainLinksCount = count($chainLinks);
+			for ($i = 0; $i < $chainLinksCount; ++$i) {
+				$chainLinksICount = count($chainLinks[$i]);
+				for ($j = 0; $j < $chainLinksICount; $j += $chainLinkPieces) {
+					if ($chainLinks[$i][$j + 1] == $defPlayer && $chainLinks[$i][$j + 2] == "1") $choices = CombineSearches($choices, "PASTCHAINLINK-$j-$i");
+				}
+			}
+			if ($choices == "") return;
+			AddDecisionQueue("PASSPARAMETER", $this->controller, $choices);
 			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card to banish");
-			AddDecisionQueue("CHOOSECARDID", $this->controller, "<-", 1);
+			AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
 			Await($this->controller, $this->cardID, final:true);
 		}
 	}
 
 	function SpecificLogic() {
 		global $dqVars, $defPlayer, $CombatChain, $chainLinks;
-		$lastResult = $dqVars["LASTRESULT"] ?? "-";
-		$type = CardType($lastResult);
-		switch ($type) {
-			case "E":
-				BanishCardForPlayer($lastResult, $defPlayer, "CC", "-", $this->cardID, $this->controller);
-				$index = FindCharacterIndex($defPlayer, $lastResult);
-				DestroyCharacter($defPlayer, $index, wasBanished: true);
-				break;
-			default:
-				BanishCardForPlayer($lastResult, $defPlayer, "CC", "REMOVEGRAVEYARD", $this->cardID, $this->controller);
-				$index = GetCombatChainIndex($lastResult, $defPlayer);
-				if ($CombatChain->Remove($index) == "") {
-					$chainLinkPieces = ChainLinksPieces();
-					$chainLinksCount = count($chainLinks);
-					for ($i = 0; $i < $chainLinksCount; ++$i) {
-					$chainLinksICount = count($chainLinks[$i]);
-					for ($j = 0; $j < $chainLinksICount; $j += $chainLinkPieces) {
-						if ($chainLinks[$i][$j] == $lastResult) $chainLinks[$i][$j + 2] = 0;
-					}
-					}
-				}
-				break;
+		$choice = explode("-", $dqVars["LASTRESULT"] ?? "-");
+		if ($choice[0] == "PASTCHAINLINK") {
+			$link = intval($choice[2] ?? -1);
+			$index = intval($choice[1] ?? -1);
+			$cardID = $chainLinks[$link][$index] ?? "-";
+			$fromEquip = ($chainLinks[$link][$index + 3] ?? "-") == "EQUIP";
+			$originUID = $chainLinks[$link][$index + 8] ?? "-";
 		}
-		WriteLog(CardLink($lastResult, $lastResult) . " was banished.");
+		else {
+			$index = intval($choice[1] ?? -1);
+			$ChainCard = $CombatChain->Card($index);
+			$cardID = $ChainCard->ID();
+			$fromEquip = $ChainCard->From() == "EQUIP";
+			$originUID = $ChainCard->OriginUniqueID();
+		}
+		if ($cardID == "-" || $cardID == "") return;
+		if ($fromEquip) {
+			BanishCardForPlayer($cardID, $defPlayer, "CC", "-", $this->cardID, $this->controller);
+			$charIndex = FindCharacterIndexUniqueID($defPlayer, $originUID);
+			if ($charIndex == -1) $charIndex = FindCharacterIndex($defPlayer, $cardID);
+			DestroyCharacter($defPlayer, $charIndex, wasBanished: true);
+		}
+		else {
+			BanishCardForPlayer($cardID, $defPlayer, "CC", "REMOVEGRAVEYARD", $this->cardID, $this->controller);
+			if ($choice[0] == "PASTCHAINLINK") $chainLinks[$link][$index + 2] = 0;
+			else $CombatChain->Remove($index);
+		}
+		WriteLog(CardLink($cardID, $cardID) . " was banished.");
 	}
 
 	function ContractType($chosenName = '') {

@@ -393,6 +393,19 @@ function JSONRenderedCard(
   return $card;
 }
 
+function ItemDisplayState($cardID, $itemLabel)
+{
+  $state = ["label" => "", "rust" => null, "verse" => null, "flow" => null];
+  if ($cardID == "micro_processor_blue") {
+    if (DelimStringContains($itemLabel, "Opt", true)) $state["verse"] = 1;
+    if (DelimStringContains($itemLabel, "Draw_then_top_deck", true)) $state["rust"] = 1;
+    if (DelimStringContains($itemLabel, "Banish_top_deck", true)) $state["flow"] = 1;
+  }
+  else if ($cardID == "null_time_zone_blue") $state["label"] = GamestateUnsanitize($itemLabel);
+  if ($state["label"] == "" && DelimStringContains($itemLabel, "Temporary", true)) $state["label"] = "Stolen";
+  return $state;
+}
+
 function CreateButtonAPI($playerID, $caption, $mode, $input, $size = null, $image = null, $tooltip = null, $fullRefresh = false, $fullReload = false, $prompt = null)
 {
   $button = new stdClass();

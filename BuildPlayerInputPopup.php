@@ -64,6 +64,24 @@ function MZZoneCategory($zoneKey, $index) {
   }
 }
 
+function PromptChoiceUID($zoneKey, $index, $source) {
+  $offset = match(str_starts_with($zoneKey, "THEIR") ? substr($zoneKey, 5) : (str_starts_with($zoneKey, "MY") ? substr($zoneKey, 2) : $zoneKey)) {
+    "CHAR" => 11,
+    "ALLY" => 5,
+    "AURAS" => 6,
+    "ITEMS" => 4,
+    "BANISH" => 2,
+    "DISCARD" => 1,
+    "ARS", "ARSENAL" => 5,
+    "LAYER" => 5,
+    "CC", "COMBATCHAINLINK" => 7,
+    default => -1,
+  };
+  if ($offset < 0 || $index < 0) return NULL;
+  $uniqueID = $source[$index + $offset] ?? "-";
+  return $uniqueID !== "-" && $uniqueID !== "" ? strval($uniqueID) : NULL;
+}
+
 function PromptEffectContext() {
   global $EffectContext, $decisionQueue;
   $dqCount = count($decisionQueue ?? []);
@@ -381,7 +399,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your banish:";
-        $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2] ?? "", 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myBanish, $turn[2] ?? "", 16, $caption, zoneKey: "MYBANISH");
       }
       break;
 
@@ -392,7 +410,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your arsenal:";
-        $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2] ?? "", 16, $caption, "", "ARSENAL");
+        $playerInputPopup->popup = ChoosePopup($myArsenal, $turn[2] ?? "", 16, $caption, "", "ARSENAL", zoneKey: "MYARS");
       }
       break;
 
@@ -419,7 +437,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose one of your auras:";
-        $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2] ?? "", 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myAuras, $turn[2] ?? "", 16, $caption, zoneKey: "MYAURAS");
       }
       break;
 
@@ -430,7 +448,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your graveyard:";
-        $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2] ?? "", 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myDiscard, $turn[2] ?? "", 16, $caption, zoneKey: "MYDISCARD");
       }
       break;
 
@@ -439,7 +457,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent's graveyard:";
-        $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2] ?? "", 16, $caption, isOpponent: true);
+        $playerInputPopup->popup = ChoosePopup($theirDiscard, $turn[2] ?? "", 16, $caption, isOpponent: true, zoneKey: "THEIRDISCARD");
       }
       break;
 
@@ -449,7 +467,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from the combat chain:";
-        $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($combatChain, $turn[2], 16, $caption, zoneKey: "CC");
       }
       break;
 
@@ -458,7 +476,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your character/equipment:";
-        $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2] ?? "", 16, $caption);
+        $playerInputPopup->popup = ChoosePopup($myCharacter, $turn[2] ?? "", 16, $caption, zoneKey: "MYCHAR");
       }
       break;
 
@@ -467,7 +485,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
         $playerInputPopup->active = true;
         $dqHint = GetDQHelpText();
         $caption = ($dqHint !== "-") ? GamestateUnsanitize($dqHint) : "Choose a card from your opponent character/equipment:";
-        $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2] ?? "", 16, $caption, isOpponent: true);
+        $playerInputPopup->popup = ChoosePopup($theirCharacter, $turn[2] ?? "", 16, $caption, isOpponent: true, zoneKey: "THEIRCHAR");
       }
       break;
 
@@ -549,16 +567,18 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             if ($isMultiChooseDiscard) {
               if (!isset($myDiscard[$options[$i]])) continue;
               $wateryGraveCounter = SearchLayersForTargetUniqueID($myDiscard[$options[$i]+1]) != -1;
-              $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter);
+              $cardsArray[] = JSONRenderedCard($myDiscard[$options[$i]], actionDataOverride: $i, wateryGraveIcon: $wateryGraveCounter, uniqueID: PromptChoiceUID("MYDISCARD", intval($options[$i]), $myDiscard));
             } else if ($isMultiChooseSubcards) {
               $cardsArray[] = JSONRenderedCard($options[$i], actionDataOverride: $i);
             } else if ($isMultiChooseItems) {
-              $cardsArray[] = JSONRenderedCard($myItems[$options[$i]], overlay:$myItems[$options[$i]+2] != 2 ? 'disabled' : 'none', counters: $myItems[$options[$i]+1], actionDataOverride: $i);
+              $itemIndex = intval($options[$i]);
+              $itemState = ItemDisplayState($myItems[$itemIndex], $myItems[$itemIndex + 8]);
+              $cardsArray[] = JSONRenderedCard($myItems[$itemIndex], overlay: ItemOverlay($myItems[$itemIndex], $myItems[$itemIndex + 2], $myItems[$itemIndex + 3]), counters: $myItems[$itemIndex + 1], actionDataOverride: $i, label: $itemState["label"], rustCounters: $itemState["rust"], verseCounters: $itemState["verse"], flowCounters: $itemState["flow"], tapped: $myItems[$itemIndex + 10] == 1, uniqueID: PromptChoiceUID("MYITEMS", $itemIndex, $myItems));
             } else if ($multiZoneRef !== null) {
               $isTheirZone = $turnPhase == "MULTICHOOSETHEIRDISCARD" || $turnPhase == "MULTICHOOSETHEIRDECK";
               $uniqueID = $uniqueIDOffset >= 0 ? ($multiZoneRef[$options[$i]+$uniqueIDOffset] ?? "") : "";
               $label = $uniqueID !== "" && SearchLayersForTargetUniqueID($uniqueID) != -1 ? "Targeted" : "";
-              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label);
+              $cardsArray[] = JSONRenderedCard($multiZoneRef[$options[$i]], actionDataOverride: $i, isOpponent: $isTheirZone, label:$label, uniqueID: $uniqueID !== "" && $uniqueID !== "-" ? strval($uniqueID) : NULL);
             }
           }
         }
@@ -876,7 +896,7 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           }
 
           //Add indication for past chain links
-          if ($option0 == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1);
+          if ($option0 == "PASTCHAINLINK") $label = "Chain link " . ($option[2] + 1) . (($objectSource[$optionIndex + 3] ?? "-") == "EQUIP" ? ", Equipped" : "");
           if ($option0 == "COMBATCHAINATTACKS") $label = "Chain link " . (intdiv($optionIndex, ChainLinksPieces()) + 1);
           //Add indication for the attack and equipped cards defending on the current chain link
           if ($option0 == "COMBATCHAINLINK") {
@@ -998,14 +1018,17 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
             }
           }
           //Show Steam Counters on items
+          $itemState = null;
           if ($option0 == "THEIRITEMS" || $option0 == "MYITEMS") {
             $isTheirItems = ($option0 == "THEIRITEMS");
             $itemArr = $isTheirItems ? $theirItems : $myItems;
             $steamCounters = $itemArr[$index + 1];
             $tapped = $itemArr[$index + 10] == 1;
-            $itemLabel = $itemArr[$index + 8];
-            $label = ($itemLabel !== "" && $itemLabel !== "-") ? GamestateUnsanitize($itemLabel) : "";
+            $overlay = ItemOverlay($itemArr[$index] ?? "-", $itemArr[$index + 2] ?? 2, $itemArr[$index + 3] ?? 0);
+            $itemState = ItemDisplayState($itemArr[$index] ?? "-", $itemArr[$index + 8] ?? "-");
+            if ($itemState["label"] != "") $label = $itemState["label"];
           }
+          $uniqueID = PromptChoiceUID($option0, $optionIndex, $objectSource);
 
           if ($option0 == "MYBANISH") {
             $index = intval($option[1]);
@@ -1022,13 +1045,14 @@ function BuildPlayerInputPopupFull($playerID, $turnPhase, $turn, $gameName) {
           if($option0 == "MYDECK" && $option[1] == "0" && $hideTopDeckCard) {
             $card = $MyCardBack;
           }
-          if ($showZoneLabels && $label == "" && $option0 != "MYHAND") {
+          if ($showZoneLabels && $label == "") {
             $label = $optionCategories[$i];
           }
-          if ($maxCount < 2)
-            $cardsMultiZone[] = JSONRenderedCard($card, action: 16, overlay: $overlay, borderColor: $borderColor, counters: $counters, actionDataOverride: $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $borderColor, label: $label, steamCounters: $steamCounters, tapped: $tapped, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay, subcard: $subcards);
+          $isCheckbox = $maxCount >= 2;
+          $cardJSON = JSONRenderedCard($card, action: $isCheckbox ? NULL : 16, overlay: $overlay, borderColor: $isCheckbox ? NULL : $borderColor, counters: $counters, actionDataOverride: $isCheckbox ? $i - $countOffset : $options[$i], lifeCounters: $lifeCounters, defCounters: $enduranceCounters, powerCounters: $powerCounters, controller: $isCheckbox ? NULL : $borderColor, label: $label, steamCounters: $steamCounters, rustCounters: $itemState["rust"] ?? NULL, verseCounters: $itemState["verse"] ?? NULL, flowCounters: $itemState["flow"] ?? NULL, tapped: $tapped, uniqueID: $uniqueID, isOpponent: $isTheirPrefix, holoCounters: $holoCounters, hasBoundAura: $bindsOverlay, subcard: $subcards);
+          if (!$isCheckbox)
+            $cardsMultiZone[] = $cardJSON;
           else {
-            $cardJSON = JSONRenderedCard($card, overlay: $overlay, actionDataOverride: $i - $countOffset, label: $label, isOpponent: $isTheirPrefix, hasBoundAura: $bindsOverlay, subcard: $subcards);
             if ($decomposeCandidates !== null) {
               [$earthCards, $actionCards] = $decomposeCandidates;
               $isEarth = isset($earthCards[$options[$i]]);
@@ -1091,7 +1115,7 @@ function CheckboxDefaultState($options, $minNumber = 0, $maxNumber = 0) {
 /**
  * Helper for creating popups
  */
-function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "", $MZName = "", $label = "", $isOpponent = false, $searchable = false)
+function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments = "", $MZName = "", $label = "", $isOpponent = false, $searchable = false, $zoneKey = "")
 {
   $options = explode(",", $options);
   $optionsCount = count($options);
@@ -1100,7 +1124,7 @@ function ChoosePopup($zone, $options, $mode, $caption = "", $additionalComments 
     $zoneIdx = (int)$options[$i];
     if($MZName == "ARSENAL" && isset($zone[$zoneIdx + 1]) && $zone[$zoneIdx + 1] == "DOWN") $label = "Face Down";
     if (isset($zone[$zoneIdx])) {
-      $cardList[] = JSONRenderedCard($zone[$zoneIdx], action: $mode, actionDataOverride: strval($options[$i]), label: $label, isOpponent: $isOpponent);
+      $cardList[] = JSONRenderedCard($zone[$zoneIdx], action: $mode, actionDataOverride: strval($options[$i]), label: $label, isOpponent: $isOpponent, uniqueID: PromptChoiceUID($zoneKey, $zoneIdx, $zone));
     }
   }
 

@@ -523,12 +523,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $layerFrom = explode("|", $layers[$i + 2])[0];
       if (LayerCardHasGoAgain($layers[$i], $layerFrom)) $layerGoAgain = true;
     }
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
+    $layerUID = isset($layers[$i + 5]) && $layers[$i + 5] != "-" && $layers[$i + 5] != "-1" ? $layers[$i + 5] : NULL;
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain, uniqueID:$layerUID);
 
     $layer = new stdClass();
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label, goAgain:$layerGoAgain);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label, goAgain:$layerGoAgain, uniqueID:$layerUID);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;
@@ -745,7 +746,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : ($theirCharacter[$i + 10] ?? "-"),
         marked: ($theirCharacter[$i + 13] ?? 0) == 1,
         tapped: ($theirCharacter[$i + 14] ?? 0) == 1,
-        slot: $theirCharacter[$i + 15] ?? "-"
+        slot: $theirCharacter[$i + 15] ?? "-",
+        uniqueID: $theirCharacter[$i + 11] ?? NULL
         );
       }
     } else {
@@ -1029,7 +1031,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
           marked: ($myCharacter[$i + 13] ?? 0) == 1,
           tapped: ($myCharacter[$i + 14] ?? 0) == 1,
-          slot: ($myCharacter[$i + 15] ?? "-"));
+          slot: ($myCharacter[$i + 15] ?? "-"),
+          uniqueID: $myCharacter[$i + 11] ?? NULL);
       }
     }
   }
@@ -1235,7 +1238,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         powerCounters:$theirAllies[$i+9],
         label: $label,
         tapped: $theirAllies[$i+11] == 1,
-        steamCounters: $theirAllies[$i + 12]);
+        steamCounters: $theirAllies[$i + 12],
+        uniqueID: $uniqueID);
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -1273,7 +1277,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer),
       tapped: $theirAuras[$i+12] == "1",
-      holoCounters: $holoCounters > 0
+      holoCounters: $holoCounters > 0,
+      uniqueID: $theirAuras[$i + 6]
       );
   }
   $response->opponentAuras = $theirAurasOutput;
@@ -1286,25 +1291,26 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
     $gem = $theirItems[$i + 6] != 2 ? $theirItems[$i + 6] : NULL;
-    $label = "";
-    if($theirItems[$i] == "null_time_zone_blue") {
-      $label = GamestateUnsanitize($theirItems[$i + 8]);
-    }
+    $itemState = ItemDisplayState($theirItems[$i], $theirItems[$i + 8]);
     $theirItemsOutput[] = JSONRenderedCard(
       cardNumber: $theirItems[$i],
       actionDataOverride: strval($i),
-      overlay: $theirItems[$i + 2] != 2 ? 1 : 0,
+      overlay: ItemOverlay($theirItems[$i], $theirItems[$i + 2], $theirItems[$i + 3]),
       counters: $theirItems[$i + 1],
       controller: $otherPlayer,
       type: $type,
       sType: $sType,
       isFrozen: IsFrozenMZ($theirItems, "ITEMS", $i, $otherPlayer),
       gem: $gem,
-      label: $label,
+      label: $itemState["label"],
+      rustCounters: $itemState["rust"],
+      verseCounters: $itemState["verse"],
+      flowCounters: $itemState["flow"],
       tapped: $theirItems[$i + 10] == 1,
       subcard: $theirItems[$i+11] != "-" ? $theirItems[$i+11] : NULL,
       defCounters: $theirItems[$i + 12],
-      onChain: $theirItems[$i + 13] == 1);
+      onChain: $theirItems[$i + 13] == 1,
+      uniqueID: $theirItems[$i + 4]);
   }
   $response->opponentItems = $theirItemsOutput;
 
@@ -1371,7 +1377,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       powerCounters: $myAllies[$i+9],
       label: $label,
       tapped: $myAllies[$i + 11] == 1,
-      steamCounters: $myAllies[$i + 12]
+      steamCounters: $myAllies[$i + 12],
+      uniqueID: $uniqueID
     );
   }
   $response->playerAllies = $myAlliesOutput;
@@ -1417,7 +1424,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
       tapped: $myAuras[$i + 12] == 1,
-      holoCounters: $holoCounters > 0
+      holoCounters: $holoCounters > 0,
+      uniqueID: $myAuras[$i + 6]
     );
   }
   $response->playerAuras = $myAurasOutput;
@@ -1432,21 +1440,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $currentPlayer == $playerID ? ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myItems[$i], $turnPhase, "PLAY", $i, $restriction)) : false;
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? ($goldOrPitchChoice ? 16 : 10) : 0;
-    $label = "";
     if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
     $actionDataOverride = $goldOrPitchChoice ? "MYITEMS-$i" : strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
-    $rustCounters = null;
-    $verseCounters = null;
-    $flowCounters = null;
-    if ($myItems[$i] == "micro_processor_blue") {
-      if (DelimStringContains($myItems[$i + 8], "Opt", true)) $verseCounters = 1;
-      if (DelimStringContains($myItems[$i + 8], "Draw_then_top_deck", true)) $rustCounters = 1;
-      if (DelimStringContains($myItems[$i + 8], "Banish_top_deck", true)) $flowCounters = 1;
-    }
-    if ($myItems[$i] == "null_time_zone_blue") {
-      $label = GamestateUnsanitize($myItems[$i + 8]);
-    }
+    $itemState = ItemDisplayState($myItems[$i], $myItems[$i + 8]);
     $myItemsOutput[] = JSONRenderedCard(
       cardNumber: $myItems[$i],
       action: $actionTypeOut,
@@ -1460,14 +1457,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       isFrozen: IsFrozenMZ($myItems, "ITEMS", $i, $playerID),
       gem: $gem,
       restriction: $restriction,
-      label: $label,
-      rustCounters: $rustCounters,
-      verseCounters: $verseCounters,
-      flowCounters: $flowCounters,
+      label: $itemState["label"],
+      rustCounters: $itemState["rust"],
+      verseCounters: $itemState["verse"],
+      flowCounters: $itemState["flow"],
       tapped: $myItems[$i + 10] == 1,
       subcard: $myItems[$i+11] != "-" ? $myItems[$i+11] : NULL,
       defCounters: $myItems[$i + 12],
-      onChain: $myItems[$i + 13] == 1);
+      onChain: $myItems[$i + 13] == 1,
+      uniqueID: $myItems[$i + 4]);
   }
   $response->playerItems = $myItemsOutput;
 
