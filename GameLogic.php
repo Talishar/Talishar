@@ -336,9 +336,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $soul = &GetSoul($player);
           $rv = GetIndices(count($soul)+1, 0, SoulPieces());
           break;
-        case "beacon_of_victory_yellow-2":
-          $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult));
-          break;
         case "invert_existence_blue":
           $rv = UpTo2FromOpposingGraveyardIndices($player);
           break;//This makes sense because it's a multi

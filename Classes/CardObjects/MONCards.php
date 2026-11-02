@@ -154,7 +154,8 @@ class beacon_of_victory_yellow extends Card {
     $amount = intval($additionalCosts);
     AddCurrentTurnEffect("$this->cardID-$amount", $this->controller);
     if(GetClassState($this->controller, $CS_NumCharged) > 0) {
-      AddDecisionQueue("FINDINDICES", $this->controller, "beacon_of_victory_yellow-2", 1);
+      $search = CombineSearches(SearchDeck($this->controller, "A", "", $amount), SearchDeck($this->controller, "AA", "", $amount));
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $search);
       AddDecisionQueue("MAYCHOOSEDECK", $this->controller, "<-", 1);
       AddDecisionQueue("MULTIADDHAND", $this->controller, "-", 1);
       AddDecisionQueue("REVEALCARDS", $this->controller, "-", 1);
