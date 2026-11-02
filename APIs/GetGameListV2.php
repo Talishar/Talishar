@@ -157,7 +157,7 @@ $currentTime = round(microtime(true) * 1000);
 $scan = GetGameListScan($path, $currentTime, $useGameCacheSentinels);
 if ($scan !== null) {
   $featuredCandidates = [];
-  foreach (($canSpectate ? $scan['inProgress'] : []) as [$gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $gameFormat, $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId, $spectatorCount]) {
+  foreach (($canSpectate ? $scan['inProgress'] : []) as [$gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $gameFormat, $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId, $spectatorCount, $p1Life, $p2Life, $turnNumber]) {
     if ($visibility == "2" && !($canSeeQueue && (isset($friendUserSet[$gameCreator]) || isset($friendUserSet[$p2Username])))) continue;
     if (isset($bannedPlayers[strtolower($gameCreator)]) || isset($bannedPlayers[strtolower($p2Username)])) continue;
     if (isset($blockedUserSet[$gameCreator]) || isset($blockedUserSet[$p2Username])) continue;
@@ -173,6 +173,11 @@ if ($scan !== null) {
     $gameInProgress->p2Username = $p2ShownName;
     $gameInProgress->visibility = $visibility;
     $gameInProgress->spectatorCount = $spectatorCount;
+    if ($p1Life !== null) {
+      $gameInProgress->p1Life = $p1Life;
+      $gameInProgress->p2Life = $p2Life;
+    }
+    if ($turnNumber !== null) $gameInProgress->turn = $turnNumber;
     $response->gamesInProgress[] = $gameInProgress;
     if ($visibility == "1") {
       $featuredCandidates[] = [

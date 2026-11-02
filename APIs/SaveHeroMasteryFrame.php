@@ -27,7 +27,7 @@ if (!IsUserLoggedIn()) {
 
 $userId = intval(LoggedInUser());
 $body = ReadJsonBody() ?? [];
-$heroId = trim(strval($body["heroId"] ?? ""));
+$heroId = HeroMasteryHeroId(trim(strval($body["heroId"] ?? "")));
 $rawLevel = $body["level"] ?? null;
 
 if ($heroId === "" || strlen($heroId) > 32) {

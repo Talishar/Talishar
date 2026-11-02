@@ -3,7 +3,7 @@
 include_once __DIR__ . '/SHMOPLibraries.php';
 include_once __DIR__ . '/CacheLibraries.php';
 
-const GAME_LIST_SCAN_KEY = 'game_list_scan_v1';
+const GAME_LIST_SCAN_KEY = 'game_list_scan_v2';
 const GAME_LIST_SCAN_TTL_MS = 2000;
 
 function GetGameListScan($path, $currentTime, $useSentinels = false)
@@ -97,10 +97,11 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
         $p1Hero = $cacheArr[6] ?? "";
         $p2Hero = $cacheArr[7] ?? "";
         if($p1Hero != "" && $p2Hero != "DUMMY" && $p2Hero != "") {
+          [$p1Life, $p2Life, $turnNumber] = GameListLifeAndTurn($gameToken, $gs);
           $scan['inProgress'][] = [
             $gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $cacheArr[12] ?? "",
             $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId,
-            GetActiveSpectators($gameToken)['count'],
+            GetActiveSpectators($gameToken)['count'], $p1Life, $p2Life, $turnNumber,
           ];
         }
       }
@@ -168,6 +169,20 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
   }
   if ($handle) closedir($handle);
   return $scan;
+}
+
+// Gamestate line 1 holds both life totals and line 42 the turn number.
+function GameListLifeAndTurn($gameToken, $gamestatePath)
+{
+  $content = ReadGamestateCache($gameToken);
+  if ($content === "") $content = @file_get_contents($gamestatePath);
+  if (!is_string($content) || $content === "") return [null, null, null];
+  $lines = explode("\r\n", $content, 43);
+  if (count($lines) < 43) return [null, null, null];
+  $lives = explode(" ", trim($lines[0]));
+  if (count($lives) < 2 || !is_numeric($lives[0]) || !is_numeric($lives[1])) return [null, null, null];
+  $turnNumber = trim($lines[41]);
+  return [intval($lives[0]), intval($lives[1]), is_numeric($turnNumber) ? intval($turnNumber) : null];
 }
 
 function deleteDirectory($dir) {
