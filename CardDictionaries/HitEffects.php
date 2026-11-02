@@ -137,6 +137,7 @@ function HVYHitEffect($cardID)
   switch ($cardID) {
     case "send_packing_yellow":
       $CurrentTurnEffects->RemoveEffectByID($cardID);
+      ReplaceBanishModifier($defPlayer, $cardID, "-");
       break;
     case "millers_grindstone":
       if (IsHeroAttackTarget()) {

@@ -1307,6 +1307,7 @@ function UnsetTurnBanish()
     "TT" => true, "INST" => true, "sonic_boom_yellow" => true, "blossoming_spellblade_red" => true,
     "TTFromOtherPlayer" => true, "REMOVEGRAVEYARD" => true, "BOOST" => true,
     "TCL" => true, "TCC" => true, "TCCGorgonsGaze" => true,
+    "shadowrealm_horror_red" => true, "spew_shadow_red" => true, "send_packing_yellow" => true,
   ];
   $p1Banish = new Banish(1);
   $p1Banish->UnsetBanishModifiers($turnModifiers);
