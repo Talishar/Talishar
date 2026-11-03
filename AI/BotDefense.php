@@ -499,7 +499,7 @@ function BotScoreDefensePlan($player, $ctx, $set, $package)
   $removesDefender = !$stopsHit && $incoming > 0 && $onHit["removesDefender"];
   $forbid = ["score" => -1000000.0, "set" => $set, "package" => $package];
 
-  if (!$lethal && !BotIsPuzzle()) {
+  if (!$lethal) {
     foreach ($equipment as $card) {
       $cardID = $card["id"];
       if ($cardID == "fyendals_spring_tunic") {

@@ -36,7 +36,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero, $CS_DrawOffered;
-  global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
+  global $replaySaveResult, $snapshotSaveResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = OtherPlayer($playerID);
   switch ($mode) {
@@ -1403,14 +1403,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100023: // Save a playable snapshot of the current state
       $snapshotSaveResult = SavePlayableSnapshot($gameName, (int)$playerID);
       break;
-    case 100024: //Restart puzzle
-      include_once __DIR__ . "/PuzzleGame.php";
-      RestartPuzzleGame($playerID);
-      break;
-    case 100025: //Puzzle hint
-      include_once __DIR__ . "/PuzzleGame.php";
-      $puzzleHintResult = PuzzleHint($playerID);
-      break;
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
@@ -1737,7 +1729,7 @@ function ReorderTriggerEntries($triggerOrder, $submittedCardIDs)
 }
 
 // ProcessInput logs a pass as mode 99 before running it. When that pass resolves an opt or a
-// rearranged trigger order, swap the line for the explicit command so replays and puzzles reproduce it.
+// rearranged trigger order, swap the line for the explicit command so replays reproduce it.
 function RecordPassAsReplayCommand($player, $command)
 {
   global $gameName;
@@ -2577,17 +2569,6 @@ function FinalizeTurn()
   global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup, $gameName;
-  include_once __DIR__ . "/PuzzleGame.php";
-  if (IsPuzzleGame($gameName)) {
-    PuzzleTurnEnded();
-    return;
-  }
-  try {
-    include_once __DIR__ . "/PuzzleHarvest.php";
-    HarvestSurvivePuzzleCandidate();
-  } catch (Throwable $e) {
-    error_log("FinalizeTurn: HarvestSurvivePuzzleCandidate threw: " . $e->getMessage());
-  }
   $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
   ResetStolenCardsEOT();

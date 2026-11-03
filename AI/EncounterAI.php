@@ -14,24 +14,10 @@ function EncounterAI()
   {
     $isBowActive = false;
     $deckPieces = DeckPieces();
-    $scriptPlayer = 0;
-    if (BotIsPuzzle()) {
-      include_once __DIR__ . "/../Libraries/PuzzleScript.php";
-      $scriptPlayer = PuzzleScriptPlayer();
-    }
-    $puzzleVerify = BotIsPuzzleVerify();
-    $logicLimit = $puzzleVerify ? 400 : 30;
+    $logicLimit = 30;
     for($logicCount=0; $logicCount<=$logicLimit && IsPlayerAI($currentPlayer) && !IsGameOver(); ++$logicCount)
     {
       global $turn;
-      if($scriptPlayer == $currentPlayer)
-      {
-        if(!empty($GLOBALS["puzzleSolverHold"])) break;
-        PuzzleScriptAct();
-        ProcessMacros();
-        $currentPlayerIsAI = IsPlayerAI($currentPlayer) && !IsGameOver();
-        continue;
-      }
       FixHand($currentPlayer);
       $hand = &GetHand($currentPlayer);
       $character = &GetPlayerCharacter($currentPlayer);
@@ -102,35 +88,12 @@ function EncounterAI()
       else if($turn[0] == "B")//The player is attacking the AI
       {
         if($AIDebug) WriteLog("AI Branch - Block");
-        if(!BotIsPuzzle())
-        {
-          $blocker = BotNextPlannedDefender(BotBestBlockPlan($currentPlayer));
-          if($blocker !== null) BotDefendWith($blocker);
-          else PassInput();
-          ProcessMacros();
-          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
-          continue;
-        }
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Block"); //Generate the priority values array. Found in EncounterPriorityLogic.php
-        //LogPriorityArray($priortyArray);
-        $found = false;
-        while ($priortyArray !== [] && !$found) { //Grabs items from the array until it finds one it can play.
-          $storedPriorityNode = array_pop($priortyArray); //grabs the last item in the array (highest priority), and removes it from the array, storing it in $storedPriorityNode
-          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
-          if(CardIsBlockable($storedPriorityNode)) $found = true; //If the card can be played/blocked with/activated. Found in EncounterPlayLogic.php
-        }
-        //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3]);
-        $health = &GetHealth($currentPlayer);
-        //If something was found, that thing is able to block (not prio 0), and either the attack is lethal or the AI wants to block with it efficiently, it attempts to block. Otherwise it passes.
-        //WriteLog("found->".$found.",prio->".$storedPriorityNode[3].",cachedattack->".CachedTotalPower().",cachedblock->".CachedTotalBlock().",health->".$health.",powervalue->".PowerValue("brand_with_cinderclaw_yellow"));
-        if(ShouldBlock($found, $storedPriorityNode))
-        {
-          BlockCardAttempt($storedPriorityNode); //attempts to play the card. Found in EncounterPlayLogic.php;
-        }
-        else
-        {
-          PassInput();
-        }
+        $blocker = BotNextPlannedDefender(BotBestBlockPlan($currentPlayer));
+        if($blocker !== null) BotDefendWith($blocker);
+        else PassInput();
+        ProcessMacros();
+        $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+        continue;
       }
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
@@ -149,7 +112,7 @@ function EncounterAI()
           if(CardIsPlayable($storedPriorityNode, $hand, $resources))
           {
             //Only attempt to play the card if you have excess resources compared to what needs to be saved
-            if($storedPriorityNode[0] != "Hand" || count($hand) > 1 || BotIsPuzzle())
+            if($storedPriorityNode[0] != "Hand" || count($hand) > 1)
             {
               $found = true;
             }
@@ -211,39 +174,17 @@ function EncounterAI()
       else if($turn[0] == "D" && $mainPlayer != $currentPlayer)//Defense reaction phase
       {
         if($AIDebug) WriteLog("AI Branch - Defense Reactions");
-        if(!BotIsPuzzle())
-        {
-          $reaction = BotNextPlannedDefender(BotBestReactionPlan($currentPlayer));
-          if($reaction !== null) BotDefendWith($reaction);
-          else PassInput();
-          ProcessMacros();
-          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
-          continue;
-        }
-        $priortyArray = GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $banish, "Reaction");
-        //LogPriorityArray($priortyArray);
-        $found = false;
-        while ($priortyArray !== [] && !$found) {
-          $storedPriorityNode = array_pop($priortyArray);
-          if(ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)) $found = true;
-          //WriteLog("CardID=" . $storedPriorityNode[0] . ", Where=" . $storedPriorityNode[1] . ", Index=" . $storedPriorityNode[2] . ", Priority=" . $storedPriorityNode[3] . ", Found=" . $found);
-        }
-        $threatened = CachedTotalPower() - CachedTotalBlock();
-        //if($found == true && $threatened > 0 && $storedPriorityNode[3] != 0)
-        if($found == true && ShouldBlock($found, $storedPriorityNode) && $storedPriorityNode[3] != 0)
-        {
-          PlayCardAttempt($storedPriorityNode);
-          CacheCombatResult();
-        }
-        else
-        {
-          PassInput();
-        }
+        $reaction = BotNextPlannedDefender(BotBestReactionPlan($currentPlayer));
+        if($reaction !== null) BotDefendWith($reaction);
+        else PassInput();
+        ProcessMacros();
+        $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+        continue;
       }
       else if($turn[0] == "P")//pitch phase - the AI also pays here while defending, e.g. for a taxed defense reaction
       {
         if($AIDebug) WriteLog("AI Branch - Pitch");
-        $pitchIndex = BotIsPuzzle() ? null : BotChoosePitchIndex($currentPlayer, max(1, intval($resources[1] ?? 0) - intval($resources[0] ?? 0)));
+        $pitchIndex = BotChoosePitchIndex($currentPlayer, max(1, intval($resources[1] ?? 0) - intval($resources[0] ?? 0)));
         if($pitchIndex !== null)
         {
           PitchCardAttempt([$hand[$pitchIndex], "Hand", $pitchIndex, 1]);
@@ -321,7 +262,7 @@ function EncounterAI()
       }
       ProcessMacros();
       $currentPlayerIsAI = IsPlayerAI($currentPlayer);
-      if($logicCount == $logicLimit && $currentPlayerIsAI && !IsGameOver() && $scriptPlayer == 0 && !$puzzleVerify)
+      if($logicCount == $logicLimit && $currentPlayerIsAI && !IsGameOver() )
       {
         for($i=0; $i<=30 && IsPlayerAI($currentPlayer) && !IsGameOver(); ++$i)
         {

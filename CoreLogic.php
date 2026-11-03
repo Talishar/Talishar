@@ -1249,11 +1249,6 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
-  include_once __DIR__ . "/Libraries/PuzzleGame.php";
-  if (IsPuzzleGame($gameName)) {
-    PuzzleGameOver($playerID);
-    return;
-  }
   try {
     include_once __DIR__ . "/Libraries/GameHealthLog.php";
     FlushGameHealthLog($gameName);
@@ -1261,12 +1256,6 @@ function PlayerWon($playerID, $conceded = false)
     error_log("PlayerWon: FlushGameHealthLog threw: " . $e->getMessage());
   }
   if (isPlayerAI(2)) return;
-  try {
-    include_once __DIR__ . "/Libraries/PuzzleHarvest.php";
-    HarvestPuzzleCandidate($playerID, $conceded);
-  } catch (Throwable $e) {
-    error_log("PlayerWon: HarvestPuzzleCandidate threw: " . $e->getMessage());
-  }
   try {
     include_once __DIR__ . "/Libraries/HeroMastery.php";
     AwardHeroMastery($conceded);

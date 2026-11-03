@@ -381,10 +381,8 @@ function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
     $enablerPriority = BotCharacterEnablerPriority($cardID, $heroID, $playerID);
     if ($enablerPriority !== null) return $enablerPriority;
   }
-  if (!BotIsPuzzle()) {
-    $solverPriority = BotSolverActionPriority($cardID, $playerID, $zone);
-    if ($solverPriority !== null) return max(0.0, $solverPriority + BotHeroAdjustment($cardID, $heroID, "Action", $playerID));
-  }
+  $solverPriority = BotSolverActionPriority($cardID, $playerID, $zone);
+  if ($solverPriority !== null) return max(0.0, $solverPriority + BotHeroAdjustment($cardID, $heroID, "Action", $playerID));
   $type = CardType($cardID);
   $roles = BotCardRoles($cardID, $playerID);
   $isActivatedPermanent = in_array($zone, ["Character", "Item", "Ally"], true);
@@ -560,22 +558,6 @@ function BotIsOpeningTurnDefense($playerID)
   return intval($currentTurn) == 0 && $mainPlayer != $playerID;
 }
 
-function BotIsPuzzle()
-{
-  global $gameName;
-  static $cache = [];
-  include_once __DIR__ . "/../Libraries/PuzzleGame.php";
-  return $cache[$gameName ?? ""] ??= IsPuzzleGame($gameName ?? "");
-}
-
-// A puzzle check where both seats can be bots and a whole turn runs in one call.
-function BotIsPuzzleVerify()
-{
-  global $gameName;
-  static $cache = [];
-  return $cache[$gameName ?? ""] ??= BotIsPuzzle() && IsPuzzleVerifyGame($gameName ?? "");
-}
-
 function BotStopHitValue()
 {
   return function_exists("ActiveOnHits") && ActiveOnHits() ? 3.0 : 0.0;
@@ -676,15 +658,14 @@ function BotDefensePriority($cardID, $playerID, $zone)
   if ($incoming == 0) return 0.0;
   $block = max(0, $block - BotDefenderPowerBacklash($cardID, $playerID, $isEquipment));
 
-  $isPuzzle = BotIsPuzzle();
-  if ($isEquipment && !$isPuzzle) $block = max(0, $block + BotEquipmentDefenseCounters($cardID, $playerID));
+  if ($isEquipment) $block = max(0, $block + BotEquipmentDefenseCounters($cardID, $playerID));
   if ($isEquipment && BotEquipmentBlockRequired()) return 100000.0 + $block;
   if ($block == 0) return 0.0;
-  if ($isEquipment && !$isPuzzle && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
+  if ($isEquipment && !BotEquipmentBlockAllowed($playerID, $block, $incoming)) return -1000000.0;
 
   $offenseLoss = 0.0;
   $opportunity = 0.0;
-  if (!$isEquipment && !$isPuzzle) {
+  if (!$isEquipment) {
     $offenseLoss = BotBlockOffenseLoss($cardID, $playerID);
     $opportunity = BotCardOpportunity($cardID, $playerID);
   }
@@ -698,7 +679,7 @@ function BotDefensePriority($cardID, $playerID, $zone)
     BotIsOpeningTurnDefense($playerID),
     BotStopHitValue(),
     $offenseLoss,
-    $isEquipment && !$isPuzzle ? BotEquipmentWearCost($cardID, $block) : 0.0
+    $isEquipment ? BotEquipmentWearCost($cardID, $block) : 0.0
   );
 }
 
@@ -715,12 +696,6 @@ function BotDefenseReactionPriority($cardID, $playerID)
   $defense = max(0, intval(BlockValue($cardID, $playerID, "HAND", false)));
   if ($incoming == 0 || $defense == 0) return 0.0;
   $life = intval(GetHealth($playerID));
-  if (BotIsPuzzle()) {
-    $overblock = max(0, $defense - $incoming);
-    $score = 20 + min($incoming, $defense) * 4 - $overblock * 1.5;
-    if ($incoming >= $life && $defense >= $incoming - $life + 1) $score += 100000;
-    return $score;
-  }
   return BotScoreDefenseCandidate(
     $incoming,
     $life,
@@ -738,7 +713,7 @@ function BotReactionPriority($cardID, $playerID, $zone = "Hand")
   $type = CardType($cardID);
   $roles = BotCardRoles($cardID, $playerID);
   if ($type == "DR") return BotDefenseReactionPriority($cardID, $playerID);
-  if ($type == "AR" && !BotIsPuzzle() && $zone != "Character") return BotAttackReactionValue($cardID, $playerID);
+  if ($type == "AR" && $zone != "Character") return BotAttackReactionValue($cardID, $playerID);
   if ($type == "AR") {
     if (str_starts_with($cardID, "razor_reflex_")) return 32;
     if ($cardID == "legacy_of_ikaru_blue") {
@@ -771,17 +746,8 @@ function BotReactionPriority($cardID, $playerID, $zone = "Hand")
 
 function BotArsenalPriority($cardID, $playerID)
 {
-  if (!BotIsPuzzle()) {
-    $value = BotArsenalCardValue($cardID, $playerID);
-    return $value > 0 ? 100.0 + $value * 10 : 0.0;
-  }
-  $type = CardType($cardID);
-  if ($type == "DR") return 90.0;
-  if ($type == "AR") return 80.0;
-  if ($type == "AA" && BotNumericCost(CardCost($cardID, "HAND")) == 0) {
-    return 60.0 + max(0, intval(PowerValue($cardID, $playerID, "HAND", -1, false, false)));
-  }
-  return 25.0 + BotCardOpportunity($cardID, $playerID);
+  $value = BotArsenalCardValue($cardID, $playerID);
+  return $value > 0 ? 100.0 + $value * 10 : 0.0;
 }
 
 function BotPitchPriority($cardID, $playerID)
@@ -866,16 +832,14 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
   $options = array_values(array_filter($options, fn($option) => $option !== ""));
   if (count($options) == 0) return "PASS";
 
-  if (!BotIsPuzzle()) {
-    if ($phase == "CHOOSEARCANE") return BotChooseArcaneBarrier($playerID, $options);
-    if ($phase == "CHOOSEHANDCANCEL" || $phase == "CHOOSEHAND") {
-      $need = BotQueuedPitchNeed();
-      $index = $need === null ? null : BotChoosePitchIndex($playerID, $need);
-      if ($index !== null && in_array(strval($index), array_map("strval", $options), true)) return strval($index);
-    }
+  if ($phase == "CHOOSEARCANE") return BotChooseArcaneBarrier($playerID, $options);
+  if ($phase == "CHOOSEHANDCANCEL" || $phase == "CHOOSEHAND") {
+    $need = BotQueuedPitchNeed();
+    $index = $need === null ? null : BotChoosePitchIndex($playerID, $need);
+    if ($index !== null && in_array(strval($index), array_map("strval", $options), true)) return strval($index);
   }
 
-  $modeDefault = BotIsPuzzle() ? "" : AbilityModePassDefault();
+  $modeDefault = AbilityModePassDefault();
   if ($modeDefault !== "" && GamestateUnsanitize($modeDefault) != "Ability") return $modeDefault;
 
   $context = strtolower(str_replace("_", " ", strval($context)));
