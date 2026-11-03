@@ -131,7 +131,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
   }
   $currentPointer = intval(trim($commands[0] ?? "0"));
 
-  $finishReplayStateLoad = static function (string $gamestate, int $pointer) use ($filepath, $filename, &$commands, $gameName): void {
+  $finishReplayStateLoad = static function (string $gamestate, int $pointer) use ($filepath, $gameName): void {
     file_put_contents($filepath . "gamestate.txt", $gamestate, LOCK_EX);
     WriteReplayGameLog($filepath, $pointer);
     WriteGamestateCache($gameName, $gamestate);
