@@ -827,7 +827,7 @@ class act_on_intel_whereabouts_red extends Card {
     global $defPlayer;
     Await($defPlayer, "MZRemoveAndBanish", banisher:$this->controller, prepend:true);
     $context = "Choose a card to be banished (or pass and give the attack +4)";
-    Await($defPlayer, "ChooseMultiZone", may:true, context:$context, prepend:true);
+    Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
     Await($defPlayer, "MultiZoneIndices", search:"MYHAND", prepend:true, subsequent:0);
   }
 
