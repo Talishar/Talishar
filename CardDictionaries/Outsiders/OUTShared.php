@@ -700,10 +700,14 @@ function OUTAbilityCost($cardID)
     return $indices;
   }
 
+  function ThrowDaggerIndicesAwait($player) {
+    return ThrowDaggerIndices($player);
+  }
+
   function ThrowDaggerTargeting($player, $cardID, $may=false, $playCard=true) {
     $message = "Choose a target for " . CardLink($cardID);
-    $indices = ThrowDaggerIndices($player);
-    Await($player, "ChooseMultiZone", indices:$indices, may:$may, context:$message, subsequent:0);
+    Await($player, "ThrowDaggerIndices", "indices", subsequent:0);
+    Await($player, "ChooseMultiZone", may:$may, context:$message);
     if ($playCard) Await($player, "SetLayerTarget", layerID:$cardID, final:true);
   }
 
