@@ -3814,6 +3814,14 @@ function CharacterDefaultActiveState($cardID)
     "dragonscaler_flight_path" => 1, "calming_gesture" => 1, 
     "prizeworn_pathfinders" => 1, "prizeworn_plating" => 1, "prizeworn_gauntlet" => 1,
     "lightning_greaves" => 1,
+    "betsy" => 1, "betsy_skin_in_the_game" => 1, "bolfar_bear_hands" => 1,
+    "bravo" => 1, "bravo_flattering_showman" => 1, "bravo_showstopper" => 1,
+    "bravo_star_of_the_show" => 1, "brevant_civic_protector" => 1, "fightmaster_kox" => 1,
+    "groundbreaker_crix" => 1, "oldhim" => 1, "oldhim_grandfather_of_eternity" => 1,
+    "pleiades" => 1, "pleiades_superstar" => 1, "reya_the_unyielding" => 1,
+    "terra" => 1, "valda_brightaxe" => 1, "valda_seismic_impact" => 1,
+    "victor_goldmane" => 1, "victor_goldmane_high_and_mighty" => 1, "victor_goldmane_match_fixer" => 1,
+    "yoji_royal_protector" => 1,
   ];
   if (isset($state0[$cardID])) return 0;
   if (isset($state1[$cardID])) return 1;

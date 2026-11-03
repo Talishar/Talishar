@@ -562,3 +562,14 @@ function GainHealthAwait($player) {
   $fromCardEffect = $dqVars["fromCardEffect"] ?? true;
   GainHealth($amount, $player, $silent, $preventable, $fromCardEffect);
 }
+
+function RemoveFromHandAwait($player) {
+  global $dqVars;
+  $cardID = $dqVars["cardID"] ?? "-";
+  $hand = GetHand($player);
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    if ($hand[$i] == $cardID) {
+      return RemoveHand($player, $i);
+    }
+  }
+}

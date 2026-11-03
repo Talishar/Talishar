@@ -2449,8 +2449,13 @@ function EndStep()
   AllyBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  $hand = GetHand($mainPlayer);
+  $Hero = new CharacterCard(0, $mainPlayer);
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    if (HeaveValue($hand[$i]) > 0 && $Hero->IsActive())
+      AddLayer("TRIGGER", $mainPlayer, $hand[$i], "-", "HEAVE");
+  }
   // Heave is offered later as part of the concealed arsenal decision.
-  SnapshotEndPhaseHeaveCards();
   UndoIntimidate(1);
   UndoIntimidate(2);
   RemoveBanishedCardFromGraveyard();
@@ -2541,18 +2546,7 @@ function PassTurn()
   $MainHand = GetHand($mainPlayer);
   $otherPlayer = OtherPlayer($playerID);
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
-    $heaveChoiceResolved = ($turn[2] ?? "-") == "HEAVECHOSEN";
-    // Asking here makes the Heave pause indistinguishable from the normal arsenal pause.
-    if (!$heaveChoiceResolved && $turn[0] != "ARS" && EndPhaseHeaveIndices() != "") {
-      $currentPlayer = $mainPlayer;
-      $turn[0] = "ARS";
-      $turn[2] = "-";
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to heave or arsenal a card?");
-      AddDecisionQueue("ARSENALORHEAVE", $mainPlayer, "Heave_a_card,Arsenal_a_card,Skip_arsenal", 1);
-      AddDecisionQueue("RESOLVEARSENALORHEAVE", $mainPlayer, "<-", 1);
-      ProcessDecisionQueue();
-    }
-    else if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";
       $turn[2] = "-";

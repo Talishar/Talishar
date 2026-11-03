@@ -2027,6 +2027,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     $card = new lunar_mirage_red($player);
     return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
   }
+  elseif ($additionalCosts == "HEAVE") {
+    DoHeave($player, $parameter);
+  }
   else {
     $card = GetClass($parameter, $player);
     if ($card != "-") {
@@ -2062,9 +2065,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "olympia_prized_fighter":
         PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
         WriteLog(CardLink($parameter) . " wins the favor of the crowd!");
-        break;
-      case "HEAVE":
-        Heave();
         break;
       case "PHANTASM":
         PhantasmLayer($additionalCosts);
