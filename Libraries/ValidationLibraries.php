@@ -154,7 +154,7 @@ function validateCardID($cardID) {
     }
     
     // Semicolons separate multiple card IDs, pipes separate card ID from destination zone (e.g. "card_name|banish")
-    if (strlen($cardID) < 1 || strlen($cardID) > 500) {
+    if (strlen($cardID) > 500) {
         return false;
     }
     

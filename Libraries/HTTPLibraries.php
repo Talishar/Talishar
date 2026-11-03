@@ -94,12 +94,10 @@ function IsGameNameValid($gameName)
 
 function GetGameCounter($path = "./")
 {
-  global $redirectPath;
   $gameIDCounterFile = $path . "HostFiles/GameIDCounter.txt";
 
   if (!is_file($gameIDCounterFile)) { // if the game ID counter does not exist, make it.
-    $contents = '101';
-    file_put_contents($gameIDCounterFile, $contents);
+    file_put_contents($gameIDCounterFile, '101');
   }
 
   $gcFile = fopen($gameIDCounterFile, "r+");
@@ -116,14 +114,12 @@ function GetGameCounter($path = "./")
     exit;
   }
   $counter = intval(fgets($gcFile));
-  //$gameName = hash("sha256", $counter);
-  $gameName = $counter;
   ftruncate($gcFile, 0);
   rewind($gcFile);
   fwrite($gcFile, $counter + 1);
   flock($gcFile, LOCK_UN);    // release the lock
   fclose($gcFile);
-  return $gameName;
+  return $counter;
 }
 
 function IsReplay()

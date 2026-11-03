@@ -2,7 +2,6 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
-include_once __DIR__ . "/Libraries/PuzzleGame.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = NULL;
@@ -198,8 +197,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || ($playerID != 3 && $sessionIsPvtVoidPatron);
     $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
-    $initialLoad->isPuzzle = IsPuzzleGame($gameName);
-    $initialLoad->puzzle = $initialLoad->isPuzzle ? PuzzleClientInfo($gameName) : null;
     $initialLoad->gameFormat = $format;
 
     if ($playerID == 1 || $playerID == 2) {
