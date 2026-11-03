@@ -1305,12 +1305,7 @@ function HasHighTide($cardID): bool
 
 function HighTideConditionMet($player) 
 {
-  $blueCount = SearchCount(SearchPitch($player, pitch: 3));
-  if($blueCount >= 2)
-    return true;
-  else {
-    return false;
-  }
+  return SearchCount(SearchPitch($player, pitch: 3)) >= 2;
 }
 
 function HasPerched($cardID): bool

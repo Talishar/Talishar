@@ -4201,7 +4201,6 @@ function PlayableFromOtherPlayerArsenal($cardID, $face="DOWN", $player ="")
 {
   global $currentPlayer;
   if ($player == "") $player = $currentPlayer;
-  $otherPlayer = 3 - $player;
   if ($face == "UP" && SearchCurrentTurnEffects("annexation_of_all_things_known_yellow-MAIN", $player)) return true;
   else return false;
 }
