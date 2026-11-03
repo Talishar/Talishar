@@ -130,7 +130,7 @@ try {
     $videos = [];
     $ytRegex     = '/(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]{11})/';
     $twRegex     = '/twitch\.tv\/(?:videos\/(\d+)|([a-zA-Z0-9_]+))/';
-    $metafyRegex = '/https?:\/\/(?:www\.)?metafy\.gg\/guides(?:\/view)?\/[^\s]+/i';
+    $metafyRegex = '/https?:\/\/(?:www\.)?metafy\.gg\/(?:guides(?:\/view)?|posts)\/[^\s>]+/i';
 
     // Batch both channel ID substitutions into a single str_replace call
     $channelSearch  = ['<#868488473378684938>',  '<#1014193064736194691>'];
@@ -166,12 +166,18 @@ try {
         }
 
         if ($metafyUrl) {
+            $metafyTitle       = $metafyEmbed['title'] ?? $content;
+            $metafyDescription = $metafyEmbed['description'] ?? '';
+            if (preg_match('/^[^()]+\(@[^)]+\)$/', trim($metafyTitle)) && $metafyDescription !== '') {
+                $metafyTitle       = $metafyDescription;
+                $metafyDescription = '';
+            }
             $videos[] = [
                 'videoId'     => $msg['id'] ?? md5($metafyUrl . $timestamp),
                 'type'        => 'metafy',
-                'title'       => $metafyEmbed['title'] ?? $content,
+                'title'       => $metafyTitle,
                 'author'      => $author,
-                'description' => $metafyEmbed['description'] ?? '',
+                'description' => $metafyDescription,
                 'thumbnail'   => $metafyEmbed['thumbnail']['url'] ?? $metafyEmbed['image']['url'] ?? null,
                 'timestamp'   => $timestamp,
                 'tsInt'       => $tsInt,
