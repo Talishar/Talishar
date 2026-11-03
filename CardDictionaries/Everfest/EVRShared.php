@@ -673,84 +673,31 @@
     }
   }
 
-  function HeaveIndices($resourceCounting=false)
-  {
-    global $mainPlayer;
-    if(ArsenalFull($mainPlayer)) return "";
-    $hand = &GetHand($mainPlayer);
-    $heaveIndicesArr = [];
-    $totalResources = GetResources($mainPlayer)[0];
-    $handCount = count($hand);
-    $handPieces = HandPieces();
-    $auraPieces = AuraPieces();
-    if ($resourceCounting) {
-      for($i=0; $i<$handCount; $i+= $handPieces) {
-        $pv = PitchValue($hand[$i]);
-        if (is_numeric($pv)) $totalResources += $pv;
-      }
-    }
-    $auras = GetAuras($mainPlayer);
-    if ($resourceCounting) {
-      $aurasCount = count($auras);
-      for($i = 0; $i < $aurasCount; $i += $auraPieces) {
-        if ($auras[$i] == "ponder") $totalResources += 3;
-      }
-    }
-    for($i=0; $i<$handCount; $i+= $handPieces) {
-      $heaveVal = HeaveValue($hand[$i]);
-      if ($heaveVal <= 0) continue;
-      if ($resourceCounting) {
-        $pv = PitchValue($hand[$i]);
-        $availableResources = is_numeric($pv) ? $totalResources - $pv : $totalResources;
-        if ($availableResources < $heaveVal) continue;
-      }
-      $heaveIndicesArr[] = $i;
-    }
-    return implode(",", $heaveIndicesArr);
+  function CheckHeaveAwait($player) {
+    global $dqVars;
+    $cardID = $dqVars["cardID"] ?? "-";
+    if (SearchHandForCard($player, $cardID) == "") return "PASS";
+    if (ArsenalFull($player)) return "PASS";
+    return "OK";
   }
 
-  function SnapshotEndPhaseHeaveCards()
-  {
-    global $mainPlayer, $CS_HeaveEligibleAtEndPhase;
-    $indices = HeaveIndices();
-    if ($indices == "") {
-      SetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase, "-");
-      return;
-    }
-    $hand = &GetHand($mainPlayer);
-    $cardIDs = [];
-    foreach (explode(",", $indices) as $index) {
-      $cardID = $hand[$index];
-      if (!in_array($cardID, $cardIDs)) $cardIDs[] = $cardID;
-    }
-    SetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase, implode(",", $cardIDs));
+  function DoHeave($player, $cardID) {
+    $val = HeaveValue($cardID);
+    $message = "if_you_want_to_heave";
+    $context = "Do you want to pay $val to heave " . CardLink($cardID);
+    Await($player, "Heave", cardID: $cardID, val:$val, prepend:true, final:true);
+    Await($player, "PayResources", prepend:true, amount:$val);
+    Await($player, "RemoveFromHand", prepend:true, cardID:$cardID);
+    Await($player, "YesNo", context:$context, prepend:true, message:$message);
+    Await($player, "CheckHeave", cardID:$cardID, prepend:true, subsequent:0);
   }
 
-  //Only cards that were already heaveable at the beginning of the end phase may be heaved
-  function EndPhaseHeaveIndices()
-  {
-    global $mainPlayer, $CS_HeaveEligibleAtEndPhase;
-    $snapshot = GetClassState($mainPlayer, $CS_HeaveEligibleAtEndPhase);
-    if ($snapshot == "-" || $snapshot == "") return "";
-    $eligibleIDs = explode(",", $snapshot);
-    $indices = HeaveIndices();
-    if ($indices == "") return "";
-    $hand = &GetHand($mainPlayer);
-    $filtered = [];
-    foreach (explode(",", $indices) as $index) {
-      if (in_array($hand[$index], $eligibleIDs)) $filtered[] = $index;
-    }
-    return implode(",", $filtered);
-  }
-
-  function Heave()
-  {
-    global $mainPlayer;
-    AddDecisionQueue("FINDINDICES", $mainPlayer, "HEAVE");
-    AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "You may choose to heave a card (or pass)");
-    AddDecisionQueue("MAYCHOOSEHANDHEAVE", $mainPlayer, "<-", 1, 1);
-    AddDecisionQueue("MULTIREMOVEHAND", $mainPlayer, "-", 1);
-    AddDecisionQueue("HEAVE", $mainPlayer, "-", 1);
+  function HeaveAwait($player) {
+    global $dqVars;
+    $cardID = $dqVars["cardID"] ?? "-";
+    $val = $dqVars["val"] ?? 0;
+    AddArsenal($cardID, $player, "HAND", "UP");
+    PlayAura("seismic_surge", $player, $val, effectSource:$cardID);
   }
 
   function BravoStarOfTheShowIndices()
