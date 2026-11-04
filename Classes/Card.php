@@ -1442,4 +1442,10 @@ class Card {
       return $this->baseCard->ContractCompleteEffect($index);
     return false;
   }
+
+  function EffectContractCompleteEffect($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "EffectContractCompleteEffect"))
+      return $this->baseCard->EffectContractCompleteEffect($index);
+    return false;
+  }
 }

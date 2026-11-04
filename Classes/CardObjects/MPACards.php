@@ -3089,7 +3089,7 @@ class scouting_cloak extends Card {
     $CharacterCard->Destroy();
   }
 
-  function ContractCompleteEffect($index) {
+  function EffectContractCompleteEffect($index) {
     AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -3180,5 +3180,247 @@ class plaguewardens_wraps extends Card {
 
   function SpecialSubType() {
     return "Arms";
+  }
+}
+
+class step_overs extends Card {
+  // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
+  // Attack Reaction - Destroy this: Target Assassin attack action card gets go again. Activate this only if the defending hero has played a defense reaction this chain link.
+  function __construct($controller) {
+    $this->cardID = "step_overs";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    $targets = GetTargetsAssassinAA($this->controller);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CCS_DefenseReactionsPlayed;
+    return GetCombatChainState($CCS_DefenseReactionsPlayed) == 0;
+  }
+
+  function SpecialName() {
+    return "Step Overs";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+}
+
+class bounty_brim extends Card {
+  // Action - Destroy this: Until end of turn, whenever you complete a contract, create a Silver token. Activate this only if you are Arakni. Go again
+  // Blade Break (When the combat chain closes, if this defended, destroy it.)
+  function __construct($controller) {
+    $this->cardID = "bounty_brim";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectContractCompleteEffect($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Hero = new CharacterCard(0, $this->controller);
+    if (!str_contains(NameOverride($Hero->CardID(), $this->controller), "Arakni")) return true;
+    return false;
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Bounty Brim";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+}
+
+class stimtek_vest extends Card {
+  // When you complete a contract, if you are Uzuri, you may destroy this. If you do, gain {r}{r}.
+  // Blade Break (When the combat chain closes, if this defended, destroy it.)
+  function __construct($controller) {
+    $this->cardID = "stimtek_vest";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+
+  function ContractCompleteEffect($index) {
+    $Hero = new CharacterCard(0, $this->controller);
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    if (str_contains(NameOverride($Hero->CardID(), $this->controller), "Uzuri") && $CharacterCard->IsActive())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, $CharacterCard->UniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    Await($this->controller, "YesNo", message:"destroy_to_gain_resources", context:"Destroy this to gain 2 resources?", subsequent:0);
+    Await($this->controller, $this->cardID, uid:$target, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $uid = $dqVars["uid"] ?? "-";
+    $Character = new PlayerCharacter($this->controller);
+    $Equip = $Character->FindCardUID($uid);
+    if ($Equip->Index() != -1) {
+      GainResources(2, $this->controller);
+      $Equip->Destroy();
+    }
+  }
+
+  function SpecialName() {
+    return "Stimtek Vest";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Chest";
+  }
+}
+
+class murder_sprees extends Card {
+  // Action - Destroy this: The next time you complete a contract this turn, gain an action point. Go again
+  // Blade Break (When the combat chain closes, if this defended, destroy it.)
+  function __construct($controller) {
+    $this->cardID = "murder_sprees";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function EffectContractCompleteEffect($index) {
+    $Effect = new CurrentEffect($index);
+    $Effect->Remove();
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainActionPoints(1, $this->controller);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Murder Sprees";
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
   }
 }

@@ -3441,6 +3441,13 @@ function HasBladeBreak($cardID)
     case "isolation_vestment":
     case "plague_mask":
     case "wristcuff_injectors":
+    case "bounty_brim":
+    case "stimtek_vest":
+    case "needlebane_cowl":
+    case "murder_sprees":
+    case "needlebane_coat":
+    case "needlebane_gauntlets":
+    case "needlebane_steppers":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);

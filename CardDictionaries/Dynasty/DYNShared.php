@@ -558,11 +558,17 @@ function ContractCompleted($player, $cardID)
     $itemobject = GetClass($ItemCard->CardID(), $player);
     if ($itemobject != "-") $itemobject->ContractCompleteEffect($ItemCard->Index());
   }
+  $Character = new PlayerCharacter($player);
+  for ($i = 0; $i < $Character->NumCards(); ++$i) {
+    $CharacterCard = $Character->Card($i, true);
+    $charobject = GetClass($CharacterCard->CardID(), $player);
+    if ($charobject != "-") $charobject->ContractCompleteEffect($CharacterCard->Index());
+  }
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     $effectobject = GetClass($Effect->EffectID(), $player);
-    if ($effectobject != "-") $effectobject->ContractCompleteEffect($Effect->Index());
+    if ($effectobject != "-") $effectobject->EffectContractCompleteEffect($Effect->Index());
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") {
