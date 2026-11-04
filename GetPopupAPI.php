@@ -177,6 +177,8 @@ switch ($popupType) {
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
+    global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
+    global $SET_HideLogNoise;
 
     $response->Settings = [];
     
@@ -246,6 +248,9 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "DisableShuffleSound", 58, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableHandReorderSound", 59, $dbSettings);
       AddSettingFromDB($response->Settings, "DisablePlayerJoinedSound", 60, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableSpacePass", 61, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableMiddleClickPass", 62, $dbSettings);
+      AddSettingFromDB($response->Settings, "HideLogNoise", 63, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -301,6 +306,9 @@ switch ($popupType) {
       AddUnsetAwareSetting($response->Settings, "DisableShuffleSound", $SET_DisableShuffleSound, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "DisableHandReorderSound", $SET_DisableHandReorderSound, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "DisablePlayerJoinedSound", $SET_DisablePlayerJoinedSound, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableSpacePass", $SET_DisableSpacePass, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableMiddleClickPass", $SET_DisableMiddleClickPass, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "HideLogNoise", $SET_HideLogNoise, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

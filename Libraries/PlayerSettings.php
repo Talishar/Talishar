@@ -71,6 +71,9 @@ $SET_DisablePrioritySound = 57;
 $SET_DisableShuffleSound = 58;
 $SET_DisableHandReorderSound = 59;
 $SET_DisablePlayerJoinedSound = 60;
+$SET_DisableSpacePass = 61;
+$SET_DisableMiddleClickPass = 62;
+$SET_HideLogNoise = 63;
 
 function SettingsPieces()
 {
@@ -87,11 +90,15 @@ function IsUnsetAwareSetting($setting)
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
+    global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
+    global $SET_HideLogNoise;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
+      $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
+      $SET_HideLogNoise,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -729,6 +736,9 @@ function SettingsIdMap()
     "DisableShuffleSound" => 58,
     "DisableHandReorderSound" => 59,
     "DisablePlayerJoinedSound" => 60,
+    "DisableSpacePass" => 61,
+    "DisableMiddleClickPass" => 62,
+    "HideLogNoise" => 63,
   ];
   return $settingsToId;
 }
@@ -790,6 +800,8 @@ function SaveSettingInDatabase($setting)
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
+    global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
+    global $SET_HideLogNoise;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -802,6 +814,8 @@ function SaveSettingInDatabase($setting)
       $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
+      $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
+      $SET_HideLogNoise,
     ], true);
   }
   return isset($persistable[$setting]);
