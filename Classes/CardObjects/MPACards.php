@@ -1943,10 +1943,11 @@ class repeat_reconnaissance extends BaseCard {
   }
 
   function AttackGetsBlockedEffect($start) {
-    global $combatChain;
-    $numBlocking = intdiv(count($combatChain) - $start, CombatChainPieces());
+    global $CombatChain;
+    $numAlreadyBlocking = intdiv($start, CombatChainPieces()) - 1;
+    $numBlocking = $CombatChain->NumCardsActiveLink() - 1;
     $Hero = new CharacterCard(0, $this->controller);
-    if ($numBlocking >= 2 && str_contains(NameOverride($Hero->CardID(), $this->controller), "Uzuri"))
+    if ($numBlocking >= 2 && $numAlreadyBlocking < 2 && str_contains(NameOverride($Hero->CardID(), $this->controller), "Uzuri"))
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
