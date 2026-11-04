@@ -4058,8 +4058,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
         else if (CountAura("seismic_surge", $player) == 0) {
           $auraUniqueID = explode("-", $uniqueID, 2)[1];
-          if (EndPhaseHeaveIndices() != "") DeferLeyLineDestruction($player, $auraUniqueID);
-          else DestroyAuraUniqueID($player, $auraUniqueID);
+          DestroyAuraUniqueID($player, $auraUniqueID);
         }
         break;
       case "sunkwater_lookout":
