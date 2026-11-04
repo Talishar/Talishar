@@ -66,6 +66,11 @@ $SET_OpenHands = 52; //Teaching mode: hand and arsenal are face up to the oppone
 $SET_ReducedMotion = 53;
 $SET_PromptTextSize = 54;
 $SET_ChatTextSize = 55;
+$SET_SoundVolume = 56;
+$SET_DisablePrioritySound = 57;
+$SET_DisableShuffleSound = 58;
+$SET_DisableHandReorderSound = 59;
+$SET_DisablePlayerJoinedSound = 60;
 
 function SettingsPieces()
 {
@@ -81,10 +86,12 @@ function IsUnsetAwareSetting($setting)
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
+    global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
+      $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -717,6 +724,11 @@ function SettingsIdMap()
     "ReducedMotion" => 53,
     "PromptTextSize" => 54,
     "ChatTextSize" => 55,
+    "SoundVolume" => 56,
+    "DisablePrioritySound" => 57,
+    "DisableShuffleSound" => 58,
+    "DisableHandReorderSound" => 59,
+    "DisablePlayerJoinedSound" => 60,
   ];
   return $settingsToId;
 }
@@ -777,6 +789,7 @@ function SaveSettingInDatabase($setting)
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
+    global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -788,6 +801,7 @@ function SaveSettingInDatabase($setting)
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
+      $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
     ], true);
   }
   return isset($persistable[$setting]);

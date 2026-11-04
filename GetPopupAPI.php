@@ -176,6 +176,7 @@ switch ($popupType) {
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
+    global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
 
     $response->Settings = [];
     
@@ -240,6 +241,11 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "ReducedMotion", 53, $dbSettings);
       AddSettingFromDB($response->Settings, "PromptTextSize", 54, $dbSettings);
       AddSettingFromDB($response->Settings, "ChatTextSize", 55, $dbSettings);
+      AddSettingFromDB($response->Settings, "SoundVolume", 56, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisablePrioritySound", 57, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableShuffleSound", 58, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisableHandReorderSound", 59, $dbSettings);
+      AddSettingFromDB($response->Settings, "DisablePlayerJoinedSound", 60, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -290,6 +296,11 @@ switch ($popupType) {
       AddUnsetAwareSetting($response->Settings, "ReducedMotion", $SET_ReducedMotion, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "PromptTextSize", $SET_PromptTextSize, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "ChatTextSize", $SET_ChatTextSize, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "SoundVolume", $SET_SoundVolume, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisablePrioritySound", $SET_DisablePrioritySound, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableShuffleSound", $SET_DisableShuffleSound, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisableHandReorderSound", $SET_DisableHandReorderSound, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "DisablePlayerJoinedSound", $SET_DisablePlayerJoinedSound, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
