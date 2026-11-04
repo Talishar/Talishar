@@ -3336,7 +3336,7 @@ class sneaking_weakness_red extends Card {
 
 class scouting_cloak extends Card {
   // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
-  // Attack Reaction - Destroy this: Until end of turn, whenever you complete a contract, gain 1{r}.
+  // Attack Reaction - Destroy this: Until end of turn, whenever you complete a contract, gain 1{h}.
   function __construct($controller) {
     $this->cardID = "scouting_cloak";
     $this->controller = $controller;
@@ -3365,7 +3365,7 @@ class scouting_cloak extends Card {
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    GainResources(1, $this->controller);
+    GainHealth(1, $this->controller);
   }
 
   function SpecialName() {
@@ -4001,3 +4001,302 @@ class professional_rivalry_blue extends Card {
   }
 }
 
+class puredew_panacea extends Card {
+  // Action - Destroy this: Cure a disease you control. If you do, gain 1{h}. Go again
+  // (Destroy the disease.)
+  function __construct($controller) {
+    $this->cardID = "puredew_panacea";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    CureThem($this->controller, "self");
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function SpecificLogic() {
+    GainHealth(1, $this->controller);
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function AbilityHasGoAgain($from) {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Puredew Panacea";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Off-Hand";
+  }
+}
+
+class needlebane extends BaseCard {
+  // When this defends a dagger, this gets +1{d}.
+  // Blade Break (When the combat chain closes, if this defended, destroy it.)
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    $blockCard = $CombatChain->Card($i);
+    if (SubtypeContains($attackID, "Dagger"))
+      AddLayer("TRIGGER", $this->controller, $this->cardID, $blockCard->OriginUniqueID());
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $target);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectBlockModifier($index, $from, $effectInd) {
+    $Effect = new CurrentEffect($effectInd);
+    $blockCard = new ChainCard($index);
+    return $Effect->AppliestoUniqueID() == $blockCard->OriginUniqueID() ? 1 : 0;
+  }
+
+  function SpecialBlock() {
+    return 1;
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+}
+
+class needlebane_cowl extends Card {
+  function __construct($controller) {
+    $this->cardID = "needlebane_cowl";
+    $this->controller = $controller;
+    $this->baseCard = new needlebane($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Needlebane Cowl";
+  }
+
+  function SpecialSubType() {
+    return "Head";
+  }
+}
+
+class needlebane_coat extends Card {
+  function __construct($controller) {
+    $this->cardID = "needlebane_coat";
+    $this->controller = $controller;
+    $this->baseCard = new needlebane($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Needlebane Coat";
+  }
+
+  function SpecialSubType() {
+    return "Chest";
+  }
+}
+
+class needlebane_gauntlets extends Card {
+  function __construct($controller) {
+    $this->cardID = "needlebane_gauntlets";
+    $this->controller = $controller;
+    $this->baseCard = new needlebane($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Needlebane Gauntlets";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+}
+
+class needlebane_steppers extends Card {
+  function __construct($controller) {
+    $this->cardID = "needlebane_steppers";
+    $this->controller = $controller;
+    $this->baseCard = new needlebane($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Needlebane Steppers";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+}
+
+class banger_blue extends Card {
+  public $archetype;
+  // If this is defended, it gets +6{p}.
+  // Instant - Discard this: Create a Silver token.
+  function __construct($controller) {
+    $this->cardID = "banger_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function CardCost($from = '-', $base=false) {
+    if ($base) return 2;
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $CombatChain;
+    return $CombatChain->NumCardsActiveLink() > 1 ? 6 : 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function SpecialName() {
+    return "Banger!";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class self_determination_blue extends Card {
+  public $archetype;
+  // Instant - Discard this: Until end of turn, opponents can't create tokens under your control.
+  function __construct($controller) {
+    $this->cardID = "self_determination_blue";
+    $this->controller = $controller;
+    $this->archetype = new windup($this->cardID, $this->controller);
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ProcessAbility($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+
+  function CardCost($from = '-', $base=false) {
+    if ($base) return 2;
+    if (GetResolvedAbilityType($this->cardID, "HAND") == "I" && $from == "HAND") return 0;
+    return 2;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return $this->archetype->GetAbilityTypes($index, $from);
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    return $this->archetype->GetAbilityNames($index, $from, $foundNullTime, $layerCount);
+  }
+
+  function GoesOnCombatChain($phase, $from) {
+    return $this->archetype->GoesOnCombatChain($phase, $from);
+  }
+
+  function CanActivateAsInstant($index = -1, $from = '') {
+    return $this->archetype->CanActivateAsInstant($index, $from);
+  }
+
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
+    return $this->archetype->AddPrePitchDecisionQueue($from, $index);
+  }
+
+  function SpecialName() {
+    return "Self-determination";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "GENERIC";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}

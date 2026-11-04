@@ -55,6 +55,10 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     WriteLog("The " . CardLink("plague_mask") . " protects player $player from " . CardLink($cardID) . "!");
     return;
   }
+  if (SearchCurrentTurnEffects("self_determination_blue", $player) && $effectAgent != $player) {
+    WriteLog("My " . CardLink("self_determination_blue") . " protects me from your " . CardLink($cardID) . "!");
+    return;
+  }
   $MainAuras = new Auras($mainPlayer);
   $DefAuras = new Auras($defPlayer);
   $foundSanctuary = $MainAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1 || $DefAuras->FindCardID("peaceful_sanctuary_red")->Index() != -1;

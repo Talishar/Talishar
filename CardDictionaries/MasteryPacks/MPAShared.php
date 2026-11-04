@@ -36,9 +36,11 @@ function NumDaggerHits() {
 	return $numDaggerHits;
 }
 
-function CureThem($player, $final=false) {
-	Await($player, "MultiZoneIndices", "indices", search:"THEIRAURAS:subtype=Disease", subsequent:0);
-	Await($player, "ChooseMultiZone", "MZInd", context:"Kindly cure your opponent's disease");
+function CureThem($player, $target="-", $final=false) {
+	$zone = $target == "self" ? "MYAURAS" : "THEIRAURAS";
+	$context = $target == "self" ? "Cure yourself" : "Kindly cure your opponent's disease";
+	Await($player, "MultiZoneIndices", "indices", search:"$zone:subtype=Disease", subsequent:0);
+	Await($player, "ChooseMultiZone", "MZInd", context:$context);
 	Await($player, "MZDestroy", final:$final);
 }
 
