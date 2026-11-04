@@ -365,14 +365,12 @@ class isolation_vestment extends Card {
 
   function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     global $defPlayer, $Stack;
+    if (!TypeContains($cardID, "AA") || !ClassContains($cardID, "ASSASSIN", $this->controller)) return 0;
     $Layer = $Stack->TopLayer($cardID);
     $attackTarget = CleanTargetToObject($this->controller, $Layer->Target());
     if ($attackTarget == "") return 0;
     if (!TypeContains($attackTarget->CardID(), "C")) return 0;
-    if (TypeContains($cardID, "AA") && ClassContains($cardID, "ASSASSIN", $this->controller)) {
-      return IsInfected($defPlayer) ? -1 : 0;
-    }
-    return 0;
+    return IsInfected($defPlayer) ? -1 : 0;
   }
 
   function SpecialName() {

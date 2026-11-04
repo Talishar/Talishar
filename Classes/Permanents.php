@@ -62,7 +62,7 @@ class PermanentCard {
 
 function GetPermanent($zone, $index, $player) {
 	if (str_contains($zone, "THEIR")) {
-		$player = 2 - $player;
+		$player = 3 - $player;
 		$zone = substr($zone, 5);
 	}
   switch ($zone) {

@@ -745,7 +745,7 @@ function SettingsIdMap()
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
-  return SettingsIdMap()[$value];
+  return SettingsIdMap()[$value] ?? null;
 }
 
 function ChangeSetting($player, $setting, $value, $playerId = "")

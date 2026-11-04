@@ -13,6 +13,7 @@ include_once '../includes/dbh.inc.php';
 include_once '../Libraries/BlockedUserLibraries.php';
 include_once '../Libraries/FriendLibraries.php';
 include_once '../Libraries/FeaturedGameLibraries.php';
+include_once '../Libraries/GameHealthLog.php';
 
 $path = "../Games";
 
@@ -244,6 +245,7 @@ function ScanGameList($path, $currentTime)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
             DeleteCache($gameToken);
             continue;
@@ -297,6 +299,7 @@ function ScanGameList($path, $currentTime)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          FlushGameHealthLog($gameToken);
           deleteDirectory($folder);
           DeleteCache($gameToken);
           continue;
