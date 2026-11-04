@@ -73,6 +73,7 @@ foreach (scandir($replayRoot) ?: [] as $entry) {
   $replay->p1HeroName = trim((string)($metadata["p1HeroName"] ?? ""));
   $replay->p2HeroName = trim((string)($metadata["p2HeroName"] ?? ""));
   $replay->favorite = ($metadata["favorite"] ?? false) === true;
+  $replay->note = is_string($metadata["note"] ?? null) ? $metadata["note"] : "";
   if ($replay->favorite) ++$response->favoriteSlots;
   $response->replays[] = $replay;
 }
