@@ -1782,11 +1782,12 @@ class pinpoint_elimination_blue extends Card {
     global $dqVars, $defPlayer;
     $choice = $dqVars["LASTRESULT"] ?? "-";
     if ($choice != "-") {
-      WriteLog("<b>📣$choice</b> is being hunted!");
+      $choiceName = GamestateUnsanitize($choice);
+      WriteLog("<b>📣$choiceName </b> is being hunted!");
       $deck = new Deck($defPlayer);
       if ($deck->Reveal()) {
         $topCard = $deck->Top();
-        if (NameOverride($topCard, $defPlayer) == $choice) {
+        if (NameOverride($topCard, $defPlayer) == $choiceName) {
           $deck->BanishTop(banisher:$this->controller);
           PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
         }
