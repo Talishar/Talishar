@@ -56,5 +56,16 @@ function GetTargetsAssassinAA($player, $contract=false, $stealth=false) {
     return implode(",", $targets);
 }
 
+function DeathTouch($player, $cardID) {
+	global $Diseases, $defPlayer;
+	$indices = [];
+	foreach($Diseases as $disease)
+		$indices[] = "CARDID-$disease";
+	$indices = implode(",", $indices);
+	$context = "infect your opponent";
+	Await($player, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
+	Await($defPlayer, "PlayAura", effectController:$player, effectSource:$cardID, effectAgent:$player, final:true);
+}
+
 static $Diseases = ["frailty", "inertia", "bloodrot_pox"];
 static $AllDiseases = ["frailty", "inertia", "bloodrot_pox", "exertion"];

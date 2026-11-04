@@ -1159,14 +1159,7 @@ class painful_choice_red extends Card {
   }
 }
 
-class patrons_lockbox_valuables_blue extends Card {
-  // Go again
-  // When you complete a contract, destroy this. If you do, create 2 Silver tokens.
-  function __construct($controller) {
-    $this->cardID = "patrons_lockbox_valuables_blue";
-    $this->controller = $controller;
-  }
-
+class patrons_lockbox extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
@@ -1174,19 +1167,6 @@ class patrons_lockbox_valuables_blue extends Card {
   function ContractCompleteEffect($index) {
     $Item = new ItemCard($index, $this->controller);
     AddLayer("TRIGGER", $this->controller, $this->cardID, $Item->UniqueID());
-  }
-
-  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-    $Items = new Items($this->controller);
-    $Item = $Items->FindCardUID($target);
-    if ($Item->Index() != -1) {
-      $Item->Destroy();
-      PutItemIntoPlayForPlayer("silver", $this->controller, number:2, effectSource:$this->cardID);
-    }
-  }
-
-  function SpecialName() {
-    return "Patron's Lockbox: Valuables";
   }
 
   function SpecialPitch() {
@@ -1218,6 +1198,82 @@ class patrons_lockbox_valuables_blue extends Card {
   }
 }
 
+class patrons_lockbox_valuables_blue extends Card {
+  // Go again
+  // When you complete a contract, destroy this. If you do, create 2 Silver tokens.
+  function __construct($controller) {
+    $this->cardID = "patrons_lockbox_valuables_blue";
+    $this->controller = $controller;
+    $this->baseCard = new patrons_lockbox($this->cardID, $this->controller);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Items = new Items($this->controller);
+    $Item = $Items->FindCardUID($target);
+    if ($Item->Index() != -1) {
+      $Item->Destroy();
+      PutItemIntoPlayForPlayer("silver", $this->controller, number:2, effectSource:$this->cardID);
+    }
+  }
+
+  function SpecialName() {
+    return "Patron's Lockbox: Valuables";
+  }
+}
+
+class patrons_lockbox_carriers_blue extends Card {
+  // Go again
+  // When you complete a contract, destroy this. If you do, create 2 Silver tokens.
+  function __construct($controller) {
+    $this->cardID = "patrons_lockbox_carriers_blue";
+    $this->controller = $controller;
+    $this->baseCard = new patrons_lockbox($this->cardID, $this->controller);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Items = new Items($this->controller);
+    $Item = $Items->FindCardUID($target);
+    if ($Item->Index() != -1) {
+      $Item->Destroy();
+      DeathTouch($this->controller, $this->cardID);
+    }
+  }
+
+  function SpecialName() {
+    return "Patron's Lockbox: Carriers";
+  }
+}
+
+class patrons_lockbox_serums_blue extends Card {
+  // Go again
+  // When you complete a contract, destroy this. If you do, create 2 Silver tokens.
+  function __construct($controller) {
+    $this->cardID = "patrons_lockbox_serums_blue";
+    $this->controller = $controller;
+    $this->baseCard = new patrons_lockbox($this->cardID, $this->controller);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $Items = new Items($this->controller);
+    $Item = $Items->FindCardUID($target);
+    if ($Item->Index() != -1) {
+      $Item->Destroy();
+      AddCurrentTurnEffect($this->cardID, $this->controller, from:"PLAY");
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function SpecialName() {
+    return "Patron's Lockbox: Serums";
+  }
+}
 
 class mask_of_one_million_eyes extends Card {
   // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
@@ -2868,14 +2924,7 @@ class wound_extraction_red extends Card {
   }
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $Diseases, $defPlayer;
-		$indices = [];
-		foreach($Diseases as $disease)
-			$indices[] = "CARDID-$disease";
-		$indices = implode(",", $indices);
-		$context = "infect your opponent";
-		Await($this->controller, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
-		Await($target, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
+    DeathTouch($this->controller, $this->cardID);
   }
 
   function SpecialName() {
@@ -3715,3 +3764,111 @@ class lab_rat_blue extends Card {
   }
 }
 
+class viral_accelerant_blue extends Card {
+  // For each disease token you control with a different name, create a token copy of it under the defending hero's control.
+  function __construct($controller) {
+    $this->cardID = "viral_accelerant_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Auras = new Auras($this->controller);
+    $foundNames = [];
+    $otherPlayer = OtherPlayer($this->controller);
+    for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
+      $AuraCard = $Auras->Card($i, true);
+      $name = NameOverride($AuraCard->CardID(), $this->controller);
+      if ($name != "" && !in_array($name, $foundNames)) {
+        $foundNames[] = $name;
+        PlayAura($AuraCard->CardID(), $otherPlayer, isToken:true, effectSource:$this->cardID, effectController:$this->controller);
+      }
+    }
+    return "";
+  }
+
+  function SpecialName() {
+    return "Viral Accelerant";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AR";
+  }
+}
+
+class just_my_type_red extends Card {
+  // When this defends, name a card, then the attacking hero reveals the top card of their deck. If it's the named card, banish it and create a Silver token.
+  function __construct($controller) {
+    $this->cardID = "just_my_type_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $mainPlayer;
+    $choice = $dqVars["LASTRESULT"] ?? "-";
+    if ($choice != "-") {
+      $choiceName = GamestateUnsanitize($choice);
+      WriteLog("<b>📣$choiceName </b> is being hunted!");
+      $deck = new Deck($mainPlayer);
+      if ($deck->Reveal()) {
+        $topCard = $deck->Top();
+        if (NameOverride($topCard, $mainPlayer) == $choiceName) {
+          $deck->BanishTop(banisher:$this->controller);
+          PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+        }
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Just My Type";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "DR";
+  }
+}
