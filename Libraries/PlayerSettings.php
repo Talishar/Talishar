@@ -63,6 +63,9 @@ $SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card 
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 $SET_LandscapeTipSeen = 51;
 $SET_OpenHands = 52; //Teaching mode: hand and arsenal are face up to the opponent. Set from the lobby at game start, never by the client
+$SET_ReducedMotion = 53;
+$SET_PromptTextSize = 54;
+$SET_ChatTextSize = 55;
 
 function SettingsPieces()
 {
@@ -77,9 +80,11 @@ function IsUnsetAwareSetting($setting)
   if ($unsetAware === null) {
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
+    global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
+      $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -582,13 +587,19 @@ function LoadViewerColorblindMode($viewerUserId)
   global $SET_ColorblindMode;
   if (!is_numeric($viewerUserId) || !function_exists("LoadSavedSettings")) return false;
   $flat = LoadSavedSettings((string)$viewerUserId);
-  return SavedSettingValue($flat, $SET_ColorblindMode) == "1";
+  return IsColorblindModeValue(SavedSettingValue($flat, $SET_ColorblindMode));
+}
+
+// 0 is off, 1 is the original single toggle, 2-4 are the deuteranopia, protanopia and tritanopia presets.
+function IsColorblindModeValue($value)
+{
+  return in_array((string)$value, ["1", "2", "3", "4"], true);
 }
 
 function IsColorblindMode($player)
 {
   global $SET_ColorblindMode;
-  return SettingValue($player, $SET_ColorblindMode, "0") == "1";
+  return IsColorblindModeValue(SettingValue($player, $SET_ColorblindMode, "0"));
 }
 
 function ShortcutAttackThreshold($player)
@@ -703,6 +714,9 @@ function SettingsIdMap()
     "RequireYesNoAnswer" => 50,
     "LandscapeTipSeen" => 51,
     "OpenHands" => 52,
+    "ReducedMotion" => 53,
+    "PromptTextSize" => 54,
+    "ChatTextSize" => 55,
   ];
   return $settingsToId;
 }
@@ -762,6 +776,7 @@ function SaveSettingInDatabase($setting)
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
+    global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -772,6 +787,7 @@ function SaveSettingInDatabase($setting)
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
+      $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
     ], true);
   }
   return isset($persistable[$setting]);
