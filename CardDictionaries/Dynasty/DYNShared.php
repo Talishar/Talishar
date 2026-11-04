@@ -564,7 +564,7 @@ function ContractCompleted($player, $cardID)
     $charobject = GetClass($CharacterCard->CardID(), $player);
     if ($charobject != "-") $charobject->ContractCompleteEffect($CharacterCard->Index());
   }
-  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+  for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     $effectobject = GetClass($Effect->EffectID(), $player);

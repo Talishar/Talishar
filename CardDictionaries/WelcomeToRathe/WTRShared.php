@@ -702,7 +702,7 @@ function AddEffectToAttack($player, $effectID, $target, $attach=false) {
       AddCurrentTurnEffect($effectID, $player);
   }
   elseif ($zone == "PASTCHAINLINK") {
-    $linkNum = explode("-", $target)[1] ?? -1;
+    $linkNum = explode("-", $target)[2] ?? -1;
     if ($linkNum != -1) {
       $attackCard = $ChainLinks->GetLink($linkNum)->AttackCard();
       $attackCard->AddBuff($effectID);

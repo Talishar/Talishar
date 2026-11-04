@@ -720,6 +720,7 @@ class bribe_the_guards_blue extends Card {
       }
     }
     elseif ($from == "COMBATCHAINATTACKS") {
+      $index = intdiv($index, ChainLinksPieces());
       $Link = $ChainLinks->GetLink($index);
       for ($i = 1; $i < $Link->NumCards(); ++$i) {
         $targets[] = "PASTCHAINLINK-" . $Link->GetLinkCard($i, true)->Index() . "-$index";
@@ -896,8 +897,8 @@ class sickening_exhaustion_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $defPlayer;
     if (IsInfected($defPlayer)) {
-      $numToBottom = count(GetArsenal($defPlayer));
-      for ($i = 0; $i < $numToBottom; $i++) {
+      $Arsenal = new Arsenal($defPlayer);
+      for ($i = 0; $i < $Arsenal->NumCards(); $i++) {
         BottomDeckMultizone($defPlayer, "MYARS", "-", true, "Choose a card from your arsenal to add on the bottom of your deck");
       }
     }
@@ -1540,10 +1541,6 @@ class spawn_disease extends BaseCard {
       PlayAura($disease, $defPlayer, effectAgent:$this->controller);
   }
 
-  function SpecialName() {
-    return "Spawn Inertia";
-  }
-
   function SpecialCost() {
     return 1;
   }
@@ -1568,6 +1565,10 @@ class spawn_inertia_red extends Card {
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
   }
 
+  function SpecialName() {
+    return "Spawn Inertia";
+  }
+
   function SpecialPitch() {
     return 1;
   }
@@ -1582,6 +1583,10 @@ class spawn_frailty_red extends Card {
     $this->cardID = "spawn_frailty_red";
     $this->controller = $controller;
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Spawn Frailty";
   }
 
   function SpecialPitch() {
@@ -1600,6 +1605,10 @@ class spawn_bloodrot_red extends Card {
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
   }
 
+  function SpecialName() {
+    return "Spawn Bloodrot";
+  }
+
   function SpecialPitch() {
     return 1;
   }
@@ -1615,6 +1624,10 @@ class desperate_drive extends BaseCard {
   // If you are infected, this gets go again. (A hero is infected if they control a disease.)
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return IsInfected($this->controller);
   }
 
   function SpecialName() {
@@ -1647,10 +1660,6 @@ class desperate_drive_red extends Card {
     $this->cardID = "desperate_drive_red";
     $this->controller = $controller;
     $this->baseCard = new desperate_drive($this->cardID, $this->controller);
-  }
-
-  function DoesAttackHaveGoAgain() {
-    return IsInfected($this->controller);
   }
 
   function SpecialPitch() {
@@ -1745,7 +1754,8 @@ class free_of_burdens extends BaseCard {
       if ($from == "CC" || $from == "COMBATCHAINATTACKS") {
         if ($from == "COMBATCHAINATTACKS") $ChainLinks->GetLink($i)->AttackCard()->AddUse(1);
         else $CombatChain->AttackCard()->AddUse(1);
-        Await($this->controller, "MultiZoneIndices", search:"MYAURAS", subsequent:0);
+        // need to check if this works on token copies
+        Await($this->controller, "MultiZoneIndices", search:"MYAURAS:subType=token", subsequent:0);
         Await($this->controller, "ChooseMultiZone", context:"Destroy an aura you control");
         Await($this->controller, "MZDestroy", final:true);
       }
@@ -1843,7 +1853,7 @@ class pinpoint_elimination_blue extends Card {
       $deck = new Deck($defPlayer);
       if ($deck->Reveal()) {
         $topCard = $deck->Top();
-        if (NameOverride($topCard, $defPlayer) == $choiceName) {
+        if (ShareName(NameOverride($topCard, $defPlayer), $choiceName)) {
           $deck->BanishTop(banisher:$this->controller);
           PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
         }
@@ -2048,7 +2058,7 @@ class repeat_reconnaissance extends BaseCard {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $context = "Put a 2 cost attack on the bottom of your deck (or pass)";
-    ChooseAndProcess($this->controller, "MYDISCARD:minCost=2;maxCost=2", $context, $this->cardID, true);
+    ChooseAndProcess($this->controller, "MYDISCARD:minCost=2;maxCost=2;type=AA", $context, $this->cardID, true);
   }
 
   function SpecificLogic() {
@@ -2662,6 +2672,24 @@ class decapitate_the_disloyal extends BaseCard {
     return "";
   }
 
+  function ContractType($chosenName = '') {
+    return "GENERIC";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $deck->BanishTop(banisher:$this->controller);
+  }
+
   function SpecialName() {
     return "Decapitate the Disloyal";
   }
@@ -2688,24 +2716,6 @@ class decapitate_the_disloyal_red extends Card {
     $this->cardID = "decapitate_the_disloyal_red";
     $this->controller = $controller;
     $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
-  }
-
-  function ContractType($chosenName = '') {
-    return "GENERIC";
-  }
-
-  function ContractCompleted() {
-    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
-  }
-
-  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $defPlayer;
-    $deck = new Deck($defPlayer);
-    $deck->BanishTop(banisher:$this->controller);
   }
 
   function SpecialPitch() {
@@ -3404,6 +3414,10 @@ class plaguewardens_wraps extends Card {
     return "";
   }
 
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
   function DiscardStartTurnTrigger($index) {
     SilverBuyback($this->controller, $index);
   }
@@ -3494,6 +3508,8 @@ class step_overs extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     global $CCS_DefenseReactionsPlayed;
+    $targets = GetTargetsAssassinAA($this->controller);
+    if ($targets == "") return true;
     return GetCombatChainState($CCS_DefenseReactionsPlayed) == 0;
   }
 
@@ -3722,7 +3738,7 @@ class kill_confirmed_red extends Card {
       $deck = new Deck($defPlayer);
       if ($deck->Reveal()) {
         $topCard = $deck->Top();
-        if (NameOverride($topCard, $defPlayer) == $choiceName) {
+        if (ShareName(NameOverride($topCard, $defPlayer), $choiceName)) {
           $deck->BanishTop(banisher:$this->controller);
           PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
         }
@@ -3853,7 +3869,7 @@ class viral_accelerant_blue extends Card {
     for ($i = 0; $i < $Auras->NumAuras(); ++$i) {
       $AuraCard = $Auras->Card($i, true);
       $name = NameOverride($AuraCard->CardID(), $this->controller);
-      if ($name != "" && !in_array($name, $foundNames)) {
+      if ($name != "" && !in_array($name, $foundNames) && SubtypeContains($AuraCard->CardID(), "Disease")) {
         $foundNames[] = $name;
         PlayAura($AuraCard->CardID(), $otherPlayer, isToken:true, effectSource:$this->cardID, effectController:$this->controller);
       }
@@ -3915,7 +3931,7 @@ class just_my_type_red extends Card {
       $deck = new Deck($mainPlayer);
       if ($deck->Reveal()) {
         $topCard = $deck->Top();
-        if (NameOverride($topCard, $mainPlayer) == $choiceName) {
+        if (ShareName(NameOverride($topCard, $mainPlayer), $choiceName)) {
           $deck->BanishTop(banisher:$this->controller);
           PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
         }
