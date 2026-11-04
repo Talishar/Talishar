@@ -42,5 +42,16 @@ function CureThem($player, $final=false) {
 	Await($player, "MZDestroy", final:$final);
 }
 
+function GetTargetsAssassinAA($player) {
+	$attacks = TargetAttack($player);
+    $targets = [];
+    foreach($attacks as $attack) {
+      $obj = MZIndexToObject($player, $attack);
+      if (TypeContains($obj->ID(), "AA") && ClassContains($obj->ID(), "ASSASSIN", $player))
+        $targets[] = $attack;
+    }
+    return implode(",", $targets);
+}
+
 static $Diseases = ["frailty", "inertia", "bloodrot_pox"];
 static $AllDiseases = ["frailty", "inertia", "bloodrot_pox", "exertion"];
