@@ -2054,7 +2054,7 @@ class the_spiders_cut extends BaseCard {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    return CountItemByName("silver", $this->controller) == 1;
+    return CountItemByName("silver", $this->controller) < 1;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
