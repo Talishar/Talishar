@@ -84,7 +84,7 @@ function LogGameHealthInput($player, $mode, $buttonInput = "")
 
   $phase = (string)($turn[0] ?? "");
   $context = "-";
-  if ($mode == 27) $context = (string)$buttonInput;
+  if ($mode == 27) $context = (string)$buttonInput ?: "-";
   else if ($mode < 10000 && IsGameHealthPromptPhase($phase)) $context = GameHealthPromptContext($phase);
   WriteGameHealthLine($player, $mode, $context);
 }
