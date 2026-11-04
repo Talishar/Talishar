@@ -13,7 +13,7 @@ include_once '../includes/dbh.inc.php';
 include_once '../Libraries/BlockedUserLibraries.php';
 include_once '../Libraries/FriendLibraries.php';
 include_once '../Libraries/FeaturedGameLibraries.php';
-include_once '../Libraries/SpectatorAccess.php';
+include_once '../Libraries/GameHealthLog.php';
 
 $path = "../Games";
 
@@ -31,9 +31,6 @@ $response->gamesInProgress = [];
 $response->openGames = [];
 $canSeeQueue = IsUserLoggedIn();
 $response->canSeeQueue = $canSeeQueue;
-$canSpectate = CanUserSpectate();
-$response->canSpectate = $canSpectate;
-if (!$canSpectate) $response->spectateProgress = SpectateProgressResponse();
 
 $isShadowBanned = false;
 if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
@@ -144,7 +141,7 @@ $currentTime = round(microtime(true) * 1000);
 $scan = GetGameListScan($path, $currentTime);
 if ($scan !== null) {
   $featuredCandidates = [];
-  foreach (($canSpectate ? $scan['inProgress'] : []) as [$gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $gameFormat, $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId, $spectatorCount]) {
+  foreach ($scan['inProgress'] as [$gameToken, $lastGamestateUpdate, $visibility, $p1Hero, $p2Hero, $gameFormat, $gameCreator, $p2Username, $p1ShownName, $p2ShownName, $p1AccountId, $p2AccountId, $spectatorCount]) {
     if ($visibility == "2" && !($canSeeQueue && (isset($friendUserSet[$gameCreator]) || isset($friendUserSet[$p2Username])))) continue;
     if (isset($bannedPlayers[strtolower($gameCreator)]) || isset($bannedPlayers[strtolower($p2Username)])) continue;
     if (isset($blockedUserSet[$gameCreator]) || isset($blockedUserSet[$p2Username])) continue;
@@ -248,6 +245,7 @@ function ScanGameList($path, $currentTime)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
             DeleteCache($gameToken);
             continue;
@@ -301,6 +299,7 @@ function ScanGameList($path, $currentTime)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          FlushGameHealthLog($gameToken);
           deleteDirectory($folder);
           DeleteCache($gameToken);
           continue;

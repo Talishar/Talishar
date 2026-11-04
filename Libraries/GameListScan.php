@@ -2,6 +2,7 @@
 
 include_once __DIR__ . '/SHMOPLibraries.php';
 include_once __DIR__ . '/CacheLibraries.php';
+include_once __DIR__ . '/GameHealthLog.php';
 
 const GAME_LIST_SCAN_KEY = 'game_list_scan_v2';
 const GAME_LIST_SCAN_TTL_MS = 2000;
@@ -54,6 +55,7 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
             DeleteCache($gameToken);
             continue;
@@ -108,6 +110,7 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          FlushGameHealthLog($gameToken);
           deleteDirectory($folder);
           DeleteCache($gameToken);
           continue;

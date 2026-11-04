@@ -27,7 +27,6 @@ include_once "GameTerms.php";
 include_once "Libraries/UILibraries.php";
 include_once "Libraries/StatFunctions.php";
 include_once "Libraries/PlayerSettings.php";
-include_once "Libraries/SpectatorAccess.php";
 
 include_once "BuildGameState.php";
 include_once "BuildPlayerInputPopup.php";
@@ -86,7 +85,6 @@ foreach(PatreonCampaign::cases() as $campaign) {
 // the long-lived SSE connection starts.
 $sessionData['friendList'] = [];
 $viewerUserId = $playerID == 3 && $sessionData['userLoggedIn'] ? LoggedInUser() : null;
-$sessionData['canSpectate'] = $playerID != 3 || CanSpectateGame(ReadCacheArray($gameName) ?? []);
 
 // Release session lock BEFORE SSE loop to prevent deadlock
 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -99,12 +97,6 @@ header('Cache-Control: no-cache');
 if ($playerID == 3) {
   if (!$sessionData['userLoggedIn'] || empty($sessionData['userName'])) {
     echo ("data: " . json_encode(["error" => "Authentication required to spectate."]) . "\n\n");
-    ob_flush();
-    flush();
-    exit;
-  }
-  if (!$sessionData['canSpectate']) {
-    echo ("data: " . json_encode(["error" => SPECTATE_LOCKED_MESSAGE]) . "\n\n");
     ob_flush();
     flush();
     exit;
