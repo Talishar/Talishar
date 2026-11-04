@@ -42,13 +42,16 @@ function CureThem($player, $final=false) {
 	Await($player, "MZDestroy", final:$final);
 }
 
-function GetTargetsAssassinAA($player) {
+function GetTargetsAssassinAA($player, $contract=false, $stealth=false) {
 	$attacks = TargetAttack($player);
     $targets = [];
     foreach($attacks as $attack) {
-      $obj = MZIndexToObject($player, $attack);
-      if (TypeContains($obj->ID(), "AA") && ClassContains($obj->ID(), "ASSASSIN", $player))
-        $targets[] = $attack;
+		$obj = MZIndexToObject($player, $attack);
+		$attackID = $obj->ID();
+		if ($contract && ContractType($attackID) == "") continue;
+		if ($stealth && !HasStealth($attackID)) continue;
+		if (TypeContains($attackID, "AA") && ClassContains($attackID, "ASSASSIN", $player))
+			$targets[] = $attack;
     }
     return implode(",", $targets);
 }

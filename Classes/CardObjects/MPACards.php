@@ -2712,18 +2712,17 @@ class eviscerate_the_enervated_blue extends Card {
   }
 }
 
-class act_on_intel_whereabouts_red extends Card {
-  // Target Assassin attack action card with contract gets +1{p} and "When this hits a hero, they choose a card in their hand. Banish it."
-  function __construct($controller) {
-    $this->cardID = "act_on_intel_whereabouts_red";
-    $this->controller = $controller;
+class act_on_intel extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-    if (ContractType($CombatChain->AttackCard()->ID()) == "") return;
-    AddEffectToCurrentAttack($this->cardID);
-    return "";
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = GetTargetsAssassinAA($this->controller, contract:true);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
   }
 
   function EffectPowerModifier($param, $attached = false) {
@@ -2731,32 +2730,16 @@ class act_on_intel_whereabouts_red extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain;
-    return ContractType($CombatChain->AttackCard()->ID()) == "";
+    $targets = GetTargetsAssassinAA($this->controller, contract:true);
+    return $targets == "";
   }
 
   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
     return HeroHitTrigger($this->controller, $this->cardID, $check, true);
   }
 
-  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-    global $defPlayer;
-    Await($defPlayer, "MZRemoveAndBanish", banisher:$this->controller, prepend:true);
-    $context = "Choose a card to be banished";
-    Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
-    Await($defPlayer, "MultiZoneIndices", search:"MYHAND", prepend:true, subsequent:0);
-  }
-
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
-  }
-
-  function SpecialName() {
-    return "Act on Intel: Whereabouts";
-  }
-
-  function SpecialPitch() {
-    return 1;
   }
 
   function SpecialCost() {
@@ -2776,7 +2759,80 @@ class act_on_intel_whereabouts_red extends Card {
   }
 }
 
-class wound_extraction extends BaseCard {
+class act_on_intel_whereabouts_red extends Card {
+  // Target Assassin attack action card with contract gets +1{p} and "When this hits a hero, they choose a card in their hand. Banish it."
+  function __construct($controller) {
+    $this->cardID = "act_on_intel_whereabouts_red";
+    $this->controller = $controller;
+    $this->baseCard = new act_on_intel($this->cardID, $this->controller);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer;
+    Await($defPlayer, "MZRemoveAndBanish", banisher:$this->controller, prepend:true);
+    $context = "Choose a card to be banished";
+    Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
+    Await($defPlayer, "MultiZoneIndices", search:"MYHAND", prepend:true, subsequent:0);
+  }
+
+  function SpecialName() {
+    return "Act on Intel: Whereabouts";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+}
+
+class act_on_intel_plans_yellow extends Card {
+  // Target Assassin attack action card with contract gets +1{p} and "When this hits a hero, they choose a card in their hand. Banish it."
+  function __construct($controller) {
+    $this->cardID = "act_on_intel_plans_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new act_on_intel($this->cardID, $this->controller);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer;
+    Await($defPlayer, "MZRemoveAndBanish", banisher:$this->controller, prepend:true);
+    $context = "Choose a card to be banished";
+    Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
+    Await($defPlayer, "MultiZoneIndices", search:"MYARS", prepend:true, subsequent:0);
+  }
+
+  function SpecialName() {
+    return "Act on Intel: Plans";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class act_on_intel_haunts_blue extends Card {
+  // Target Assassin attack action card with contract gets +1{p} and "When this hits a hero, they choose a card in their hand. Banish it."
+  function __construct($controller) {
+    $this->cardID = "act_on_intel_haunts_blue";
+    $this->controller = $controller;
+    $this->baseCard = new act_on_intel($this->cardID, $this->controller);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    $deck->BanishTop(banisher:$this->controller);
+  }
+
+  function SpecialName() {
+    return "Act on Intel: Haunts";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+}
+
+class wound_poke extends BaseCard {
   // If you've hit with a dagger this combat chain, this gets "When this hits a hero, create a Frailty, Inertia, or Bloodrot Pox token under their control."
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
@@ -2785,22 +2841,6 @@ class wound_extraction extends BaseCard {
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     if (NumDaggerHits() == 0) return false;
     return HeroHitTrigger($this->controller, $this->cardID, $check);
-  }
-
-  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-    global $Diseases, $defPlayer;
-		$target = !is_numeric($target) ? $defPlayer : $target;
-		$indices = [];
-		foreach($Diseases as $disease)
-			$indices[] = "CARDID-$disease";
-		$indices = implode(",", $indices);
-		$context = $target == $defPlayer ? "infect your opponent" : "infect yourself";
-		Await($this->controller, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
-		Await($target, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
-  }
-
-  function SpecialName() {
-    return "Wound Extraction";
   }
 
   function SpecialCost() {
@@ -2824,7 +2864,74 @@ class wound_extraction_red extends Card {
   function __construct($controller) {
     $this->cardID = "wound_extraction_red";
     $this->controller = $controller;
-    $this->baseCard = new wound_extraction($this->cardID, $this->controller);
+    $this->baseCard = new wound_poke($this->cardID, $this->controller);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $Diseases, $defPlayer;
+		$indices = [];
+		foreach($Diseases as $disease)
+			$indices[] = "CARDID-$disease";
+		$indices = implode(",", $indices);
+		$context = "infect your opponent";
+		Await($this->controller, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
+		Await($target, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
+  }
+
+  function SpecialName() {
+    return "Wound Extraction";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class wound_excavation_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "wound_excavation_red";
+    $this->controller = $controller;
+    $this->baseCard = new wound_poke($this->cardID, $this->controller);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    LoseHealth(1, $defPlayer);
+  }
+
+  function SpecialName() {
+    return "Wound Excavation";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class wound_excision_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "wound_excision_red";
+    $this->controller = $controller;
+    $this->baseCard = new wound_poke($this->cardID, $this->controller);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $Deck = new Deck($defPlayer);
+    $Deck->BanishTop(banisher:$this->controller);
+    $Deck->BanishTop(banisher:$this->controller);
+  }
+
+  function SpecialName() {
+    return "Wound Excision";
   }
 
   function SpecialPitch() {
@@ -3026,10 +3133,6 @@ class sneaking_disease extends BaseCard {
     PlayAura($disease, $otherPlayer, effectSource:$this->cardID, effectController:$this->controller);
   }
 
-  function SpecialName() {
-    return "Sneaking Rot";
-  }
-
   function SpecialCost() {
     return 2;
   }
@@ -3052,6 +3155,50 @@ class sneaking_rot_red extends Card {
     $this->cardID = "sneaking_rot_red";
     $this->controller = $controller;
     $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
+  }
+  
+  function SpecialName() {
+    return "Sneaking Rot";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class sneaking_exhaustion_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sneaking_exhaustion_red";
+    $this->controller = $controller;
+    $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Sneaking Exhaustion";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class sneaking_weakness_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "sneaking_weakness_red";
+    $this->controller = $controller;
+    $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Sneaking Weakness";
   }
 
   function SpecialPitch() {
@@ -3424,3 +3571,147 @@ class murder_sprees extends Card {
     return "Legs";
   }
 }
+
+class kill_confirmed_red extends Card {
+  // When this attacks, name a card, then the defending hero reveals the top card of their deck. If it's the named card, banish it and create a Silver token.
+  function __construct($controller) {
+    $this->cardID = "kill_confirmed_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    AddDecisionQueue("INPUTCARDNAME", $this->controller, "-");
+    Await($this->controller, $this->cardID, final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $defPlayer;
+    $choice = $dqVars["LASTRESULT"] ?? "-";
+    if ($choice != "-") {
+      $choiceName = GamestateUnsanitize($choice);
+      WriteLog("<b>📣$choiceName </b> is being hunted!");
+      $deck = new Deck($defPlayer);
+      if ($deck->Reveal()) {
+        $topCard = $deck->Top();
+        if (NameOverride($topCard, $defPlayer) == $choiceName) {
+          $deck->BanishTop(banisher:$this->controller);
+          PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+        }
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Kill Confirmed";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class lab_rat extends BaseCard {
+  // If the defending hero is infected, this gets +1{p}. (A hero is infected if they control a disease.)
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    global $defPlayer;
+    return IsInfected($defPlayer) ? 1 : 0;
+  }
+
+  function SpecialName() {
+    return "Lab Rat";
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class lab_rat_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "lab_rat_red";
+    $this->controller = $controller;
+    $this->baseCard = new lab_rat($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+}
+
+class lab_rat_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "lab_rat_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new lab_rat($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class lab_rat_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "lab_rat_blue";
+    $this->controller = $controller;
+    $this->baseCard = new lab_rat($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
