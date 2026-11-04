@@ -693,13 +693,22 @@
   }
 
 function AddEffectToAttack($player, $effectID, $target, $attach=false) {
+  global $ChainLinks;
+  $zone = explode("-", $target)[0];
   if ($target == "COMBATCHAINLINK-0") {
     if ($attach)
       AddEffectToCurrentAttack($effectID);
     else
       AddCurrentTurnEffect($effectID, $player);
   }
-  elseif (explode("-", $target)[0] == "ATTACKQUEUE") {
+  elseif ($zone == "PASTCHAINLINK") {
+    $linkNum = explode("-", $target)[1] ?? -1;
+    if ($linkNum != -1) {
+      $attackCard = $ChainLinks->GetLink($linkNum)->AttackCard();
+      $attackCard->AddBuff($effectID);
+    }
+  }
+  elseif ($zone == "ATTACKQUEUE") {
     $ind = intval(explode("-", $target)[1] ?? 0);
     $QueueCard = new AttackLayer($ind);
     $QueueCard->AddBuff($effectID);

@@ -223,6 +223,13 @@ class LinkCard {
 		return $this->link[$this->index+6] ?? "";
 	}
 
+	function AddBuff($effectID) {
+		if ($this->link[$this->index+6] == "" || $this->link[$this->index+6] == "-")
+			$this->link[$this->index+6] = $effectID;
+		else
+			$this->link[$this->index+6] .= ",$effectID";
+	}
+
 	function OriginalCardID() {
 		return $this->link[$this->index+7] ?? "";
 	}

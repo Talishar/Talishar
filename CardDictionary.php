@@ -328,15 +328,27 @@ function CardSubType($cardID, $uniqueID = -1)
     case "kiss_of_death_red":
       return "Dagger,Attack";
     case "second_salvos": //temporary
+    case "step_overs":
+    case "murder_sprees":
+    case "needlebane_steppers":
       return "Legs";
     case "plague_mask":
     case "mask_of_one_million_eyes":
+    case "bounty_brim":
+    case "needlebane_cowl":
       return "Head";
     case "surgical_gloves":
     case "wristcuff_injectors":
+    case "plaguewardens_wraps":
+    case "needlebane_gauntlets":
       return "Arms";
     case "isolation_vestment":
+    case "scouting_cloak":
+    case "stimtek_vest":
+    case "needlebane_coat":
       return "Chest";
+    case "puredew_panacea":
+      return "Off-Hand";
     default:
       break;
   }

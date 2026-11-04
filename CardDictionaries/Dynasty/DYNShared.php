@@ -547,7 +547,7 @@ function ContractType($cardID, $chosenName="-")
 
 function ContractCompleted($player, $cardID)
 {
-  global $CS_NumContractsCompleted, $EffectContext;
+  global $CS_NumContractsCompleted, $EffectContext, $CurrentTurnEffects;
   WriteLog("Player " . $player . " completed the contract for " . CardLink($cardID, $cardID));
   IncrementClassState($player, $CS_NumContractsCompleted);
   LogContractCompletedStats($player, $cardID);
@@ -557,6 +557,12 @@ function ContractCompleted($player, $cardID)
     $ItemCard = $Items->Card($i, true);
     $itemobject = GetClass($ItemCard->CardID(), $player);
     if ($itemobject != "-") $itemobject->ContractCompleteEffect($ItemCard->Index());
+  }
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    if ($Effect->PlayerID() != $player) continue;
+    $effectobject = GetClass($Effect->EffectID(), $player);
+    if ($effectobject != "-") $effectobject->ContractCompleteEffect($Effect->Index());
   }
   $card = GetClass($cardID, $player);
   if ($card != "-") {

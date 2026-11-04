@@ -3061,3 +3061,123 @@ class sneaking_rot_red extends Card {
     return 6;
   }
 }
+
+class scouting_cloak extends Card {
+  // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
+  // Attack Reaction - Destroy this: Until end of turn, whenever you complete a contract, gain 1{r}.
+  function __construct($controller) {
+    $this->cardID = "scouting_cloak";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function ContractCompleteEffect($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainResources(1, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Scouting Cloak";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Chest";
+  }
+}
+
+class plaguewardens_wraps extends Card {
+  // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
+  // Attack Reaction - Destroy this: Target Assassin attack action card gets "When this hits a hero, give them a disease you control."
+  function __construct($controller) {
+    $this->cardID = "plaguewardens_wraps";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
+  }
+
+  function DiscardStartTurnTrigger($index) {
+    SilverBuyback($this->controller, $index);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "AR";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+    $targets = GetTargetsAssassinAA($this->controller);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = GetTargetsAssassinAA($this->controller);
+    return $targets == "";
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true, $target);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    if ($target != $this->controller)
+      GiveDisease($this->controller);
+  }
+
+  function SpecialName() {
+    return "Plaguewarden's Wraps";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Arms";
+  }
+}
