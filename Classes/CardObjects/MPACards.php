@@ -1876,18 +1876,22 @@ class pinpoint_elimination_blue extends Card {
   }
 }
 
-class easy_prey_blue extends Card {
-  // Target Assassin attack gets +1 power while it's attacking an infected hero. (A hero is infected if they control a disease.)
-  function __construct($controller) {
-    $this->cardID = "easy_prey_blue";
-    $this->controller = $controller;
+class easy_prey extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
   }
 
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-    if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
-      AddCurrentTurnEffect($this->cardID, $this->controller);
-    return "";
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = GetTargetsAssassinAA($this->controller);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = GetTargetsAssassinAA($this->controller);
+    return $targets == "";
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -1896,20 +1900,16 @@ class easy_prey_blue extends Card {
 
   function EffectPowerModifier($param, $attached = false) {
     global $defPlayer;
-    return IsHeroAttackTarget() && IsInfected($defPlayer) ? 1 : 0;
-  }
-
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain;
-    return !ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller);
+    $val = match($this->cardID) {
+      "easy_prey_red" => 3,
+      "easy_prey_yellow" => 2,
+      "easy_prey_blue" => 1,
+    };
+    return IsHeroAttackTarget() && IsInfected($defPlayer) ? $val : 0;
   }
 
   function SpecialName() {
     return "Easy Prey";
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 
   function SpecialCost() {
@@ -1926,6 +1926,45 @@ class easy_prey_blue extends Card {
 
   function SpecialType() {
     return "AR";
+  }
+}
+
+class easy_prey_red extends Card {
+  // Target Assassin attack gets +1 power while it's attacking an infected hero. (A hero is infected if they control a disease.)
+  function __construct($controller) {
+    $this->cardID = "easy_prey_red";
+    $this->controller = $controller;
+    $this->baseCard = new easy_prey($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+}
+
+class easy_prey_yellow extends Card {
+  // Target Assassin attack gets +1 power while it's attacking an infected hero. (A hero is infected if they control a disease.)
+  function __construct($controller) {
+    $this->cardID = "easy_prey_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new easy_prey($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+}
+
+class easy_prey_blue extends Card {
+  // Target Assassin attack gets +1 power while it's attacking an infected hero. (A hero is infected if they control a disease.)
+  function __construct($controller) {
+    $this->cardID = "easy_prey_blue";
+    $this->controller = $controller;
+    $this->baseCard = new easy_prey($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
   }
 }
 
@@ -2515,18 +2554,11 @@ class feverish_strike_blue extends Card {
   }
 }
 
-class festering_rot_yellow extends Card {
-  // Target Assassin attack action card gets go again and "When this hits a hero, create a Bloodrot Pox token under their control."
-  function __construct($controller) {
-    $this->cardID = "festering_rot_yellow";
-    $this->controller = $controller;
-  }
-
+class festering extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-    $attackID = $CombatChain->AttackCard()->ID();
-    if (ClassContains($attackID, "ASSASSIN", $this->controller) && TypeContains($attackID, "AA"))
-      AddEffectToCurrentAttack($this->cardID);
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
     return "";
   }
 
@@ -2545,17 +2577,22 @@ class festering_rot_yellow extends Card {
 	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
 		global $defPlayer;
 		$target = !is_numeric($target) ? $defPlayer : $target;
-		PlayAura("bloodrot_pox", $target, effectSource:$source, effectController:$this->controller, effectAgent:$this->controller);
+    $disease = match($this->cardID) {
+      "festering_rot_yellow" => "bloodrot_pox",
+      "festering_exhaustion_yellow" => "inertia",
+      "festering_weakness_yellow" => "frailty",
+    };
+		PlayAura($disease, $target, effectSource:$source, effectController:$this->controller, effectAgent:$this->controller);
 	}
 
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain;
-    $attackID = $CombatChain->AttackCard()->ID();
-    return !(ClassContains($attackID, "ASSASSIN", $this->controller) && TypeContains($attackID, "AA"));
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = GetTargetsAssassinAA($this->controller);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
   }
 
-  function SpecialName() {
-    return "Festering Rot";
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = GetTargetsAssassinAA($this->controller);
+    return $targets == "";
   }
 
   function SpecialPitch() {
@@ -2579,10 +2616,48 @@ class festering_rot_yellow extends Card {
   }
 }
 
+class festering_rot_yellow extends Card {
+  // Target Assassin attack action card gets go again and "When this hits a hero, create a Bloodrot Pox token under their control."
+  function __construct($controller) {
+    $this->cardID = "festering_rot_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new festering($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Festering Rot";
+  }
+}
+
+class festering_exhaustion_yellow extends Card {
+  // Target Assassin attack action card gets go again and "When this hits a hero, create a Bloodrot Pox token under their control."
+  function __construct($controller) {
+    $this->cardID = "festering_exhaustion_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new festering($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Festering Exhaustion";
+  }
+}
+
+class festering_weakness_yellow extends Card {
+  // Target Assassin attack action card gets go again and "When this hits a hero, create a Bloodrot Pox token under their control."
+  function __construct($controller) {
+    $this->cardID = "festering_weakness_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new festering($this->cardID, $this->controller);
+  }
+
+  function SpecialName() {
+    return "Festering Weakness";
+  }
+}
+
 class decapitate_the_disloyal extends BaseCard {
   // Contract - You are contracted to banish opponents' cards with no class or talent. Whenever you complete this contract, create a Silver token.
   // When this hits a hero, banish the top card of their deck.
-  // TODO: keyword Contract
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return "";
   }
@@ -3872,3 +3947,57 @@ class just_my_type_red extends Card {
     return "DR";
   }
 }
+
+class professional_rivalry_blue extends Card {
+  // Stealth
+  // Contract - You are contracted to hit an Assassin hero. Whenever you complete this contract, create a Silver token.
+  function __construct($controller) {
+    $this->cardID = "professional_rivalry_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function ContractType($chosenName = '') {
+    return "HITASSASSIN";
+  }
+
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
+
+  function SpecialName() {
+    return "Professional Rivalry";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
