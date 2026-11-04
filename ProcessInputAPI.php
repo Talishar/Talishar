@@ -168,7 +168,7 @@ function ValidateLayerReorder($submittedLayers, $layerPieces, $maxLayerID)
   return null;
 }
 
-LogGameHealthInput($playerID, $mode);
+if ($mode != 106 && $mode != 108) LogGameHealthInput($playerID, $mode);
 
 //Now we can process the command
 try {

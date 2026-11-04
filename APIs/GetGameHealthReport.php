@@ -6,7 +6,7 @@ include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once '../includes/ModeratorList.inc.php';
 include_once '../Libraries/GameHealthLog.php';
-include_once '../GeneratedCode/GeneratedFunctions/GeneratedCardName.php';
+include_once '../CardDictionary.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
@@ -46,14 +46,26 @@ function GameHealthRows($conn, $sql, $since)
   return $rows;
 }
 
+function GameHealthCardName($cardID)
+{
+  $name = (string)CardName($cardID);
+  if ($name != "" || !preg_match('/^[a-z0-9]+(_[a-z0-9]+)+$/', $cardID)) return $name;
+  return ucwords(str_replace("_", " ", preg_replace('/_(red|yellow|blue)$/', "", $cardID)));
+}
+
 function GameHealthContextName($context)
 {
-  $name = GeneratedCardName($context);
+  $name = GameHealthCardName($context);
   if ($name != "") return [$name, true];
   if (str_contains($context, "+")) {
-    return [implode(" + ", array_map(fn($cardID) => GeneratedCardName($cardID) ?: $cardID, explode("+", $context))), false];
+    return [implode(" + ", array_map(fn($cardID) => GameHealthCardName($cardID) ?: $cardID, explode("+", $context))), false];
   }
   return [$context, false];
+}
+
+function IsGameHealthReorderSync($phase, $mode)
+{
+  return $mode == 108 || ($mode == 106 && $phase == "OPT");
 }
 
 $conn = GetDBConnection(DBL_GET_GAME_HEALTH_REPORT);
@@ -64,15 +76,16 @@ if (!$conn) {
 }
 
 try {
-  $games = GameHealthRows($conn, "SELECT SUM(games) AS games FROM game_health_games WHERE day >= ?", $since);
+  $games = GameHealthRows($conn, "SELECT SUM(games) AS games, MIN(day) AS firstDay FROM game_health_games WHERE day >= ?", $since);
   $response["games"] = (int)($games[0]["games"] ?? 0);
+  if (!empty($games[0]["firstDay"])) $response["since"] = $games[0]["firstDay"];
 
   $groups = [];
   $misclickRows = GameHealthRows($conn, "SELECT phase, input_mode, context, SUM(inputs) AS inputs, SUM(undos) AS undos,
       SUM(fast_undos) AS fastUndos, SUM(undo_ms) AS undoMs
     FROM game_health_misclicks WHERE day >= ? GROUP BY phase, input_mode, context", $since);
   foreach ($misclickRows as $row) {
-    if (!IsGameHealthPromptPhase($row["phase"])) continue;
+    if (!IsGameHealthPromptPhase($row["phase"]) || IsGameHealthReorderSync($row["phase"], (int)$row["input_mode"])) continue;
     $inputs = (int)$row["inputs"];
     $undos = (int)$row["undos"];
     $fastUndos = (int)$row["fastUndos"];
@@ -95,7 +108,7 @@ try {
     $groups[$key]["undos"] += $undos;
     $groups[$key]["fastUndos"] += $fastUndos;
     $groups[$key]["undoMs"] += (int)$row["undoMs"];
-    if ($undos > 0 && $row["context"] !== "-") {
+    if ($undos > 0 && $row["context"] !== "-" && $row["context"] !== "") {
       $groups[$key]["contexts"][] = ["context" => $row["context"], "inputs" => $inputs, "undos" => $undos, "fastUndos" => $fastUndos];
     }
   }
@@ -124,7 +137,7 @@ try {
   foreach ($cardRows as $row) {
     $card = [
       "cardID" => $row["card_id"],
-      "cardName" => GeneratedCardName($row["card_id"]) ?: $row["card_id"],
+      "cardName" => GameHealthCardName($row["card_id"]) ?: $row["card_id"],
       "games" => (int)$row["games"],
       "fixGames" => (int)$row["fixGames"]
     ];
