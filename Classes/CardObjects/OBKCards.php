@@ -1348,9 +1348,9 @@ class vengeance_never_dies_red extends Card {
     PlayAura("autumns_curse", $defPlayer, effectController:$this->controller, effectSource:$this->cardID);
   }
 
-  // function SpecialName() {
-  //   return "Vengeance Never Dies";
-  // }
+  function SpecialName() {
+    return "Vengeance Never Dies";
+  }
 
   function SpecialPitch() {
     return 1;
@@ -1403,9 +1403,9 @@ class autumns_curse extends Card {
     LoseHealth(1, $defPlayer);
   }
 
-  // function SpecialName() {
-  //   return "Autumn's Curse";
-  // }
+  function SpecialName() {
+    return "Autumn's Curse";
+  }
 
   function SpecialBlock() {
     return -2;
