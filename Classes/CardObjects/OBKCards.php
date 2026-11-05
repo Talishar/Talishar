@@ -1674,3 +1674,295 @@ class rocket_powered_arrow_blue extends Card {
   }
 }
 
+class virulent_cascade extends BaseCard {
+  // Stealth
+  // When this attacks, choose Exertion, Inertia, or Bloodrot Pox at random and create that token under your control.
+  // If you and the defending hero are infected, this gets +1{p} and go again.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Virulent Cascade";
+  // }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class virulent_cascade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_red";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class virulent_cascade_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class virulent_cascade_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_blue";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class change_of_mind_blue extends Card {
+  // Min Specialization (You may only have this in your deck if your hero is Min.)
+  // Flip your hero. If you flip into your △ face, gain {r}{r}. If you flip into your ▽ face, your next attack this turn gets +2{p}.
+  function __construct($controller) {
+    $this->cardID = "change_of_mind_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Change of Mind";
+  // }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+
+  // TODO: keyword Specialization (Min)
+}
+
+class eidetic_endpoint extends BaseCard {
+  // When this is put face-up into your arsenal, turn all cards in all arsenals face-up.
+  // Go again
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Eidetic Endpoint";
+  // }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "RANGER";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class eidetic_endpoint_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_red";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class eidetic_endpoint_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class eidetic_endpoint_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_blue";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class cogwerx_gyrostriders extends Card {
+  // This can't be untapped during your end phase.
+  // Instant - {t}: {u} your hero.
+  // Instant - Destroy this: The next attack action card you play from arsenal this turn gets go again. Activate this only if you haven't activated this card this turn.
+  function __construct($controller) {
+    $this->cardID = "cogwerx_gyrostriders";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Cogwerx Gyrostriders";
+  // }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST,RANGER";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+}
+
+class codex_of_exertion_yellow extends Card {
+  // Each hero puts a card from their arsenal into their hand. Each hero that does, draws a card.
+  // Create a Ponder token under your control and an Exertion token under each opponent's control.
+  // Go again
+  function __construct($controller) {
+    $this->cardID = "codex_of_exertion_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  // function SpecialName() {
+  //   return "Codex of Exertion";
+  // }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,RANGER";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
