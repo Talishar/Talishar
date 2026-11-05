@@ -1471,9 +1471,9 @@ class expense_not_spared_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $CombatChain;
-    if (ClassContains($CombatChain->AttackCard()->ID(), "ASSASSIN", $this->controller))
-      AddCurrentTurnEffect($this->cardID, $this->controller);
+    $obj = MZIndexToObject($this->controller, $target);
+    if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
     return "";
   }
 
@@ -1485,18 +1485,17 @@ class expense_not_spared_yellow extends Card {
     return true;
   }
 
-  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $CombatChain;
-    $attackID = $CombatChain->AttackCard()->ID();
-    if (!ClassContains($attackID, "ASSASSIN", $this->controller)) return true;
-    if (!TypeContains($attackID, "AA")) return true;
-    if (CountItemByName("silver", $this->controller) < 2) return true;
-    return false;
-  }
-
   function PayAdditionalCosts($from, $index = '-') {
     AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
+    $targets = GetTargetsAssassinAA($this->controller);
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    if (CountItemByName("silver", $this->controller) < 2) return true;
+    $targets = GetTargetsAssassinAA($this->controller);
+    return $targets == "";
   }
 }
 
