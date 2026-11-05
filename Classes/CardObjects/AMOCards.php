@@ -61,68 +61,6 @@ class viral_diffusion_red extends Card {
   }
 }
 
-class pick_your_poison_yellow extends Card {
-  // Each opposing hero chooses Frailty, Inertia, or Bloodrot Pox. Create the 2 tokens they didn't choose under their control.
-  // Go again
-  function __construct($controller) {
-    $this->cardID = "pick_your_poison_yellow";
-    $this->controller = $controller;
-  }
-
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    global $Diseases;
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    $diseaseChoices = [];
-    foreach ($Diseases as $disease)
-      $diseaseChoices[] = "CARDID-$disease";
-    $diseaseChoices = implode(",", $diseaseChoices);
-    Await($otherPlayer, "ChooseMultiZone", indices:$diseaseChoices, context:"Choose a disease to NOT get", subsequent:0);
-    Await($this->controller, $this->cardID, final:true);
-    return "";
-  }
-
-  function SpecificLogic() {
-    global $dqVars, $Diseases;
-    $choice = $dqVars["MZIndex"] ?? "-";
-    $chosenDisease = explode("-", $choice)[1] ?? "-";
-    $otherPlayer = $this->controller == 1 ? 2 : 1;
-    if ($chosenDisease != "-") {
-      foreach($Diseases as $disease) {
-        if ($disease != $chosenDisease)
-          PlayAura($disease, $otherPlayer, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
-      }
-    }
-  }
-
-  function SpecialName() {
-    return "Pick Your Poison";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function HasGoAgain($from) {
-    return true;
-  }
-}
-
 class second_salvos extends Card {
   // While this is in your graveyard, at the start of your turn, you may destroy 2 Silver you control. If you do, equip this.
   // Instant - Destroy this: untap your hero.
@@ -154,26 +92,6 @@ class second_salvos extends Card {
   function DefaultActiveState() {
     return 1;
   }
-
-  function SpecialName() {
-    return "Second Salvos";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Legs";
-  }
 }
 
 class languid_pace extends BaseCard {
@@ -192,73 +110,13 @@ class languid_pace extends BaseCard {
     foreach ([$this->controller, $otherPlayer] as $player)
       PlayAura("inertia", $player, effectSource:$this->cardID, effectAgent:$this->controller, effectController:$this->controller);
   }
-
-  function SpecialName() {
-    return "Languid Pace";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
-
-// class languid_pace_red extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "languid_pace_red";
-//     $this->controller = $controller;
-//     $this->baseCard = new languid_pace($this->cardID, $this->controller);
-//   }
-
-//   function SpecialPitch() {
-//     return 1;
-//   }
-
-//   function SpecialPower() {
-//     return 5;
-//   }
-// }
-
-// class languid_pace_yellow extends Card {
-//   function __construct($controller) {
-//     $this->cardID = "languid_pace_yellow";
-//     $this->controller = $controller;
-//     $this->baseCard = new languid_pace($this->cardID, $this->controller);
-//   }
-
-//   function SpecialPitch() {
-//     return 2;
-//   }
-
-//   function SpecialPower() {
-//     return 4;
-//   }
-// }
 
 class languid_pace_blue extends Card {
   function __construct($controller) {
     $this->cardID = "languid_pace_blue";
     $this->controller = $controller;
     $this->baseCard = new languid_pace($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 3;
   }
 }
 
@@ -315,26 +173,6 @@ class surgical_gloves extends Card {
   function SpecialName() {
     return "Surgical Gloves";
   }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
-
-  function ArcaneBarrier($index) {
-    return 1;
-  }
 }
 
 class isolation_vestment extends Card {
@@ -372,26 +210,6 @@ class isolation_vestment extends Card {
     if (!TypeContains($attackTarget->CardID(), "C")) return 0;
     return IsInfected($defPlayer) ? -1 : 0;
   }
-
-  function SpecialName() {
-    return "Isolation Vestment";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
-  }
 }
 
 
@@ -419,25 +237,5 @@ class plague_mask extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Destroy();
-  }
-
-  function SpecialName() {
-    return "Plague Mask";
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Head";
   }
 }

@@ -2851,3 +2851,37 @@ class funded_research_blue extends Card {
     return "";
   }
 }
+
+class pick_your_poison_yellow extends Card {
+  // Each opposing hero chooses Frailty, Inertia, or Bloodrot Pox. Create the 2 tokens they didn't choose under their control.
+  // Go again
+  function __construct($controller) {
+    $this->cardID = "pick_your_poison_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $Diseases;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $diseaseChoices = [];
+    foreach ($Diseases as $disease)
+      $diseaseChoices[] = "CARDID-$disease";
+    $diseaseChoices = implode(",", $diseaseChoices);
+    Await($otherPlayer, "ChooseMultiZone", indices:$diseaseChoices, context:"Choose a disease to NOT get", subsequent:0);
+    Await($this->controller, $this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $Diseases;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $chosenDisease = explode("-", $choice)[1] ?? "-";
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if ($chosenDisease != "-") {
+      foreach($Diseases as $disease) {
+        if ($disease != $chosenDisease)
+          PlayAura($disease, $otherPlayer, effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller);
+      }
+    }
+  }
+}
