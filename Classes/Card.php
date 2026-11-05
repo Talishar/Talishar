@@ -983,6 +983,12 @@ class Card {
     return false;
 	}
 
+  function PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentGetHitEffect"))
+      return $this->baseCard->PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check);
+    return false;
+	}
+
   function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "CurrentEffectOnBlockEffect"))
       return $this->baseCard->CurrentEffectOnBlockEffect($chainInd, $from, $start, $effectIndex);

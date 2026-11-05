@@ -1327,3 +1327,100 @@ class mortimers_lab extends Card {
     }
   }
 }
+
+class vengeance_never_dies_red extends Card {
+  // When this hits a hero, create an Autumn's Curse token under their control.
+  function __construct($controller) {
+    $this->cardID = "vengeance_never_dies_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    PlayAura("autumns_curse", $defPlayer, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  // function SpecialName() {
+  //   return "Vengeance Never Dies";
+  // }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "NINJA";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class autumns_curse extends Card {
+  // Whenever an attack with Vengeance in its name hits you, lose 1{h}.
+  function __construct($controller) {
+    $this->cardID = "autumns_curse";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    global $mainPlayer;
+    if (str_contains(NameOverride($damageSource, $mainPlayer), "Vengeance")) {
+      if (!$check)
+        AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    LoseHealth(1, $defPlayer);
+  }
+
+  // function SpecialName() {
+  //   return "Autumn's Curse";
+  // }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "NINJA";
+  }
+
+  function SpecialType() {
+    return "T";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+}
+

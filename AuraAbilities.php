@@ -1660,6 +1660,15 @@ function AuraHitEffects($attackID, $check = false): bool
     }
     if ($remove == 1) DestroyAura($mainPlayer, $i);
   }
+  $defAuras = new Auras($defPlayer);
+  for ($i = $defAuras->NumAuras() - 1; $i >= 0; --$i) {
+    $AuraCard = $defAuras->Card($i, true);
+    $card = GetClass($AuraCard->CardID(), $defPlayer);
+    if ($card != "-") {
+      $foundTrigger = $card->PermanentGetHitEffect($i, $attackID, $defPlayer, false, $check);
+      if ($foundTrigger && $check) return true;
+    }
+  }
   return false;
 }
 
