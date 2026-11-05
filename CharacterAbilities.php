@@ -1710,7 +1710,7 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         break;
       case "arakni_huntsman":
       case "arakni":
-        if (ContractType($cardID) != "") AddLayer("TRIGGER", $currentPlayer, $characterID);
+        if (ContractType($cardID, player:$currentPlayer) != "") AddLayer("TRIGGER", $currentPlayer, $characterID);
         break;
       case "riptide_lurker_of_the_deep":
       case "riptide":

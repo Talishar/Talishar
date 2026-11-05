@@ -2754,7 +2754,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "cut_to_the_chase_red":
     case "cut_to_the_chase_yellow":
     case "cut_to_the_chase_blue":
-      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "ASSASSIN", $mainPlayer) || ContractType($attackID) == "";
+      return !$CombatChain->HasCurrentLink() || !ClassContains($attackID, "ASSASSIN", $mainPlayer) || ContractType($attackID, player:$mainPlayer) == "";
     case "point_the_tip_red":
     case "point_the_tip_yellow":
     case "point_the_tip_blue":

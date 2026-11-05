@@ -275,7 +275,7 @@ function HNTCombatEffectActive($cardID, $attackID, $flicked = false): bool
     "retrace_the_past_blue" => true,
     "war_cry_of_themis_yellow" => SubtypeContains($attackID, "Angel", $mainPlayer),
     "war_cry_of_bellona_yellow" => CardNameContains($attackID, "Raydn", $mainPlayer, true),
-    "the_hand_that_pulls_the_strings" => ContractType($attackID) != "",
+    "the_hand_that_pulls_the_strings" => ContractType($attackID, player:$mainPlayer) != "",
     default => false,
   };
 }

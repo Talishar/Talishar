@@ -50,7 +50,7 @@ function GetTargetsAssassinAA($player, $contract=false, $stealth=false) {
     foreach($attacks as $attack) {
 		$obj = MZIndexToObject($player, $attack);
 		$attackID = $obj->ID();
-		if ($contract && ContractType($attackID) == "") continue;
+		if ($contract && ContractType($attackID, player:$player) == "") continue;
 		if ($stealth && !HasStealth($attackID)) continue;
 		if (TypeContains($attackID, "AA") && ClassContains($attackID, "ASSASSIN", $player))
 			$targets[] = $attack;

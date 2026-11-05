@@ -524,9 +524,9 @@ function HasSurge($cardID)
   return GeneratedHasSurge($cardID);
 }
 
-function ContractType($cardID, $chosenName="-")
+function ContractType($cardID, $chosenName="-", $player=1)
 {
-  $card = GetClass($cardID, 1);
+  $card = GetClass($cardID, $player);
   if ($card != "-") return $card->ContractType($chosenName);
   switch($cardID)
   {
@@ -601,11 +601,11 @@ function CheckInfectContracts($player, $aura, $number) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
     if ($chainCard->PlayerID() != $player) continue;
     if ($i > 0 && !TypeContains($chainCard->ID(), "DR")) continue; // only dreacts are active while defending
-    $contractType = ContractType($chainCard->ID());
+    $contractType = ContractType($chainCard->ID(), player:$player);
     if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainCard->ID());
     if ($i == 0) {
       $extraText = GetHorrorsBuff();
-      $contractType = ContractType($extraText);
+      $contractType = ContractType($extraText, player:$player);
       if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $extraText);
     }
   }
@@ -617,11 +617,11 @@ function CheckInfectContracts($player, $aura, $number) {
       if($chainLinks[$i][$j+2] == 0) continue;
       if($chainLinks[$i][$j+1] != $player) continue;
       if ($j > 0 && !TypeContains($chainLinks[$i][$j], "DR")) continue; // only dreacts are active while defending
-      $contractType = ContractType($chainLinks[$i][$j]);
+      $contractType = ContractType($chainLinks[$i][$j], player:$player);
       if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $chainLinks[$i][$j]);
       if ($j == 0) {
         $extraText = GetHorrorsBuff($i);
-        $contractType = ContractType($extraText);
+        $contractType = ContractType($extraText, $player);
         if($contractType != "" && CheckInfectContract($contractType, $aura)) ContractCompleted($player, $extraText);
       }
     }
@@ -639,11 +639,11 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
   $numActiveLink = $CombatChain->NumCardsActiveLink();
   for($i = 0; $i < $numActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
-    $contractType = ContractType($chainCard->ID());
+    $contractType = ContractType($chainCard->ID(), player:$mainPlayer);
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
     if ($i == 0) {
       $extraText = GetHorrorsBuff();
-      $contractType = ContractType($extraText);
+      $contractType = ContractType($extraText, player:$mainPlayer);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
     }
   }
@@ -653,11 +653,11 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     $linkCount = count($chainLinks[$i]);
     for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
       if($chainLinks[$i][$j+2] == 0) continue;
-      $contractType = ContractType($chainLinks[$i][$j]);
+      $contractType = ContractType($chainLinks[$i][$j], player:$mainPlayer);
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
       if ($j == 0) {
         $extraText = GetHorrorsBuff($i);
-        $contractType = ContractType($extraText);
+        $contractType = ContractType($extraText, player:$mainPlayer);
         if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $extraText);
       }
     }
@@ -690,7 +690,7 @@ function CheckContracts($banishedBy, $cardBanished)
       if (str_contains($buff, "NAMEDCARD"))
         $chosenName = explode("|", $buff, 2)[1] ?? "-";
     }
-    $contractType = ContractType($chainCard->ID(), $chosenName);
+    $contractType = ContractType($chainCard->ID(), $chosenName, $banishedBy);
     if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   $chainLinksCount = count($chainLinks);
@@ -712,7 +712,7 @@ function CheckContracts($banishedBy, $cardBanished)
         if (str_contains($buff, "NAMEDCARD"))
           $chosenName = explode("|", $buff, 2)[1] ?? "-";
       }
-      $contractType = ContractType($chainLinks[$i][$j], $chosenName);
+      $contractType = ContractType($chainLinks[$i][$j], $chosenName, $banishedBy);
       if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }
   }
