@@ -4316,3 +4316,98 @@ class self_determination_blue extends Card {
     return "AA";
   }
 }
+
+class emergency_services_blue extends Card {
+  // Cure any number of diseases with different names an opponent controls. (Destroy the diseases.)
+  // Create twice that many Silver tokens.
+  function __construct($controller) {
+    $this->cardID = "emergency_services_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_AdditionalCosts;
+    $otherPlayer = OtherPlayer($this->controller);
+    $numDiseases = SearchCount(SearchMultizone($this->controller, "THEIRAURAS:subtype=Disease"));
+    for ($i = 0; $i < $numDiseases; ++$i) {
+      CureThem($this->controller, may:true);
+      Await($this->controller, "IncrementClassState", piece:$CS_AdditionalCosts);
+    }
+    Await($this->controller, $this->cardID, subsequent:0, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $CS_AdditionalCosts;
+    $num = GetClassState($this->controller, $CS_AdditionalCosts);
+    if (!is_numeric($num)) $num = 0;
+    PutItemIntoPlayForPlayer("silver", $this->controller, number:2 * $num, effectSource:$this->cardID);
+    SetClassState($this->controller, $CS_AdditionalCosts, "-");
+  }
+
+  function SpecialName() {
+    return "Emergency Services";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+
+class funded_research_blue extends Card {
+  // If you've completed a contract this turn, create a Frailty, Inertia, and Bloodrot Pox token under each opposing hero's control.
+  function __construct($controller) {
+    $this->cardID = "funded_research_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumContractsCompleted, $Diseases;
+    $otherPlayer = OtherPlayer($this->controller);
+    if(GetClassState($this->controller, $CS_NumContractsCompleted) > 0) {
+      foreach($Diseases as $disease)
+        PlayAura($disease, $otherPlayer, effectController:$this->controller);
+    }
+    return "";
+  }
+
+  function SpecialName() {
+    return "Funded Research";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+}
