@@ -2,6 +2,18 @@
 function GeneratedHasStealth($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"concoct_agony_yellow" => true,
+"painful_choice_red" => true,
+"spike_slasher_red" => true,
+"desperate_drive_red" => true,
+"desperate_drive_yellow" => true,
+"desperate_drive_blue" => true,
+"professional_rivalry_blue" => true,
+"repeat_reconnaissance_red" => true,
+"repeat_reconnaissance_yellow" => true,
+"repeat_reconnaissance_blue" => true,
+"viral_sampling_red" => true,
+"viral_sampling_yellow" => true,
 "art_of_desire_body_red" => true,
 "art_of_desire_mind_blue" => true,
 "art_of_desire_soul_yellow" => true,
@@ -91,6 +103,7 @@ return match($cardID) {
 "under_the_trap_door_blue" => true,
 "undercover_acquisition_red" => true,
 "unmake_the_underlings_blue" => true,
+"viral_sampling_blue" => true,
 "whittle_from_bone_red" => true,
 "whittle_from_bone_yellow" => true,
 "whittle_from_bone_blue" => true,

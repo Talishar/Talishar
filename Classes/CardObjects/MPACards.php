@@ -100,10 +100,6 @@ class dr_mortimer extends Card {
     $this->baseCard->PayAdditionalCosts($from, $index);
   }
 
-  function SpecialName() {
-    return "Dr. Mortimer";
-  }
-
   function DefaultActiveState() {
     return 1;
   }
@@ -800,34 +796,6 @@ class sick_intent_red extends Card {
   function ContractCompleted() {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
-
-  function SpecialName() {
-    return "Sick Intent";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class concoct_agony_yellow extends Card {
@@ -855,34 +823,6 @@ class concoct_agony_yellow extends Card {
     $Arsenal->BanishAll($this->controller);
   }
 
-  function SpecialName() {
-    return "Concoct Agony";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
-
   function HasStealth() {
     return true;
   }
@@ -903,30 +843,6 @@ class sickening_exhaustion_blue extends Card {
       }
     }
     return "";
-  }
-
-  function SpecialName() {
-    return "Sickening Exhaustion";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
   }
 }
 
@@ -953,30 +869,6 @@ class sickening_rot_blue extends Card {
     }
     return "";
   }
-
-  function SpecialName() {
-    return "Sickening Rot";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class sickening_weakness_blue extends Card {
@@ -1001,30 +893,6 @@ class sickening_weakness_blue extends Card {
   function EffectBlockModifier($index, $from, $effectInd) {
     return -1;
   }
-
-  function SpecialName() {
-    return "Sickening Weakness";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class spike_slasher_red extends Card {
@@ -1048,34 +916,6 @@ class spike_slasher_red extends Card {
 
   function CurrentEffectCostModifier($cardID, $from, &$remove, $index, $playIndex) {
     return TypeContains($cardID, "AR") && !IsActivated($cardID, $from) ? -1 : 0;
-  }
-
-  function SpecialName() {
-    return "Spike Slasher";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
   }
 
   function HasStealth() {
@@ -1127,34 +967,6 @@ class painful_choice_red extends Card {
     return 4;
   }
 
-  function SpecialName() {
-    return "Painful Choice";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
-
   function HasStealth() {
     return true;
   }
@@ -1168,30 +980,6 @@ class patrons_lockbox extends BaseCard {
   function ContractCompleteEffect($index) {
     $Item = new ItemCard($index, $this->controller);
     AddLayer("TRIGGER", $this->controller, $this->cardID, $Item->UniqueID());
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "A";
-  }
-
-  function SpecialSubType() {
-    return "Item";
   }
 
   function HasGoAgain($from) {
@@ -1216,10 +1004,6 @@ class patrons_lockbox_valuables_blue extends Card {
       PutItemIntoPlayForPlayer("silver", $this->controller, number:2, effectSource:$this->cardID);
     }
   }
-
-  function SpecialName() {
-    return "Patron's Lockbox: Valuables";
-  }
 }
 
 class patrons_lockbox_carriers_blue extends Card {
@@ -1238,10 +1022,6 @@ class patrons_lockbox_carriers_blue extends Card {
       $Item->Destroy();
       DeathTouch($this->controller, $this->cardID);
     }
-  }
-
-  function SpecialName() {
-    return "Patron's Lockbox: Carriers";
   }
 }
 
@@ -1270,10 +1050,6 @@ class patrons_lockbox_serums_blue extends Card {
   function CurrentEffectGrantsGoAgain($param) {
     return true;
   }
-
-  function SpecialName() {
-    return "Patron's Lockbox: Serums";
-  }
 }
 
 class mask_of_one_million_eyes extends Card {
@@ -1300,26 +1076,6 @@ class mask_of_one_million_eyes extends Card {
   function PayAdditionalCosts($from, $index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Destroy();
-  }
-
-  function SpecialName() {
-    return "Mask of One Million Eyes";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Head";
   }
 }
 
@@ -1353,26 +1109,6 @@ class break_down_the_bloodline extends BaseCard {
     if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); return; }
     $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
   }
-
-  function SpecialName() {
-    return "Break Down the Bloodline";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class break_down_the_bloodline_red extends Card {
@@ -1380,14 +1116,6 @@ class break_down_the_bloodline_red extends Card {
     $this->cardID = "break_down_the_bloodline_red";
     $this->controller = $controller;
     $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -1397,14 +1125,6 @@ class break_down_the_bloodline_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class break_down_the_bloodline_blue extends Card {
@@ -1412,14 +1132,6 @@ class break_down_the_bloodline_blue extends Card {
     $this->cardID = "break_down_the_bloodline_blue";
     $this->controller = $controller;
     $this->baseCard = new break_down_the_bloodline($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -1446,26 +1158,6 @@ class triple_blind extends BaseCard {
 		Await($defPlayer, "ChooseMultiZone", "cardID", indices:$indices, context:$context, subsequent:0);
 		Await($defPlayer, "PlayAura", effectController:$this->controller, effectSource:$this->cardID, effectAgent:$this->controller, final:true);
   }
-
-  function SpecialName() {
-    return "Triple Blind";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class triple_blind_red extends Card {
@@ -1473,14 +1165,6 @@ class triple_blind_red extends Card {
     $this->cardID = "triple_blind_red";
     $this->controller = $controller;
     $this->baseCard = new triple_blind($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
@@ -1490,14 +1174,6 @@ class triple_blind_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new triple_blind($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
 }
 
 class triple_blind_blue extends Card {
@@ -1505,14 +1181,6 @@ class triple_blind_blue extends Card {
     $this->cardID = "triple_blind_blue";
     $this->controller = $controller;
     $this->baseCard = new triple_blind($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 3;
   }
 }
 
@@ -1540,22 +1208,6 @@ class spawn_disease extends BaseCard {
     if ($disease != "-")
       PlayAura($disease, $defPlayer, effectAgent:$this->controller);
   }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class spawn_inertia_red extends Card {
@@ -1563,18 +1215,6 @@ class spawn_inertia_red extends Card {
     $this->cardID = "spawn_inertia_red";
     $this->controller = $controller;
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Spawn Inertia";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
@@ -1584,18 +1224,6 @@ class spawn_frailty_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Spawn Frailty";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class spawn_bloodrot_red extends Card {
@@ -1603,18 +1231,6 @@ class spawn_bloodrot_red extends Card {
     $this->cardID = "spawn_bloodrot_red";
     $this->controller = $controller;
     $this->baseCard = new spawn_disease($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Spawn Bloodrot";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
@@ -1630,26 +1246,6 @@ class desperate_drive extends BaseCard {
     return IsInfected($this->controller);
   }
 
-  function SpecialName() {
-    return "Desperate Drive";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
-
   function HasStealth() {
     return true;
   }
@@ -1661,14 +1257,6 @@ class desperate_drive_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new desperate_drive($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class desperate_drive_yellow extends Card {
@@ -1677,14 +1265,6 @@ class desperate_drive_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new desperate_drive($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
 }
 
 class desperate_drive_blue extends Card {
@@ -1692,14 +1272,6 @@ class desperate_drive_blue extends Card {
     $this->cardID = "desperate_drive_blue";
     $this->controller = $controller;
     $this->baseCard = new desperate_drive($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 1;
   }
 }
 
@@ -1761,26 +1333,6 @@ class free_of_burdens extends BaseCard {
       }
     }
   }
-
-  function SpecialName() {
-    return "Free of Burdens";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "GENERIC";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class free_of_burdens_red extends Card {
@@ -1788,14 +1340,6 @@ class free_of_burdens_red extends Card {
     $this->cardID = "free_of_burdens_red";
     $this->controller = $controller;
     $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -1805,14 +1349,6 @@ class free_of_burdens_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class free_of_burdens_blue extends Card {
@@ -1820,14 +1356,6 @@ class free_of_burdens_blue extends Card {
     $this->cardID = "free_of_burdens_blue";
     $this->controller = $controller;
     $this->baseCard = new free_of_burdens($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -1859,30 +1387,6 @@ class pinpoint_elimination_blue extends Card {
         }
       }
     }
-  }
-
-  function SpecialName() {
-    return "Pinpoint Elimination";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
   }
 }
 
@@ -1929,26 +1433,6 @@ class easy_prey extends BaseCard {
     };
     return IsHeroAttackTarget() && IsInfected($defPlayer) ? $val : 0;
   }
-
-  function SpecialName() {
-    return "Easy Prey";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class easy_prey_red extends Card {
@@ -1957,10 +1441,6 @@ class easy_prey_red extends Card {
     $this->cardID = "easy_prey_red";
     $this->controller = $controller;
     $this->baseCard = new easy_prey($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
   }
 }
 
@@ -1971,10 +1451,6 @@ class easy_prey_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new easy_prey($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class easy_prey_blue extends Card {
@@ -1983,10 +1459,6 @@ class easy_prey_blue extends Card {
     $this->cardID = "easy_prey_blue";
     $this->controller = $controller;
     $this->baseCard = new easy_prey($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
   }
 }
 
@@ -2026,30 +1498,6 @@ class expense_not_spared_yellow extends Card {
     AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-2", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
   }
-
-  function SpecialName() {
-    return "Expense Not Spared";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class repeat_reconnaissance extends BaseCard {
@@ -2084,26 +1532,6 @@ class repeat_reconnaissance extends BaseCard {
     }
   }
 
-  function SpecialName() {
-    return "Repeat Reconnaissance";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
-
   function HasStealth() {
     return true;
   }
@@ -2115,14 +1543,6 @@ class repeat_reconnaissance_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class repeat_reconnaissance_yellow extends Card {
@@ -2131,14 +1551,6 @@ class repeat_reconnaissance_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
 }
 
 class repeat_reconnaissance_blue extends Card {
@@ -2146,14 +1558,6 @@ class repeat_reconnaissance_blue extends Card {
     $this->cardID = "repeat_reconnaissance_blue";
     $this->controller = $controller;
     $this->baseCard = new repeat_reconnaissance($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 1;
   }
 }
 
@@ -2180,26 +1584,6 @@ class the_spiders_cut extends BaseCard {
     AddDecisionQueue("PASSPARAMETER", $this->controller, "silver-1", 1);
     AddDecisionQueue("FINDANDDESTROYITEM", $this->controller, "<-", 1);
   }
-
-  function SpecialName() {
-    return "The Spider's Cut";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class the_spiders_cut_red extends Card {
@@ -2207,14 +1591,6 @@ class the_spiders_cut_red extends Card {
     $this->cardID = "the_spiders_cut_red";
     $this->controller = $controller;
     $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -2224,14 +1600,6 @@ class the_spiders_cut_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class the_spiders_cut_blue extends Card {
@@ -2239,14 +1607,6 @@ class the_spiders_cut_blue extends Card {
     $this->cardID = "the_spiders_cut_blue";
     $this->controller = $controller;
     $this->baseCard = new the_spiders_cut($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -2301,26 +1661,6 @@ class wristcuff_injectors extends Card {
     $Hero = new CharacterCard(0, $this->controller);
     return !str_contains(NameOverride($Hero->CardID(), $this->controller), "Mortimer"); 
   }
-
-  function SpecialName() {
-    return "Wristcuff Injectors";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
 }
 
 class slice_the_sickly extends BaseCard {
@@ -2347,26 +1687,6 @@ class slice_the_sickly extends BaseCard {
   function ContractCompleted() {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
-
-  function SpecialName() {
-    return "Slice the Sickly";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class slice_the_sickly_red extends Card {
@@ -2374,14 +1694,6 @@ class slice_the_sickly_red extends Card {
     $this->cardID = "slice_the_sickly_red";
     $this->controller = $controller;
     $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -2391,14 +1703,6 @@ class slice_the_sickly_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class slice_the_sickly_blue extends Card {
@@ -2406,14 +1710,6 @@ class slice_the_sickly_blue extends Card {
     $this->cardID = "slice_the_sickly_blue";
     $this->controller = $controller;
     $this->baseCard = new slice_the_sickly($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 2;
   }
 }
 
@@ -2427,26 +1723,6 @@ class in_the_hot_zone extends BaseCard {
   function ProcessAttackTrigger($target, $uniqueID) {
     PlayAura("bloodrot_pox", $this->controller);
   }
-
-  function SpecialName() {
-    return "In the Hot Zone";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class in_the_hot_zone_red extends Card {
@@ -2454,14 +1730,6 @@ class in_the_hot_zone_red extends Card {
     $this->cardID = "in_the_hot_zone_red";
     $this->controller = $controller;
     $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -2471,14 +1739,6 @@ class in_the_hot_zone_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class in_the_hot_zone_blue extends Card {
@@ -2486,14 +1746,6 @@ class in_the_hot_zone_blue extends Card {
     $this->cardID = "in_the_hot_zone_blue";
     $this->controller = $controller;
     $this->baseCard = new in_the_hot_zone($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -2506,26 +1758,6 @@ class feverish_strike extends BaseCard {
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
     return IsInfected($this->controller) ? 1 : 0;
   }
-
-  function SpecialName() {
-    return "Feverish Strike";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class feverish_strike_red extends Card {
@@ -2533,14 +1765,6 @@ class feverish_strike_red extends Card {
     $this->cardID = "feverish_strike_red";
     $this->controller = $controller;
     $this->baseCard = new feverish_strike($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -2550,14 +1774,6 @@ class feverish_strike_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new feverish_strike($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class feverish_strike_blue extends Card {
@@ -2565,14 +1781,6 @@ class feverish_strike_blue extends Card {
     $this->cardID = "feverish_strike_blue";
     $this->controller = $controller;
     $this->baseCard = new feverish_strike($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -2616,26 +1824,6 @@ class festering extends BaseCard {
     $targets = GetTargetsAssassinAA($this->controller);
     return $targets == "";
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 2;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class festering_rot_yellow extends Card {
@@ -2644,10 +1832,6 @@ class festering_rot_yellow extends Card {
     $this->cardID = "festering_rot_yellow";
     $this->controller = $controller;
     $this->baseCard = new festering($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Festering Rot";
   }
 }
 
@@ -2658,10 +1842,6 @@ class festering_exhaustion_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new festering($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Festering Exhaustion";
-  }
 }
 
 class festering_weakness_yellow extends Card {
@@ -2670,10 +1850,6 @@ class festering_weakness_yellow extends Card {
     $this->cardID = "festering_weakness_yellow";
     $this->controller = $controller;
     $this->baseCard = new festering($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Festering Weakness";
   }
 }
 
@@ -2701,26 +1877,6 @@ class decapitate_the_disloyal extends BaseCard {
     $deck = new Deck($defPlayer);
     $deck->BanishTop(banisher:$this->controller);
   }
-
-  function SpecialName() {
-    return "Decapitate the Disloyal";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class decapitate_the_disloyal_red extends Card {
@@ -2728,14 +1884,6 @@ class decapitate_the_disloyal_red extends Card {
     $this->cardID = "decapitate_the_disloyal_red";
     $this->controller = $controller;
     $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -2745,14 +1893,6 @@ class decapitate_the_disloyal_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class decapitate_the_disloyal_blue extends Card {
@@ -2760,14 +1900,6 @@ class decapitate_the_disloyal_blue extends Card {
     $this->cardID = "decapitate_the_disloyal_blue";
     $this->controller = $controller;
     $this->baseCard = new decapitate_the_disloyal($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -2795,26 +1927,6 @@ class eviscerate_the_enervated extends BaseCard {
     $Deck = new Deck($defPlayer);
     $Deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
   }
-
-  function SpecialName() {
-    return "Eviscerate the Enervated";
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class eviscerate_the_enervated_red extends Card {
@@ -2822,14 +1934,6 @@ class eviscerate_the_enervated_red extends Card {
     $this->cardID = "eviscerate_the_enervated_red";
     $this->controller = $controller;
     $this->baseCard = new eviscerate_the_enervated($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
@@ -2839,14 +1943,6 @@ class eviscerate_the_enervated_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new eviscerate_the_enervated($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
 }
 
 class eviscerate_the_enervated_blue extends Card {
@@ -2854,14 +1950,6 @@ class eviscerate_the_enervated_blue extends Card {
     $this->cardID = "eviscerate_the_enervated_blue";
     $this->controller = $controller;
     $this->baseCard = new eviscerate_the_enervated($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 3;
   }
 }
 
@@ -2894,22 +1982,6 @@ class act_on_intel extends BaseCard {
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
-  }
 }
 
 class act_on_intel_whereabouts_red extends Card {
@@ -2926,14 +1998,6 @@ class act_on_intel_whereabouts_red extends Card {
     $context = "Choose a card to be banished";
     Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
     Await($defPlayer, "MultiZoneIndices", search:"MYHAND", prepend:true, subsequent:0);
-  }
-
-  function SpecialName() {
-    return "Act on Intel: Whereabouts";
-  }
-
-  function SpecialPitch() {
-    return 1;
   }
 }
 
@@ -2952,14 +2016,6 @@ class act_on_intel_plans_yellow extends Card {
     Await($defPlayer, "ChooseMultiZone", context:$context, prepend:true);
     Await($defPlayer, "MultiZoneIndices", search:"MYARS", prepend:true, subsequent:0);
   }
-
-  function SpecialName() {
-    return "Act on Intel: Plans";
-  }
-
-  function SpecialPitch() {
-    return 2;
-  }
 }
 
 class act_on_intel_haunts_blue extends Card {
@@ -2975,14 +2031,6 @@ class act_on_intel_haunts_blue extends Card {
     $deck = new Deck($defPlayer);
     $deck->BanishTop(banisher:$this->controller);
   }
-
-  function SpecialName() {
-    return "Act on Intel: Haunts";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
 }
 
 class wound_poke extends BaseCard {
@@ -2994,22 +2042,6 @@ class wound_poke extends BaseCard {
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
     if (NumDaggerHits() == 0) return false;
     return HeroHitTrigger($this->controller, $this->cardID, $check);
-  }
-
-  function SpecialCost() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
   }
 }
 
@@ -3023,18 +2055,6 @@ class wound_extraction_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     DeathTouch($this->controller, $this->cardID);
   }
-
-  function SpecialName() {
-    return "Wound Extraction";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class wound_excavation_red extends Card {
@@ -3047,18 +2067,6 @@ class wound_excavation_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $defPlayer;
     LoseHealth(1, $defPlayer);
-  }
-
-  function SpecialName() {
-    return "Wound Excavation";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
   }
 }
 
@@ -3075,18 +2083,6 @@ class wound_excision_red extends Card {
     $Deck->BanishTop(banisher:$this->controller);
     $Deck->BanishTop(banisher:$this->controller);
   }
-
-  function SpecialName() {
-    return "Wound Excision";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class escaped_subject extends BaseCard {
@@ -3099,26 +2095,6 @@ class escaped_subject extends BaseCard {
     global $defPlayer;
     return IsInfected($defPlayer);
   }
-
-  function SpecialName() {
-    return "Escaped Subject";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class escaped_subject_red extends Card {
@@ -3126,14 +2102,6 @@ class escaped_subject_red extends Card {
     $this->cardID = "escaped_subject_red";
     $this->controller = $controller;
     $this->baseCard = new escaped_subject($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -3143,14 +2111,6 @@ class escaped_subject_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new escaped_subject($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class escaped_subject_blue extends Card {
@@ -3158,14 +2118,6 @@ class escaped_subject_blue extends Card {
     $this->cardID = "escaped_subject_blue";
     $this->controller = $controller;
     $this->baseCard = new escaped_subject($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 2;
   }
 }
 
@@ -3185,26 +2137,6 @@ class viral_sampling extends BaseCard {
     PutItemIntoPlayForPlayer("silver", $this->controller);
   }
 
-  function SpecialName() {
-    return "Viral Sampling";
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
-
   function HasStealth() {
     return true;
   }
@@ -3216,14 +2148,6 @@ class viral_sampling_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new viral_sampling($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 3;
-  }
 }
 
 class viral_sampling_yellow extends Card {
@@ -3232,14 +2156,6 @@ class viral_sampling_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new viral_sampling($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 2;
-  }
 }
 
 class viral_sampling_blue extends Card {
@@ -3247,14 +2163,6 @@ class viral_sampling_blue extends Card {
     $this->cardID = "viral_sampling_blue";
     $this->controller = $controller;
     $this->baseCard = new viral_sampling($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 1;
   }
 }
 
@@ -3278,22 +2186,6 @@ class sneaking_disease extends BaseCard {
     };
     PlayAura($disease, $otherPlayer, effectSource:$this->cardID, effectController:$this->controller);
   }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class sneaking_rot_red extends Card {
@@ -3301,18 +2193,6 @@ class sneaking_rot_red extends Card {
     $this->cardID = "sneaking_rot_red";
     $this->controller = $controller;
     $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
-  }
-  
-  function SpecialName() {
-    return "Sneaking Rot";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -3322,18 +2202,6 @@ class sneaking_exhaustion_red extends Card {
     $this->controller = $controller;
     $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Sneaking Exhaustion";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
 }
 
 class sneaking_weakness_red extends Card {
@@ -3341,18 +2209,6 @@ class sneaking_weakness_red extends Card {
     $this->cardID = "sneaking_weakness_red";
     $this->controller = $controller;
     $this->baseCard = new sneaking_disease($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Sneaking Weakness";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -3388,26 +2244,6 @@ class scouting_cloak extends Card {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     GainHealth(1, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Scouting Cloak";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
   }
 }
 
@@ -3458,26 +2294,6 @@ class plaguewardens_wraps extends Card {
     if ($target != $this->controller)
       GiveDisease($this->controller);
   }
-
-  function SpecialName() {
-    return "Plaguewarden's Wraps";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
 }
 
 class step_overs extends Card {
@@ -3524,26 +2340,6 @@ class step_overs extends Card {
     if ($targets == "") return true;
     return GetCombatChainState($CCS_DefenseReactionsPlayed) == 0;
   }
-
-  function SpecialName() {
-    return "Step Overs";
-  }
-
-  function SpecialBlock() {
-    return 0;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Legs";
-  }
 }
 
 class bounty_brim extends Card {
@@ -3585,26 +2381,6 @@ class bounty_brim extends Card {
   function AbilityHasGoAgain($from) {
     return true;
   }
-
-  function SpecialName() {
-    return "Bounty Brim";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Head";
-  }
 }
 
 class stimtek_vest extends Card {
@@ -3645,26 +2421,6 @@ class stimtek_vest extends Card {
       $Equip->Destroy();
     }
   }
-
-  function SpecialName() {
-    return "Stimtek Vest";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
-  }
 }
 
 class murder_sprees extends Card {
@@ -3702,26 +2458,6 @@ class murder_sprees extends Card {
   function AbilityHasGoAgain($from) {
     return true;
   }
-
-  function SpecialName() {
-    return "Murder Sprees";
-  }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Legs";
-  }
 }
 
 class kill_confirmed_red extends Card {
@@ -3757,34 +2493,6 @@ class kill_confirmed_red extends Card {
       }
     }
   }
-
-  function SpecialName() {
-    return "Kill Confirmed";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 6;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class lab_rat extends BaseCard {
@@ -3797,26 +2505,6 @@ class lab_rat extends BaseCard {
     global $defPlayer;
     return IsInfected($defPlayer) ? 1 : 0;
   }
-
-  function SpecialName() {
-    return "Lab Rat";
-  }
-
-  function SpecialCost() {
-    return 2;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class lab_rat_red extends Card {
@@ -3824,14 +2512,6 @@ class lab_rat_red extends Card {
     $this->cardID = "lab_rat_red";
     $this->controller = $controller;
     $this->baseCard = new lab_rat($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialPower() {
-    return 6;
   }
 }
 
@@ -3841,14 +2521,6 @@ class lab_rat_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new lab_rat($this->cardID, $this->controller);
   }
-
-  function SpecialPitch() {
-    return 2;
-  }
-
-  function SpecialPower() {
-    return 5;
-  }
 }
 
 class lab_rat_blue extends Card {
@@ -3856,14 +2528,6 @@ class lab_rat_blue extends Card {
     $this->cardID = "lab_rat_blue";
     $this->controller = $controller;
     $this->baseCard = new lab_rat($this->cardID, $this->controller);
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
   }
 }
 
@@ -3887,30 +2551,6 @@ class viral_accelerant_blue extends Card {
       }
     }
     return "";
-  }
-
-  function SpecialName() {
-    return "Viral Accelerant";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AR";
   }
 }
 
@@ -3950,30 +2590,6 @@ class just_my_type_red extends Card {
       }
     }
   }
-
-  function SpecialName() {
-    return "Just My Type";
-  }
-
-  function SpecialPitch() {
-    return 1;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "DR";
-  }
 }
 
 class professional_rivalry_blue extends Card {
@@ -3994,34 +2610,6 @@ class professional_rivalry_blue extends Card {
 
   function ContractCompleted() {
     PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
-  }
-
-  function SpecialName() {
-    return "Professional Rivalry";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "AA";
   }
 
   function HasStealth() {
@@ -4059,26 +2647,6 @@ class puredew_panacea extends Card {
   function AbilityHasGoAgain($from) {
     return true;
   }
-
-  function SpecialName() {
-    return "Puredew Panacea";
-  }
-
-  function SpecialBlock() {
-    return -2;
-  }
-
-  function SpecialClass() {
-    return "GENERIC";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
-
-  function SpecialSubType() {
-    return "Off-Hand";
-  }
 }
 
 class needlebane extends BaseCard {
@@ -4109,18 +2677,6 @@ class needlebane extends BaseCard {
     $blockCard = new ChainCard($index);
     return $Effect->AppliestoUniqueID() == $blockCard->OriginUniqueID() ? 1 : 0;
   }
-
-  function SpecialBlock() {
-    return 1;
-  }
-
-  function SpecialClass() {
-    return "GENERIC";
-  }
-
-  function SpecialType() {
-    return "E";
-  }
 }
 
 class needlebane_cowl extends Card {
@@ -4128,14 +2684,6 @@ class needlebane_cowl extends Card {
     $this->cardID = "needlebane_cowl";
     $this->controller = $controller;
     $this->baseCard = new needlebane($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Needlebane Cowl";
-  }
-
-  function SpecialSubType() {
-    return "Head";
   }
 }
 
@@ -4145,14 +2693,6 @@ class needlebane_coat extends Card {
     $this->controller = $controller;
     $this->baseCard = new needlebane($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Needlebane Coat";
-  }
-
-  function SpecialSubType() {
-    return "Chest";
-  }
 }
 
 class needlebane_gauntlets extends Card {
@@ -4161,14 +2701,6 @@ class needlebane_gauntlets extends Card {
     $this->controller = $controller;
     $this->baseCard = new needlebane($this->cardID, $this->controller);
   }
-
-  function SpecialName() {
-    return "Needlebane Gauntlets";
-  }
-
-  function SpecialSubType() {
-    return "Arms";
-  }
 }
 
 class needlebane_steppers extends Card {
@@ -4176,14 +2708,6 @@ class needlebane_steppers extends Card {
     $this->cardID = "needlebane_steppers";
     $this->controller = $controller;
     $this->baseCard = new needlebane($this->cardID, $this->controller);
-  }
-
-  function SpecialName() {
-    return "Needlebane Steppers";
-  }
-
-  function SpecialSubType() {
-    return "Legs";
   }
 }
 
@@ -4235,30 +2759,6 @@ class banger_blue extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
-
-  function SpecialName() {
-    return "Banger!";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 1;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "GENERIC";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class self_determination_blue extends Card {
@@ -4303,30 +2803,6 @@ class self_determination_blue extends Card {
   function AddPrePitchDecisionQueue($from, $index = -1, $facing="-") {
     return $this->archetype->AddPrePitchDecisionQueue($from, $index);
   }
-
-  function SpecialName() {
-    return "Self-determination";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialPower() {
-    return 4;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "GENERIC";
-  }
-
-  function SpecialType() {
-    return "AA";
-  }
 }
 
 class emergency_services_blue extends Card {
@@ -4356,30 +2832,6 @@ class emergency_services_blue extends Card {
     PutItemIntoPlayForPlayer("silver", $this->controller, number:2 * $num, effectSource:$this->cardID);
     SetClassState($this->controller, $CS_AdditionalCosts, "-");
   }
-
-  function SpecialName() {
-    return "Emergency Services";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "I";
-  }
 }
 
 class funded_research_blue extends Card {
@@ -4397,29 +2849,5 @@ class funded_research_blue extends Card {
         PlayAura($disease, $otherPlayer, effectController:$this->controller);
     }
     return "";
-  }
-
-  function SpecialName() {
-    return "Funded Research";
-  }
-
-  function SpecialPitch() {
-    return 3;
-  }
-
-  function SpecialCost() {
-    return 0;
-  }
-
-  function SpecialBlock() {
-    return 3;
-  }
-
-  function SpecialClass() {
-    return "ASSASSIN";
-  }
-
-  function SpecialType() {
-    return "A";
   }
 }

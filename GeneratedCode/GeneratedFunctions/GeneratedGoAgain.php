@@ -2,6 +2,13 @@
 function GeneratedGoAgain($cardID) {
 if(is_int($cardID)) return 0;
 return match($cardID) {
+"bounty_brim" => true,
+"wristcuff_injectors" => true,
+"murder_sprees" => true,
+"patrons_lockbox_carriers_blue" => true,
+"patrons_lockbox_serums_blue" => true,
+"patrons_lockbox_valuables_blue" => true,
+"puredew_panacea" => true,
 "a_bit_off_the_side_red" => true,
 "abyssal_bite_blue" => true,
 "abyssal_force_blue" => true,
@@ -575,6 +582,7 @@ return match($cardID) {
 "isenhowl_weathervane_red" => true,
 "isenhowl_weathervane_yellow" => true,
 "isenhowl_weathervane_blue" => true,
+"isolation_vestment" => true,
 "jack_o_lantern_red" => true,
 "jack_o_lantern_yellow" => true,
 "jack_o_lantern_blue" => true,
@@ -740,6 +748,7 @@ return match($cardID) {
 "pick_up_the_point_red" => true,
 "pick_up_the_point_yellow" => true,
 "pick_up_the_point_blue" => true,
+"pick_your_poison_yellow" => true,
 "pick_a_card_any_card_red" => true,
 "pick_a_card_any_card_yellow" => true,
 "pick_a_card_any_card_blue" => true,

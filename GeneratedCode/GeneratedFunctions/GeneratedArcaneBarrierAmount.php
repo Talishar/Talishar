@@ -58,6 +58,7 @@ return match($cardID) {
 "stalkers_steps" => 1,
 "storm_striders" => 2,
 "stormweavers_aegis" => 1,
+"surgical_gloves" => 1,
 "thunderous_retort_red" => 3,
 "thunderous_retort_yellow" => 2,
 "thunderous_retort_blue" => 1,
