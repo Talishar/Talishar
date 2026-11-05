@@ -66,6 +66,7 @@ include "Classes/CardObjects/AMACards.php";
 include "Classes/CardObjects/MPACards.php";
 include "Classes/CardObjects/AMOCards.php";
 include "Classes/CardObjects/OBKCards.php";
+include "Classes/CardObjects/MPBCards.php";
 include "Classes/CardObjects/AMGCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
