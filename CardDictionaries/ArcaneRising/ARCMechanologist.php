@@ -106,6 +106,8 @@ function ARCMechanologistHitEffect($cardID, $from)
 function HasBoost($cardID, $player)
 {
   if(SearchCurrentTurnEffects("evo_speedslip_blue", $player) && TypeContains($cardID, "AA", $player)) return true;
+  $card = GetClass($cardID, $player);
+  if ($card != "-") return $card->HasBoost();
   return GeneratedHasBoost($cardID);
 }
 

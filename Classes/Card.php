@@ -1454,4 +1454,10 @@ class Card {
       return $this->baseCard->EffectContractCompleteEffect($index);
     return false;
   }
+
+  function HasBoost() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "HasBoost"))
+      return $this->baseCard->HasBoost();
+    return GeneratedHasBoost($this->cardID);
+  }
 }

@@ -1424,3 +1424,253 @@ class autumns_curse extends Card {
   }
 }
 
+class kickback extends BaseCard {
+  // Boost
+  // Stealth
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Kickback";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,MECHANOLOGIST";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+
+  function HasBoost() {
+    return true;
+  }
+}
+
+class kickback_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_red";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class kickback_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class kickback_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_blue";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class whisper_shot extends BaseCard {
+  // Stealth
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Whisper Shot";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,RANGER";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class whisper_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_red";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class whisper_shot_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class whisper_shot_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_blue";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class rocket_powered_arrow extends BaseCard {
+  // Boost
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Rocket-Powered Arrow";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST,RANGER";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasBoost() {
+    return true;
+  }
+}
+
+class rocket_powered_arrow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_red";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class rocket_powered_arrow_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class rocket_powered_arrow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
