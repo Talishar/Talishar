@@ -1894,13 +1894,25 @@ class easy_prey extends BaseCard {
     return "";
   }
 
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $targets = [];
+    foreach ($attacks as $attack) {
+      $obj = MZIndexToObject($this->controller, $attack);
+      if (ClassContains($obj->ID(), "ASSASSIN", $this->controller))
+        $targets[] = $attack;
+    }
+    return implode(",", $targets);
+  }
+
   function PayAdditionalCosts($from, $index = '-') {
-    $targets = GetTargetsAssassinAA($this->controller);
+    $targets = $this->GetTargets();
     SetTargetsChoices($this->controller, $this->cardID, $targets);
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    $targets = GetTargetsAssassinAA($this->controller);
+    $targets = $this->GetTargets();
     return $targets == "";
   }
 
