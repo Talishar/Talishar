@@ -3263,9 +3263,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
         break;
-      case "gauntlets_of_iron_will":
-        if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower() - LinkBasePower(), $mainPlayer);
-        break;
       case "golden_glare":
         $yellowPitchCards = 0;
         $combatChainPieces = CombatChainPieces();

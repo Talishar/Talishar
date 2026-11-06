@@ -998,7 +998,6 @@ function OnBlockResolveEffects($cardID = "")
         case "pack_call_yellow":
         case "pack_call_blue":
         case "stonewall_impasse":
-        case "gauntlets_of_iron_will":
         case "golden_glare":
         case "trounce_red":
         case "test_of_agility_red":
@@ -1795,7 +1794,7 @@ function CombatChainPayAdditionalCosts($index, $from)
   }
 }
 
-function CacheCombatResult()
+function CacheCombatResult($checkPowerIncreaseEffects = true)
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
@@ -1816,6 +1815,12 @@ function CacheCombatResult()
     IncrementCombatChainState($CCS_CachedTotalPower);
     if ($turn[0] == "B" && $currentPlayer == $defPlayer && $CombatChain->NumCardsActiveLink() == 1)
       SetCombatChainState($CCS_CachedPreBlockValue, GetCombatChainState($CCS_CachedTotalPower));
+  }
+  if ($checkPowerIncreaseEffects && CurrentEffectAfterPlayOrActivateAbility(false)) {
+    // An effect just became active and changed the total, so recompute from the original starting point
+    SetCombatChainState($CCS_CachedTotalPower, $oldPower);
+    CacheCombatResult();
+    return;
   }
   $currentTotalPower = GetCombatChainState($CCS_CachedTotalPower);
   if ($currentTotalPower > $oldPower && $currentTotalPower >= 6)

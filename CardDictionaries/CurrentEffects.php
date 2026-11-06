@@ -63,7 +63,6 @@ function HVYEffectPowerModifier($cardID): int|string
   $cardID = StripCardIDSuffix($cardID, $suffix);
   return match ($cardID) {
     "bonebreaker_bellow_red", "bonebreaker_bellow_yellow", "bonebreaker_bellow_blue", "tenacity_yellow" => $suffix,
-    "gauntlets_of_iron_will" => $suffix == "ACTIVE" ? -1 : 0,
     "big_bop_red-BUFF", "bigger_than_big_red-BUFF", "fatal_engagement_red" => 5,
     "big_bop_yellow-BUFF", "bigger_than_big_yellow-BUFF", "fatal_engagement_yellow" => 4,
     "the_golden_son_yellow", "big_bop_blue-BUFF", "bigger_than_big_blue-BUFF", "cut_the_deck_red", "fatal_engagement_blue", "agile_engagement_red", "vigorous_engagement_red", "draw_swords_red",
@@ -94,7 +93,7 @@ function HVYCombatEffectActive($cardID, $attackID)
     "ancestral_harmony_blue" => HasCombo($attackID),
     "luminaris_angels_glow-1" => str_contains(NameOverride($CombatChain->AttackCard()->ID(), $mainPlayer), "Herald"),
     "luminaris_angels_glow-2" => DelimStringContains(CardSubType($CombatChain->AttackCard()->ID()), "Angel"),
-    "betsy_skin_in_the_game", "betsy", "primed_to_fight_red", "stonewall_impasse", "gauntlets_of_iron_will", "good_time_chapeau-PAID", "the_golden_son_yellow", "big_bop_red", "big_bop_yellow", "big_bop_blue", "bigger_than_big_red",
+    "betsy_skin_in_the_game", "betsy", "primed_to_fight_red", "stonewall_impasse", "good_time_chapeau-PAID", "the_golden_son_yellow", "big_bop_red", "big_bop_yellow", "big_bop_blue", "bigger_than_big_red",
     "bigger_than_big_yellow", "bigger_than_big_blue", "hood_of_red_sand", "talk_a_big_game_blue", "wage_might_red", "wage_might_yellow", "wage_might_blue", "wage_agility_red", "wage_agility_yellow", "wage_agility_blue", "wage_vigor_red", "wage_vigor_yellow",
     "wage_vigor_blue", "standing_order_red", "down_but_not_out_red", "down_but_not_out_yellow", "down_but_not_out_blue", "wage_gold_red", "wage_gold_yellow",
     "wage_gold_blue", "tenacity_yellow", "agility", "might", "cut_the_deck_red", "cut_the_deck_yellow", "cut_the_deck_blue",

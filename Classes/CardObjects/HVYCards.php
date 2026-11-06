@@ -1294,17 +1294,39 @@ class edge_ahead_blue extends Card {
 // }
 
 
-// class gauntlets_of_iron_will extends Card {
+class gauntlets_of_iron_will extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "gauntlets_of_iron_will";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "gauntlets_of_iron_will";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function OnBlockResolveEffects($blockedFromHand, $i, $start) {
+    global $defPlayer;
+    AddLayer("TRIGGER", $defPlayer, $this->cardID, $i);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    global $CombatChain, $mainPlayer;
+    if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will-" . CachedTotalPower() - LinkBasePower(), $mainPlayer);
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return $parameter == "ACTIVE";
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param == "ACTIVE" ? -1 : 0;
+  }
+
+  function RemoveEffectLinkResolves() {
+    return true;
+  }
+}
 
 
 // class glory_seeker extends Card {

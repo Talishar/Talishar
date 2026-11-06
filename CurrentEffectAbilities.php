@@ -1626,22 +1626,26 @@ function CurrentEffectPlayAbility($cardID, $from)
 
 function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $mainPlayer;
+  $changed = false;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i]);
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      $effectArr = explode("-", $currentTurnEffects[$i], 2);
       switch ($effectArr[0]) {
         case "gauntlets_of_iron_will":
           if ($cache) CacheCombatResult();
-          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1]) + LinkBasePower()) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
+          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1]) + LinkBasePower()) {
+            $currentTurnEffects[$i] = "gauntlets_of_iron_will-ACTIVE";
+            $changed = true;
+          }
           break;
         default:
           break;
       }
     }
   }
-  return false;
+  return $changed;
 }
 
 function CurrentEffectGrantsInstantGoAgain($cardID, $from)

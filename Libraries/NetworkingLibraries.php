@@ -2395,7 +2395,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     }
     if (!$weaponSwap) {
       $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
-      if ($card != "-" && $card->RemoveEffectLinkResolves()) $effectsToRemove[] = $i;
+      if ($card != "-" && $card->RemoveEffectLinkResolves() && !in_array($i, $effectsToRemove)) $effectsToRemove[] = $i;
     }
     if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") $effectsToRemove[] = $i;
     switch ($currentTurnEffects[$i]) {

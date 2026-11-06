@@ -639,7 +639,7 @@ function ResetCombatChainState()
 
 function AttackReplaced($cardID, $player, $from)
 {
-  global $combatChainState, $currentTurnEffects, $mainPlayer;
+  global $combatChainState, $currentTurnEffects, $mainPlayer, $CurrentTurnEffects;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
   global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_CachedVeilActive;
   SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 0);
@@ -671,6 +671,13 @@ function AttackReplaced($cardID, $player, $from)
     }
   }
   CleanUpCombatEffects(true);
+  CacheCombatResult(false);
+  $updatedPower = CachedTotalPower() - LinkBasePower();
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $param = explode("-", $Effect->EffectID(), 2)[1] ?? "-";
+    if (ExtractCardID($Effect->EffectID()) == "gauntlets_of_iron_will" && $param != "ACTIVE") $Effect->Replace("gauntlets_of_iron_will-$updatedPower");
+  }
 }
 
 function ResetChainLinkState()
