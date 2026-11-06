@@ -267,11 +267,10 @@ function SetID($cardID)
       "tusk" => "DUM", // AI custom weapon
       "wrenchtastic" => "DUM", // AI custom weapon
       "UPR551" => "UPR551", //ghostly touch
-      "zane_broadly_beloved" => "SPW003", //temporary while waiting on fabcube
-      "killjoy_the_crooked_blade" => "SPW001",
-      "battle_clearing_bellow_blue" => "IAR040",
-      "outbreak_blue" => "MPA031",
-      "phial_of_calamity" => "MPA006"
+      "babaza_bloodbeat_heartfather" => "MPB002",
+      "babaza" => "MPB003",
+      "zuul_clubcaste" => "MPB004",
+      "zuul" => "MPB005"
     ];
   }
 

@@ -434,6 +434,12 @@ class viserai_usurper extends Card {
     $Hero = new CharacterCard(0, $this->controller);
     $Hero->Become(GetClassState($this->controller, $CS_OriginalHero));
   }
+
+  function PermanentGivesAttackGoAgain($attackID) {
+    global $mainPlayer, $CS_NumBloodDebtAttacksPlayed;
+    $isFirstBloodDebtAttack = HasBloodDebt($attackID, $mainPlayer) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
+    return $isFirstBloodDebtAttack;
+  }
 }
 
 class runic_reaving_base extends Card {

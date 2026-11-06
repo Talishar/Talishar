@@ -1460,4 +1460,16 @@ class Card {
       return $this->baseCard->HasBoost();
     return GeneratedHasBoost($this->cardID);
   }
+
+  function PermanentGivesAttackGoAgain($attackID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentGivesAttackGoAgain"))
+      return $this->baseCard->PermanentGivesAttackGoAgain($attackID);
+    return false;
+  }
+
+  function DefPermanentGivesAttackGoAgain($attackID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "DefPermanentGivesAttackGoAgain"))
+      return $this->baseCard->DefPermanentGivesAttackGoAgain($attackID);
+    return false;
+  }
 }

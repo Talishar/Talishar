@@ -2506,33 +2506,18 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
   $character = &GetPlayerCharacter($mainPlayer);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
-  $isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
-  $isFirstBloodDebtAttack = HasBloodDebt($attackID, $mainPlayer) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
-    switch ($characterID) {
-      case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x":
-        if ($isFirstStealthAttack) return true;
-        break;
-      case "viserai_usurper":
-        if ($isFirstBloodDebtAttack) return true;
-        break;
-      default:
-        break;
-    }
+    $card = GetClass($characterID, $mainPlayer);
+    if ($card != "-" && $card->PermanentGivesAttackGoAgain($attackID)) return true;
   }
   $otherPlayerCharacter = &GetPlayerCharacter($defPlayer);
   $otherCharCount = count($otherPlayerCharacter);
   for ($j = 0; $j < $otherCharCount; $j += $characterPieces) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
-    switch ($otherPlayerCharacter[$j]) {
-      case "arakni_5lp3d_7hru_7h3_cr4x":
-        if ($isFirstStealthAttack) return true;
-        break;
-      default:
-        break;
-    }
+    $card = GetClass($otherPlayerCharacter[$j], $defPlayer);
+    if ($card != "-" && $card->DefPermanentGivesAttackGoAgain($attackID)) return true;
   }
   $mainPitch = &GetPitch($mainPlayer);
    if (HasHighTide($attackID) && HighTideConditionMet($mainPlayer)) {
@@ -4792,12 +4777,21 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true,
   }
 }
 
-function SetTargetsChoices($player, $cardID, $choices, $context="") {
-  AddDecisionQueue("PASSPARAMETER", $player, $choices);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
-  AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+function SetTargetsChoices($player, $cardID, $choices, $context="", $prepend=false) {
+  if ($prepend) {
+    PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+    PrependDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+    PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    if ($context != "") PrependDecisionQueue("SETDQCONTEXT", $player, $context);
+    PrependDecisionQueue("PASSPARAMETER", $player, $choices);
+  }
+  else {
+    AddDecisionQueue("PASSPARAMETER", $player, $choices);
+    if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+  }
 }
 
 //Parameters:
