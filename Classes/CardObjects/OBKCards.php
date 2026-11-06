@@ -198,7 +198,7 @@ class huxley_base extends BaseCard {
     $heroCard = new CharacterCard($index, $this->controller);
     if ($heroCard->Status() >= 3) return;
     $boostedCardID = $boostedCard->CardID();
-    if (!$heroCard->Tapped() && HasStealth($boostedCardID) && (TypeContains($boostedCardID, "A") || TypeContains($boostedCardID, "AA")))
+    if (HasStealth($boostedCardID) && (TypeContains($boostedCardID, "A") || TypeContains($boostedCardID, "AA")))
       AddLayer("TRIGGER", $this->controller, $this->cardID, $boostedCard->UniqueID());
   }
 
@@ -1950,12 +1950,79 @@ class cogwerx_gyrostriders extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    switch($additionalCosts) {
+      case "Untap_Hero":
+        $Hero = new CharacterCard(0, $this->controller);
+        $Hero->Tap(0);
+        break;
+      case "Give_Go_Again":
+        AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+        break;
+      default:
+        break;
+    }
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Cogwerx Gyrostriders";
-  // }
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    if (TypeContains($cardID, "AA") && $from == "ARS") {
+      $Effect = new CurrentEffect($effectIndex);
+      $TopLayer = $Stack->TopLayer($cardID);
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    }
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $modes = [];
+    if (!$CharacterCard->Tapped())
+      $modes[] = "Untap_Hero";
+    $modes[] = "Give_Go_Again";
+    $modes = implode(",", $modes);
+    $context = "Choose an ability";
+    Await($this->controller, "ButtonInput", "mode", buttons:$modes, context:$context, subsequent:0);
+    Await($this->controller, $this->cardID, uid:$CharacterCard->UniqueID(), final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_AdditionalCosts;
+    $uid = $dqVars["uid"] ?? "-";
+    $mode = $dqVars["mode"] ?? "-";
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardUID($uid);
+    if ($CharacterCard->Index() == -1) return;
+    switch ($mode) {
+      case "Untap_Hero":
+        $Hero = new CharacterCard(0, $this->controller);
+        WriteLog(CardLink($this->cardID) . " will be untapping " . $Hero->CardID());
+        $CharacterCard->Tap();
+        break;
+      case "Give_Go_Again":
+        WriteLog(CardLink($this->cardID) . " will be giving the next attack from arsenal go again");
+        $CharacterCard->Destroy();
+        break;
+      default:
+        break;
+    }
+    SetClassState($this->controller, $CS_AdditionalCosts, $mode);
+  }
+
+  function SpecialName() {
+    return "Cogwerx Gyrostriders";
+  }
 
   function SpecialBlock() {
     return 0;

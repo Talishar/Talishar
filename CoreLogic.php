@@ -1143,7 +1143,7 @@ function LoseHealth($amount, $player)
   PlayerLoseHealth($amount, $player);
 }
 
-function GainHealth($amount, $player, $silent = false, $preventable = true)
+function GainHealth($amount, $player, $silent = false, $preventable = true, $fromCardEffect = true)
 {
   global $mainPlayer, $CS_HealthGained;
   $otherPlayer = 3 - $player;
