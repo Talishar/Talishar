@@ -33,6 +33,10 @@ class zuul_base extends BaseCard {
 	function SpecialClass() {
 		return "BRUTE";
 	}
+
+	function SpecialBlock() {
+		return -2;
+	}
 }
 
 class zuul_clubcaste extends Card {
@@ -124,6 +128,10 @@ class babaza_base extends BaseCard {
 
 	function SpecialClass() {
 		return "BRUTE";
+	}
+
+	function SpecialBlock() {
+		return -2;
 	}
 }
 
