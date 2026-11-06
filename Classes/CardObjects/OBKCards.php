@@ -160,10 +160,10 @@ class min_back extends BaseCard {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $Hero = new CharacterCard(0, $this->controller);
-    $Hero->Become($this->Backside());
+    $Hero->Become($this->Frontside());
   }
 
-  function Backside() {
+  function Frontside() {
     return match($this->cardID) {
       "min_half_mad" => "min_half_genius",
       "min_mad" => "min_genius"
@@ -1679,12 +1679,28 @@ class virulent_cascade extends BaseCard {
   // When this attacks, choose Exertion, Inertia, or Bloodrot Pox at random and create that token under your control.
   // If you and the defending hero are infected, this gets +1{p} and go again.
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $OBKDiseases;
+    $ind = GetRandom(0,3);
+    WriteLog(CardLink($this->cardID) . " creates a $OBKDiseases[$ind]!");
+    PlayAura($OBKDiseases[$ind], $this->controller, effectController:$this->controller, effectSource:$this->controller);
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Virulent Cascade";
-  // }
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return IsInfected($this->controller) && IsInfected(OtherPlayer($this->controller)) ? 1 : 0;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return IsInfected($this->controller) && IsInfected(OtherPlayer($this->controller));
+  }
+
+  function SpecialName() {
+    return "Virulent Cascade";
+  }
 
   function SpecialCost() {
     return 0;
@@ -1768,12 +1784,34 @@ class change_of_mind_blue extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Hero = new CharacterCard(0, $this->controller);
+    $HeroObj = GetClass($Hero->CardID(), $this->controller);
+    if ($HeroObj != "-") {
+      if ($HeroObj->Backside() != "-") {
+        WriteLog("I'm not mad, an I?");
+        $Hero->Become($HeroObj->Backside());
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      }
+      elseif ($HeroObj->Frontside() != $Hero->CardID()) {
+        WriteLog("I'm a genius!");
+        $Hero->Become($HeroObj->Frontside());
+        GainResources(2, $this->controller);
+      }
+    }
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Change of Mind";
-  // }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Change of Mind";
+  }
 
   function SpecialPitch() {
     return 3;
@@ -1798,8 +1836,6 @@ class change_of_mind_blue extends Card {
   function SpecialType() {
     return "I";
   }
-
-  // TODO: keyword Specialization (Min)
 }
 
 class eidetic_endpoint extends BaseCard {
@@ -1809,9 +1845,23 @@ class eidetic_endpoint extends BaseCard {
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Eidetic Endpoint";
-  // }
+  function AddArsenalEffect($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    foreach ([$this->controller, OtherPlayer($this->controller)] as $player) {
+      $ars = new Arsenal($player);
+      for ($i = 0; $i < $ars->NumCards(); ++$i) {
+        $arsCard = $ars->Card($i, true);
+        $arsCard->Flip();
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Eidetic Endpoint";
+  }
 
   function SpecialCost() {
     return 1;
@@ -1934,12 +1984,33 @@ class codex_of_exertion_yellow extends Card {
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $search = "MYARS";
+    $context = "Pick up a card from your arsenal";
+    $otherPlayer = OtherPlayer($this->controller);
+    foreach ([$this->controller, $otherPlayer] as $player) {
+      Await($player, "MultiZoneIndices", search:$search, subsequent:0);
+      Await($player, "ChooseMultiZone", context:$context);
+      Await($player, $this->cardID, final:true);
+    }
+    Await($this->controller, "PlayAura", cardID:"ponder", effectSource:$this->cardID, subsequent:0);
+    Await($otherPlayer, "PlayAura", cardID:"exertion", effectController:$this->controller, effectSource:$this->cardID, final:true);
     return "";
   }
 
-  // function SpecialName() {
-  //   return "Codex of Exertion";
-  // }
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != -1) {
+      $cardID = RemoveArsenal($this->controller, $index);
+      AddPlayerHand($cardID, $this->controller, "ARS");
+      Draw($this->controller);
+    }
+  }
+
+  function SpecialName() {
+    return "Codex of Exertion";
+  }
 
   function SpecialPitch() {
     return 2;
