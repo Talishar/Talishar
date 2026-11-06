@@ -47,58 +47,7 @@ if (!function_exists("TypeContains")) {
   }
 }
 
-if (!function_exists("CheckHeroPreference")) {
-  function CheckHeroPreference($character, $gameDescription) {
-    $knownClasses = ['assassin', 'brute', 'guardian', 'illusionist', 'mechanologist',
-                     'necromancer', 'ninja', 'pirate', 'ranger', 'runeblade', 'warrior', 'wizard'];
-
-    $preferMode = null;
-    $namesPart = null;
-
-    if (str_starts_with($gameDescription, 'Looking to play against ')) {
-      $after = trim(substr($gameDescription, strlen('Looking to play against ')));
-      if ($after !== 'a specific hero' && $after !== 'a specific class') {
-        $preferMode = 'include';
-        $namesPart = $after;
-      }
-    } elseif (str_starts_with($gameDescription, 'No interest in playing against ')) {
-      $after = trim(substr($gameDescription, strlen('No interest in playing against ')));
-      if ($after !== 'specific hero') {
-        $preferMode = 'exclude';
-        $namesPart = $after;
-      }
-    }
-
-    if (!$preferMode || !$namesPart) return null;
-
-    $rawTokens = explode(', ', $namesPart);
-    $tokens = array_map(function($t) { return strtolower(trim(str_replace(',', '', $t))); }, $rawTokens);
-    $candidates = $tokens;
-    $tokensCount = count($tokens) - 1;
-    for ($i = 0; $i < $tokensCount; $i++) {
-      $candidates[] = $tokens[$i] . ' ' . $tokens[$i + 1];
-    }
-
-    $isClassBased = !empty(array_intersect($tokens, $knownClasses));
-
-    if ($isClassBased) {
-      $heroClasses = explode(',', strtolower(CardClass($character)));
-      $matched = !empty(array_intersect($heroClasses, $candidates));
-    } else {
-      $normalizedHeroName = strtolower(str_replace(',', '', CardName($character)));
-      $matched = in_array($normalizedHeroName, $candidates);
-    }
-
-    if ($preferMode === 'include' && !$matched) {
-      return "⚠️ This lobby is looking to play against specific heroes. Your hero does not match the lobby's preferences.";
-    }
-    if ($preferMode === 'exclude' && $matched) {
-      return "⚠️ This lobby has specified they are not interested in playing against your hero.";
-    }
-
-    return null;
-  }
-}
+include_once __DIR__ . "/../Libraries/HeroPreference.php";
 
 SetHeaders();
 
