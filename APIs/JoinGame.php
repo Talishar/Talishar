@@ -18,10 +18,7 @@ include_once "../Assets/MetafyDictionary.php";
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 
-include_once "../Classes/CardObjects/AMOCards.php";
 include_once "../Classes/CardObjects/HVYCards.php"; //needed for windups
-include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
-include_once "../Classes/CardObjects/MPACards.php";
 include_once "../Classes/CardObjects/OBKCards.php";
 include_once "../Classes/CardObjects/AMGCards.php";
 include_once "../Classes/CardObjects/MPBCards.php";
@@ -918,7 +915,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["MPA", "AMO", "OBK", "AMG", "MPB", ""]);
+    $unreleasedSetNames = array_flip(["OBK", "AMG", "MPB", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);
@@ -927,12 +924,10 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "SPW":
-    case "MPA":
-    case "AMO":
     case "OBK":
     case "AMG":
     case "FAB":
+    case "MPB":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
