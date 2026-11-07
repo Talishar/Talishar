@@ -597,7 +597,7 @@ class tailored_targeting_red extends Card {
     $Deck = new Deck($defPlayer);
     $targetedName = GetAttackNamedCard();
     $banishedCard = $targetedName; // ensure you go through the process at least once
-    while (!$Deck->Empty() && $banishedCard == $targetedName) {
+    while (!$Deck->Empty() && ShareName($banishedCard, $targetedName)) {
       $cardID = $Deck->BanishTop(banishedBy:$this->cardID, banisher:$this->controller);
       $banishedCard = GamestateSanitize(NameOverride($cardID, $defPlayer));
     }

@@ -57,9 +57,9 @@ function ShareName($name1, $name2) {
   $name1 = strtolower($name1);
   $name2 = strtolower($name2);
   if ($name1 == $name2) return true;
-  if (str_contains($name1, " // ") && !str_contains($name2, " // ")) {
-    foreach (explode(" // ", $name1) as $n1) {
-      if ($n1 == $name2) {
+  if (str_contains($name1, "//") && !str_contains($name2, " // ")) {
+    foreach (explode("//", $name1) as $n1) {
+      if (trim($n1, "_") == $name2) {
         return true;
       }
     }
