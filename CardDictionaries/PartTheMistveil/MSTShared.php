@@ -704,7 +704,8 @@ function MSTHitEffect($cardID, $from): void
       $count = 0;
       for ($i = 0; $i < $Discard->NumCards(); ++$i) {
         $DiscardCard = $Discard->Card($i, true);
-        if (SubtypeContains($DiscardCard->CardID(), "Trap") && !TypeContains($DiscardCard->CardID(), "E"))
+        $cost = CardCost($DiscardCard->CardID());
+        if (SubtypeContains($DiscardCard->CardID(), "Trap") && $cost >= 0)
           ++$count;
       }
       if ($count >= 3) {
