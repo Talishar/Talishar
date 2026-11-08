@@ -1506,7 +1506,7 @@ class repeat_reconnaissance extends BaseCard {
     return "";
   }
 
-  function AttackGetsBlockedEffect($start) {
+  function AttackIsBlockedEffect($start) {
     global $CombatChain;
     $numAlreadyBlocking = intdiv($start, CombatChainPieces()) - 1;
     $numBlocking = $CombatChain->NumCardsActiveLink() - 1;

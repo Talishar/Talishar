@@ -728,7 +728,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   $chainInd = $combatChainCount - $combatChainPieces;
   ProcessFragmentOnBlock($chainInd);
   $card = GetClass($combatChain[0], $mainPlayer);
-  if ($card != "-") $card->AttackGetsBlockedEffect($chainInd);
+  if ($card != "-") {
+    $card->AttackGetsBlockedEffect($chainInd); // event based
+    $card->AttackIsBlockedEffect($chainInd); // state based
+  }
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
@@ -859,7 +862,10 @@ function OnBlockResolveEffects($cardID = "")
   if ($start == -1) return; //there wasn't a new card added as defending
   if ($CombatChain->HasCurrentLink()) {
     $card = GetClass($combatChain[0], $mainPlayer);
-    if ($card != "-") $card->AttackGetsBlockedEffect($start);
+    if ($card != "-") {
+      $card->AttackGetsBlockedEffect($start); // event based
+      $card->AttackIsBlockedEffect($start); // state based
+    }
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":

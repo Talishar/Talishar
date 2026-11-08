@@ -678,6 +678,8 @@ function AttackReplaced($cardID, $player, $from)
     $param = explode("-", $Effect->EffectID(), 2)[1] ?? "-";
     if (ExtractCardID($Effect->EffectID()) == "gauntlets_of_iron_will" && $param != "ACTIVE") $Effect->Replace("gauntlets_of_iron_will-$updatedPower");
   }
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") $card->AttackIsBlockedEffect(CombatChainPieces());
 }
 
 function ResetChainLinkState()
