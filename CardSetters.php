@@ -159,6 +159,8 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     $Item = $Items->FindCard($cardID);
     $Item->Destroy(true);
   }
+  if ($from == "DECK" && SearchCurrentTurnEffects("syncopated_heart_pump", $otherPlayer))
+    AddLayer("TRIGGER", $otherPlayer, "syncopated_heart_pump");
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
   if ($banishedBy != "" && $banisher != $player) CheckContracts($banisher, $cardID);
   $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);

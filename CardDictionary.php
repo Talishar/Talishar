@@ -328,6 +328,12 @@ function CardSubType($cardID, $uniqueID = -1)
       return "Dagger,Attack";
     case "cogwerx_gyrostriders": //temporary
       return "Legs";
+    case "brainwave_reformer":
+      return "Head";
+    case "syncopated_heart_pump":
+      return "Chest";
+    case "quickdigit_assemblers":
+      return "Arms";
     default:
       break;
   }
@@ -3427,6 +3433,7 @@ function HasBladeBreak($cardID)
     case "needlebane_coat":
     case "needlebane_gauntlets":
     case "needlebane_steppers":
+    case "quickdigit_assemblers":
       return true;
     case "vambrace_of_determination":
       return SearchCurrentTurnEffects($cardID . "-BB", $defPlayer);
