@@ -1254,8 +1254,8 @@ class open_the_gate_to_iarathael_red extends Card {
   }
 
   function GetBanishedEffect($from, $banisher, $banishedBy) {
-    if ($from == "HAND" || $from == "DECK")
-      AddLayer("TRIGGER", $this->controller, $this->cardID); //hit effect to consolidate the trigger
+    if (str_contains($from, "HAND") || $from == "DECK")
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 }
 
