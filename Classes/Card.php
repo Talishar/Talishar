@@ -1478,4 +1478,11 @@ class Card {
       return $this->baseCard->DefPermanentGivesAttackGoAgain($attackID);
     return false;
   }
+
+  function EffectNeedsAttaching() { // if true, the effect will be inactive until it sets an "applies to unique ID"
+    // ultimately all "next attack gets" effects should use this
+    if (isset($this->baseCard) && method_exists($this->baseCard, "EffectNeedsAttaching"))
+      return $this->baseCard->EffectNeedsAttaching();
+    return false;
+  }
 }

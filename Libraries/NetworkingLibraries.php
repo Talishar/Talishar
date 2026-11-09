@@ -2383,6 +2383,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectArr = explode(",", $currentTurnEffects[$i], 2);
+    $Effect = new CurrentEffect($i);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($Effect->AppliestoUniqueID() == -1 && $card != "-" && $card->EffectNeedsAttaching())
+      continue; // Effect hasn't attached to anything yet, no need to clean it up
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];

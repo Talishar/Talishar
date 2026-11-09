@@ -1977,6 +1977,10 @@ class cogwerx_gyrostriders extends Card {
     }
   }
 
+  function EffectNeedsAttaching() {
+    return true;
+  }
+
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
     return true;
   }
