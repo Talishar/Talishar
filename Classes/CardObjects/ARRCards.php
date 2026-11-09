@@ -73,7 +73,7 @@ class bare_swing_red extends Card {
   function __construct($controller) {
     $this->cardID = "bare_swing_red";
     $this->controller = $controller;
-    }
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
