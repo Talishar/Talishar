@@ -86,7 +86,7 @@ if($format == "draft"){
 
 // Add final game setup decisions
 $firstPlayerChoiceLog = FirstPlayerChoiceLog();
-if ($firstPlayerChoiceLog !== "") AddDecisionQueue("WRITELOG", $mainPlayer, GamestateSanitize($firstPlayerChoiceLog));
+if ($firstPlayerChoiceLog !== "") AddDecisionQueue("WRITEREPLAYLOG", $mainPlayer, GamestateSanitize($firstPlayerChoiceLog));
 GameSetup();
 
 ProcessDecisionQueue();
@@ -208,7 +208,7 @@ function FirstPlayerChoiceLog(): string
   if ($p2IsAI == "1") $reason = "";
   elseif (file_exists($filepath . "rematchLobby.txt")) $reason = " lost the previous game and";
   else $reason = " won the roll and";
-  return "Player $chooser$reason chose to go $order.";
+  return "🎲 Player $chooser$reason chose to go $order.";
 }
 
 function GameSetup()

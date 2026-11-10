@@ -186,6 +186,11 @@ function WriteSystemMessage($text, $path="./")
   }
 }
 
+function WriteReplayLog($text)
+{
+  $GLOBALS['replayLogLines'] = ($GLOBALS['replayLogLines'] ?? "") . "$text\r\n";
+}
+
 function JSONLog($gameName, $playerID, $path="./")
 {
   return LogForViewer(ReadLogWindow($gameName, $path)[1], $playerID);
