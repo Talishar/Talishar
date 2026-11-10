@@ -1133,7 +1133,7 @@ class swap_spit extends BaseCard {
     }
     foreach ([$chosenMyDisease, $chosenTheirDisease] as $chosenDisease) {
       $obj = CleanTargetToObject($this->controller, $chosenDisease);
-      if ($obj != "") {
+      if ($obj != "" && $obj->Index() != -1) {
         $srcPlayer = str_contains($chosenDisease, "MY") ? $this->controller : $otherPlayer;
         $destPlayer = OtherPlayer($srcPlayer);
         WriteLog("Player $srcPlayer gave their " . CardLink($obj->CardID()) . " to Player $destPlayer!");

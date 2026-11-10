@@ -187,6 +187,7 @@ function StealAura($srcPlayer, $index, $destPlayer, $from, $mod=0, $realSteal=tr
   $srcAuras = &GetAuras($srcPlayer);
   $destAuras = &GetAuras($destPlayer);
   $auraPieces = AuraPieces();
+  if ($index == -1 || $index + $auraPieces > count($srcAuras)) return;
   $slice = array_slice($srcAuras, $index, $auraPieces);
   // 9: Where it's played from ... Important for where it'll go when destroyed for example.
   if (strpos($slice[9], 'MY') === 0) {
