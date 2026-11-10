@@ -400,3 +400,146 @@ function ShouldProcessReplayUndo(
 {
   return !$isReplay || ($isReplayAdvance && !$hasRecordedResponse);
 }
+
+function RemoveReplayDirectory(string $directory): void
+{
+  $directory = rtrim($directory, "/\\");
+  if (!is_dir($directory)) return;
+  foreach (scandir($directory) ?: [] as $entry) {
+    if ($entry === "." || $entry === "..") continue;
+    $filename = $directory . "/" . $entry;
+    if (is_dir($filename) && !is_link($filename)) RemoveReplayDirectory($filename);
+    else @unlink($filename);
+  }
+  @rmdir($directory);
+}
+
+function SaveReplayFromGameDirectory(string $gamePath, string $userId, int $playerID, array $metadata, int $maxReplaysSaved, bool $replaceOldest = true): array
+{
+  $result = [
+    "success" => false,
+    "message" => "Replay could not be saved. Please try again."
+  ];
+  $gamePath = rtrim($gamePath, "/\\");
+  if (!IsValidReplayUserId($userId)) {
+    $result["message"] = "You must be logged in to save replays.";
+    return $result;
+  }
+  $path = __DIR__ . "/../Replays/$userId/";
+  if (!is_dir($path) && !mkdir($path, 0777, true) && !is_dir($path)) {
+    $result["message"] = "Replay storage could not be created. Please try again.";
+    return $result;
+  }
+  $counter = file_exists($path . "counter.txt") ? (int)trim((string)file_get_contents($path . "counter.txt")) : 1;
+  $favoriteLimitMessage = "Replay was not saved because all $maxReplaysSaved replay slots are favorites. Remove a favorite replay or increase your replay slots with Metafy.";
+  $slotsFullMessage = "Your $maxReplaysSaved replay slots are full. Delete a saved replay to make room.";
+  $savedReplayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
+  if (!$replaceOldest && count($savedReplayDirectories) >= $maxReplaysSaved) {
+    $result["message"] = $slotsFullMessage;
+    return $result;
+  }
+  if (count($savedReplayDirectories) >= $maxReplaysSaved) {
+    $allSavedReplaysAreFavorites = true;
+    foreach ($savedReplayDirectories as $directory) {
+      $metadataPath = $directory . "/replayMetadata.json";
+      $existingMetadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
+      if (!is_array($existingMetadata) || ($existingMetadata["favorite"] ?? false) !== true) {
+        $allSavedReplaysAreFavorites = false;
+        break;
+      }
+    }
+    if ($allSavedReplaysAreFavorites) {
+      $result["message"] = $favoriteLimitMessage;
+      return $result;
+    }
+  }
+  while (is_dir($path . $counter)) ++$counter;
+  $replayPath = $path . $counter;
+  if (!is_dir($replayPath) && !mkdir($replayPath, 0777, true)) {
+    $result["message"] = "Replay storage could not be created. Please try again.";
+    return $result;
+  }
+  if (
+    !copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt") ||
+    !copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt")
+  ) {
+    RemoveReplayDirectory($replayPath);
+    $result["message"] = "Replay files could not be saved. Please try again.";
+    return $result;
+  }
+  $previousTimeLimit = ini_get('max_execution_time');
+  @set_time_limit(0);
+  $replayWritten = WriteReplayFormat($gamePath, $replayPath);
+  if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
+  if (!$replayWritten) {
+    RemoveReplayDirectory($replayPath);
+    $result["message"] = "Replay could not be saved because its state history is incomplete.";
+    return $result;
+  }
+  $replayMetadata = $metadata + [
+    "savedByPlayerID" => $playerID,
+    "formatVersion" => REPLAY_FORMAT_VERSION,
+    "stateCount" => count(ReplayStatePointers($replayPath)),
+    "favorite" => false,
+    "savedAt" => time()
+  ];
+  if (file_put_contents(
+    "$replayPath/replayMetadata.json",
+    json_encode($replayMetadata, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+    LOCK_EX
+  ) === false) {
+    RemoveReplayDirectory($replayPath);
+    $result["message"] = "Replay metadata could not be saved. Please try again.";
+    return $result;
+  }
+  if (file_put_contents($path . "counter.txt", $counter + 1, LOCK_EX) === false) {
+    RemoveReplayDirectory($replayPath);
+    $result["message"] = "Replay counter could not be updated. Please try again.";
+    return $result;
+  }
+  $deletedReplayNumber = null;
+  $replayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
+  if (!$replaceOldest && count($replayDirectories) > $maxReplaysSaved) {
+    RemoveReplayDirectory($replayPath);
+    $result["message"] = $slotsFullMessage;
+    return $result;
+  }
+  if (count($replayDirectories) > $maxReplaysSaved) {
+    $oldestNonFavorite = INF;
+    foreach ($replayDirectories as $directory) {
+      $metadataPath = $directory . "/replayMetadata.json";
+      $existingMetadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
+      $isFavorite = is_array($existingMetadata) && ($existingMetadata["favorite"] ?? false) === true;
+      $replayNumber = (int)basename($directory);
+      if (!$isFavorite && $replayNumber < $oldestNonFavorite) $oldestNonFavorite = $replayNumber;
+    }
+    if (is_infinite($oldestNonFavorite)) {
+      RemoveReplayDirectory($replayPath);
+      $result["message"] = $favoriteLimitMessage;
+      return $result;
+    }
+    $deletedReplayNumber = (int)$oldestNonFavorite;
+    RemoveReplayDirectory($path . $deletedReplayNumber);
+  }
+
+  $result = [
+    "success" => true,
+    "replayNumber" => (int)$counter,
+    "message" => "Replay #$counter saved.",
+    "deletedReplayNumber" => $deletedReplayNumber,
+    "shareUrl" => null
+  ];
+  try {
+    $sharedDir = __DIR__ . "/../Replays/shared/";
+    if ((file_exists($sharedDir) || mkdir($sharedDir, 0777, true)) && is_dir($sharedDir)) {
+      $shareToken = bin2hex(random_bytes(32));
+      $tokenData = json_encode(["userId" => $userId, "replayNumber" => (int)$counter]);
+      if (file_put_contents($sharedDir . $shareToken . ".json", $tokenData, LOCK_EX) !== false) {
+        $result["shareUrl"] = "/replay/shared?token=$shareToken";
+      }
+    }
+  } catch (Throwable $exception) {
+    error_log("Failed to create replay share token: " . $exception->getMessage());
+  }
+  return $result;
+}

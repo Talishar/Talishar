@@ -120,6 +120,15 @@ if (!IsReplay() && isset($replayCommandCountBefore)) {
   }
 }
 
+if (!IsReplay() && $inGameStatus == $GameStatus_Over) {
+  try {
+    include_once "Libraries/RecentGameLibraries.php";
+    StashRecentGame($filepath);
+  } catch (Throwable $e) {
+    error_log("StashRecentGame failed: " . $e->getMessage());
+  }
+}
+
 if ($makeCheckpoint) MakeGamestateBackup();
 if ($makeBlockBackup) MakeGamestateBackup("preBlockBackup.txt");
 if ($MakeStartTurnBackup) MakeStartTurnBackup();

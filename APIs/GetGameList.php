@@ -14,6 +14,7 @@ include_once '../Libraries/BlockedUserLibraries.php';
 include_once '../Libraries/FriendLibraries.php';
 include_once '../Libraries/FeaturedGameLibraries.php';
 include_once '../Libraries/GameHealthLog.php';
+include_once '../Libraries/RecentGameLibraries.php';
 
 $path = "../Games";
 
@@ -245,6 +246,7 @@ function ScanGameList($path, $currentTime)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          StashRecentGameBeforeDelete($dirPath);
           FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
             DeleteCache($gameToken);
@@ -299,6 +301,7 @@ function ScanGameList($path, $currentTime)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          StashRecentGameBeforeDelete($folder);
           FlushGameHealthLog($gameToken);
           deleteDirectory($folder);
           DeleteCache($gameToken);

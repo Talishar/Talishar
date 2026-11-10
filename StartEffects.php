@@ -96,6 +96,8 @@ include "WriteGamestate.php";
 
 if ($MakeStartTurnBackup) MakeStartTurnBackup();
 if ($MakeStartGameBackup) {
+  include_once "Libraries/RecentGameLibraries.php";
+  ClearRecentGameMarker($filepath);
   MakeGamestateBackup("origGamestate.txt");
   RecordReplayLogPosition($filepath, "start");
 }

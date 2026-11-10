@@ -1217,7 +1217,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         WriteLog($replaySaveResult["message"], highlight: true);
         return true;
       }
-      //getting player ids
       $filename = "./Games/" . $gameName . "/GameFile.txt";
       if (!file_exists($filename)) {
         $replaySaveResult["message"] = "Replay could not be saved because the game file is unavailable.";
@@ -1225,80 +1224,17 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       }
       $gameFile = file($filename);
-      $p1id = trim($gameFile[9]);
-      $p2id = trim($gameFile[10]);
-      // end getting player IDs
-      $pid = ($playerID == 1 ? $p1id : $p2id);
-      $path = "./Replays/" . $pid . "/";
+      $pid = trim($gameFile[$playerID == 1 ? 9 : 10] ?? "");
       if ($pid == "") {
         $replaySaveResult["message"] = "You must be logged in to save replays.";
         WriteLog($replaySaveResult["message"], highlight: true);
         break;
-      }
-      if (!file_exists($path)) {
-        if (!mkdir($path, 0777, true)) {
-          $replaySaveResult["message"] = "Replay storage could not be created. Please try again.";
-          WriteLog($replaySaveResult["message"], highlight: true);
-          break;
-        }
-      }
-      if (!file_exists($path . "counter.txt"))
-        $counter = 1;
-      else {
-        $counterFile = fopen($path . "counter.txt", "r");
-        $counter = fgets($counterFile);
-        fclose($counterFile);
       }
       $ownerMetafyTiers = json_decode(trim($gameFile[$playerID == 1 ? 38 : 39] ?? ''), true);
       if (!is_array($ownerMetafyTiers)) {
         $ownerMetafyTiers = ($playerID == 1 ? $p1MetafyTiers : $p2MetafyTiers) ?? [];
       }
       $maxReplaysSaved = GetMaxReplaySlotsForTiers($ownerMetafyTiers, IsUserContributor($pid));
-      $savedReplayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
-      if (count($savedReplayDirectories) >= $maxReplaysSaved) {
-        $allSavedReplaysAreFavorites = true;
-        foreach ($savedReplayDirectories as $directory) {
-          $metadataPath = $directory . "/replayMetadata.json";
-          $metadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
-          if (!is_array($metadata) || ($metadata["favorite"] ?? false) !== true) {
-            $allSavedReplaysAreFavorites = false;
-            break;
-          }
-        }
-        if ($allSavedReplaysAreFavorites) {
-          $replaySaveResult["message"] = "Replay was not saved because all $maxReplaysSaved replay slots are favorites. Remove a favorite replay or increase your replay slots with Metafy.";
-          WriteLog($replaySaveResult["message"], highlight: true);
-          break;
-        }
-      }
-      $counter = (int)$counter;
-      while (is_dir($path . $counter)) ++$counter;
-      $replayPath = $path . $counter;
-      $gamePath = "./Games/" . $gameName;
-      if (!is_dir($replayPath) && !mkdir($replayPath, 0777, true)) {
-        $replaySaveResult["message"] = "Replay storage could not be created. Please try again.";
-        WriteLog($replaySaveResult["message"], highlight: true);
-        break;
-      }
-      if (
-        !copy("$gamePath/origGamestate.txt", "$replayPath/origGamestate.txt") ||
-        !copy("$gamePath/commandfile.txt", "$replayPath/commandfile.txt")
-      ) {
-        deleteDir($replayPath . "/");
-        $replaySaveResult["message"] = "Replay files could not be saved. Please try again.";
-        WriteLog($replaySaveResult["message"], highlight: true);
-        break;
-      }
-      $previousTimeLimit = ini_get('max_execution_time');
-      @set_time_limit(0);
-      $replayWritten = WriteReplayFormat($gamePath, $replayPath);
-      if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
-      if (!$replayWritten) {
-        deleteDir($replayPath . "/");
-        $replaySaveResult["message"] = "Replay could not be saved because its state history is incomplete.";
-        WriteLog($replaySaveResult["message"], highlight: true);
-        break;
-      }
       $p1Character = &GetPlayerCharacter(1);
       $p2Character = &GetPlayerCharacter(2);
       $p1OriginalHero = GetClassState(1, $CS_OriginalHero);
@@ -1309,95 +1245,33 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $p2Hero = $p2OriginalHero !== "" && $p2OriginalHero !== "-"
         ? $p2OriginalHero
         : ($p2Character[0] ?? "");
-      $replayMetadata = [
+      $saveResult = SaveReplayFromGameDirectory("./Games/" . $gameName, $pid, (int)$playerID, [
         "p1DisplayName" => trim($gameFile[42] ?? ""),
         "p2DisplayName" => trim($gameFile[43] ?? ""),
-        "savedByPlayerID" => (int)$playerID,
         "p1HeroCardId" => $p1Hero,
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
         "p2HeroName" => $p2Hero === "" ? "" : CardName($p2Hero),
         "format" => trim($gameFile[3] ?? ""),
-        "formatVersion" => REPLAY_FORMAT_VERSION,
-        "stateCount" => count(ReplayStatePointers($replayPath)),
-        "favorite" => false,
-        "savedAt" => time()
-      ];
-      if (file_put_contents(
-        "$replayPath/replayMetadata.json",
-        json_encode($replayMetadata, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-        LOCK_EX
-      ) === false) {
-        deleteDir($replayPath . "/");
-        $replaySaveResult["message"] = "Replay metadata could not be saved. Please try again.";
+        "gameGUID" => trim($gameFile[37] ?? "")
+      ], $maxReplaysSaved);
+      if (!$saveResult["success"]) {
+        $replaySaveResult["message"] = $saveResult["message"];
         WriteLog($replaySaveResult["message"], highlight: true);
         break;
       }
-
-      for ($player = 1; $player < 3; ++$player) {
-        $turnNum = 1;
-        $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
-        $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
-        if (!file_exists($turnBackupFileSource)) { //player who goes second doesn't get a "turn 1"
-          ++$turnNum;
-          $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
-          $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
-        }
-        while (file_exists($turnBackupFileSource)) {
-          copy($turnBackupFileSource, $turnBackupFileDest);
-          ++$turnNum;
-          $turnBackupFileSource = "$gamePath/turn_$player-$turnNum" . "_Gamestate.txt";
-          $turnBackupFileDest = "$replayPath/turn_$player-$turnNum" . "_Gamestate.txt";
-        }
+      if ($saveResult["deletedReplayNumber"] !== null) {
+        WriteLog("You've reached the maximum number of saved replays ($maxReplaysSaved), deleting your oldest non-favorite replay (" . $saveResult["deletedReplayNumber"] . ")", highlight: true);
       }
-      if (file_put_contents($path . "counter.txt", $counter + 1, LOCK_EX) === false) {
-        deleteDir($replayPath . "/");
-        $replaySaveResult["message"] = "Replay counter could not be updated. Please try again.";
-        WriteLog($replaySaveResult["message"], highlight: true);
-        break;
-      }
-      $replayDirectories = glob($path . "[0-9]*", GLOB_ONLYDIR) ?: [];
-      if (count($replayDirectories) > $maxReplaysSaved) {
-        $oldestNonFavorite = INF;
-        foreach ($replayDirectories as $directory) {
-          $metadataPath = $directory . "/replayMetadata.json";
-          $metadata = file_exists($metadataPath) ? json_decode(file_get_contents($metadataPath), true) : [];
-          $isFavorite = is_array($metadata) && ($metadata["favorite"] ?? false) === true;
-          $replayNumber = (int)basename($directory);
-          if (!$isFavorite && $replayNumber < $oldestNonFavorite) $oldestNonFavorite = $replayNumber;
-        }
-        if (!is_infinite($oldestNonFavorite)) {
-          WriteLog("You've reached the maximum number of saved replays ($maxReplaysSaved), deleting your oldest non-favorite replay ($oldestNonFavorite)", highlight: true);
-          deleteDir($path . $oldestNonFavorite . "/");
-        }
-        else {
-          deleteDir($replayPath . "/");
-          $replaySaveResult["message"] = "Replay was not saved because all $maxReplaysSaved replay slots are favorites. Remove a favorite replay or increase your replay slots with Metafy.";
-          WriteLog($replaySaveResult["message"], highlight: true);
-          break;
-        }
-      }
-
+      $counter = $saveResult["replayNumber"];
       $replaySaveResult = [
         "success" => true,
-        "replayNumber" => (int)$counter,
-        "message" => "Replay #$counter saved."
+        "replayNumber" => $counter,
+        "message" => $saveResult["message"]
       ];
       WriteLog("Player " . $playerID . " saved this game as their replay #$counter.");
-
-      // Generate a shareable link for this replay. A token failure should not fail the save.
-      try {
-        $sharedDir = "./Replays/shared/";
-        if ((file_exists($sharedDir) || mkdir($sharedDir, 0777, true)) && is_dir($sharedDir)) {
-          $shareToken = bin2hex(random_bytes(32));
-          $tokenData = json_encode(["userId" => $pid, "replayNumber" => (int)$counter]);
-          if (file_put_contents($sharedDir . $shareToken . ".json", $tokenData, LOCK_EX) !== false) {
-            $shareUrl = "/replay/shared?token=$shareToken";
-            WriteLog("Share replay #$counter: <a href=\"$shareUrl\" target=\"_blank\" rel=\"noopener noreferrer\">Click to open shareable link</a>");
-          }
-        }
-      } catch (Throwable $exception) {
-        error_log("Failed to create replay share token: " . $exception->getMessage());
+      if ($saveResult["shareUrl"] !== null) {
+        WriteLog("Share replay #$counter: <a href=\"" . $saveResult["shareUrl"] . "\" target=\"_blank\" rel=\"noopener noreferrer\">Click to open shareable link</a>");
       }
       break;
     case 100023: // Save a playable snapshot of the current state
