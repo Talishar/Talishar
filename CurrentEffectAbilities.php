@@ -753,7 +753,7 @@ function OnAttackEffects($cardID)
           $remove = true;
           break;
         case "good_time_chapeau-PAID":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
+          if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && IsHeroAttackTarget()) {
             AddOnWagerEffects();
             $currentTurnEffects[$i] = ExtractCardID($currentTurnEffects[$i]);
           }
@@ -764,7 +764,7 @@ function OnAttackEffects($cardID)
         case "bigger_than_big_red-BUFF":
         case "bigger_than_big_yellow-BUFF":
         case "bigger_than_big_blue-BUFF":
-          if (IsCombatEffectActive($currentTurnEffects[$i]) && IsHeroAttackTarget()) {
+          if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && IsHeroAttackTarget()) {
             AskWager(ExtractCardID($currentTurnEffects[$i]));
           }
           break;
@@ -784,7 +784,7 @@ function OnAttackEffects($cardID)
           }
           break;
         case "unsheathed_red":
-          if (IsCombatEffectActive($currentTurnEffects[$i])){
+          if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)){
             AddLayer("TRIGGER", $mainPlayer, $currentTurnEffects[$i], additionalCosts:"ATTACKTRIGGER");
           }
           break;
@@ -1747,7 +1747,7 @@ function CurrentEffectGrantsGoAgain($cardToCheck = "")
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i, $isPreview)) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck, effectIndex:$i) && !IsCombatEffectLimited($i, $isPreview)) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       $card = GetClass($effectBase, $mainPlayer);
@@ -1924,13 +1924,13 @@ function CurrentEffectPreventsDefenseReaction($from)
         case "release_the_tension_red-1":
         case "release_the_tension_yellow-1":
         case "release_the_tension_blue-1":
-          if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i))
+          if ($from == "ARS" && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i))
             $reactionPrevented = true;
           break;
         case "increase_the_tension_red-1":
         case "increase_the_tension_yellow-1":
         case "increase_the_tension_blue-1":
-          if ($from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i])) $reactionPrevented = true;
+          if ($from == "HAND" && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)) $reactionPrevented = true;
           break;
         default:
           break;
@@ -2089,7 +2089,7 @@ function CurrentEffectEndTurnAbilities()
   }
 }
 
-function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false, $flicked = false)
+function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = false, $flicked = false, $effectIndex = -1)
 {
   global $CombatChain, $mainPlayer;
   if ($SpectraTarget) return;
@@ -2102,6 +2102,10 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
   if ($card != "-") {
     $dashPos = strpos($cardID, '-');
     $parameter = $dashPos !== false ? substr($cardID, $dashPos + 1) : '-';
+    if ($effectIndex != -1) {
+      $Effect = new CurrentEffect($effectIndex);
+      if ($card->EffectNeedsAttaching() && $Effect->AppliestoUniqueID() == -1) return false;
+    }
     return $card->CombatEffectActive($parameter, $defendingCard, $flicked);
   }
   $set = CardSet($cardID);
@@ -2433,7 +2437,7 @@ function EffectDefenderPowerModifiers($cardID)
   global $defPlayer, $currentTurnEffects;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID)) {
+    if ($currentTurnEffects[$i + 1] == $defPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardID, effectIndex:$i)) {
       $card = GetClass($currentTurnEffects[$i], $defPlayer);
       if ($card != "-") $mod += $card->EffectDefenderPowerModifier($cardID);
       switch ($currentTurnEffects[$i]) {

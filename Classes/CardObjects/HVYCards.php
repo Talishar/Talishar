@@ -1024,8 +1024,8 @@ class edge_ahead extends BaseCard {
     return $Effect->EffectID() == $this->cardID;
   }
 
-  function OnAttackEffect() {
-    if (IsCombatEffectActive($this->cardID) && IsHeroAttackTarget())
+  function OnAttackEffect($i = -1) {
+    if (IsCombatEffectActive($this->cardID, effectIndex:$i) && IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1068,7 +1068,7 @@ class edge_ahead_red extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1105,7 +1105,7 @@ class edge_ahead_yellow extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1142,7 +1142,7 @@ class edge_ahead_blue extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1483,8 +1483,8 @@ class hold_em extends BaseCard {
     return $Effect->EffectID() == $this->cardID;
   }
 
-  function OnAttackEffect() {
-    if (IsCombatEffectActive($this->cardID) && IsHeroAttackTarget())
+  function OnAttackEffect($i = -1) {
+    if (IsCombatEffectActive($this->cardID, effectIndex:$i) && IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1527,7 +1527,7 @@ class hold_em_red extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1564,7 +1564,7 @@ class hold_em_yellow extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1601,7 +1601,7 @@ class hold_em_blue extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -1925,8 +1925,8 @@ class money_where_ya_mouth_is extends BaseCard {
     return $Effect->EffectID() == $this->cardID;
   }
 
-  function OnAttackEffect() {
-    if (IsCombatEffectActive($this->cardID) && IsHeroAttackTarget())
+  function OnAttackEffect($i = -1) {
+    if (IsCombatEffectActive($this->cardID, effectIndex:$i) && IsHeroAttackTarget())
       AddLayer("TRIGGER", $this->controller, $this->cardID);
   }
 
@@ -1964,7 +1964,7 @@ class money_where_ya_mouth_is_red extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -2001,7 +2001,7 @@ class money_where_ya_mouth_is_yellow extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
@@ -2038,7 +2038,7 @@ class money_where_ya_mouth_is_blue extends Card {
   }
 
   function OnAttackEffect($cardID, $i) {
-    $this->baseCard->OnAttackEffect();
+    $this->baseCard->OnAttackEffect($i);
   }
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {

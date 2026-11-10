@@ -2153,7 +2153,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+        if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
           AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
         }
       }
@@ -2186,14 +2186,14 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
 
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-        if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
+        if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)) {
           AddCardEffectHitTrigger($currentTurnEffects[$i], effectInd:$i); // Effects that do not gives it's effect to the attack
         }
       }
 
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) { //"late" effects, effects that by default will  be on top
         if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-        if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+        if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
           AddLateEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
         }
       }
@@ -2387,7 +2387,7 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
     $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
     if ($Effect->AppliestoUniqueID() == -1 && $card != "-" && $card->EffectNeedsAttaching())
       continue; // Effect hasn't attached to anything yet, no need to clean it up
-    if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
+    if (IsCombatEffectActive($effectArr[0], $isSpectraTarget, effectIndex:$i) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
       if ($currentTurnEffects[$i + 3] == 0) $effectsToRemove[] = $i;
@@ -4996,7 +4996,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
         // remove any buff associated with the played attack
         $ctePieces = CurrentTurnEffectPieces();
         for ($i = count($currentTurnEffects) - $ctePieces; $i >= 0; $i -= $ctePieces) {
-          if (IsCombatEffectActive($currentTurnEffects[$i], $cardID) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
+          if (IsCombatEffectActive($currentTurnEffects[$i], $cardID, effectIndex:$i) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($currentTurnEffects[$i])) {
             RemoveCurrentTurnEffect($i);
           }
         }
@@ -5055,7 +5055,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           $count = count($currentTurnEffects);
           $pieces = CurrentTurnEffectPieces();
           for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
-            if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+            if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
               if (IsLayerContinuousBuff($currentTurnEffects[$i]) && $currentTurnEffects[$i + 1] == $mainPlayer) {
                 $CombatChain->AttackCard()->AddBuff($currentTurnEffects[$i]);
                 RemoveCurrentTurnEffect($i);

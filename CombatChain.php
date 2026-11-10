@@ -1464,7 +1464,7 @@ function IsVeilActive() {
   global $CurrentTurnEffects, $mainPlayer, $CCS_CachedVeilActive;
   for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
-    if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($Effect->EffectID()) && !IsCombatEffectLimited($Effect->Index())) {
+    if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($Effect->EffectID(), effectIndex:$Effect->Index()) && !IsCombatEffectLimited($Effect->Index())) {
       $card = GetClass($Effect->EffectID(), $mainPlayer);
       if ($card != "-" && $card->DoesEffectGrantVeil($Effect->Index())) return true;
     }
@@ -1485,7 +1485,7 @@ function IsDominateActive()
   $countCurrentTurnEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i], $i)) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i) && DoesEffectGrantsDominate($currentTurnEffects[$i], $i)) return true;
   }
   $characterEffectPieces = CharacterEffectPieces();
   $characterEffectsCount = count($characterEffects);
@@ -1524,7 +1524,7 @@ function IsOverpowerActive()
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $wagerActive = CachedWagerActive();
   for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i) && DoesEffectGrantsOverpower($currentTurnEffects[$i])) return true;
     if ($currentTurnEffects[$i + 1] == $mainPlayer && $currentTurnEffects[$i] == "double_down_red-BUFF" && $wagerActive) return true;
   }
   $overpowerAttackID = $CombatChain->AttackCard()->ID();
@@ -1951,7 +1951,7 @@ function ActiveOnHits(): bool
   $pieces = CurrentTurnEffectsPieces();
   for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
     if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-    if (IsCombatEffectActive($currentTurnEffects[$i]) && !IsCombatEffectLimited($i)) {
+    if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
       if (AddEffectHitTrigger($currentTurnEffects[$i], source:$attackCardID, target:$target, check:true)) return true;
     }
   }
@@ -2117,7 +2117,7 @@ function LinkBasePower($check=false)
     for ($i = 0; $i < $countCurrentTurnEffects; $i += $currentTurnEffectsPieces) {
       if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
       $card = GetClass($currentTurnEffects[$i], $mainPlayer);
-      if ($check || !IsCombatEffectActive($currentTurnEffects[$i])) continue;
+      if ($check || !IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)) continue;
       if ($card != "-") $basePower = ceil($basePower / $card->EffectDivideBasePower());
       switch ($currentTurnEffects[$i]) {
         case "kayo_berserker_runt-HALF":
@@ -2204,7 +2204,7 @@ function LayerStepPower($player="") { //calculates the modified power of an atta
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($j = $currentTurnEffectsCount - $currentTurnEffectsPieces; $j >= 0; $j -= $currentTurnEffectsPieces) {
-    if (IsCombatEffectActive($currentTurnEffects[$j], $cardID)) {
+    if (IsCombatEffectActive($currentTurnEffects[$j], $cardID, effectIndex:$j)) {
       if ($currentTurnEffects[$j + 1] == $player) {
         $power += EffectPowerModifier($currentTurnEffects[$j]);
       }

@@ -51,7 +51,7 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
     $effectID = $currentTurnEffects[$i];
-    if (IsCombatEffectActive($effectID) && !IsCombatEffectLimited($i)) {
+    if (IsCombatEffectActive($effectID, effectIndex:$i) && !IsCombatEffectLimited($i)) {
       $power = EffectPowerModifier($effectID);
       $fromCurrentAttack = $effectID == $attackID || IsGrantedBuff($effectID);
       if (($canGainAttack || $power < 0) && !($snagActive && ($fromCurrentAttack || CardType(EffectCardID($effectID)) == "AR"))) {
@@ -1067,7 +1067,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
     }
     if ($isCombat && HitEffectsArePrevented($source)) continue;
     $effectID = $currentTurnEffects[$i];
-    if ($source == $attackCardID && !IsCombatEffectActive($effectID)) continue;
+    if ($source == $attackCardID && !IsCombatEffectActive($effectID, effectIndex:$i)) continue;
     $remove = 0;
     $EffectContext = $effectID;
     $card = GetClass($effectID, $effectPlayer);
@@ -3687,7 +3687,7 @@ function GetCurrentAttackNames()
     $effectArr = explode("-", $currentTurnEffects[$i], 2);
     $name = CurrentEffectNameModifier($effectArr[0], isset($effectArr[1]) ? GamestateUnsanitize($effectArr[1]) : "N/A", $mainPlayer, $combatChain[0]);
     //You have to do this at the end, or you might have a recursive loop -- e.g. with head_leads_the_tail_red
-    if ($name != "" && IsCombatEffectActive($effectArr[0]) && !IsCombatEffectLimited($i)) {
+    if ($name != "" && IsCombatEffectActive($effectArr[0], effectIndex:$i) && !IsCombatEffectLimited($i)) {
       if (str_contains($name, ","))
         array_push($names, ...explode(",", $name));
       else $names[] = $name;

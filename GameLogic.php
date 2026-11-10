@@ -3053,7 +3053,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         for ($i = $CurrentTurnEffects->NumEffects() - 1; $i >= 0; --$i) {
           $Effect = $CurrentTurnEffects->Effect($i, true);
           $currentTurnEffectID = $Effect->EffectID();
-          if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true)) {
+          if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true, effectIndex: $Effect->Index())) {
             AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer, effectInd:$Effect->Index()); // Effects that do not gives it's effect to the attack
           }
           if ($Effect->AppliesToUniqueID() == $sourceUID) // effects that are applied to the source (used for weapon buffs)
