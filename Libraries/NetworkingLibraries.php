@@ -2016,7 +2016,8 @@ function ResolveChainLink()
 
   $totalPower = 0;
   $totalDefense = 0;
-  EvaluateCombatChain($totalPower, $totalDefense);
+  $powerModifiers = [];
+  EvaluateCombatChain($totalPower, $totalDefense, $powerModifiers);
 
   SetCombatChainState($CCS_LinkTotalPower, $totalPower);
 
@@ -2071,6 +2072,7 @@ function ResolveChainLink()
     }
     else {
       $damage = GetCombatChainState($CCS_CombatDamageReplaced) == 1 ? 0 : $totalPower - $totalDefense;
+      if (GetCombatChainState($CCS_CombatDamageReplaced) != 1) LogFrailtyPreventedStats($powerModifiers, $totalPower, $totalDefense);
       DamageTrigger($defPlayer, $damage, "COMBAT", $combatChain[0], $mainPlayer); //Include prevention
       // $damageDone = $totalPower-$totalDefense > 0 ? $totalPower-$totalDefense : 0;
       // if ($i > 0 && $i == count($targets) - 1 && !IsGameOver()) ResolveCombatDamage($damageDone, damageTarget: "HERO");
