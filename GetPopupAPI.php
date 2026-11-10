@@ -168,7 +168,7 @@ switch ($popupType) {
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen;
 
     $response->Settings = [];
     
@@ -241,6 +241,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "DisableSpacePass", 61, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableMiddleClickPass", 62, $dbSettings);
       AddSettingFromDB($response->Settings, "HideLogNoise", 63, $dbSettings);
+      AddSettingFromDB($response->Settings, "FannedHandTipSeen", 64, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -299,6 +300,7 @@ switch ($popupType) {
       AddUnsetAwareSetting($response->Settings, "DisableSpacePass", $SET_DisableSpacePass, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "DisableMiddleClickPass", $SET_DisableMiddleClickPass, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "HideLogNoise", $SET_HideLogNoise, $playerSettings);
+      AddSetting($response->Settings, "FannedHandTipSeen", $SET_FannedHandTipSeen, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;

@@ -74,6 +74,7 @@ $SET_DisablePlayerJoinedSound = 60;
 $SET_DisableSpacePass = 61;
 $SET_DisableMiddleClickPass = 62;
 $SET_HideLogNoise = 63;
+$SET_FannedHandTipSeen = 64;
 
 function SettingsPieces()
 {
@@ -739,6 +740,7 @@ function SettingsIdMap()
     "DisableSpacePass" => 61,
     "DisableMiddleClickPass" => 62,
     "HideLogNoise" => 63,
+    "FannedHandTipSeen" => 64,
   ];
   return $settingsToId;
 }
@@ -801,7 +803,7 @@ function SaveSettingInDatabase($setting)
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -815,7 +817,7 @@ function SaveSettingInDatabase($setting)
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
       $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
-      $SET_HideLogNoise,
+      $SET_HideLogNoise, $SET_FannedHandTipSeen,
     ], true);
   }
   return isset($persistable[$setting]);
