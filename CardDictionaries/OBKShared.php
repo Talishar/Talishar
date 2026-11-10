@@ -13,7 +13,7 @@ function GiveAuraAwait($player) {
 	$otherPlayer = OtherPlayer($player);
 	$MZIndex = $dqVars["MZIndex"] ?? "-";
 	$Disease = MZIndexToObject($player, $MZIndex);
-	if ($Disease != "") {
+	if ($Disease != "" && $Disease->Index() != -1) {
 		WriteLog("Player $player gave " . CardLink($Disease->CardID()) . " to Player $otherPlayer!");
 		StealAura($player, $Disease->Index(), $otherPlayer, "-", realSteal:false);
 	}
