@@ -415,7 +415,7 @@ function ProcessSpecificCardMacros()
         if ($allSameCog) { ContinueDecisionQueue($firstChoice); return true; }
       }
     }
-    if (InterchangeableChoices($currentPlayer, $choices)) {
+    if ($EffectContext != "provoke_blue" && InterchangeableChoices($currentPlayer, $choices)) {
       ContinueDecisionQueue($firstChoice);
       return true;
     }
