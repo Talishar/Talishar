@@ -85,6 +85,8 @@ if($format == "draft"){
 }
 
 // Add final game setup decisions
+$firstPlayerChoiceLog = FirstPlayerChoiceLog();
+if ($firstPlayerChoiceLog !== "") AddDecisionQueue("WRITELOG", $mainPlayer, GamestateSanitize($firstPlayerChoiceLog));
 GameSetup();
 
 ProcessDecisionQueue();
@@ -195,6 +197,18 @@ function handleCogwerxEquipment(&$p1Char, &$p2Char)
   foreach ($equipment as $cardID) {
     EquipWithSteamCounter($cardID, $p1Char, $p2Char);
   }
+}
+
+function FirstPlayerChoiceLog(): string
+{
+  global $firstPlayerChooser, $firstPlayer, $p2IsAI, $filepath;
+  $chooser = (int)$firstPlayerChooser;
+  if ($chooser !== 1 && $chooser !== 2) return "";
+  $order = (int)$firstPlayer === $chooser ? "first" : "second";
+  if ($p2IsAI == "1") $reason = "";
+  elseif (file_exists($filepath . "rematchLobby.txt")) $reason = " lost the previous game and";
+  else $reason = " won the roll and";
+  return "Player $chooser$reason chose to go $order.";
 }
 
 function GameSetup()
