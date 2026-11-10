@@ -113,6 +113,7 @@ include "../WriteLog.php";
 include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/RematchLibraries.php";
 
 $currentTime = (int)(microtime(true) * 1000);
 
@@ -375,6 +376,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->isEquipmentPhase = ($gameStatus < $MGS_GameStarted && !$arenaRevealed);
   $response->canSubmitEquipment = ($inPreGame && !$arenaRevealed && !$myEquipmentSubmitted);
   $response->canUnreadyEquipment = ($inPreGame && !$arenaRevealed && $myEquipmentSubmitted);
+  $response->canChangeDeck = (($playerID == 1 || $playerID == 2) && $gameStatus < $MGS_GameStarted && !$arenaRevealed && file_exists(RematchLobbyMarkerPath($gameName, "../")));
 
   if ($arenaRevealed && $otherCharacterLine !== "") {
     $otherCards = preg_split('/\s+/', $otherCharacterLine);
