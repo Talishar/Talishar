@@ -84,8 +84,10 @@ function StashRecentGame(string $gameDirectory): ?string
   $gameFileContent = @file_get_contents($gameDirectory . "GameFile.txt");
   if (!is_string($gameFileContent)) return null;
   $gameFile = explode("\r\n", $gameFileContent);
+  if (trim($gameFile[35] ?? "") === "1" || trim($gameFile[36] ?? "") === "1") return null;
   $p1uid = trim($gameFile[9] ?? "");
   $p2uid = trim($gameFile[10] ?? "");
+  if ($p1uid !== "" && $p1uid === $p2uid) return null;
   $userIds = array_values(array_unique(array_filter([$p1uid, $p2uid], "IsValidReplayUserId")));
   if (count($userIds) === 0) return null;
 
