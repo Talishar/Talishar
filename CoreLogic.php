@@ -3957,7 +3957,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = SearchItemForIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
-      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
+      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources(2, $currentPlayer);
     }
@@ -4066,7 +4066,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw and was destroyed");
+      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw");
       --$num;
     }
   }
