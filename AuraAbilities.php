@@ -155,6 +155,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     if ($effectAgent != $player)
       CheckInfectContracts($effectAgent, $cardID, $number);
   }
+  if ($number > 0 && $effectAgent != $player && SubtypeContains($cardID, "Disease")) LogDiseaseStats($player, $cardID, "created", $number);
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if ($isToken) {
     if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
