@@ -669,7 +669,10 @@ class exertion extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     switch($additionalCosts) {
       case "EXERT":
+        global $CS_HealthLost;
+        $healthLostBefore = GetClassState($this->controller, $CS_HealthLost);
         LoseHealth(1, $this->controller);
+        LogDiseaseStats($this->controller, $this->cardID, "damage", GetClassState($this->controller, $CS_HealthLost) - $healthLostBefore);
         break;
       case "DESTROY":
         DestroyAuraUniqueID($this->controller, $uniqueID, mainPhase:false);

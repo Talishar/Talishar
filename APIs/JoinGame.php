@@ -80,16 +80,30 @@ if ($favoriteDeckLink != "0" && str_contains($favoriteDeckLink, "<fav>")) {
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
 $forceBaseDeckRefresh = ($matchup === "__base__");
 if ($forceBaseDeckRefresh) $matchup = "";
+$changeDeck = filter_var(TryPOST("changeDeck", false), FILTER_VALIDATE_BOOLEAN);
+if ($changeDeck) $matchup = "";
 $starterDeck = false;
 
-// forceBaseDeckRefresh is only valid for a player who is already in the lobby.
-if ($forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) == "") {
+if ($changeDeck && $playerID != 1 && $playerID != 2) {
+  $response->error = "Only seated players can change decks.";
+  echo json_encode($response);
+  exit;
+}
+
+// forceBaseDeckRefresh and changeDeck are only valid for a player who is already in the lobby.
+if (($forceBaseDeckRefresh || $changeDeck) && GetCachePiece($gameName, $playerID + 6) == "") {
   $response->error = "No active session to refresh.";
   echo json_encode($response);
   exit;
 }
 
-if ($matchup == "" && !$forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) != "") {
+if ($changeDeck && $decklink == "" && $favoriteDeckLink == "0") {
+  $response->error = "Choose a deck to switch to.";
+  echo json_encode($response);
+  exit;
+}
+
+if ($matchup == "" && !$forceBaseDeckRefresh && !$changeDeck && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
   echo json_encode($response);
   exit;
@@ -134,6 +148,36 @@ include "../CardDictionary.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
+include_once "../Libraries/RematchLibraries.php";
+
+if ($changeDeck) {
+  include_once "../Libraries/ValidationLibraries.php";
+  $changeDeckAuthKey = TryPOST("authKey", "");
+  if ($changeDeckAuthKey === "") $changeDeckAuthKey = $_SESSION["p" . $playerID . "AuthKey"] ?? "";
+  if (!validateGameAuthKey($playerID, $changeDeckAuthKey, $p1Key, $p2Key)) {
+    $response->error = "Authentication failed";
+    echo json_encode($response);
+    exit;
+  }
+  if (!file_exists(RematchLobbyMarkerPath($gameName, "../"))) {
+    $response->error = "Decks can only be changed in a rematch.";
+    echo json_encode($response);
+    exit;
+  }
+  if ($gameStatus >= $MGS_GameStarted || ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1")) {
+    $response->error = "Decks can only be changed before both players lock in their arena.";
+    echo json_encode($response);
+    exit;
+  }
+  if ($playerID == 1) {
+    $p1Matchups = [];
+    $p1deckbuilderID = "";
+  } else {
+    $p2Matchups = [];
+    $p2deckbuilderID = "";
+  }
+}
+
 $joinerName = ($_SESSION["useruid"] ?? "Player 2");
 if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
  if ($playerID == 3 && $joinerName == "starmorgs" || ($p1uid == "zeni" || $p1uid == "rkhalid890") && $joinerName == "starmorgs" || $p1uid == "starmorgs" && ($joinerName == "zeni" || $joinerName == "rkhalid890")) {
@@ -162,7 +206,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    }
  }
 
- if ($playerID == 2 && !$forceBaseDeckRefresh && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {
+ if ($playerID == 2 && !$forceBaseDeckRefresh && !$changeDeck && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {
    $response->error = "Unable to join this game.";
    WriteGameFile();
    echo json_encode($response);
@@ -179,7 +223,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    }
  }
 
- if ($matchup == "" && !$forceBaseDeckRefresh && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+ if ($matchup == "" && !$forceBaseDeckRefresh && !$changeDeck && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
    if ($gameStatus >= $MGS_GameStarted) {
      $response->gameStarted = true;
    }
@@ -585,6 +629,31 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    exit;
  }
 
+ if ($changeDeck) {
+   $otherPlayer = ($playerID == 1 ? 2 : 1);
+   $otherIsAI = ($otherPlayer == 1 ? $p1IsAI : $p2IsAI) == "1";
+   if ($playerID == 1) {
+     $p1SideboardSubmitted = "0";
+     $p1EquipmentSubmitted = "0";
+     if (!$otherIsAI) $p2EquipmentSubmitted = "0";
+   } else {
+     $p2SideboardSubmitted = "0";
+     $p2EquipmentSubmitted = "0";
+     if (!$otherIsAI) $p1EquipmentSubmitted = "0";
+   }
+   WriteGameFile();
+   SetCachePieces($gameName, [$playerID + 6 => TruncateHeroName($character)]);
+   WriteLog("🔄 Player $playerID changed decks to " . CardName($character) . ".", path: "../");
+   GamestateUpdated($gameName);
+   session_write_close();
+   $response->message = "success";
+   $response->gameName = $gameName;
+   $response->playerID = $playerID;
+   $response->hero = $character;
+   echo json_encode($response);
+   exit;
+ }
+
  if ($matchup == "") {
    if ($playerID == 2) {
 
@@ -606,6 +675,8 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        }
        SetCachePiece($gameName, $playerID + 6, "joining");
        if ($p2LH) { flock($p2LH, LOCK_UN); fclose($p2LH); }
+       $rematchMarker = RematchLobbyMarkerPath($gameName, "../");
+       if (file_exists($rematchMarker)) unlink($rematchMarker);
      }
 
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");

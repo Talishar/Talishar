@@ -864,6 +864,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   }
   if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
+  if ($source == "bloodrot_pox") LogDiseaseStats($player, $source, "damage", $damage);
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   //I believe IncrementClassState resets every turn and is used to activate effects that check if arcane was dealt that turn so I added line below
   if ($type == "ARCANE" && $player != $playerSource) LogArcaneDamageStats($player, $damage);
@@ -3956,7 +3957,7 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
   if ($pitchValue == 1) {
     $talismanOfRecompenseIndex = SearchItemForIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
-      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
+      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources(2, $currentPlayer);
     }
@@ -4065,7 +4066,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw and was destroyed");
+      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw");
       --$num;
     }
   }

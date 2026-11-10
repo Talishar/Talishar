@@ -2515,7 +2515,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
           AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
         } else {
-          WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
           DestroyItemForPlayer($player, $index);
         }
         break;

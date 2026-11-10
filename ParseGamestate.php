@@ -44,7 +44,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
   global $p1CardTurnLog, $p2CardTurnLog, $p1LifeHistory, $p2LifeHistory, $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
   global $p1ContractsCompleted, $p2ContractsCompleted, $p1CardsDisrupted, $p2CardsDisrupted;
-  global $p1AllyDamagePrevented, $p2AllyDamagePrevented;
+  global $p1AllyDamagePrevented, $p2AllyDamagePrevented, $p1DiseaseStats, $p2DiseaseStats;
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
@@ -208,6 +208,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $handInstanceIDs = DecodeHandInstanceIDs($gamestateContent[91+$numChainLinks] ?? "");
   $p1AllyDamagePrevented = json_decode(trim($gamestateContent[92+$numChainLinks] ?? ""), true) ?? [];
   $p2AllyDamagePrevented = json_decode(trim($gamestateContent[93+$numChainLinks] ?? ""), true) ?? [];
+  $p1DiseaseStats = json_decode(trim($gamestateContent[94+$numChainLinks] ?? ""), true) ?? [];
+  $p2DiseaseStats = json_decode(trim($gamestateContent[95+$numChainLinks] ?? ""), true) ?? [];
   BuildMyGamestate($playerID);
 }
 

@@ -3263,7 +3263,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       if ($lastResult == "YES") --$items[$parameter + 1];
       else {
-        WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
         DestroyItemForPlayer($player, $parameter);
       }
       return "";
@@ -3281,7 +3280,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($lastResult == "YES") --$items[$index + 1];
       else {
-        WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
         DestroyItemForPlayer($player, $index);
       }
       return "";

@@ -3972,7 +3972,7 @@ class concealed_pathogen extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("bloodrot_pox", $mainPlayer);
+    PlayAura("bloodrot_pox", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
@@ -4003,7 +4003,7 @@ class concealed_sedative extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("inertia", $mainPlayer);
+    PlayAura("inertia", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
@@ -4034,7 +4034,7 @@ class concealed_nerve_gas extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("frailty", $mainPlayer);
+    PlayAura("frailty", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
