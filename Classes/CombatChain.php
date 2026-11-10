@@ -127,6 +127,10 @@ class ChainCard {
       return $this->chain[$this->index] ?? "-";
     }
 
+    function CardID() {
+      return $this->ID();
+    }
+
     function Become($cardID) {
       if (isset($this->chain[$this->index]))
         $this->chain[$this->index] = $cardID;

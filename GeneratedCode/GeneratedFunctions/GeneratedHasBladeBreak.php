@@ -2,6 +2,14 @@
 function GeneratedHasBladeBreak($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"bounty_brim" => true,
+"stimtek_vest" => true,
+"wristcuff_injectors" => true,
+"murder_sprees" => true,
+"needlebane_cowl" => true,
+"needlebane_coat" => true,
+"needlebane_gauntlets" => true,
+"needlebane_steppers" => true,
 "adaptive_plating" => true,
 "amethyst_tiara" => true,
 "anticipating_gaze" => true,
@@ -88,6 +96,7 @@ return match($cardID) {
 "ironrot_helm" => true,
 "ironrot_legs" => true,
 "ironrot_plate" => true,
+"isolation_vestment" => true,
 "kabuto_of_imperial_authority" => true,
 "laughing_knee_slappers" => true,
 "leap_frog_gloves" => true,
@@ -120,6 +129,7 @@ return match($cardID) {
 "path_of_vengeance" => true,
 "peg_leg" => true,
 "perch_grapplers" => true,
+"plague_mask" => true,
 "plate_of_tough_love" => true,
 "quartermasters_boots" => true,
 "rage_baiters" => true,
@@ -133,6 +143,7 @@ return match($cardID) {
 "rotten_old_buckler" => true,
 "scowling_flesh_bag" => true,
 "sealace_sarong" => true,
+"second_salvos" => true,
 "shroud_of_the_fate_watcher" => true,
 "silver_palms" => true,
 "skullbone_crosswrap" => true,

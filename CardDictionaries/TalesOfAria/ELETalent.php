@@ -6,7 +6,7 @@
     global $CS_CardsInDeckBeforeOpt;
     global $combatChainState, $CCS_GoesWhereAfterLinkResolves;
     $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     switch($cardID)
     {
       case "korshem_crossroad_of_elements":
@@ -123,7 +123,7 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "polar_blast_red": case "polar_blast_yellow": case "polar_blast_blue":
-        $cost = match($cardID) { "polar_blast_red" => 3, "polar_blast_yellow" => 2, default => 1 };
+        $cost = ByColor($cardID, 3, 2, 1);
         AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose_if_you_want_to_pay_".$cost."_to_prevent_Dominate");
         AddPayPrompt("BUTTONINPUT", $otherPlayer, "0," . $cost, 0, 1);
         AddDecisionQueue("PAYRESOURCES", $otherPlayer, "<-", 1);
@@ -228,7 +228,7 @@
 
   function SowTomorrowIndices($player, $cardID)
   {
-    $minCost = match($cardID) { "sow_tomorrow_red" => 0, "sow_tomorrow_yellow" => 1, default => 2 };
+    $minCost = ByColor($cardID, 0, 1, 2);
     $earth = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "EARTH"), SearchDiscard($player, "AA", "", -1, $minCost, "", "EARTH"));
     $elemental = CombineSearches(SearchDiscard($player, "A", "", -1, $minCost, "", "ELEMENTAL"), SearchDiscard($player, "AA", "", -1, $minCost, "", "ELEMENTAL"));
     return CombineSearches($earth, $elemental);

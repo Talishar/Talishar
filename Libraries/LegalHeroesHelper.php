@@ -69,7 +69,7 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'vynnset', 'name' => 'Vynnset', 'young' => true],
   ['heroId' => 'professor_teklovossen', 'name' => 'Professor Teklovossen', 'young' => true],
   ['heroId' => 'brevant_civic_protector', 'name' => 'Brevant Civic Protector', 'young' => true],
-  ['heroId' => 'melody_sing-along', 'name' => 'Melody Sing-along', 'young' => true],
+  ['heroId' => 'melody_sing_along', 'name' => 'Melody Sing-along', 'young' => true],
   ['heroId' => 'dash_io', 'name' => 'Dash I/O', 'young' => false],
   ['heroId' => 'dash_database', 'name' => 'Dash Database', 'young' => true],
   ['heroId' => 'maxx_the_hype_nitro', 'name' => 'Maxx The Hype Nitro', 'young' => false],
@@ -124,7 +124,7 @@ $ALL_HEROES_OF_RATHE = [
   ['heroId' => 'pleiades_superstar', 'name' => 'Pleiades Superstar', 'young' => false],
   ['heroId' => 'pleiades', 'name' => 'Pleiades', 'young' => true],
   ['heroId' => 'kayo_underhanded_cheat', 'name' => 'Kayo Underhanded Cheat', 'young' => false],
-  ['heroId' => 'kayo_strong-arm', 'name' => 'Kayo Strong-Arm', 'young' => true],
+  ['heroId' => 'kayo_strong_arm', 'name' => 'Kayo Strong-Arm', 'young' => true],
   ['heroId' => 'lyath_goldmane_vile_savant', 'name' => 'Lyath Goldmane Vile Savant', 'young' => false],
   ['heroId' => 'lyath_goldmane', 'name' => 'Lyath Goldmane', 'young' => true],
   ['heroId' => 'bravo_flattering_showman', 'name' => 'Bravo Flattering Showman', 'young' => true],
@@ -173,6 +173,8 @@ $ALL_HEROES_OF_RATHE = [
 function isHeroBannedInFormat($heroId, $format) {
   global $livingLegends;
 
+  $allowsSpoilers = in_array($format, ['futurecc', 'futurell', 'futuresage', 'precon', 'open'], true);
+
   // Format aliases (matches JoinGame.php convention)
   if ($format == 'compblitz') $format = 'blitz';
   if ($format == 'compcc') $format = 'cc';
@@ -181,6 +183,14 @@ function isHeroBannedInFormat($heroId, $format) {
 
   // Living Legends are banned in Classic Constructed
   if (($format == 'cc' || $format == 'futurecc') && is_array($livingLegends ?? null) && in_array($heroId, $livingLegends, true)) {
+    return true;
+  }
+  if ($format === 'gage' && in_array($heroId, ['bravo_star_of_the_show', 'chane_bound_by_shadow', 'briar_warden_of_thorns'], true)) {
+    return true;
+  }
+
+  if (!$allowsSpoilers && function_exists('CardSet')
+      && in_array(CardSet($heroId), ['MPA', 'AMO', 'OBK', 'AMG', ''], true)) {
     return true;
   }
 
@@ -194,19 +204,36 @@ function isHeroBannedInFormat($heroId, $format) {
 function GetLegalHeroes($format) {
   global $ALL_HEROES_OF_RATHE, $benched;
 
-  // Format-tier filter: young heroes for Blitz/Sage/Commoner/Clash formats,
-  // adult heroes for everything else (CC, LL CC, Draft, Sealed, Gage, etc.)
+  // Limited and small-deck formats use young heroes. Open and Brawl accept
+  // either age; the other constructed formats use adult heroes.
   $youngFormats = [
-    'blitz', 'compblitz', 'openblitz',
+    'blitz', 'compblitz', 'openblitz', 'openformatblitz',
     'sage', 'compsage', 'opensage', 'futuresage',
     'commoner',
-    'clash',
+    'clash', 'draft', 'sealed',
   ];
   $useYoung = in_array($format, $youngFormats, true);
+  $anyAge = in_array($format, ['open', 'brawl', 'precon'], true);
+  // These are the heroes of the fixed preconstructed decks in CreateGame.
+  $preconHeroes = [
+    'maxx_the_hype_nitro', 'aurora_shooting_star', 'jarl_vetreidi',
+    'dash_io', 'azalea_ace_in_the_hole', 'ser_boltyn_breaker_of_dawn',
+    'kayo_armed_and_dangerous', 'gravy_bones_shipwrecked_looter',
+    'ira_scarlet_revenger', 'pleiades_superstar', 'rhinar_reckless_rampage',
+    'arakni_5lp3d_7hru_7h3_cr4x', 'hala_bladesaint_of_the_vow',
+    'zyggy_starlight', 'olympia_prized_fighter', 'malice_domina_of_the_dead',
+    'dr_mortimer_blight_of_the_pits'
+  ];
 
   $legal = [];
   foreach ($ALL_HEROES_OF_RATHE as $h) {
-    if ($h['young'] !== $useYoung) continue;
+    if (!$anyAge && $h['young'] !== $useYoung) continue;
+    if ($format === 'precon' && !in_array($h['heroId'], $preconHeroes, true)) continue;
+
+    if ($format === 'commoner') {
+      $rarity = function_exists('Rarity') ? Rarity($h['heroId']) : '';
+      if (!in_array($rarity, ['R', 'C', 'T', 'B'], true)) continue;
+    }
 
     if ($useYoung && in_array($format, ['sage', 'compsage', 'opensage', 'futuresage'], true)) {
       $futureSageException = $format === 'futuresage' && (
@@ -239,7 +266,7 @@ function GetLegalHeroes($format) {
 function GetMasteryHeroGroups() {
   $toSetIds = function ($heroes) {
     return array_values(array_unique(array_filter(array_map(
-      fn($hero) => function_exists('SetID') ? SetID($hero['heroId']) : '',
+      fn($hero) => function_exists('SetID') ? HeroMasteryHeroId(SetID($hero['heroId'])) : '',
       $heroes
     ))));
   };

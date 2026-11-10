@@ -366,7 +366,7 @@ function OUTAbilityCost($cardID)
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "codex_of_bloodrot_yellow":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($currentPlayer));
         if(!ArsenalFull($currentPlayer))
         {
           MZMoveCard($currentPlayer, "MYHAND", "MYARS,HAND,DOWN", silent:true);
@@ -379,13 +379,13 @@ function OUTAbilityCost($cardID)
         PlayAura($CID_BloodRotPox, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "codex_of_frailty_yellow":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($currentPlayer));
         CodexOfFrailty($currentPlayer);
         PlayAura("ponder", $currentPlayer);
         PlayAura($CID_Frailty, $otherPlayer, effectController: $currentPlayer);
         return "";
       case "codex_of_inertia_yellow":
-        $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($currentPlayer));
         $myDeck = new Deck($currentPlayer);
         if(!ArsenalFull($currentPlayer) && !$myDeck->Empty())
         {
@@ -700,10 +700,14 @@ function OUTAbilityCost($cardID)
     return $indices;
   }
 
+  function ThrowDaggerIndicesAwait($player) {
+    return ThrowDaggerIndices($player);
+  }
+
   function ThrowDaggerTargeting($player, $cardID, $may=false, $playCard=true) {
     $message = "Choose a target for " . CardLink($cardID);
-    $indices = ThrowDaggerIndices($player);
-    Await($player, "ChooseMultiZone", indices:$indices, may:$may, context:$message, subsequent:0);
+    Await($player, "ThrowDaggerIndices", "indices", subsequent:0);
+    Await($player, "ChooseMultiZone", may:$may, context:$message);
     if ($playCard) Await($player, "SetLayerTarget", layerID:$cardID, final:true);
   }
 
@@ -711,7 +715,7 @@ function OUTAbilityCost($cardID)
   {
     global $currentPlayer, $CCS_HitThisLink, $CCS_FlickedDamage;
     $heroTargetInd = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     if ($target == "-") {
       WriteLog("Throw weapon without a target is deprecated");
       return;

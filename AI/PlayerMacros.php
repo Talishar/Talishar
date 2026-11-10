@@ -178,7 +178,7 @@ function ForcedPitchIndex($player)
   if ($handCount == 0) return -1;
 
   // Pitch-time resource bonuses make the pitch order matter, so let the player choose
-  if (GetItemIndex("talisman_of_recompense_yellow", $player) > -1) return -1;
+  if (SearchItemForIndex("talisman_of_recompense_yellow", $player) > -1) return -1;
   if (GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol")) return -1;
 
   $resources = &GetResources($player);
@@ -563,7 +563,10 @@ function HasPlayableCard($player, $phase)
   }
 
   for ($i = 0, $count = $CombatChain->NumCardsActiveLink(); $i < $count; ++$i) {
-    if(IsPlayable($CombatChain->Card($i, cardNumber:true)->ID(), $phase, "CC", $i, $restriction, $player)) return true;
+    $ChainCard = $CombatChain->Card($i, cardNumber:true);
+    $charIndex = $ChainCard->PlayerID() == $player ? FindCharacterIndexUniqueID($player, $ChainCard->OriginUniqueID()) : -1;
+    if ($charIndex != -1 && $character[$charIndex + 9] == 0) continue;
+    if(IsPlayable($ChainCard->ID(), $phase, "CC", $i, $restriction, $player)) return true;
   }
 
   $banish = &GetBanish($player);
@@ -579,6 +582,7 @@ function HasPlayableCard($player, $phase)
   $discard = GetDiscard($player);
   $discardPieces = DiscardPieces();
   for($i=0, $count=count($discard); $i<$count; $i+=$discardPieces) {
+    if (HasGraveyardGem($discard[$i]) && !IsGraveyardGemActive($player, $discard[$i+1])) continue;
     if(IsPlayable($discard[$i], $phase, "GY", $i, $restriction, $player)) return true;
   }
 
@@ -597,7 +601,7 @@ function HasPlayableCard($player, $phase)
 function PlayerMacrosCardPlayed()
 {
   global $turn, $currentPlayer, $SET_PassDRStep;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   if($turn[0] == "A")
   {
     ChangeSetting($otherPlayer, $SET_PassDRStep, 0);

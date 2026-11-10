@@ -253,7 +253,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "dauntless_red": case "dauntless_yellow": case "dauntless_blue":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
-      AddCurrentTurnEffect($cardID . "-2", ($mainPlayer == 1 ? 2 : 1));
+      AddCurrentTurnEffect($cardID . "-2", (OtherPlayer($mainPlayer)));
       return "";
     case "out_for_blood_red": case "out_for_blood_yellow": case "out_for_blood_blue":
       AddCurrentTurnEffect($cardID . "-1", $mainPlayer);
@@ -293,7 +293,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       }
       return $rv;
     case "teklovossens_workshop_red": case "teklovossens_workshop_yellow": case "teklovossens_workshop_blue":
-      $maxCost = match($cardID) { "teklovossens_workshop_red" => 2, "teklovossens_workshop_yellow" => 1, default => 0 };
+      $maxCost = ByColor($cardID, 2, 1, 0);
       Opt($cardID, GetClassState($currentPlayer, $CS_NumBoosted));
       AddDecisionQueue("DECKCARDS", $currentPlayer, "0");
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
@@ -337,7 +337,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "increase_the_tension_red": case "increase_the_tension_yellow": case "increase_the_tension_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
-      AddCurrentTurnEffect($cardID . "-1", ($currentPlayer == 1 ? 2 : 1));
+      AddCurrentTurnEffect($cardID . "-1", (OtherPlayer($currentPlayer)));
       return "";
     case "bloodsheath_skeleta":
       AddCurrentTurnEffect($cardID . "-AA", $currentPlayer);
@@ -367,7 +367,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       else AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "sutcliffes_research_notes_red": case "sutcliffes_research_notes_yellow": case "sutcliffes_research_notes_blue":
-      $count = match($cardID) { "sutcliffes_research_notes_red" => 3, "sutcliffes_research_notes_yellow" => 2, default => 1 };
+      $count = ByColor($cardID, 3, 2, 1);
       $deck = new Deck($currentPlayer);
       $numRunechants = 0;
       if($deck->Reveal($count)) {
@@ -395,7 +395,7 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       NegateLayer($target);
       return "";
     case "cindering_foresight_red": case "cindering_foresight_yellow": case "cindering_foresight_blue":
-      $optAmount = match($cardID) { "cindering_foresight_red" => 3, "cindering_foresight_yellow" => 2, default => 1 };
+      $optAmount = ByColor($cardID, 3, 2, 1);
       AddCurrentTurnEffect($cardID, $currentPlayer);
       PlayerOpt($currentPlayer, $optAmount);
       return "";
@@ -416,7 +416,8 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       Draw($currentPlayer, num: $count);
       return "Drew " . $count . " card" . ($count > 1 ? "s" : "");
     case "snag_blue":
-      AddCurrentTurnEffect("snag_blue", ($currentPlayer == 1 ? 2 : 1));
+      AddCurrentTurnEffect("snag_blue", $currentPlayer);
+      AddCurrentTurnEffect("snag_blue", (OtherPlayer($currentPlayer)));
       return "";
     case "promise_of_plenty_red": case "promise_of_plenty_yellow": case "promise_of_plenty_blue":
       if($from == "ARS") {

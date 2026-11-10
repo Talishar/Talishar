@@ -1,73 +1,51 @@
 <?php
 
-class Auras {
+class Auras extends ZoneObjects {
 
   // Properties
-  private $auras = [];
-  private $player = 0;
   private $boundIndex = null;
 
   // Constructor
   function __construct($player) {
-    $this->auras = &GetAuras($player);
+    $this->cards = &GetAuras($player);
     $this->player = $player;
+    $this->pieces = AuraPieces();
+    $this->uidOffset = 6;
   }
 
-  // Methods
-  function Card($index, $cardNumber=false) {
-    if($cardNumber) $index *= AuraPieces();
+  // a null object AuraCard (index -1) has all the methods, but they do nothing
+  protected function NewCard($index) {
     return new AuraCard($index, $this->player);
   }
 
-  function FindCardUID($uid) {
-    $count = count($this->auras);
-    if ($count == 0) return new AuraCard(-1, $this->player);
-    $auraPieces = AuraPieces();
-    for ($i = 0; $i < $count; $i += $auraPieces) {
-      if ($this->auras[$i + 6] == $uid) return new AuraCard($i, $this->player);
-    }
-    // return a null object AuraCard that has all the methods, but they do nothing
-    return new AuraCard(-1, $this->player);
-  }
-
+  // Methods
   function SearchAurasForModality($mode, $cardID="-") {
-    $count = count($this->auras);
+    $count = count($this->cards);
     if ($count == 0) return "";
     $auraPieces = AuraPieces();
     for ($i = 0; $i < $count; $i += $auraPieces) {
-      if ($cardID != "-" && $this->auras[$i] != $cardID) continue;
-      if (DelimStringContains($this->auras[$i + 10], $mode)) return new AuraCard($i, $this->player);
+      if ($cardID != "-" && $this->cards[$i] != $cardID) continue;
+      if (DelimStringContains($this->cards[$i + 10], $mode)) return new AuraCard($i, $this->player);
     }
     return "";
   }
 
   function NumAuras() {
-    return intdiv(count($this->auras), AuraPieces());
-  }
-
-  function FindCardID($cardID) { //returns first AuraCard with a cardID
-    $count = count($this->auras);
-    if ($count == 0) return new AuraCard(-1, $this->player);
-    $auraPieces = AuraPieces();
-    for ($i = 0; $i < $count; $i += $auraPieces) {
-      if ($this->auras[$i] == $cardID) return new AuraCard($i, $this->player);
-    }
-    // return a null object AuraCard that has all the methods, but they do nothing
-    return new AuraCard(-1, $this->player);
+    return $this->NumCards();
   }
 
   function BuildBoundIndex() {
     $this->boundIndex = [];
-    $count = count($this->auras);
+    $count = count($this->cards);
     $auraPieces = AuraPieces();
     for ($i = 0; $i < $count; $i += $auraPieces) {
-      if (isset($this->auras[$i+14])) $this->boundIndex[$this->auras[$i+14]][] = $i;
+      if (isset($this->cards[$i+14])) $this->boundIndex[$this->cards[$i+14]][] = $i;
     }
   }
 
   function FindBoundAuras($uid, $zone="MYALLY") {
     $ret = [];
-    $count = count($this->auras);
+    $count = count($this->cards);
     if ($count == 0) return [];
     if ($this->boundIndex !== null) {
       foreach ($this->boundIndex["$zone-$uid"] ?? [] as $i) $ret[] = new AuraCard($i, $this->player);
@@ -75,8 +53,8 @@ class Auras {
     }
     $auraPieces = AuraPieces();
     for ($i = 0; $i < $count; $i += $auraPieces) {
-      if (!isset($this->auras[$i + 14])) continue;
-      if ($this->auras[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);
+      if (!isset($this->cards[$i + 14])) continue;
+      if ($this->cards[$i+14] == "$zone-$uid") $ret[] = new AuraCard($i, $this->player);
     }
     return $ret;
   }
@@ -205,7 +183,7 @@ class AuraCard {
   function Bounce() {
     $cardID = $this->CardID();
     $targetedPlayer = $this->Player();
-    $notTargetedPlayer = $targetedPlayer == 1 ? 2 : 1;
+    $notTargetedPlayer = OtherPlayer($targetedPlayer);
     $cardOwner = substr($this->From(), 0, 5) == "THEIR" ? $notTargetedPlayer : $targetedPlayer;
     if (!$this->IsToken() && $this->Index() != -1)
       AddPlayerHand($cardID, $cardOwner, "-");

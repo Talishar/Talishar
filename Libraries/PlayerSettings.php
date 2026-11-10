@@ -62,7 +62,19 @@ $SET_ManualValda = 48; //Do you want to manually create Valda's Seismic Surge to
 $SET_AutoPitchForced = 49; //Automatically pitch the whole hand when every card in it is needed to pay the remaining cost
 $SET_RequireYesNoAnswer = 50; //Passing does not answer No on Yes/No prompts
 $SET_LandscapeTipSeen = 51;
-$SET_FannedHandTipSeen = 52;
+$SET_OpenHands = 52; //Teaching mode: hand and arsenal are face up to the opponent. Set from the lobby at game start, never by the client
+$SET_ReducedMotion = 53;
+$SET_PromptTextSize = 54;
+$SET_ChatTextSize = 55;
+$SET_SoundVolume = 56;
+$SET_DisablePrioritySound = 57;
+$SET_DisableShuffleSound = 58;
+$SET_DisableHandReorderSound = 59;
+$SET_DisablePlayerJoinedSound = 60;
+$SET_DisableSpacePass = 61;
+$SET_DisableMiddleClickPass = 62;
+$SET_HideLogNoise = 63;
+$SET_FannedHandTipSeen = 64;
 
 function SettingsPieces()
 {
@@ -77,9 +89,17 @@ function IsUnsetAwareSetting($setting)
   if ($unsetAware === null) {
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
+    global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
+    global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
+    global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
+    global $SET_HideLogNoise;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
+      $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
+      $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
+      $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
+      $SET_HideLogNoise,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -542,6 +562,7 @@ function GetCardBack($player)
     139 => "CBShine",
     140 => "CB_IndyFab",
     141 => "CBBashAndFlood",
+    142 => "WeTakeCandy",
   ];
   $override = GetFavoriteDeckCosmeticOverride($player);
   $cardBackId = ($override !== null && $override['cardBack'] !== '0')
@@ -581,13 +602,19 @@ function LoadViewerColorblindMode($viewerUserId)
   global $SET_ColorblindMode;
   if (!is_numeric($viewerUserId) || !function_exists("LoadSavedSettings")) return false;
   $flat = LoadSavedSettings((string)$viewerUserId);
-  return SavedSettingValue($flat, $SET_ColorblindMode) == "1";
+  return IsColorblindModeValue(SavedSettingValue($flat, $SET_ColorblindMode));
+}
+
+// 0 is off, 1 is the original single toggle, 2-4 are the deuteranopia, protanopia and tritanopia presets.
+function IsColorblindModeValue($value)
+{
+  return in_array((string)$value, ["1", "2", "3", "4"], true);
 }
 
 function IsColorblindMode($player)
 {
   global $SET_ColorblindMode;
-  return SettingValue($player, $SET_ColorblindMode, "0") == "1";
+  return IsColorblindModeValue(SettingValue($player, $SET_ColorblindMode, "0"));
 }
 
 function ShortcutAttackThreshold($player)
@@ -620,6 +647,12 @@ function IsHideHandFromFriends($player)
 {
   global $SET_HideHandFromFriends;
   return SettingValue($player, $SET_HideHandFromFriends, "0") == "1";
+}
+
+function IsOpenHands($player)
+{
+  global $SET_OpenHands;
+  return SettingValue($player, $SET_OpenHands, "0") == "1";
 }
 
 function IsStreamerMode($player)
@@ -695,20 +728,33 @@ function SettingsIdMap()
     "AutoPitchForced" => 49,
     "RequireYesNoAnswer" => 50,
     "LandscapeTipSeen" => 51,
-    "FannedHandTipSeen" => 52,
+    "OpenHands" => 52,
+    "ReducedMotion" => 53,
+    "PromptTextSize" => 54,
+    "ChatTextSize" => 55,
+    "SoundVolume" => 56,
+    "DisablePrioritySound" => 57,
+    "DisableShuffleSound" => 58,
+    "DisableHandReorderSound" => 59,
+    "DisablePlayerJoinedSound" => 60,
+    "DisableSpacePass" => 61,
+    "DisableMiddleClickPass" => 62,
+    "HideLogNoise" => 63,
+    "FannedHandTipSeen" => 64,
   ];
   return $settingsToId;
 }
 
 function ParseSettingsStringValueToIdInt(string $value)
 {
-  return SettingsIdMap()[$value];
+  return SettingsIdMap()[$value] ?? null;
 }
 
 function ChangeSetting($player, $setting, $value, $playerId = "")
 {
   global $SET_MuteChat, $SET_AlwaysHoldPriority, $SET_AutoPassTurn, $SET_CasterMode, $layerPriority, $gameName;
-  global $SET_DisableHoldToAutoPass;
+  global $SET_DisableHoldToAutoPass, $SET_OpenHands;
+  if ($setting == $SET_OpenHands) return;
   if ($setting == $SET_AutoPassTurn && $value == "1" && HoldToAutoPassDisabled($player)) return;
   // Only update game state if not in profile context
   if($player != "" && $player != 0) {
@@ -753,7 +799,11 @@ function SaveSettingInDatabase($setting)
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
-    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen, $SET_FannedHandTipSeen;
+    global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
+    global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
+    global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
+    global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -763,7 +813,11 @@ function SaveSettingInDatabase($setting)
       $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
-      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen, $SET_FannedHandTipSeen,
+      $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,
+      $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
+      $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
+      $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
+      $SET_HideLogNoise, $SET_FannedHandTipSeen,
     ], true);
   }
   return isset($persistable[$setting]);

@@ -40,3 +40,31 @@ function FormatName($formatCode)
   if ($nameMap === null) $nameMap = array_flip(FormatCodeMap());
   return $nameMap[$formatCode] ?? "-";
 }
+
+function FormatDisplayName($format)
+{
+  return match ($format) {
+    "cc" => "Classic Constructed",
+    "compcc" => "Competitive Classic Constructed",
+    "blitz" => "Blitz",
+    "compblitz" => "Competitive Blitz",
+    "futurecc" => "Future Classic Constructed",
+    "commoner" => "Commoner",
+    "sealed" => "Sealed",
+    "draft" => "Draft",
+    "llcc" => "Living Legend",
+    "llblitz" => "Living Legend Blitz",
+    "openformatblitz" => "Open Blitz",
+    "clash" => "Clash",
+    "futurell" => "Future Living Legend",
+    "openformatllblitz" => "Open Living Legend Blitz",
+    "compllcc" => "Competitive Living Legend",
+    "sage" => "Silver Age",
+    "compsage" => "Competitive Silver Age",
+    "futuresage" => "Future Silver Age",
+    "open" => "Open",
+    "gage" => "Golden Age",
+    "precon" => "Preconstructed Deck",
+    default => $format,
+  };
+}

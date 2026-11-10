@@ -27,6 +27,7 @@ $favoriteDeckLink = TryPOST("favoriteDecks", "0"); //This one is kind of weird. 
 $gameDescription = htmlspecialchars(TryPOST("gameDescription", "Game #"), ENT_QUOTES); //Just a string with the game name
 $deckbuilderID = TryPOST("user", "");
 $deckTestDeck = TryPOST("deckTestDeck", "");
+$openHands = $visibility == "private" && filter_var(TryPOST("openHands", false), FILTER_VALIDATE_BOOLEAN) ? "openhands" : ""; //Teaching mode: both hands face up. A token, not "1": WriteGameFile does not truncate, so stale bytes can follow the last field
 
 if ($favoriteDeckLink != 0) {
   $favDeckArr = explode("<fav>", $favoriteDeckLink);

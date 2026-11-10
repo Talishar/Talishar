@@ -143,17 +143,51 @@
 // }
 
 
-// class beacon_of_victory_yellow extends Card {
+class beacon_of_victory_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "beacon_of_victory_yellow";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "beacon_of_victory_yellow";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NumCharged;
+    $amount = intval($additionalCosts);
+    AddCurrentTurnEffect("$this->cardID-$amount", $this->controller);
+    if(GetClassState($this->controller, $CS_NumCharged) > 0) {
+      $search = CombineSearches(SearchDeck($this->controller, "A", "", $amount), SearchDeck($this->controller, "AA", "", $amount));
+      AddDecisionQueue("PASSPARAMETER", $this->controller, $search);
+      AddDecisionQueue("MAYCHOOSEDECK", $this->controller, "<-", 1);
+      AddDecisionQueue("MULTIADDHAND", $this->controller, "-", 1);
+      AddDecisionQueue("REVEALCARDS", $this->controller, "-", 1);
+      AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+    }
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return intval($param);
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return count(GetSoul($this->controller)) == 0;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $CS_AdditionalCosts;
+    AddDecisionQueue("FINDINDICES", $this->controller, "SOULINDICES");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose how many cards to banish from your soul");
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "<-", 1);
+    AddDecisionQueue("WRITELASTRESULT", $this->controller, CardLink($this->cardID)." was paid with an additional cost of ", 1);
+    AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+    AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "GETINDICES,", 1);
+    AddDecisionQueue("FINDINDICES", $this->controller, "<-", 1);
+    AddDecisionQueue("MULTIBANISHSOUL", $this->controller, "-", 1);
+  }
+}
 
 
 // class belittle_red extends Card {
@@ -3605,12 +3639,7 @@ class soul_harvest_blue extends Card {
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
     $discard = new Discard($this->controller);
-    $count = 0;
-    for ($i = 0; $i < $discard->NumCards(); ++$i) {
-      if (!IsFacedownMod($discard->Card($i, true)->Facing()))
-        ++$count;
-    }
-    return $count < 6;
+    return $discard->NumCards() < 6;
   }
 
   function PayAdditionalCosts($from, $index = '-') {

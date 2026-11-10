@@ -280,4 +280,17 @@ class CharacterCard {
   function Move($slot) {
     if (isset($this->pieces[$this->index+15])) $this->pieces[$this->index+15] = $slot;
   }
+
+  function FlipBecome() {
+    $HeroObj = GetClass($this->CardID(), $this->controller);
+    $origID = $this->CardID();
+    if ($HeroObj == "-") return;
+    if ($HeroObj->Backside() != "-") {
+      $this->Become($HeroObj->Backside());
+    }
+    elseif ($HeroObj->Frontside() != $this->CardID()) {
+      $this->Become($HeroObj->Frontside());
+    }
+    WriteLog(CardLink($origID) . " became " . CardLink($this->CardID()) ."!");
+  }
 }

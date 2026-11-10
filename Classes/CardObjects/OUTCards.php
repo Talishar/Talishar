@@ -26,17 +26,23 @@
 // }
 
 
-// class arakni_solitary_confinement extends Card {
+class arakni_solitary_confinement extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "arakni_solitary_confinement";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "arakni_solitary_confinement";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentGivesAttackGoAgain($attackID) {
+    global $mainPlayer, $CS_NumStealthAttacks;
+		$isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
+		return $isFirstStealthAttack;
+  }
+}
 
 
 // class back_heel_kick_red extends Card {

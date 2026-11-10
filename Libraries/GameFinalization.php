@@ -40,6 +40,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
   }
 
   $gameGUID = ResetGameGUIDForRematch(); // Required for distinct hero mastery awards.
+  touch(RematchLobbyMarkerPath($gameName));
   $p2IsAILocal = $p2IsAI == "1";
   $gameStatus = $MGS_ChooseFirstPlayer;
   SetCachePiece($gameName, 14, $gameStatus);
@@ -110,7 +111,7 @@ if (!IsReplay() && isset($replayCommandCountBefore)) {
   AppendReplayLog($filepath, $replayLogLines ?? "");
   $replayCommandCountAfter = ReplayCommandCount($filepath . "commandfile.txt");
   if ($replayCommandCountAfter > $replayCommandCountBefore) {
-    $replayStatePointer = SaveReplayStateSnapshot($filepath);
+    $replayStatePointer = SaveReplayStateSnapshot($filepath, null, $replayCommandCountAfter);
     if ($replayStatePointer === null) {
       WriteLog("Replay state capture failed for input $replayCommandCountAfter.", highlight: true);
     } else {

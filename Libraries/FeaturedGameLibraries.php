@@ -31,7 +31,7 @@ function FeaturedMasteryLevels(array $pairs): array
   $heroIds = [];
   foreach ($pairs as $pair) {
     $userId = intval($pair[0]);
-    $heroId = trim((string)$pair[1]);
+    $heroId = HeroMasteryHeroId(trim((string)$pair[1]));
     if ($userId <= 0 || $heroId === '') continue;
     $userIds[$userId] = true;
     $heroIds[$heroId] = true;
@@ -113,8 +113,8 @@ function SelectFeaturedGames(array $candidates): array
       $spectators = intval($candidate['spectators']);
       $secondsIdle = intval($candidate['secondsIdle']);
       $masteryFloor = min(
-        $levels[intval($candidate['p1id']) . ':' . $candidate['p1Hero']] ?? 0,
-        $levels[intval($candidate['p2id']) . ':' . $candidate['p2Hero']] ?? 0
+        $levels[intval($candidate['p1id']) . ':' . HeroMasteryHeroId((string)$candidate['p1Hero'])] ?? 0,
+        $levels[intval($candidate['p2id']) . ':' . HeroMasteryHeroId((string)$candidate['p2Hero'])] ?? 0
       );
       if (!FeaturedGameQualifies($spectators, $masteryFloor, $secondsIdle)) continue;
 

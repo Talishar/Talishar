@@ -19,6 +19,7 @@ return match($cardID) {
 "crown_of_everbloom" => true,
 "crown_of_reflection" => true,
 "double_cross_strap" => true,
+"drop_dead_bodice" => true,
 "dyadic_carapace" => true,
 "enclosed_firemind" => true,
 "evo_heartdrive_blue" => true,
@@ -57,6 +58,7 @@ return match($cardID) {
 "stalkers_steps" => true,
 "storm_striders" => true,
 "stormweavers_aegis" => true,
+"surgical_gloves" => true,
 "thunderous_retort_red" => true,
 "thunderous_retort_yellow" => true,
 "thunderous_retort_blue" => true,
@@ -70,7 +72,6 @@ return match($cardID) {
 "widow_veil_respirator" => true,
 "widow_web_crawler" => true,
 "mbrio_base_vizier" => true,
-"drop_dead_bodice" => true,
 default => false
 };
 }

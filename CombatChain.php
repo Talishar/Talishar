@@ -728,7 +728,10 @@ function OnDefenseReactionResolveEffects($from, $cardID)
   $chainInd = $combatChainCount - $combatChainPieces;
   ProcessFragmentOnBlock($chainInd);
   $card = GetClass($combatChain[0], $mainPlayer);
-  if ($card != "-") $card->AttackGetsBlockedEffect($chainInd);
+  if ($card != "-") {
+    $card->AttackGetsBlockedEffect($chainInd); // event based
+    $card->AttackIsBlockedEffect($chainInd); // state based
+  }
   switch ($combatChain[0]) {
     case "zephyr_needle":
     case "zephyr_needle_r":
@@ -859,7 +862,10 @@ function OnBlockResolveEffects($cardID = "")
   if ($start == -1) return; //there wasn't a new card added as defending
   if ($CombatChain->HasCurrentLink()) {
     $card = GetClass($combatChain[0], $mainPlayer);
-    if ($card != "-") $card->AttackGetsBlockedEffect($start);
+    if ($card != "-") {
+      $card->AttackGetsBlockedEffect($start); // event based
+      $card->AttackIsBlockedEffect($start); // state based
+    }
     switch ($combatChain[0]) {
       case "zephyr_needle":
       case "zephyr_needle_r":
@@ -998,7 +1004,6 @@ function OnBlockResolveEffects($cardID = "")
         case "pack_call_yellow":
         case "pack_call_blue":
         case "stonewall_impasse":
-        case "gauntlets_of_iron_will":
         case "golden_glare":
         case "trounce_red":
         case "test_of_agility_red":
@@ -1270,7 +1275,7 @@ function OnBlockEffects($index, $from)
   global $Card_BlockBanner;
   $chainCard = $CombatChain->Card($index);
   $cardType = CardType($chainCard->ID());
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   $currentTurnEffectPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectPieces; $i >= 0; $i -= $currentTurnEffectPieces) {
     $remove = false;
@@ -1320,7 +1325,7 @@ function OnBlockEffects($index, $from)
         case "scale_peeler_r":
           if (TypeContains($chainCard->ID(), "E")) $chainCard->ModifyDefense(-1);
           break;
-        case $Card_BlockBanner:
+        case "banneret_of_resilience_yellow":
           if (DelimStringContains($cardType, "A") || $cardType == "AA") {
             $chainCard->ModifyDefense(1);
             $remove = true;
@@ -1795,7 +1800,7 @@ function CombatChainPayAdditionalCosts($index, $from)
   }
 }
 
-function CacheCombatResult()
+function CacheCombatResult($checkPowerIncreaseEffects = true)
 {
   global $combatChain, $combatChainState, $CCS_CachedTotalPower, $CCS_CachedTotalBlock, $CCS_CachedDominateActive, $CCS_CachedOverpowerActive;
   global $CCS_CachedNumActionBlocked, $CCS_CachedNumDefendedFromHand, $CCS_PhantasmThisLink, $CCS_AttackFused, $CCS_WagersThisLink, $mainPlayer;
@@ -1816,6 +1821,12 @@ function CacheCombatResult()
     IncrementCombatChainState($CCS_CachedTotalPower);
     if ($turn[0] == "B" && $currentPlayer == $defPlayer && $CombatChain->NumCardsActiveLink() == 1)
       SetCombatChainState($CCS_CachedPreBlockValue, GetCombatChainState($CCS_CachedTotalPower));
+  }
+  if ($checkPowerIncreaseEffects && CurrentEffectAfterPlayOrActivateAbility(false)) {
+    // An effect just became active and changed the total, so recompute from the original starting point
+    SetCombatChainState($CCS_CachedTotalPower, $oldPower);
+    CacheCombatResult();
+    return;
   }
   $currentTotalPower = GetCombatChainState($CCS_CachedTotalPower);
   if ($currentTotalPower > $oldPower && $currentTotalPower >= 6)
@@ -2290,14 +2301,16 @@ function CombatChainPlayCardAbilities($cardID, $from) {
 function IndexToBlockCardUID($index) {
   global $CombatChain, $ChainLinks;
   $blockCard = $index != -1 && is_numeric($index) ? $CombatChain->Card($index) : "-";
-  $originUniqueID = $blockCard != "-" ? $blockCard->OriginUniqueID() : "-";
+  if ($blockCard == "-") $fromPlay = false;
+  else $fromPlay = $blockCard->From() == "EQUIP" || $blockCard->From() == "PLAY";
+  $uniqueID = $blockCard != "-" ? ($fromPlay ? $blockCard->OriginUniqueID() : $blockCard->UniqueID()) : "-";
   if ($blockCard == "-" && str_contains($index, ",")) {
     $indexParts = explode(",", $index, 2);
     $i = $indexParts[0];
     $j = $indexParts[1];
     $Link = $ChainLinks->GetLink($i);
     $blockCard = $Link->GetLinkCard($j);
-    $originUniqueID = $blockCard->OriginUniqueID();
+    $uniqueID = $blockCard->UniqueID();
   }
-  return $originUniqueID;
+  return $uniqueID;
 }

@@ -63,9 +63,10 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   AddDecisionQueue("WRITELOG", $player, "Player $player did not sink a card", 1);
 }
 
-function BottomDeckMultizone($player, $zone1, $zone2, $isMandatory = false, $context = "Choose a card to sink (or Pass)")
+function BottomDeckMultizone($player, $zone1, $zone2="-", $isMandatory = false, $context = "Choose a card to sink (or Pass)")
 {
-  AddDecisionQueue("MULTIZONEINDICES", $player, $zone1 . "&" . $zone2, 1);
+  $search = $zone2 != "-" ? "$zone1&$zone2" : $zone1;
+  AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
   AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
   AddDecisionQueue($isMandatory ? "CHOOSEMULTIZONE" : "MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
@@ -264,11 +265,14 @@ function AddNextTurnEffect($cardID, $player, $uniqueID = -1, $numTurns = 1)
   $nextTurnEffects[] = $numTurns;
 }
 
-function IsCombatEffectLimited($index)
+function IsCombatEffectLimited($index, $isPreview=false)
 {
   global $currentTurnEffects, $combatChain, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $CCS_AttackUniqueID, $CombatChain;
   global $CurrentTurnEffects;
   $Effect = $CurrentTurnEffects->Effect($index);
+  if ($isPreview) {
+    return $Effect->AppliestoUniqueID() != -1;
+  }
   if ($Effect->AppliestoUniqueID() == "ATTACK") return false; // it has been applied to the attack in the layer step, we're good
   if (count($combatChain) == 0 || $currentTurnEffects[$index + 2] == -1) return false;
   // if ($currentTurnEffects[$index] == "horrors_of_the_past_yellow") return false;
@@ -321,7 +325,7 @@ function AddAttackQueue($cardID, $player, $targets, $parameter="-", $uniqueID="-
 
 function ResolveAttackQueue() {
   // resolving AttackQueue
-  global $attackQueue, $CS_AbilityIndex, $turn;
+  global $attackQueue, $CS_AbilityIndex, $turn, $CS_ResolvingLayerUniqueID;
   if (count($attackQueue) > 0) {
     [$cardID, $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID, $buffs] = array_splice($attackQueue, 0, AttackQueuePieces());
     $params = explode("|", $parameter);
@@ -339,6 +343,8 @@ function ResolveAttackQueue() {
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
+    SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUID);
+    SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUID);
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
   }
 }
@@ -596,7 +602,7 @@ function ContinueDecisionQueue($lastResult = "")
         }
         if ($currentPlayer != $player) {
           $currentPlayer = $player;
-          $otherPlayer = $currentPlayer == 1 ? 2 : 1;
+          $otherPlayer = OtherPlayer($currentPlayer);
           BuildMyGamestate($currentPlayer);
         }
         $layerPriority[0] = ShouldHoldPriority(1);
@@ -850,7 +856,7 @@ function AnyHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
 
 // for cards that trigger when hitting a hero
 function HeroHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
-  if (IsHeroAttackTarget())
+  if (IsHeroAttackTarget() || is_numeric($target))
     return AnyHitTrigger($player, $cardID, $check, $effect, $target);
   return false;
 }
@@ -859,7 +865,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
 {
   global $mainPlayer, $combatChain, $layers, $CS_NumAuras, $CS_NumCharged, $CS_SuspensePoppedThisTurn, $CS_HitsWDawnblade;
   global $combatChainState, $CCS_AttackFused;
-  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $defPlayer = OtherPlayer($mainPlayer);
   // Can this check be generalized to use a function to check for all hit prevention effects?
   if (CardType($cardID) == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return false;
   if (CardType($cardID) == "AA" && SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return false;
@@ -1320,7 +1326,7 @@ function AddTowerEffectTrigger($cardID)
   return false;
 }
 
-function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
+function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", $effectInd = -1) // Effects that do not gives it's effect to the attack so still triggers when Stamp Confidance is in the arena
 {
   global $mainPlayer, $defPlayer, $CombatChain, $combatChain;
   $source = $sourceID != "-" ? $sourceID : $CombatChain->AttackCard()->ID();
@@ -1356,10 +1362,19 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-") 
     case "chill_to_the_bone_red":
     case "chill_to_the_bone_yellow":
     case "chill_to_the_bone_blue":
-    case "burn_up__shock_red":
     case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+      }
+      break;
+    case "burn_up__shock_red":
+      if (IsHeroAttackTarget()) {
+        $uid = "-";
+        if ($effectInd != -1) {
+          $Effect = new CurrentEffect($effectInd);
+          $uid = $Effect->AppliestoUniqueID();
+        }
+        AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $uid);
       }
       break;
     case "mask_of_shifting_perspectives":
@@ -1490,8 +1505,8 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "light_the_way_blue":
     case "lumina_lance_yellow-2":
     case "lumina_lance_yellow-3":
-    case $Card_LifeBanner:
-    case $Card_ResourceBanner:
+    case "banneret_of_salvation_yellow":
+    case "banneret_of_vigor_yellow":
     case "smash_and_grab_red":
     case "evo_command_center_yellow_equip":
     case "kassai_of_the_golden_sand":
@@ -2012,6 +2027,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
     $card = new lunar_mirage_red($player);
     return $card->ProcessTrigger($uniqueID, $target, $additionalCosts, $from);
   }
+  elseif ($additionalCosts == "HEAVE") {
+    DoHeave($player, $parameter);
+  }
   else {
     $card = GetClass($parameter, $player);
     if ($card != "-") {
@@ -2047,9 +2065,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "olympia_prized_fighter":
         PutItemIntoPlayForPlayer("gold", $mainPlayer, effectController:$mainPlayer);
         WriteLog(CardLink($parameter) . " wins the favor of the crowd!");
-        break;
-      case "HEAVE":
-        Heave();
         break;
       case "PHANTASM":
         PhantasmLayer($additionalCosts);
@@ -2098,7 +2113,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "sigil_of_forethought_blue":
       case "sigil_of_cycles_blue":
       case "sigil_of_fyendal_blue":
-      case $CID_Frailty:
+      case "frailty":
       case "sharpened_senses_yellow":
       case "fealty":
         DestroyAuraUniqueID($player, $uniqueID);
@@ -2500,7 +2515,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           AddDecisionQueue("YESNO", $player, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($items[$index], $items[$index]) . "_and_keep_it_in_play?", 1);
           AddDecisionQueue("REMOVECOUNTERITEMORDESTROY", $player, $index, 1);
         } else {
-          WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
           DestroyItemForPlayer($player, $index);
         }
         break;
@@ -3067,7 +3081,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         $targetPlayer = str_contains($target, "THEIR") ? $mainPlayer : $player;
         Intimidate($targetPlayer);
         break;
-      case $CID_BloodRotPox:
+      case "bloodrot_pox":
         $hand = &GetHand($player);
         $resources = &GetResources($player);
         if ((Count($hand) > 0 || $resources[0] > 0) && !IsPlayerAI($mainPlayer)) {
@@ -3081,7 +3095,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("DEALDAMAGE", $player, "MYCHAR-0", 1);
         DestroyAuraUniqueID($player, $uniqueID);
         break;
-      case $CID_Inertia:
+      case "inertia":
         $deck = new Deck($player);
         WriteLog("Processing the end of turn effect of " . CardLink("inertia", "inertia") . ".");
         $numToBottom = count(GetArsenal($player)) + count(GetHand($player));
@@ -3247,9 +3261,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           }
           else $deck->AddTop($cardID); // the card gets "put" on top
         }
-        break;
-      case "gauntlets_of_iron_will":
-        if ($CombatChain->HasCurrentLink()) AddCurrentTurnEffect("gauntlets_of_iron_will," . CachedTotalPower() - LinkBasePower(), $mainPlayer);
         break;
       case "golden_glare":
         $yellowPitchCards = 0;
@@ -3510,7 +3521,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "harvest_season_red":
       case "harvest_season_yellow":
       case "harvest_season_blue":
-        $numHealthPointsGained = match ($parameter) {"harvest_season_red" => 3, "harvest_season_yellow" => 2, "harvest_season_blue" => 1};
+        $numHealthPointsGained = ByColor($parameter, 3, 2, 1);
         DestroyAuraUniqueID($player, $uniqueID);
         GainHealth($numHealthPointsGained, $player);
         break;
@@ -3557,7 +3568,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "arcane_cussing_red":
       case "arcane_cussing_yellow":
       case "arcane_cussing_blue":
-        $numRunechantsCreated = match ($parameter) {"arcane_cussing_red" => 3, "arcane_cussing_yellow" => 2, "arcane_cussing_blue" => 1};
+        $numRunechantsCreated = ByColor($parameter, 3, 2, 1);
         PlayAura("runechant", $player, $numRunechantsCreated);
         break;
       case "aether_bindings_of_the_third_age":
@@ -4043,8 +4054,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if ($uniqueID == "-") PlayAura("seismic_surge", $player, isToken:true, effectController:$player, effectSource:$parameter);
         else if (CountAura("seismic_surge", $player) == 0) {
           $auraUniqueID = explode("-", $uniqueID, 2)[1];
-          if (EndPhaseHeaveIndices() != "") DeferLeyLineDestruction($player, $auraUniqueID);
-          else DestroyAuraUniqueID($player, $auraUniqueID);
+          DestroyAuraUniqueID($player, $auraUniqueID);
         }
         break;
       case "sunkwater_lookout":
@@ -4812,6 +4822,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
 {
   // handles running the left side of meld cards
   global $CS_ArcaneDamageDealt, $CS_HealthGained, $CS_AdditionalCosts, $CS_ArcaneDamageTaken, $Stack;
+  global $CS_ResolvingLayerUniqueID;
   $otherPlayer = 3 - $player;
   $cardID = $parameter;
   switch ($cardID) {
@@ -4836,7 +4847,7 @@ function ProcessMeld($player, $parameter, $additionalCosts="", $target="-", $fro
       }
       break;
     case "burn_up__shock_red":
-      AddCurrentTurnEffect($parameter, $player);
+      AddCurrentTurnEffect($parameter, $player, uniqueID:GetClassState($player, $CS_ResolvingLayerUniqueID));
       break;
     case "rampant_growth__life_yellow":
       $ampAmount = GetClassState($player, $CS_HealthGained);

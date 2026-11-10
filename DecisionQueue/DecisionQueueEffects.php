@@ -403,7 +403,7 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
 function PlayerTargetedAbility($player, $card, $lastResult)
 {
   global $dqVars;
-  $target = ($lastResult == "Target_Opponent" ? ($player == 1 ? 2 : 1) : $player);
+  $target = ($lastResult == "Target_Opponent" ? (OtherPlayer($player)) : $player);
   $params = explode("-", $card);
   switch($params[0])
   {
@@ -417,7 +417,7 @@ function PlayerTargetedAbility($player, $card, $lastResult)
       if($lastResult == "Target_Opponent" || $lastResult == "Target_Both_Heroes")
       {
         if(IsRoyal($player)) ImperialWarHorn($player, "THEIR");
-        else ImperialWarHorn($player == 1 ? 2 : 1, "MY");
+        else ImperialWarHorn(OtherPlayer($player), "MY");
       }
       if($lastResult == "Target_Yourself" || $lastResult == "Target_Both_Heroes") ImperialWarHorn($player, "MY");
       return "";
@@ -928,6 +928,10 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       return "";
     case "MURKYWATER":
       $discard = GetDiscard($player);
+      if (!is_array($lastResult) || count($lastResult) < 3) return "";
+      for ($i = 0; $i < 3; ++$i) {
+        if (!isset($discard[$lastResult[$i]])) return "";
+      }
       $cardList = [];
       for ($i = 2; $i >= 0; $i--) {
         $banishedCard = $discard[$lastResult[$i]];
@@ -1454,19 +1458,31 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 // Set "forCost" to false when a multizone pitch selector is specifically required.
 function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true)
 {
+  if ($forCost) { // used to check if the process should be automated
+    $indices = [];
+    $Hand = GetHand($player);
+    for ($i = 0; $i < count($Hand); $i += HandPieces()) {
+      if (PitchValue($Hand[$i]) > 0)
+        $indices[] = $i;
+    }
+  }
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
   PrependDecisionQueue("PITCHABILITY", $player, "-", 1);
   PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
   if ($forCost) {
     PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-    PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
+    if (count($indices) == 1 && AutoPitchForcedSetting($player))
+      PrependDecisionQueue("PASSPARAMETER", $player, $indices[0], 1);
+    else
+      PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
   }
   else {
     PrependDecisionQueue("MZREMOVE", $player, "-", 1);
     PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
   }
   PrependDecisionQueue("SETDQCONTEXT", $player, "Choose a card to pitch", 1);
-  if ($forCost) PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
+  if ($forCost)
+    PrependDecisionQueue("MZOP", $player, "GETCARDINDICES", 1);
   PrependDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
 }
 

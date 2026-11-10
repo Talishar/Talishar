@@ -34,6 +34,7 @@ if (!$conn) {
 }
 
 try {
+  mysqli_query($conn, "SET SESSION innodb_lock_wait_timeout = 3");
   RecordAdStats($conn, $parsed);
 } catch (Throwable $e) {
   error_log("SiteMetrics failed: " . $e->getMessage());

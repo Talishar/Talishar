@@ -32,7 +32,6 @@ return match($cardID) {
 "turn_the_crowd_grateful_blue" => true,
 "turning_point_blue" => true,
 "zane_broadly_beloved" => true,
-"start_swinging" => true,
 default => false
 };
 }

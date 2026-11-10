@@ -1,45 +1,26 @@
 <?php
 
-class Items {
-
-  // Properties
-  private $items = [];
-  private $player = 0;
+class Items extends ZoneObjects {
 
   // Constructor
   function __construct($player) {
-    $this->items = &GetItems($player);
+    $this->cards = &GetItems($player);
     $this->player = $player;
+    $this->pieces = ItemPieces();
+    $this->uidOffset = 4;
   }
 
-  // Methods
-  function Card($index, $cardNumber=false) {
-    if($cardNumber) $index *= ItemPieces();
+  protected function NewCard($index) {
     return new ItemCard($index, $this->player);
   }
 
-  function FindCardUID($uid) {
-    $count = count($this->items);
-    if ($count == 0) return new ItemCard(-1, $this->player);
-    $itemPieces = ItemPieces();
-    for ($i = 0; $i < $count; $i += $itemPieces) {
-      if ($this->items[$i + 4] == $uid) return new ItemCard($i, $this->player);
-    }
-    return new ItemCard(-1, $this->player);
-  }
-
+  // Methods
   function FindCard($id) {
-    $count = count($this->items);
-    if ($count == 0) return new ItemCard(-1, $this->player);
-    $itemPieces = ItemPieces();
-    for ($i = 0; $i < $count; $i += $itemPieces) {
-      if ($this->items[$i] == $id) return new ItemCard($i, $this->player);
-    }
-    return new ItemCard(-1, $this->player);
+    return $this->FindCardID($id);
   }
 
   function NumItems() {
-    return intdiv(count($this->items), ItemPieces());
+    return $this->NumCards();
   }
 }
 

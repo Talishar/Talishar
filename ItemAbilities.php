@@ -52,7 +52,6 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
     $items[] = 0;
     if (HasCrank($cardID, $player)) Crank($player, $index, $mainPhase);
     if ($cardID == "hyper_driver" && $steamCounters == 0) {
-      WriteLog("A hyper driver with no counters is immediately destroyed");
       DestroyItemForPlayer($player, count($items) - $itemPieces);
     }
   }
@@ -267,12 +266,13 @@ function DestroyItemForPlayer($player, $index, $skipDestroy = false)
     $itemPieces = ItemPieces();
     if (count($items) < $index + $itemPieces) return "";
     if (!$skipDestroy) {
-      if (str_contains($items[$index + 9], "THEIR")) $destPlayer = $player == 1 ? 2 : 1;
+      if (str_contains($items[$index + 9], "THEIR")) $destPlayer = OtherPlayer($player);
       else $destPlayer = $player;
       if (CardType($items[$index]) != "T" && GoesWhereAfterResolving($items[$index], "PLAY", $player) == "GY")
         AddGraveyard($items[$index], $destPlayer, "PLAY");
       if ($items[$index] == "nitro_mechanoidc") AddGraveyard("construct_nitro_mechanoid_yellow", $destPlayer, "PLAY");
       IncrementClassState($player, $CS_NumItemsDestroyed);
+      WriteLog("Player $player's " . CardLink($items[$index], $items[$index]) . " was destroyed", $player);
     }
     $cardID = $items[$index];
     $subCards = $items[$index + 11];
@@ -459,7 +459,6 @@ function ItemStartTurnAbility($index)
         AddDecisionQueue("YESNO", $mainPlayer, "if_you_want_to_remove_a_Steam_Counter_and_keep_" . CardLink($mainItems[$index], $mainItems[$index]) . "_(chosen_name:_" . $mainItems[$index+8] . ")", 1);
         AddDecisionQueue("REMOVECOUNTERITEMORDESTROYUID", $mainPlayer, $mainItems[$index+4], 1);
       } else {
-        WriteLog(CardLink($mainItems[$index], $mainItems[$index]) . " was destroyed");
         DestroyItemForPlayer($mainPlayer, $index);
       }
       break;

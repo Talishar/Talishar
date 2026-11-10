@@ -58,7 +58,6 @@ include_once "../includes/functions.inc.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/ModeratorList.inc.php";
 include_once "../Libraries/ValidationLibraries.php";
-include_once "../Libraries/SpectatorAccess.php";
 
 session_start();
 
@@ -67,7 +66,6 @@ else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["
 else if (isset($requestData["authKey"])) $authKey = $requestData["authKey"];
 $lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
 $spectatorLoggedIn = $playerID !== 3 || (IsUserLoggedIn() && !empty(LoggedInUserName()));
-$spectatorUnlocked = $playerID !== 3 || CanUserSpectate();
 
 session_write_close();
 
@@ -83,9 +81,6 @@ if (!file_exists("../Games/" . $gameName . "/")) {
 
 if (!$spectatorLoggedIn) {
   SendLobbyRefreshError(401, "Authentication required to spectate.");
-}
-if (!$spectatorUnlocked) {
-  SendLobbyRefreshError(403, SPECTATE_LOCKED_MESSAGE);
 }
 
 // Reject invalid player credentials before touching heartbeat state or entering the long poll.
@@ -118,6 +113,7 @@ include "../WriteLog.php";
 include "../HostFiles/Redirector.php";
 include "../Libraries/UILibraries.php";
 include_once "../Libraries/SHMOPLibraries.php";
+include_once "../Libraries/RematchLibraries.php";
 
 $currentTime = (int)(microtime(true) * 1000);
 
@@ -205,9 +201,15 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   }
 
   if ($disconnectedPlayer == 2 && $kickSignal !== "kicked") {
-    $numP2Disconnects = IncrementCachePiece($gameName, 11);
-    if ($numP2Disconnects >= 3) {
-      WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.");
+    $leaverKey = $p2id !== "" ? "id:" . $p2id : "ip:" . $joinerIP;
+    $leaversFile = "../Games/" . $gameName . "/lobbyLeavers.txt";
+    $leavers = file_exists($leaversFile) ? file($leaversFile, FILE_IGNORE_NEW_LINES) : [];
+    if (!in_array($leaverKey, $leavers, true)) {
+      file_put_contents($leaversFile, $leaverKey . "\n", FILE_APPEND);
+      $numP2Disconnects = IncrementCachePiece($gameName, 11);
+      if ($numP2Disconnects >= 3) {
+        WriteLog("This lobby is now hidden due to inactivity. Type in chat to unhide the lobby.", path: "../");
+      }
     }
   }
 
@@ -238,6 +240,7 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
   }
 
   WriteGameFile();
+  FlushLogBuffer();
 }
 
 $response = new stdClass();
@@ -261,7 +264,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->opponentEquipmentSubmitted = true;
   $response->canSubmitEquipment = false;
   $response->canUnreadyEquipment = false;
-  if(IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
+  if(isset($authKey) && IsUserLoggedIn() && ($lastAuthKey == null || $lastAuthKey !== $authKey)) StoreLastGameInfo(LoggedInUser(), $gameName, $playerID, $authKey);
   echo json_encode($response);
   exit;
 } else {
@@ -288,6 +291,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
 
   $response->visibility = $visibility;
   $response->isPrivateLobby = ($visibility != "public");
+  $response->openHands = ($openHands ?? "") === "openhands";
   if ($playerID == 1 && $gameStatus < $MGS_Player2Joined) {
     $response->format = $format;
     $response->gameDescription = $gameDescription;
@@ -372,6 +376,7 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
   $response->isEquipmentPhase = ($gameStatus < $MGS_GameStarted && !$arenaRevealed);
   $response->canSubmitEquipment = ($inPreGame && !$arenaRevealed && !$myEquipmentSubmitted);
   $response->canUnreadyEquipment = ($inPreGame && !$arenaRevealed && $myEquipmentSubmitted);
+  $response->canChangeDeck = (($playerID == 1 || $playerID == 2) && $gameStatus < $MGS_GameStarted && !$arenaRevealed && file_exists(RematchLobbyMarkerPath($gameName, "../")));
 
   if ($arenaRevealed && $otherCharacterLine !== "") {
     $otherCards = preg_split('/\s+/', $otherCharacterLine);

@@ -58,7 +58,7 @@ if ($gameName !== "" && ctype_digit($gameName)) {
       $firstLine = is_file($deckFile) ? strtok((string)file_get_contents($deckFile), "\r\n") : "";
       $deckHero = explode(" ", trim((string)$firstLine))[0] ?? "";
       $heroId = $deckHero !== "" ? SetID($deckHero) : "";
-      $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => $heroId];
+      $gamePlayers[$slot] = ["userId" => $gameUserId, "heroId" => HeroMasteryHeroId($heroId)];
       $response["gamePlayers"][(string)$slot] = ["heroId" => $heroId, "level" => 0];
     }
   }

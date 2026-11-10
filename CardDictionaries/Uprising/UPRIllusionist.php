@@ -38,7 +38,7 @@
         return "";
       case "rake_the_embers_red": case "rake_the_embers_yellow": case "rake_the_embers_blue":
         PutPermanentIntoPlay($currentPlayer, "ash");
-        $maxTransform = match($cardID) { "rake_the_embers_red" => 3, "rake_the_embers_yellow" => 2, default => 1 };
+        $maxTransform = ByColor($cardID, 3, 2, 1);
         for($i=0; $i<$maxTransform; ++$i) Transform($currentPlayer, "Ash", "aether_ashwing", true, ($i == 0 ? false : true), ($i == 0 ? false : true));
         return "";
       case "sand_cover_red":
@@ -126,7 +126,7 @@ function UPRIllusionistDealDamageEffect($cardID)
       $index = explode("-", $target);
       $Permanents = new Permanents($player);
       $targetPerm = $Permanents->FindCardUID($index[1]);
-      if ($targetPerm != "") {
+      if ($targetPerm->Index() != -1) {
         if ($into == "UPR439" || $into == "UPR440" || $into == "UPR441") {
           AddDecisionQueue("PASSPARAMETER", $player, $index[1], 1);
           AddDecisionQueue("TRANSFORMPERMANENT", $player, $into, 1);

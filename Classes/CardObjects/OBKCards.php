@@ -160,10 +160,10 @@ class min_back extends BaseCard {
 
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     $Hero = new CharacterCard(0, $this->controller);
-    $Hero->Become($this->Backside());
+    $Hero->Become($this->Frontside());
   }
 
-  function Backside() {
+  function Frontside() {
     return match($this->cardID) {
       "min_half_mad" => "min_half_genius",
       "min_mad" => "min_genius"
@@ -198,7 +198,7 @@ class huxley_base extends BaseCard {
     $heroCard = new CharacterCard($index, $this->controller);
     if ($heroCard->Status() >= 3) return;
     $boostedCardID = $boostedCard->CardID();
-    if (!$heroCard->Tapped() && HasStealth($boostedCardID) && (TypeContains($boostedCardID, "A") || TypeContains($boostedCardID, "AA")))
+    if (HasStealth($boostedCardID) && (TypeContains($boostedCardID, "A") || TypeContains($boostedCardID, "AA")))
       AddLayer("TRIGGER", $this->controller, $this->cardID, $boostedCard->UniqueID());
   }
 
@@ -669,7 +669,10 @@ class exertion extends Card {
   function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
     switch($additionalCosts) {
       case "EXERT":
+        global $CS_HealthLost;
+        $healthLostBefore = GetClassState($this->controller, $CS_HealthLost);
         LoseHealth(1, $this->controller);
+        LogDiseaseStats($this->controller, $this->cardID, "damage", GetClassState($this->controller, $CS_HealthLost) - $healthLostBefore);
         break;
       case "DESTROY":
         DestroyAuraUniqueID($this->controller, $uniqueID, mainPhase:false);
@@ -994,6 +997,14 @@ class exertion_courier_yellow extends Card {
     $this->controller = $controller;
     $this->baseCard = new courier($this->cardID, $this->controller);
   }
+
+  function SpecialCost() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
 }
 
 class inertia_courier_blue extends Card {
@@ -1001,6 +1012,14 @@ class inertia_courier_blue extends Card {
     $this->cardID = "inertia_courier_blue";
     $this->controller = $controller;
     $this->baseCard = new courier($this->cardID, $this->controller);
+  }
+
+  function SpecialCost() {
+    return 4;
+  }
+
+  function SpecialPower() {
+    return 4;
   }
 }
 
@@ -1119,7 +1138,7 @@ class swap_spit extends BaseCard {
       $obj = CleanTargetToObject($this->controller, $chosenDisease);
       if ($obj != "") {
         $srcPlayer = str_contains($chosenDisease, "MY") ? $this->controller : $otherPlayer;
-        $destPlayer = $srcPlayer == 1 ? 2 : 1;
+        $destPlayer = OtherPlayer($srcPlayer);
         WriteLog("Player $srcPlayer gave their " . CardLink($obj->CardID()) . " to Player $destPlayer!");
         StealAura($srcPlayer, $obj->Index(), $destPlayer, "-", realSteal:false);
       }
@@ -1311,3 +1330,784 @@ class mortimers_lab extends Card {
     }
   }
 }
+
+class vengeance_never_dies_red extends Card {
+  // When this hits a hero, create an Autumn's Curse token under their control.
+  function __construct($controller) {
+    $this->cardID = "vengeance_never_dies_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    PlayAura("autumns_curse", $defPlayer, effectController:$this->controller, effectSource:$this->cardID);
+  }
+
+  function SpecialName() {
+    return "Vengeance Never Dies";
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialCost() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 6;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "NINJA";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+}
+
+class autumns_curse extends Card {
+  // Whenever an attack with Vengeance in its name hits you, lose 1{h}.
+  function __construct($controller) {
+    $this->cardID = "autumns_curse";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    global $mainPlayer;
+    if (str_contains(NameOverride($damageSource, $mainPlayer), "Vengeance")) {
+      if (!$check)
+        AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
+      return true;
+    }
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    LoseHealth(1, $defPlayer);
+  }
+
+  function SpecialName() {
+    return "Autumn's Curse";
+  }
+
+  function SpecialBlock() {
+    return -2;
+  }
+
+  function SpecialClass() {
+    return "NINJA";
+  }
+
+  function SpecialType() {
+    return "T";
+  }
+
+  function SpecialSubType() {
+    return "Aura";
+  }
+}
+
+class kickback extends BaseCard {
+  // Boost
+  // Stealth
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Kickback";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,MECHANOLOGIST";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+
+  function HasBoost() {
+    return true;
+  }
+}
+
+class kickback_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_red";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class kickback_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class kickback_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "kickback_blue";
+    $this->controller = $controller;
+    $this->baseCard = new kickback($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class whisper_shot extends BaseCard {
+  // Stealth
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Whisper Shot";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,RANGER";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class whisper_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_red";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class whisper_shot_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class whisper_shot_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "whisper_shot_blue";
+    $this->controller = $controller;
+    $this->baseCard = new whisper_shot($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class rocket_powered_arrow extends BaseCard {
+  // Boost
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function SpecialName() {
+    return "Rocket-Powered Arrow";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST,RANGER";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasBoost() {
+    return true;
+  }
+}
+
+class rocket_powered_arrow_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_red";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 5;
+  }
+}
+
+class rocket_powered_arrow_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class rocket_powered_arrow_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "rocket_powered_arrow_blue";
+    $this->controller = $controller;
+    $this->baseCard = new rocket_powered_arrow($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class virulent_cascade extends BaseCard {
+  // Stealth
+  // When this attacks, choose Exertion, Inertia, or Bloodrot Pox at random and create that token under your control.
+  // If you and the defending hero are infected, this gets +1{p} and go again.
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $OBKDiseases;
+    $ind = GetRandom(0,3);
+    WriteLog(CardLink($this->cardID) . " creates a $OBKDiseases[$ind]!");
+    PlayAura($OBKDiseases[$ind], $this->controller, effectController:$this->controller, effectSource:$this->controller);
+    return "";
+  }
+
+  function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
+    return IsInfected($this->controller) && IsInfected(OtherPlayer($this->controller)) ? 1 : 0;
+  }
+
+  function DoesAttackHaveGoAgain() {
+    return IsInfected($this->controller) && IsInfected(OtherPlayer($this->controller));
+  }
+
+  function SpecialName() {
+    return "Virulent Cascade";
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function HasStealth() {
+    return true;
+  }
+}
+
+class virulent_cascade_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_red";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class virulent_cascade_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class virulent_cascade_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "virulent_cascade_blue";
+    $this->controller = $controller;
+    $this->baseCard = new virulent_cascade($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 1;
+  }
+}
+
+class change_of_mind_blue extends Card {
+  // Min Specialization (You may only have this in your deck if your hero is Min.)
+  // Flip your hero. If you flip into your △ face, gain {r}{r}. If you flip into your ▽ face, your next attack this turn gets +2{p}.
+  function __construct($controller) {
+    $this->cardID = "change_of_mind_blue";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $Hero = new CharacterCard(0, $this->controller);
+    $HeroObj = GetClass($Hero->CardID(), $this->controller);
+    if ($HeroObj != "-") {
+      if ($HeroObj->Backside() != "-") {
+        WriteLog("I'm not mad, an I?");
+        $Hero->Become($HeroObj->Backside());
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+      }
+      elseif ($HeroObj->Frontside() != $Hero->CardID()) {
+        WriteLog("I'm a genius!");
+        $Hero->Become($HeroObj->Frontside());
+        GainResources(2, $this->controller);
+      }
+    }
+    return "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+
+  function SpecialName() {
+    return "Change of Mind";
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "I";
+  }
+}
+
+class eidetic_endpoint extends BaseCard {
+  // When this is put face-up into your arsenal, turn all cards in all arsenals face-up.
+  // Go again
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddArsenalEffect($index) {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    foreach ([$this->controller, OtherPlayer($this->controller)] as $player) {
+      $ars = new Arsenal($player);
+      for ($i = 0; $i < $ars->NumCards(); ++$i) {
+        $arsCard = $ars->Card($i, true);
+        $arsCard->Flip();
+      }
+    }
+  }
+
+  function SpecialName() {
+    return "Eidetic Endpoint";
+  }
+
+  function SpecialCost() {
+    return 1;
+  }
+
+  function SpecialBlock() {
+    return 3;
+  }
+
+  function SpecialClass() {
+    return "RANGER";
+  }
+
+  function SpecialTalent() {
+    return "CHAOS";
+  }
+
+  function SpecialType() {
+    return "AA";
+  }
+
+  function SpecialSubType() {
+    return "Arrow";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+
+class eidetic_endpoint_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_red";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 1;
+  }
+
+  function SpecialPower() {
+    return 4;
+  }
+}
+
+class eidetic_endpoint_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialPower() {
+    return 3;
+  }
+}
+
+class eidetic_endpoint_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "eidetic_endpoint_blue";
+    $this->controller = $controller;
+    $this->baseCard = new eidetic_endpoint($this->cardID, $this->controller);
+  }
+
+  function SpecialPitch() {
+    return 3;
+  }
+
+  function SpecialPower() {
+    return 2;
+  }
+}
+
+class cogwerx_gyrostriders extends Card {
+  // This can't be untapped during your end phase.
+  // Instant - {t}: {u} your hero.
+  // Instant - Destroy this: The next attack action card you play from arsenal this turn gets go again. Activate this only if you haven't activated this card this turn.
+  function __construct($controller) {
+    $this->cardID = "cogwerx_gyrostriders";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    switch($additionalCosts) {
+      case "Untap_Hero":
+        $Hero = new CharacterCard(0, $this->controller);
+        $Hero->Tap(0);
+        break;
+      case "Give_Go_Again":
+        AddCurrentTurnEffectNextAttack($this->cardID, $this->controller);
+        break;
+      default:
+        break;
+    }
+    return "";
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    if (TypeContains($cardID, "AA") && $from == "ARS") {
+      $Effect = new CurrentEffect($effectIndex);
+      $TopLayer = $Stack->TopLayer($cardID);
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+    }
+  }
+
+  function EffectNeedsAttaching() {
+    return true;
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $modes = [];
+    if (!$CharacterCard->Tapped())
+      $modes[] = "Untap_Hero";
+    $modes[] = "Give_Go_Again";
+    $modes = implode(",", $modes);
+    $context = "Choose an ability";
+    Await($this->controller, "ButtonInput", "mode", buttons:$modes, context:$context, subsequent:0);
+    Await($this->controller, $this->cardID, uid:$CharacterCard->UniqueID(), final:true);
+  }
+
+  function SpecificLogic() {
+    global $dqVars, $CS_AdditionalCosts;
+    $uid = $dqVars["uid"] ?? "-";
+    $mode = $dqVars["mode"] ?? "-";
+    $Character = new PlayerCharacter($this->controller);
+    $CharacterCard = $Character->FindCardUID($uid);
+    if ($CharacterCard->Index() == -1) return;
+    switch ($mode) {
+      case "Untap_Hero":
+        $Hero = new CharacterCard(0, $this->controller);
+        WriteLog(CardLink($this->cardID) . " will be untapping " . $Hero->CardID());
+        $CharacterCard->Tap();
+        break;
+      case "Give_Go_Again":
+        WriteLog(CardLink($this->cardID) . " will be giving the next attack from arsenal go again");
+        $CharacterCard->Destroy();
+        break;
+      default:
+        break;
+    }
+    SetClassState($this->controller, $CS_AdditionalCosts, $mode);
+  }
+
+  function SpecialName() {
+    return "Cogwerx Gyrostriders";
+  }
+
+  function SpecialBlock() {
+    return 0;
+  }
+
+  function SpecialClass() {
+    return "MECHANOLOGIST,RANGER";
+  }
+
+  function SpecialType() {
+    return "E";
+  }
+
+  function SpecialSubType() {
+    return "Legs";
+  }
+}
+
+class codex_of_exertion_yellow extends Card {
+  // Each hero puts a card from their arsenal into their hand. Each hero that does, draws a card.
+  // Create a Ponder token under your control and an Exertion token under each opponent's control.
+  // Go again
+  function __construct($controller) {
+    $this->cardID = "codex_of_exertion_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $search = "MYARS";
+    $context = "Pick up a card from your arsenal";
+    $otherPlayer = OtherPlayer($this->controller);
+    foreach ([$this->controller, $otherPlayer] as $player) {
+      Await($player, "MultiZoneIndices", search:$search, subsequent:0);
+      Await($player, "ChooseMultiZone", context:$context);
+      Await($player, $this->cardID, final:true);
+    }
+    Await($this->controller, "PlayAura", cardID:"ponder", effectSource:$this->cardID, subsequent:0);
+    Await($otherPlayer, "PlayAura", cardID:"exertion", effectController:$this->controller, effectSource:$this->cardID, final:true);
+    return "";
+  }
+
+  function SpecificLogic() {
+    global $dqVars;
+    $choice = $dqVars["MZIndex"] ?? "-";
+    $index = explode("-", $choice)[1] ?? -1;
+    if ($index != -1) {
+      $cardID = RemoveArsenal($this->controller, $index);
+      AddPlayerHand($cardID, $this->controller, "ARS");
+      Draw($this->controller);
+    }
+  }
+
+  function SpecialName() {
+    return "Codex of Exertion";
+  }
+
+  function SpecialPitch() {
+    return 2;
+  }
+
+  function SpecialCost() {
+    return 0;
+  }
+
+  function SpecialBlock() {
+    return 2;
+  }
+
+  function SpecialClass() {
+    return "ASSASSIN,RANGER";
+  }
+
+  function SpecialType() {
+    return "A";
+  }
+
+  function HasGoAgain($from) {
+    return true;
+  }
+}
+

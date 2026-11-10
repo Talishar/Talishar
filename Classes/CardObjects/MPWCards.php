@@ -2222,6 +2222,10 @@ class edge_laden_plate extends Card {
 		}
 		return count($targets) == 0;
 	}
+
+	function DefaultActiveState() {
+		return 1;
+	}
 }
 
 class duelist_gauntlets extends Card {
@@ -3369,14 +3373,14 @@ class vigilant_dodgers extends Card {
 }
 
 class olde_leather_helm extends Card {
-  function __construct($controller) {
-    $this->cardID = "olde_leather_helm";
-    $this->controller = $controller;
-  }
-  
-  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    return "";
-  }
+	function __construct($controller) {
+		$this->cardID = "olde_leather_helm";
+		$this->controller = $controller;
+	}
+	
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
 
 	function CardBlockModifier($from, $resourcesPaid, $index) {
 		global $CS_NumTimesHeroAttacked;

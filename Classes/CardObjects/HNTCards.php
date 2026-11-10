@@ -39,17 +39,29 @@
 // }
 
 
-// class arakni_5lp3d_7hru_7h3_cr4x extends Card {
+class arakni_5lp3d_7hru_7h3_cr4x extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "arakni_5lp3d_7hru_7h3_cr4x";
-//     $this->controller = $controller;
-//     }
+	function __construct($controller) {
+		$this->cardID = "arakni_5lp3d_7hru_7h3_cr4x";
+		$this->controller = $controller;
+    }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		return "";
+	}
+
+	function PermanentGivesAttackGoAgain($attackID) {
+		global $mainPlayer, $CS_NumStealthAttacks;
+		$isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
+		return $isFirstStealthAttack;
+	}
+
+	function DefPermanentGivesAttackGoAgain($attackID) {
+		global $mainPlayer, $CS_NumStealthAttacks;
+		$isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
+		return $isFirstStealthAttack;
+	}
+}
 
 
 // class arakni_black_widow extends Card {

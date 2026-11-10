@@ -331,6 +331,12 @@ class Card {
     return;
   }
 
+  function AttackIsBlockedEffect($start) { //used for state based blocking checks
+    if (isset($this->baseCard) && method_exists($this->baseCard, "AttackIsBlockedEffect"))
+      return $this->baseCard->AttackIsBlockedEffect($start);
+    return;
+  }
+
   // Ideally, we would pass in a "ClashResult" object with information if clashes keep getting more complex to keep the signature simple.
   function WonClashAbility($winnerID, $switched) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "WonClashAbility"))
@@ -983,6 +989,12 @@ class Card {
     return false;
 	}
 
+  function PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentGetHitEffect"))
+      return $this->baseCard->PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check);
+    return false;
+	}
+
   function CurrentEffectOnBlockEffect($chainInd, $from, $start=-1, $effectIndex=-1) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "CurrentEffectOnBlockEffect"))
       return $this->baseCard->CurrentEffectOnBlockEffect($chainInd, $from, $start, $effectIndex);
@@ -1329,9 +1341,9 @@ class Card {
     return;
   }
 
-  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-") {
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID="-", $owner="-") {
     if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentAddGraveyardAbility"))
-      return $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID);
+      return $this->baseCard->PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID, $owner);
     return;
   }
 
@@ -1429,5 +1441,48 @@ class Card {
     if (isset($this->baseCard) && method_exists($this->baseCard, "AttackLeavesTrigger"))
       return $this->baseCard->AttackLeavesTrigger();
     return;
+  }
+
+  function RemoveEffectLinkResolves() { // used for effects that apply to "this link", but not to the attack
+    if (isset($this->baseCard) && method_exists($this->baseCard, "RemoveEffectLinkResolves"))
+      return $this->baseCard->RemoveEffectLinkResolves();
+    return false;
+  }
+
+  function ContractCompleteEffect($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "ContractCompleteEffect"))
+      return $this->baseCard->ContractCompleteEffect($index);
+    return false;
+  }
+
+  function EffectContractCompleteEffect($index) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "EffectContractCompleteEffect"))
+      return $this->baseCard->EffectContractCompleteEffect($index);
+    return false;
+  }
+
+  function HasBoost() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "HasBoost"))
+      return $this->baseCard->HasBoost();
+    return GeneratedHasBoost($this->cardID);
+  }
+
+  function PermanentGivesAttackGoAgain($attackID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "PermanentGivesAttackGoAgain"))
+      return $this->baseCard->PermanentGivesAttackGoAgain($attackID);
+    return false;
+  }
+
+  function DefPermanentGivesAttackGoAgain($attackID) {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "DefPermanentGivesAttackGoAgain"))
+      return $this->baseCard->DefPermanentGivesAttackGoAgain($attackID);
+    return false;
+  }
+
+  function EffectNeedsAttaching() { // if true, the effect will be inactive until it sets an "applies to unique ID"
+    // ultimately all "next attack gets" effects should use this
+    if (isset($this->baseCard) && method_exists($this->baseCard, "EffectNeedsAttaching"))
+      return $this->baseCard->EffectNeedsAttaching();
+    return false;
   }
 }

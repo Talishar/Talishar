@@ -20,6 +20,7 @@ include "Classes/Inventory.php";
 include "Classes/Hand.php";
 include "Classes/Discard.php";
 include "Classes/Character.php";
+include "Classes/ZoneObjects.php";
 include "Classes/Items.php";
 include "Classes/Auras.php";
 include "Classes/Allies.php";
@@ -65,6 +66,7 @@ include "Classes/CardObjects/AMACards.php";
 include "Classes/CardObjects/MPACards.php";
 include "Classes/CardObjects/AMOCards.php";
 include "Classes/CardObjects/OBKCards.php";
+include "Classes/CardObjects/MPBCards.php";
 include "Classes/CardObjects/AMGCards.php";
 include "DecisionQueue/DecisionQueueEffects.php";
 include "DecisionQueue/AwaitEffects.php";
@@ -313,7 +315,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "GY":
           $inds = [];
           $Discard = new Discard($player);
-          for ($i = 0; $i < $Discard->NumCards(); ++$i) {
+          for ($i = 0; $i < $Discard->TotalCards(); ++$i) {
             $DiscardCard = $Discard->Card($i, true);
             if (!isFaceDownMod($DiscardCard->Facing()))
               $inds[] = $DiscardCard->Index();
@@ -336,9 +338,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $soul = &GetSoul($player);
           $rv = GetIndices(count($soul)+1, 0, SoulPieces());
           break;
-        case "beacon_of_victory_yellow-2":
-          $rv = CombineSearches(SearchDeck($player, "A", "", $lastResult), SearchDeck($player, "AA", "", $lastResult));
-          break;
         case "invert_existence_blue":
           $rv = UpTo2FromOpposingGraveyardIndices($player);
           break;//This makes sense because it's a multi
@@ -352,12 +351,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "amulet_of_havencall_blue":
           $rv = SearchDeckForCard($player, "rally_the_rearguard_red", "rally_the_rearguard_yellow", "rally_the_rearguard_blue");
-          break;
-        case "HEAVE":
-          $rv = HeaveIndices();
-          break;
-        case "ENDPHASEHEAVE":
-          $rv = EndPhaseHeaveIndices();
           break;
         case "BRAVOSTARSHOW":
           $rv = BravoStarOfTheShowIndices();
@@ -515,7 +508,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "OPPSENERGYPERMANENTS":
           $rv = [];
-          $playerID = $player == 1 ? 2 : 1;
+          $playerID = OtherPlayer($player);
           $prefix = "THEIR";
           $character = GetPlayerCharacter($playerID);
           $characterCount = count($character);
@@ -702,7 +695,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $combatChain[$index + 6] -= ModifiedBlockValue($lastResult, $defPlayer, "CC");
       return $lastResult;
     case "PUTINANYORDER":
-      $deck = new Deck($player == 1 ? 2 : 1);
+      $deck = new Deck(OtherPlayer($player));
       $reorderCardsArr = [];
       for ($i = 0; $i < $parameter; ++$i) {
         if ($deck->RemainingCards() > 0) {
@@ -972,11 +965,11 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           break;
         case "TURNBANISHFACEDOWN":
           $mzArr = explode("-", $lastResult, 2);
-          TurnBanishFaceDown(str_starts_with($mzArr[0], "MY") ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
+          TurnBanishFaceDown(str_starts_with($mzArr[0], "MY") ? $player : (OtherPlayer($player)), $mzArr[1] ?? "");
           break;
         case "TURNDISCARDFACEDOWN":
           $mzArr = explode("-", $lastResult, 2);
-          TurnDiscardFaceDown(str_starts_with($mzArr[0], "MY") ? $player : ($player == 1 ? 2 : 1), $mzArr[1] ?? "");
+          TurnDiscardFaceDown(str_starts_with($mzArr[0], "MY") ? $player : (OtherPlayer($player)), $mzArr[1] ?? "");
           break;
         case "ADDITIONALUSE":
           $mzArr = explode("-", $lastResult, 2);
@@ -1366,7 +1359,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGMZCARDLINK":
-      if (str_contains($parameter, "THEIR")) $player = ($player == 1 ? 2 : 1);
+      if (str_contains($parameter, "THEIR")) $player = (OtherPlayer($player));
       WriteLog(GetMZCardLink($player, $parameter) . " was chosen");
       return $lastResult;
     case "WRITELOGLASTRESULT":
@@ -1414,7 +1407,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($Object != "") {
         WriteLog(CardLink($Object->CardID()) . " can't defend this turn.");
         $effect = $parameter . $Object->CardID();
-        $otherPlayer = $player == 1 ? 2 : 1;
+        $otherPlayer = OtherPlayer($player);
         AddCurrentTurnEffect($effect, $otherPlayer);
       }
       return $lastResult;
@@ -1643,7 +1636,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "DEALDAMAGE":
       $target = is_array($parameter) ? $parameter : explode("-", $parameter);
-      $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+      $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : (OtherPlayer($player));
       $parameters = explode("-", $lastResult);
       $damage = $parameters[0] ?? 0;
       $source = $parameters[1] ?? "-";
@@ -1723,7 +1716,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $target = GetArcaneTargetFromUID($player, $lastResult);
         if ($target == "-") return "";
         $target = explode("-", $target);
-        $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : ($player == 1 ? 2 : 1);
+        $targetPlayer = $target[0] == "MYCHAR" || $target[0] == "MYALLY" ? $player : (OtherPlayer($player));
         if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
           $allies = &GetAllies($targetPlayer);
           $targetIndex = intval($target[1]);
@@ -2244,19 +2237,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $cleanTarget;
     case "SHOWCHOSENCARD":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? (OtherPlayer($player)) : $player;
         WriteLog("Player " . $targetPlayer . " chose " . GetMZCardLink($targetPlayer, $targ));
       }
       return $lastResult;
     case "SHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? (OtherPlayer($player)) : $player;
         WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
       }
       return $lastResult;
     case "SCOURSHOWSELECTEDTARGET":
       foreach (explode(",", $lastResult) as $targ) {
-        $targetPlayer = str_starts_with($targ, "THEIR") ? ($player == 1 ? 2 : 1) : $player;
+        $targetPlayer = str_starts_with($targ, "THEIR") ? (OtherPlayer($player)) : $player;
         WriteLog("Player " . $targetPlayer . "'s " . GetMZCardLink($targetPlayer, $targ) . " was targeted");
       }
       return $lastResult;
@@ -2282,7 +2275,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $number = $mzArr[1];
       $itemsLeftToDestroy = $mzArr[1];
       for ($i = 0; $i < $number; ++$i) {
-        $index = GetItemIndex($cardID, $player);
+        $index = SearchItemForIndex($cardID, $player);
         if ($index != -1) {
           DestroyItemForPlayer($player, $index);
           --$itemsLeftToDestroy;
@@ -2416,7 +2409,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       if ($lastResult == "") return $lastResult;
       if (str_starts_with($lastResult, "THEIR")) {
         $index = intval(explode("-", $lastResult, 2)[1]);
-        $player = $player == 1 ? 2 : 1;
+        $player = OtherPlayer($player);
       }
       elseif(str_starts_with($lastResult, "MY")) {
         $index = intval(explode("-", $lastResult, 2)[1]);
@@ -2452,7 +2445,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SETSCOURDQVAR":
       $targetType = 0;
       $myCount = SearchCount(SearchAura($currentPlayer, "", "", 0));
-      $otherPlayerCount = SearchCount(SearchAura($currentPlayer == 1 ? 2 : 1, "", "", 0));
+      $otherPlayerCount = SearchCount(SearchAura(OtherPlayer($currentPlayer), "", "", 0));
       if($lastResult > $myCount) {
         $targetType = 1;
       }
@@ -2546,40 +2539,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "ATTACKWITHIT":
       PlayCardSkipCosts($lastResult, "DECK");
       return $lastResult;
-    case "HEAVE":
-      PrependDecisionQueue("PAYRESOURCES", $player, "<-");
-      AddArsenal($lastResult, $player, "HAND", "UP");
-      PlayAura("seismic_surge", $player, HeaveValue($lastResult));
-      WriteLog("You must pay " . HeaveValue($lastResult) . " resources to heave this");
-      return HeaveValue($lastResult);
-    case "RESOLVEARSENALORHEAVE":
-      if ($parameter == "Arsenal_a_card") {
-        $dqState[1] = "ARS";
-        $dqState[3] = "-";
-        return "PASS";
-      }
-      if ($parameter == "Skip_arsenal") {
-        $dqState[1] = "ARS";
-        $dqState[3] = "-";
-        AddDecisionQueue("PASSTURN", $player, "-");
-        return $parameter;
-      }
-      if ($parameter == "Heave_a_card" && EndPhaseHeaveIndices() != "") {
-        // Keep the Heave card selection under the concealed arsenal interaction.
-        $dqState[1] = "ENDPHASE";
-        $dqState[3] = "HEAVECHOSEN";
-        AddDecisionQueue("FINDINDICES", $player, "ENDPHASEHEAVE");
-        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card to heave", 1);
-        AddDecisionQueue("CHOOSEHAND", $player, "<-", 1, 1);
-        AddDecisionQueue("MULTIREMOVEHAND", $player, "-", 1);
-        AddDecisionQueue("HEAVE", $player, "-", 1);
-        AddDecisionQueue("PASSTURN", $player, "-");
-        return $parameter;
-      }
-      // Invalid or stale input falls back to the ordinary arsenal choice.
-      $dqState[1] = "ARS";
-      $dqState[3] = "-";
-      return "PASS";
     case "BRAVOSTARSHOW":
       $hand = &GetHand($player);
       $cardsArr = [];
@@ -2752,7 +2711,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $damage = $params[0];
       foreach ($lastResultArr as $mzItem) {
         $mzIndex = explode("-", $mzItem);
-        $target = str_starts_with($mzIndex[0], "MY") ? $player : ($player == 1 ? 2 : 1);
+        $target = str_starts_with($mzIndex[0], "MY") ? $player : (OtherPlayer($player));
         if (!str_contains($mzIndex[0], "ALLY")) {
           if ($mzIndex[1] == 0) {
 
@@ -3095,7 +3054,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $Effect = $CurrentTurnEffects->Effect($i, true);
           $currentTurnEffectID = $Effect->EffectID();
           if ($Effect->PlayerID() == $mainPlayer && IsCombatEffectActive($currentTurnEffectID, flicked: true)) {
-            AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer); // Effects that do not gives it's effect to the attack
+            AddCardEffectHitTrigger($currentTurnEffectID, $cardID, $targetPlayer, effectInd:$Effect->Index()); // Effects that do not gives it's effect to the attack
           }
           if ($Effect->AppliesToUniqueID() == $sourceUID) // effects that are applied to the source (used for weapon buffs)
             AddEffectHitTrigger($currentTurnEffectID, $cardID, false, $targetPlayer);
@@ -3283,11 +3242,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "REMOVESOUL":
       $selectedCards = is_array($lastResult) ? $lastResult : explode(",", $lastResult);
       $selectedCards = array_values(array_filter($selectedCards, fn($cardID) => $cardID !== "" && $cardID !== "PASS"));
+      $removedCards = [];
       for ($i = count($selectedCards) - 1; $i >= 0; $i--) {
         $soulIndex = SearchSoulForIndex($selectedCards[$i], $player);
-        if ($soulIndex != -1) $lastResult = RemoveSoul($player, $soulIndex);
+        if ($soulIndex != -1) $removedCards[] = RemoveSoul($player, $soulIndex);
       }
-      return $lastResult;
+      return implode(",", $removedCards);
     case "REMOVECOUNTERAURAORDESTROY":
       $auras = &GetAuras($player);
       $index = SearchAurasForUniqueID($parameter, $player);
@@ -3303,7 +3263,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $items = &GetItems($player);
       if ($lastResult == "YES") --$items[$parameter + 1];
       else {
-        WriteLog(CardLink($items[$parameter], $items[$parameter]) . " was destroyed");
         DestroyItemForPlayer($player, $parameter);
       }
       return "";
@@ -3321,7 +3280,6 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       if ($lastResult == "YES") --$items[$index + 1];
       else {
-        WriteLog(CardLink($items[$index], $items[$index]) . " was destroyed");
         DestroyItemForPlayer($player, $index);
       }
       return "";
@@ -3538,7 +3496,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return $lastResult;
     case "TRIGGERORDERING":
       $firstPlayer = $lastResult == "Mine" ? $defPlayer : $mainPlayer;
-      $secondPlayer = $firstPlayer == 1 ? 2 : 1;
+      $secondPlayer = OtherPlayer($firstPlayer);
       $preLayers = GetPreLayers();
       $firstPreLayers = 0;
       $secondPreLayers = 0;
@@ -4123,7 +4081,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       }
       return $lastResult;
     case "CHECKALLYDEATH":
-      CheckAllyDeath($player == 1 ? 2 : 1);
+      CheckAllyDeath(OtherPlayer($player));
       CheckAllyDeath($player);
       return $lastResult;
     case "SUSPENSE":

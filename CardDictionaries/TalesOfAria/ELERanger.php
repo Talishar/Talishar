@@ -4,7 +4,7 @@
   {
     global $currentPlayer;
     $rv = "";
-    $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+    $otherPlayer = (OtherPlayer($currentPlayer));
     switch($cardID)
     {
       case "lexi_livewire": case "lexi":

@@ -365,10 +365,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
     case "target_totalizer":
       Draw($mainPlayer);
       break;
-    case $Card_LifeBanner:
+    case "banneret_of_salvation_yellow":
       GainHealth(1, $mainPlayer);
       return 1;
-    case $Card_ResourceBanner:
+    case "banneret_of_vigor_yellow":
       GainResources(1, $mainPlayer);
       return 1;
     case "hack_to_reality_yellow-HIT":
@@ -406,7 +406,9 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       BanishCardForPlayer("crouching_tiger", $mainPlayer, "-", "TT", $mainPlayer, created:true);
       break;
     case "burn_up__shock_red":
-      if (IsHeroAttackTarget()) DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
+      if (IsHeroAttackTarget()) {
+        DealArcane(4, 1, "PLAYCARD", $cardID, false, $mainPlayer);
+      }
       return 1;
     case "arakni_black_widow-HIT":
       AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
@@ -1606,19 +1608,9 @@ function CurrentEffectPlayAbility($cardID, $from)
     if ($currentTurnEffects[$i + 1] == $currentPlayer) {
       switch ($currentTurnEffects[$i]) {
         case "lead_the_charge_red":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 0) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_yellow":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 1) {
-            ++$actionPoints;
-            $remove = true;
-          }
-          break;
         case "lead_the_charge_blue":
-          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= 2) {
+          if ((DelimStringContains($cardType, "A") || $cardType == "AA") && $cost >= ByColor($currentTurnEffects[$i], 0, 1, 2)) {
             ++$actionPoints;
             $remove = true;
           }
@@ -1626,21 +1618,6 @@ function CurrentEffectPlayAbility($cardID, $from)
         default:
           break;
       }
-      if ($remove) RemoveCurrentTurnEffect($i);
-    }
-  }
-  return false;
-}
-
-function CurrentEffectPlayOrActivateAbility($cardID, $from) // currently deprecated
-{
-  global $currentTurnEffects, $currentPlayer;
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $remove = false;
-      $commaPos = strpos($currentTurnEffects[$i], ',');
-      $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       if ($remove) RemoveCurrentTurnEffect($i);
     }
   }
@@ -1649,22 +1626,26 @@ function CurrentEffectPlayOrActivateAbility($cardID, $from) // currently depreca
 
 function CurrentEffectAfterPlayOrActivateAbility($cache = true)
 {
-  global $currentTurnEffects, $currentPlayer;
+  global $currentTurnEffects, $mainPlayer;
+  $changed = false;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = count($currentTurnEffects) - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $currentPlayer) {
-      $effectArr = explode(",", $currentTurnEffects[$i]);
+    if ($currentTurnEffects[$i + 1] == $mainPlayer) {
+      $effectArr = explode("-", $currentTurnEffects[$i], 2);
       switch ($effectArr[0]) {
         case "gauntlets_of_iron_will":
           if ($cache) CacheCombatResult();
-          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1]) + LinkBasePower()) $currentTurnEffects[$i] = "gauntlets_of_iron_will,ACTIVE";
+          if ($effectArr[1] != "ACTIVE" && CachedTotalPower() > intval($effectArr[1]) + LinkBasePower()) {
+            $currentTurnEffects[$i] = "gauntlets_of_iron_will-ACTIVE";
+            $changed = true;
+          }
           break;
         default:
           break;
       }
     }
   }
-  return false;
+  return $changed;
 }
 
 function CurrentEffectGrantsInstantGoAgain($cardID, $from)
@@ -1761,11 +1742,12 @@ function CurrentEffectGrantsNonAttackActionGoAgain($cardID, $from, $uniqueID)
 function CurrentEffectGrantsGoAgain($cardToCheck = "")
 {
   global $currentTurnEffects, $mainPlayer, $CombatChain;
+  $isPreview = $cardToCheck != "";
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();
   $currentTurnEffectsCount = count($currentTurnEffects);
   for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
     if (!isset($currentTurnEffects[$i + 1])) continue;
-    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i)) {
+    if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], $cardToCheck) && !IsCombatEffectLimited($i, $isPreview)) {
       $commaPos = strpos($currentTurnEffects[$i], ',');
       $effectBase = $commaPos !== false ? substr($currentTurnEffects[$i], 0, $commaPos) : $currentTurnEffects[$i];
       $card = GetClass($effectBase, $mainPlayer);
@@ -2272,8 +2254,8 @@ function IsCombatEffectPersistent($cardID)
     case "metis_archangel_of_tenacity":
     case "victoria_archangel_of_triumph":
     case "evo_steel_soul_memory_blue_equip":
-    case $Card_LifeBanner:
-    case $Card_ResourceBanner:
+    case "banneret_of_salvation_yellow":
+    case "banneret_of_vigor_yellow":
     case "stonewall_impasse":
     case "kassai_of_the_golden_sand":
     case "kassai":
@@ -2360,7 +2342,7 @@ function BeginEndPhaseEffects()
         break;
       case "sanctuary_of_aria-1":
         $player = $currentTurnEffects[$i+1];
-        $sanctuaryIndex = GetItemIndex("sanctuary_of_aria", $player);
+        $sanctuaryIndex = SearchItemForIndex("sanctuary_of_aria", $player);
         DestroyItemForPlayer($player, $sanctuaryIndex, true);
         break;
       default:

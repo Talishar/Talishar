@@ -1281,7 +1281,8 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
     $uid = $zone[$index + 5] ?? "-";
     SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $uid ? $untapPrevented = true : $untapPrevented = false;
   }
-  if (GetMZCard($player, $MZindex) == "havoc_wrap" && $endStepUntap) $untapPrevented = true;
+  $noUntap = ["havoc_wrap" => true, "cogwerx_gyrostriders" => true];
+  if ($noUntap[GetMZCard($player, $MZindex)] && $endStepUntap) $untapPrevented = true;
   return $untapPrevented;
 }
 
@@ -1305,12 +1306,7 @@ function HasHighTide($cardID): bool
 
 function HighTideConditionMet($player) 
 {
-  $blueCount = SearchCount(SearchPitch($player, pitch: 3));
-  if($blueCount >= 2)
-    return true;
-  else {
-    return false;
-  }
+  return SearchCount(SearchPitch($player, pitch: 3)) >= 2;
 }
 
 function HasPerched($cardID): bool

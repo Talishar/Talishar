@@ -2,6 +2,7 @@
 include_once __DIR__ . "/ReplayLibraries.php";
 include_once __DIR__ . "/SnapshotLibraries.php";
 include_once __DIR__ . "/RematchLibraries.php";
+include_once __DIR__ . "/GameHealthLog.php";
 
 const UNDO_DECLINE_LIMIT = 3; // Maximum number of undo requests that can be declined before blocking further requests
 const MAX_REPLAYS_SAVED = 3;
@@ -34,10 +35,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $dqState, $layers, $CS_ArsenalFacing, $CCS_HasAimCounter, $combatChainState, $CCS_NumPowerCounters;
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
-  global $CS_OriginalHero;
-  global $replaySaveResult, $snapshotSaveResult, $puzzleHintResult;
+  global $CS_OriginalHero, $CS_DrawOffered;
+  global $replaySaveResult, $snapshotSaveResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   switch ($mode) {
     case 40: //Manually remove a defense counter from Valiant Dynamo
       $index = intval($cardID);
@@ -502,7 +503,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 36: //Play card from graveyard
       $index = $cardID;
       $discard = &GetDiscard($playerID);
-      $theirChar = &GetPlayerCharacter($playerID == 1 ? 2 : 1);
+      $theirChar = &GetPlayerCharacter(OtherPlayer($playerID));
       if ($index < 0 || $index >= count($discard)) {
         echo("Graveyard Index " . $index . " Invalid Input<BR>");
         return false;
@@ -578,17 +579,21 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 103: //Toggle my permanent Active
       $input = explode("-", $buttonInput, 3);
-      foreach (explode(",", $input[1]) as $index) {
+      foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
+        if ($input[0] == "GY") {
+          ToggleGraveyardGem($playerID, $index);
+          continue;
+        }
         $Card = GetPermanent($input[0], $index, $playerID);
         $Card->ToggleGem();
       }
       break;
     case 104: //Toggle other player permanent Active
       $input = explode("-", $buttonInput, 3);
-      foreach (explode(",", $input[1]) as $index) {
+      foreach (explode(",", $input[1] ?? "") as $index) {
         if ($index === "") continue;
-        $Card = GetPermanent($input[0], $index, $playerID == 1 ? 2 : 1);
+        $Card = GetPermanent($input[0], $index, OtherPlayer($playerID));
         $Card->ToggleGem($playerID);
       }
       break;
@@ -645,7 +650,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || $turn[0] == "PAYGOLDORPITCH" || $turn[0] == "CHOOSEGOLDTOPAY" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate(stepsBack: $undoSteps);
+        if (RevertGamestate(stepsBack: $undoSteps)) LogGameHealthUndo($playerID, 10000);
         $skipWriteGamestate = true;
         WriteLog("Player " . $playerID . " undid their last action");
       }
@@ -660,12 +665,16 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         else {
           WriteLog("Player " . $playerID . " requests to undo the last action");
           AddEvent("REQUESTUNDO", $playerID);
+          LogGameHealthUndo($playerID, 10000, "request");
         }
       }
       break;
     case 10001:
       RevertGamestate("preBlockBackup.txt");
       $skipWriteGamestate = true;
+      break;
+    case 10021: //Take back one blocking card
+      UnblockCard($playerID, intval($cardID));
       break;
     case 10002:
       $manualCount = ManualModeCount($buttonInput);
@@ -680,6 +689,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       )) {
         break;
       }
+      if (!in_array($buttonInput, ["beginTurnGamestate.txt", "startChainLinkGamestate.txt", "lastTurnGamestate.txt"], true)) break;
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
@@ -689,7 +699,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       IncrementClassState($playerID, $CS_NumUndoesThisTurn);
       if (($format != 1 && $format != 3 && $format != 13 && $format != 15) || IsPlayerAI($otherPlayer) || $turn[0] == "P" || AlwaysAllowUndo($otherPlayer)) {
-        RevertGamestate($buttonInput);
+        if (RevertGamestate($buttonInput)) LogGameHealthUndo($playerID, 10003);
         if ($buttonInput == "startChainLinkGamestate.txt")
           WriteLog("Player " . $playerID . " reverted to the start of the chain link");
         else
@@ -733,7 +743,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $health += $manualCount;
       break;
     case 10007:
-      $targetPlayer = $playerID == 1 ? 2 : 1;
+      $targetPlayer = OtherPlayer($playerID);
       if (IsPlayerAI($targetPlayer) || IsDevEnvironment()) {
         $manualCount = ManualModeCount($buttonInput);
         WriteLog("Manually subtracting " . $manualCount . " life from AI opponent", highlight: true, highlightColor: "darkblue");
@@ -746,7 +756,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10008:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . $manualCount . " life to their opponent", highlight: true, highlightColor: "darkblue");
-      $health = &GetHealth($playerID == 1 ? 2 : 1);
+      $health = &GetHealth(OtherPlayer($playerID));
       $health += $manualCount;
       break;
     case 10009:
@@ -757,7 +767,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10010:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually drew " . ($manualCount > 1 ? $manualCount . " cards" : "a card") . " for their opponent", highlight: true, highlightColor: "darkblue");
-      for ($i = 0; $i < $manualCount; ++$i) Draw(($playerID == 1 ? 2 : 1), false);
+      for ($i = 0; $i < $manualCount; ++$i) Draw((OtherPlayer($playerID)), false);
       break;
     case 10011:
       $cardList = explode(";", $cardID);
@@ -895,11 +905,11 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 10013:
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually added " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " to their opponent's pool", highlight: true, highlightColor: "darkblue");
-      $resources = &GetResources($playerID == 1 ? 2 : 1);
+      $resources = &GetResources(OtherPlayer($playerID));
       $resources[0] += $manualCount;
       break;
     case 10014:
-      $resources = &GetResources($playerID == 1 ? 2 : 1);
+      $resources = &GetResources(OtherPlayer($playerID));
       $manualCount = ManualModeCount($buttonInput);
       WriteLog("Player " . $playerID . " manually removed " . ($manualCount > 1 ? $manualCount . " resources" : "a resource") . " from their opponent's pool", highlight: true, highlightColor: "darkblue");
       $resources[0] -= $manualCount;
@@ -912,7 +922,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10016:
     case 10017:
-      $arsenalPlayer = $mode == 10016 ? $playerID : ($playerID == 1 ? 2 : 1);
+      $arsenalPlayer = $mode == 10016 ? $playerID : (OtherPlayer($playerID));
       if (ArsenalEmpty($arsenalPlayer)) break;
 
       $whoseArsenal = $arsenalPlayer == $playerID ? "their arsenal" : "their opponent's arsenal";
@@ -1069,7 +1079,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 10020:
       global $practiceDummyWeaponPower;
-      $opponent = $playerID == 1 ? 2 : 1;
+      $opponent = OtherPlayer($playerID);
       $opponentCharacter = &GetPlayerCharacter($opponent);
       if (in_array("wrenchtastic", $opponentCharacter, true)) {
         $practiceDummyWeaponPower = max(0, min(100, intval($numMode)));
@@ -1081,7 +1091,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       $char = &GetPlayerCharacter($otherPlayer);
       if (!IsPlayerAI($otherPlayer)) {
         QueueRematchPrompt($otherPlayer, "if you want a <b>Quick Rematch</b>?");
@@ -1109,7 +1119,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       $conceded = true;
       if (!IsGameOver()) {
         WriteLog("🏳️ Player $playerID conceded the game.");
-        PlayerWon($playerID == 1 ? 2 : 1, true);
+        PlayerWon(OtherPlayer($playerID), true);
       }
       break;
     case 100003: //Report Bug
@@ -1122,7 +1132,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID sent a rematch invitation.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
         StartRematch();
@@ -1137,7 +1147,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
-      $otherPlayer = $playerID == 1 ? 2 : 1;
+      $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID offered to swap heroes and rematch.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
         StartRematch(true);
@@ -1150,12 +1160,52 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100007: //Claim Victory when opponent is inactive
       if ($isSimulation)
         return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
       include_once __DIR__ . "/../includes/dbh.inc.php";
       include_once __DIR__ . "/../includes/functions.inc.php";
-      $otherPlayer = $playerID == 1 ? 2 : 1;
-      if (!IsGameOver())
-        PlayerWon($playerID);
+      PlayerWon($playerID);
       WriteLog("🚩 The opponent forfeited due to inactivity.");
+      break;
+    case 100030: //Claim Draw when opponent is inactive
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || $currentPlayer != $otherPlayer || (!IsReplay() && !IsInactivityDeadlinePassed($gameName)))
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      WriteLog("🤝 Player $playerID claimed a draw because the opponent was inactive.");
+      PlayerWon(0, true);
+      break;
+    case 100027: //Offer Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($playerID, $CS_DrawOffered) == 1)
+        break;
+      if (IsPlayerAI($otherPlayer)) {
+        WriteLog("🤖 The bot declined the draw.");
+        break;
+      }
+      SetClassState($playerID, $CS_DrawOffered, 1);
+      WriteLog("🤝 Player $playerID offered a draw.", highlight: true, highlightColor: "darkblue");
+      AddEvent("REQUESTDRAW", $playerID);
+      break;
+    case 100028: //Accept Draw
+      if ($isSimulation)
+        return;
+      if (($playerID != 1 && $playerID != 2) || IsGameOver() || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      include_once __DIR__ . "/../includes/dbh.inc.php";
+      include_once __DIR__ . "/../includes/functions.inc.php";
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("🤝 Player $playerID accepted the draw.");
+      PlayerWon(0, true);
+      break;
+    case 100029: //Decline Draw
+      if (($playerID != 1 && $playerID != 2) || GetClassState($otherPlayer, $CS_DrawOffered) != 1)
+        break;
+      SetClassState($otherPlayer, $CS_DrawOffered, 0);
+      WriteLog("Player $playerID declined the draw offer.", highlight: true);
       break;
     case 100012: //Create Replay
       $replaySaveResult = [
@@ -1267,6 +1317,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         "p2HeroCardId" => $p2Hero,
         "p1HeroName" => $p1Hero === "" ? "" : CardName($p1Hero),
         "p2HeroName" => $p2Hero === "" ? "" : CardName($p2Hero),
+        "format" => trim($gameFile[3] ?? ""),
         "formatVersion" => REPLAY_FORMAT_VERSION,
         "stateCount" => count(ReplayStatePointers($replayPath)),
         "favorite" => false,
@@ -1352,14 +1403,6 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
     case 100023: // Save a playable snapshot of the current state
       $snapshotSaveResult = SavePlayableSnapshot($gameName, (int)$playerID);
       break;
-    case 100024: //Restart puzzle
-      include_once __DIR__ . "/PuzzleGame.php";
-      RestartPuzzleGame($playerID);
-      break;
-    case 100025: //Puzzle hint
-      include_once __DIR__ . "/PuzzleGame.php";
-      $puzzleHintResult = PuzzleHint($playerID);
-      break;
     case 100013: //Enable Spectate
       SetCachePiece($gameName, 9, "1");
       break;
@@ -1406,7 +1449,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 100016://Confirm Undo
       $undoSteps = UndoStepsBack();
-      if ($undoSteps > 0) RevertGamestate(stepsBack: $undoSteps);
+      if ($undoSteps > 0 && RevertGamestate(stepsBack: $undoSteps)) LogGameHealthUndo($otherPlayer, 100016);
       WriteLog("Player " . $playerID . " allowed undoing the last action");
       ConsumeUndoRequestEvents();
       break;
@@ -1419,12 +1462,12 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ConsumeUndoRequestEvents();
       break;
     case 100018://Confirm this turn undo
-      RevertGamestate("beginTurnGamestate.txt");
+      if (RevertGamestate("beginTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the turn");
       ConsumeUndoRequestEvents();
       break;
     case 100019://Confirm last turn undo
-      RevertGamestate("lastTurnGamestate.txt");
+      if (RevertGamestate("lastTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the last turn");
       ConsumeUndoRequestEvents();
       break;
@@ -1437,7 +1480,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("🔇 Player " . $playerID . " turned chat off");
       break;
     case 100022:// Confirm chain link undo
-      RevertGamestate("startChainLinkGamestate.txt");
+      if (RevertGamestate("startChainLinkGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the chain link");
       ConsumeUndoRequestEvents();
       break;
@@ -1500,6 +1543,86 @@ function ManualModeCount($input)
   return min($count, 999);
 }
 
+function UnblockCommand($player, $cardID, $from, $originUniqueID)
+{
+  switch ($from) {
+    case "HAND":
+      $index = array_search($cardID, GetHand($player), true);
+      return $index === false ? null : [27, $index];
+    case "EQUIP":
+      $zone = GetPlayerCharacter($player);
+      $pieces = CharacterPieces();
+      $uidOffset = 11;
+      $mode = 3;
+      break;
+    case "ARS":
+      $zone = GetArsenal($player);
+      $pieces = ArsenalPieces();
+      $uidOffset = 5;
+      $mode = 5;
+      break;
+    case "PLAY":
+      $zone = GetItems($player);
+      $pieces = ItemPieces();
+      $uidOffset = 4;
+      $mode = 10;
+      break;
+    default:
+      return null;
+  }
+  for ($i = 0, $count = count($zone); $i < $count; $i += $pieces) {
+    if ($zone[$i] == $cardID && $zone[$i + $uidOffset] == $originUniqueID) return [$mode, $i];
+  }
+  return null;
+}
+
+function UnblockCard($player, $chainIndex)
+{
+  global $combatChain, $turn, $layers, $currentPlayer, $defPlayer, $filepath, $gameName, $skipWriteGamestate;
+  global $events, $animations, $logWriteBuffer;
+  $pieces = CombatChainPieces();
+  if ($turn[0] != "B" || $player != $defPlayer || $currentPlayer != $player || count($layers) > 0) return;
+  if ($chainIndex < $pieces || $chainIndex % $pieces != 0 || ($combatChain[$chainIndex + 1] ?? "") != $player) return;
+  if (!CanUnblockFrom($combatChain[$chainIndex + 2]) || !file_exists($filepath . "preBlockBackup.txt")) return;
+  $defending = [];
+  for ($i = $pieces, $count = count($combatChain); $i < $count; $i += $pieces) {
+    $defending[$i] = [$combatChain[$i], $combatChain[$i + 1], $combatChain[$i + 2], $combatChain[$i + 8]];
+  }
+  DoGamestateUpdate();
+  $original = ReadGamestateCache($gameName);
+  $savedLogBuffer = $logWriteBuffer;
+  $savedReplayLogLines = $GLOBALS['replayLogLines'] ?? "";
+
+  RevertGamestate("preBlockBackup.txt");
+  ParseGamestate();
+  $events = [];
+  $animations = [];
+  $base = count($combatChain);
+  $replayed = $chainIndex >= $base;
+  foreach ($defending as $index => [$cardID, $controller, $from, $originUniqueID]) {
+    if (!$replayed) break;
+    if ($index < $base || $index == $chainIndex) continue;
+    $command = $controller == $player ? UnblockCommand($player, $cardID, $from, $originUniqueID) : null;
+    $chainCount = count($combatChain);
+    $replayed = $command !== null && ProcessInput($player, $command[0], "", $command[1], 0, "") !== false &&
+      $turn[0] == "B" && $currentPlayer == $player && count($layers) == 0 &&
+      count($combatChain) == $chainCount + $pieces && $combatChain[$chainCount] == $cardID;
+  }
+
+  $logWriteBuffer = $savedLogBuffer;
+  $GLOBALS['replayLogLines'] = $savedReplayLogLines;
+  if (!$replayed) {
+    WriteGamestateFileAtomic($filepath . "gamestate.txt", $original);
+    WriteGamestateCache($gameName, $original);
+    $GLOBALS['lastWrittenGamestate'] = $original;
+    ParseGamestate();
+    $events = [];
+    $animations = [];
+    WriteLog("That card can't be taken back on its own. Use Undo Block instead.");
+  }
+  $skipWriteGamestate = false;
+}
+
 function IsModeAsync($mode)
 {
   static $asyncModes = [
@@ -1507,7 +1630,8 @@ function IsModeAsync($mode)
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
-  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true
+  100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true,
+  100027 => true, 100028 => true, 100029 => true, 100030 => true
   ];
   return isset($asyncModes[$mode]);
 }
@@ -1605,7 +1729,7 @@ function ReorderTriggerEntries($triggerOrder, $submittedCardIDs)
 }
 
 // ProcessInput logs a pass as mode 99 before running it. When that pass resolves an opt or a
-// rearranged trigger order, swap the line for the explicit command so replays and puzzles reproduce it.
+// rearranged trigger order, swap the line for the explicit command so replays reproduce it.
 function RecordPassAsReplayCommand($player, $command)
 {
   global $gameName;
@@ -1919,13 +2043,13 @@ function ResolveChainLink()
       $index = intval($target[1]);
       if (substr($target[1], 0, 2) != "-1") { //check to make sure target is still there
         $allies = &GetAllies($defPlayer);
-        $totalPower += CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
-        if ($totalPower > 0)
-          $totalPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        $allyPower = $totalPower + CurrentEffectDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
+        if ($allyPower > 0)
+          $allyPower += CombatChainDamageModifiers($mainPlayer, $combatChain[0], "COMBAT");
         if ($reorderedCount == 1) // if there is only one target, it's possible for cards to end up blocking for allies
-          $allyDamageThreatened = max(0, $totalPower - $totalDefense);
+          $allyDamageThreatened = max(0, $allyPower - $totalDefense);
         else //if there are multiple targets, any blocking cards would be blocking for the hero
-          $allyDamageThreatened = max(0, $totalPower);
+          $allyDamageThreatened = max(0, $allyPower);
         $allyDamageThreatened = AllyDamagePrevention($defPlayer, $index, $allyDamageThreatened, "COMBAT", $combatChain[0]);
         if ($allyDamageThreatened < 0)
           $allyDamageThreatened = 0;
@@ -1962,7 +2086,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
-  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain, $Landmarks;
+  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain, $Landmarks, $CS_ClubDamage;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
@@ -1983,6 +2107,8 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
     IncrementCombatChainState($CCS_DamageDealt, $damageDone);
     IncrementClassState($mainPlayer, $CS_HitCounter);
+    if (SubtypeContains($cardID, "Club"))
+      IncrementClassState($mainPlayer, $CS_ClubDamage, $damageDone);
     // Handle weapon hit effects
     if (IsWeaponAttack()) {
       IncrementCombatChainState($CCS_HitsWithWeapon);
@@ -2020,7 +2146,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       }
 
       if (IsHeroAttackTarget()) {
-        $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+        $otherPlayer = (OtherPlayer($mainPlayer));
         CheckHitContracts($mainPlayer, $otherPlayer);
       }
 
@@ -2061,7 +2187,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       $count = count($currentTurnEffects);
       for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
         if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i])) {
-          AddCardEffectHitTrigger($currentTurnEffects[$i]); // Effects that do not gives it's effect to the attack
+          AddCardEffectHitTrigger($currentTurnEffects[$i], effectInd:$i); // Effects that do not gives it's effect to the attack
         }
       }
 
@@ -2080,7 +2206,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
     }
     
     if (IsHeroAttackTarget()) {
-      $otherPlayer = ($mainPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($mainPlayer));
       if (CheckMarked($otherPlayer)) {
         WriteLog("Player " . $otherPlayer . " loses their mark");
         RemoveMark($otherPlayer);
@@ -2090,6 +2216,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   else {
     NonHitEffects($cardID);
   }
+  ResolveWagers(false);
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
   $charID = ShiyanaCharacter($charID);
@@ -2103,7 +2230,7 @@ function FinalizeChainLink($chainClosed = false)
   global $turn, $actionPoints, $combatChain, $mainPlayer, $currentPlayer, $combatChainState, $actionPoints, $CCS_DamageDealt;
   global $mainClassState, $CS_AttacksWithWeapon, $CCS_GoesWhereAfterLinkResolves, $CS_LastAttack, $CCS_LinkTotalPower, $CS_NumSwordAttacks, $chainLinks, $chainLinkSummary;
   global $CS_AnotherWeaponGainedGoAgain, $CCS_HitThisLink, $CS_ModalAbilityChoosen, $CS_NumSpectralShieldAttacks, $CombatChain;
-  global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects;
+  global $layerPriority, $Stack, $AttackQueue, $attackQueue, $CurrentTurnEffects, $CS_ResolvingLayerUniqueID;
   BuildMainPlayerGameState();
   if (DoesAttackHaveGoAgain() && !$chainClosed) {
     $attackID = $combatChain[0] ?? "";
@@ -2137,7 +2264,6 @@ function FinalizeChainLink($chainClosed = false)
   $chainLinkSummary[] = "";
   $resolvedValuesSlot = count($chainLinkSummary) - 1;
 
-  ResolveWagers($chainClosed);
   if (!$chainClosed) {
     ResolutionStepEffectTriggers();
     ResolutionStepCharacterTriggers();
@@ -2235,6 +2361,8 @@ function FinalizeChainLink($chainClosed = false)
     for ($i = 0; $i < $abilityTypeCount; ++$i) {
       if ($abilityTypes[$i] == "AA") SetClassState($player, $CS_AbilityIndex, $i);
     }
+    SetClassState(1, $CS_ResolvingLayerUniqueID, $layerUID);
+    SetClassState(2, $CS_ResolvingLayerUniqueID, $layerUID);
     PlayCardEffect($cardID, $params[0], $params[1] ?? 0, $target, $additionalCosts, $params[3] ?? "-1", $params[2] ?? -1, fromAttackQueue:true);
     return;
   }
@@ -2255,6 +2383,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $effectArr = explode(",", $currentTurnEffects[$i], 2);
+    $Effect = new CurrentEffect($i);
+    $card = GetClass($Effect->EffectID(), $Effect->PlayerID());
+    if ($Effect->AppliestoUniqueID() == -1 && $card != "-" && $card->EffectNeedsAttaching())
+      continue; // Effect hasn't attached to anything yet, no need to clean it up
     if (IsCombatEffectActive($effectArr[0], $isSpectraTarget) && !IsCombatEffectLimited($i) && !IsCombatEffectPersistent($effectArr[0]) && !AdministrativeEffect($effectArr[0]) && !IsLayerContinuousBuff($effectArr[0])) {
       if ($weaponSwap && EffectHasBlockModifier($effectArr[0])) continue;
       --$currentTurnEffects[$i + 3];
@@ -2264,6 +2396,10 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
         if ($addedEffects == "-") $addedEffects = $currentTurnEffects[$i];
         else $addedEffects .= "," . $currentTurnEffects[$i];
       }
+    }
+    if (!$weaponSwap) {
+      $card = GetClass($currentTurnEffects[$i], $currentTurnEffects[$i+1]);
+      if ($card != "-" && $card->RemoveEffectLinkResolves() && !in_array($i, $effectsToRemove)) $effectsToRemove[] = $i;
     }
     if (ExtractCardID($currentTurnEffects[$i]) == "crouching_tiger") $effectsToRemove[] = $i;
     switch ($currentTurnEffects[$i]) {
@@ -2319,8 +2455,13 @@ function EndStep()
   AllyBeginEndPhaseTriggers();
   OpponentsAuraBeginEndPhaseTriggers();
   BeginEndPhaseEffectTriggers();
+  $hand = GetHand($mainPlayer);
+  $Hero = new CharacterCard(0, $mainPlayer);
+  for ($i = 0; $i < count($hand); $i += HandPieces()) {
+    if (HeaveValue($hand[$i]) > 0 && $Hero->IsActive())
+      AddLayer("TRIGGER", $mainPlayer, $hand[$i], "-", "HEAVE");
+  }
   // Heave is offered later as part of the concealed arsenal decision.
-  SnapshotEndPhaseHeaveCards();
   UndoIntimidate(1);
   UndoIntimidate(2);
   RemoveBanishedCardFromGraveyard();
@@ -2409,20 +2550,9 @@ function PassTurn()
     BuildMainPlayerGameState();
   }
   $MainHand = GetHand($mainPlayer);
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
-    $heaveChoiceResolved = ($turn[2] ?? "-") == "HEAVECHOSEN";
-    // Asking here makes the Heave pause indistinguishable from the normal arsenal pause.
-    if (!$heaveChoiceResolved && $turn[0] != "ARS" && EndPhaseHeaveIndices() != "") {
-      $currentPlayer = $mainPlayer;
-      $turn[0] = "ARS";
-      $turn[2] = "-";
-      AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Do you want to heave or arsenal a card?");
-      AddDecisionQueue("ARSENALORHEAVE", $mainPlayer, "Heave_a_card,Arsenal_a_card,Skip_arsenal", 1);
-      AddDecisionQueue("RESOLVEARSENALORHEAVE", $mainPlayer, "<-", 1);
-      ProcessDecisionQueue();
-    }
-    else if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";
       $turn[2] = "-";
@@ -2439,17 +2569,6 @@ function FinalizeTurn()
   global $mainHand, $defHand, $currentTurnEffectsFromCombat, $mainCharacter, $defCharacter, $mainResources, $defResources;
   global $mainAuras, $firstPlayer, $lastPlayed, $layerPriority, $EffectContext;
   global $MakeStartTurnBackup, $gameName;
-  include_once __DIR__ . "/PuzzleGame.php";
-  if (IsPuzzleGame($gameName)) {
-    PuzzleTurnEnded();
-    return;
-  }
-  try {
-    include_once __DIR__ . "/PuzzleHarvest.php";
-    HarvestSurvivePuzzleCandidate();
-  } catch (Throwable $e) {
-    error_log("FinalizeTurn: HarvestSurvivePuzzleCandidate threw: " . $e->getMessage());
-  }
   $extraTurn = SearchCurrentTurnEffects("standing_ovation_blue", $mainPlayer);
   $EffectContext = "-";
   ResetStolenCardsEOT();
@@ -2550,14 +2669,14 @@ function FinalizeTurn()
   $nextTurnEffects = $newNextTurnEffects;
   // this is needed to reset the defending player's class state even if their turn is getting skipped
   $defPlayer = $mainPlayer;
-  $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+  $mainPlayer = (OtherPlayer($mainPlayer));
   $currentPlayer = $mainPlayer;
   BuildMainPlayerGameState();
   ResetMainClassState();
 
   if ($extraTurn) {
     $defPlayer = $mainPlayer;
-    $mainPlayer = ($mainPlayer == 1 ? 2 : 1);
+    $mainPlayer = (OtherPlayer($mainPlayer));
     $currentPlayer = $mainPlayer;
     BuildMainPlayerGameState();
   }
@@ -3803,7 +3922,7 @@ function ApplyAttackTargets($player, $attackTargets)
 function GetTargetOfAttack($cardID = "", $attackQueue=false, $forLayer=false)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackTarget, $currentTurnEffects, $CS_PlayIndex, $Stack;
-  $defPlayer = $mainPlayer == 1 ? 2 : 1;
+  $defPlayer = OtherPlayer($mainPlayer);
   $numTargets = 0;
   // a new attack (on the stack or in the attack queue) doesn't share targets with the current chain link
   if ($attackQueue || $forLayer) {
@@ -4105,7 +4224,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "shiyana_diamond_gemini":
-      $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+      $otherPlayer = (OtherPlayer($currentPlayer));
       $otherCharacter = &GetPlayerCharacter($otherPlayer);
       if (SearchCurrentTurnEffects($otherCharacter[0] . "-SHIYANA", $currentPlayer)) {
         PayAdditionalCosts($otherCharacter[0], $from, $index);
@@ -4122,16 +4241,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "ser_boltyn_breaker_of_dawn":
     case "boltyn":
       BanishFromSoul($currentPlayer);
-      break;
-    case "beacon_of_victory_yellow":
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "SOULINDICES");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose how many cards to banish from your soul");
-      AddDecisionQueue("BUTTONINPUT", $currentPlayer, "<-", 1);
-      AddDecisionQueue("WRITELASTRESULT", $currentPlayer, CardLink($cardID, $cardID)." was paid with an additional cost of ", 1);
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "GETINDICES,", 1);
-      AddDecisionQueue("FINDINDICES", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MULTIBANISHSOUL", $currentPlayer, "-", 1);
       break;
     case "v_of_the_vanguard_yellow":
       AddDecisionQueue("VOFTHEVANGUARD", $currentPlayer, "-");
@@ -4615,7 +4724,7 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         WriteLog("A previous chain link was targeted");
         break;
       }
-      $numOptions = GetChainLinkCards(($currentPlayer == 1 ? 2 : 1), "", "C");
+      $numOptions = GetChainLinkCards((OtherPlayer($currentPlayer)), "", "C");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a mode");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, $modalities);
       AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
@@ -4991,7 +5100,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   else ResolvePermanent($cardID, $from, $additionalCosts);
   //Resolve Effects
   if (!$isBlock && !$skipDRResolution) {
-    CurrentEffectPlayOrActivateAbility($cardID, $from);
     if ($from != "PLAY") {
       CharacterPlayCardAbilities($cardID, $from);
       ArsenalPlayCardAbilities($cardID);

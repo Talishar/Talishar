@@ -25,8 +25,8 @@ $gamestateLines = [
   ClassStateToString($p1ClassState),
   implode(" ", $p1CharacterEffects),
   implode(" ", $p1Soul),
-  implode(" ", $p1CardStats),
-  implode(" ", $p1TurnStats),
+  is_string($p1CardStats) ? $p1CardStats : implode(" ", $p1CardStats),
+  is_string($p1TurnStats) ? $p1TurnStats : implode(" ", $p1TurnStats),
   implode(" ", $p1Allies),
   implode(" ", $p1Permanents),
   implode(" ", $p1Settings),
@@ -45,8 +45,8 @@ $gamestateLines = [
   ClassStateToString($p2ClassState),
   implode(" ", $p2CharacterEffects),
   implode(" ", $p2Soul),
-  implode(" ", $p2CardStats),
-  implode(" ", $p2TurnStats),
+  is_string($p2CardStats) ? $p2CardStats : implode(" ", $p2CardStats),
+  is_string($p2TurnStats) ? $p2TurnStats : implode(" ", $p2TurnStats),
   implode(" ", $p2Allies),
   implode(" ", $p2Permanents),
   implode(" ", $p2Settings),
@@ -103,8 +103,8 @@ array_push($gamestateLines,
   $p1IsAI,
   $p2IsAI,
   $AIHasInfiniteHP == "1" ? "1" : "0",
-  json_encode($p1CardTurnLog),
-  json_encode($p2CardTurnLog),
+  CardTurnLogJSON($p1CardTurnLog),
+  CardTurnLogJSON($p2CardTurnLog),
   implode(" ", is_array($attackQueue ?? null) ? $attackQueue : []),
   json_encode($p1LifeHistory ?? []),
   json_encode($p2LifeHistory ?? []),
@@ -119,7 +119,9 @@ array_push($gamestateLines,
   json_encode($p2CardsDisrupted ?? []), // Opponent cards player 2 disrupted, per turn
   json_encode(UpdateHandInstanceIDs()),
   json_encode($p1AllyDamagePrevented ?? []), // Damage player 1's allies took, per turn
-  json_encode($p2AllyDamagePrevented ?? []) // Damage player 2's allies took, per turn
+  json_encode($p2AllyDamagePrevented ?? []), // Damage player 2's allies took, per turn
+  json_encode((object)($p1DiseaseStats ?? [])), // Disease tokens player 1 received and the damage they took from them
+  json_encode((object)($p2DiseaseStats ?? [])) // Disease tokens player 2 received and the damage they took from them
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

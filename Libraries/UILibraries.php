@@ -316,7 +316,7 @@ function JSONRenderedCard(
   
   //Volzar Amp icon
   if($controller != NULL && $cardNumber == "volzar_the_lightning_rod" && $lightningPlayed == NULL) {
-    $otherPlayer = $playerID == 1 ? 2 : 1;
+    $otherPlayer = OtherPlayer($playerID);
     if($controller == $playerID) {
       $lightningCount = GetClassState($playerID, $CS_NumLightningPlayed);
       if($lightningCount > 0) {
@@ -336,15 +336,18 @@ function JSONRenderedCard(
 
   //Current Turn Effects amp amount
   if($showAmpAmount !== false && str_starts_with($showAmpAmount, "Effect")) {
-    $otherPlayer = $playerID == 1 ? 2 : 1;
-    $index = explode("-", $showAmpAmount, 2)[1];
-    $ampOwn = ArcaneModifierAmount($cardNumber, $playerID, $index);
+    $otherPlayer = OtherPlayer($playerID);
+    $ampOwn = 0;
+    $ampOther = 0;
+    foreach (array_slice(explode("-", $showAmpAmount), 1) as $index) {
+      $ampOwn += ArcaneModifierAmount($cardNumber, $playerID, $index);
+      $ampOther += ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
+    }
     if($ampOwn > 0) {
       $countersMap ??= new stdClass();
       $countersMap->amp = $ampOwn;
       $countersMap->counters = 0;
     }
-    $ampOther = ArcaneModifierAmount($cardNumber, $otherPlayer, $index);
     if($ampOther > 0) {
       $countersMap ??= new stdClass();
       $countersMap->amp = $ampOther;
@@ -391,6 +394,19 @@ function JSONRenderedCard(
   if($hasBoundAura !== NULL) $card->hasBoundAura = $hasBoundAura;
   if($goAgain !== NULL) $card->goAgain = $goAgain;
   return $card;
+}
+
+function ItemDisplayState($cardID, $itemLabel)
+{
+  $state = ["label" => "", "rust" => null, "verse" => null, "flow" => null];
+  if ($cardID == "micro_processor_blue") {
+    if (DelimStringContains($itemLabel, "Opt", true)) $state["verse"] = 1;
+    if (DelimStringContains($itemLabel, "Draw_then_top_deck", true)) $state["rust"] = 1;
+    if (DelimStringContains($itemLabel, "Banish_top_deck", true)) $state["flow"] = 1;
+  }
+  else if ($cardID == "null_time_zone_blue") $state["label"] = GamestateUnsanitize($itemLabel);
+  if ($state["label"] == "" && DelimStringContains($itemLabel, "Temporary", true)) $state["label"] = "Stolen";
+  return $state;
 }
 
 function CreateButtonAPI($playerID, $caption, $mode, $input, $size = null, $image = null, $tooltip = null, $fullRefresh = false, $fullReload = false, $prompt = null)
@@ -574,7 +590,7 @@ function CardLink($caption, $cardNumber="-", $recordMenu = false)
         }
     }
   }
-  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode($playerID == 1 ? 2 : 1)) $pitchText = "";
+  if (function_exists("IsColorblindMode") && !IsColorblindMode($playerID) && !IsColorblindMode(OtherPlayer($playerID))) $pitchText = "";
   $file = "'./" . "WebpImages" . "/" . $cardNumber . ".webp'";
   return "<b><span style='color:" . $color . "; cursor:default;' onmouseover=\"ShowDetail(event," . $file . ")\" onmouseout='HideCardDetail()'>" . $name . $pitchText . "</span></b>";
 }
@@ -583,6 +599,44 @@ function isFaceDownMod($mod)
 {
   static $faceDownMods = ["INT" => true, "DOWN" => true, "UZURI" => true, "NTSTONERAIN" => true, "STONERAIN" => true, "TRAPDOOR" => true];
   return isset($faceDownMods[$mod]);
+}
+
+function BanishPile($cardID, $mod, $player)
+{
+  static $playMods = ["TT" => true, "TCC" => true, "TCL" => true, "INST" => true, "TTFromOtherPlayer" => true];
+  static $playNextMods = ["NT" => true, "NTFromOtherPlayer" => true];
+  if ($mod == "INT" || $mod == "TRAPDOOR") return $mod;
+  if (isFaceDownMod($mod)) return "DOWN";
+  if (isset($playMods[$mod])) return "PLAY";
+  if (isset($playNextMods[$mod])) return "PLAYNEXT";
+  if ($mod !== "" && ctype_lower($mod[0])) {
+    $name = CardName($mod);
+    if ($name !== "") return $name;
+  }
+  if (HasBloodDebt($cardID, $player)) return "BLOODDEBT";
+  return "";
+}
+
+function GraveyardPileHero($heroID, $player)
+{
+  static $leviaHeroes = ["levia" => true, "levia_shadowborn_abomination" => true, "blasmophet_levia_consumed" => true, "levia_redeemed" => true];
+  $heroID = ShiyanaCharacter($heroID, $player);
+  if ($heroID === "") return ["shadowBrute" => false, "earth" => false];
+  $talent = CardTalent($heroID);
+  return [
+    "shadowBrute" => isset($leviaHeroes[$heroID]) || (DelimStringContains(CardClass($heroID), "BRUTE") && DelimStringContains($talent, "SHADOW")),
+    "earth" => DelimStringContains($talent, "EARTH") || GeneratedHasEssenceOfEarth($heroID),
+  ];
+}
+
+function GraveyardPile($cardID, $player, $pileHero)
+{
+  if ($pileHero["shadowBrute"]) {
+    if (ModifiedPowerValue($cardID, $player, "GY") >= 6) return "POWER6";
+    if (HasBloodDebt($cardID, $player)) return "BLOODDEBT";
+  }
+  if ($pileHero["earth"] && TalentContains($cardID, "EARTH", $player)) return "EARTH";
+  return "";
 }
 
 function IsNecromancerHero($heroID, $player)

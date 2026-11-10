@@ -80,6 +80,11 @@ class ArsenalCard {
 		return $this->pieces[$this->index + 1] ?? "UP";
 	}
 
+	function Flip($facing="UP") {
+		if (isset($this->pieces[$this->index + 1]))
+			$this->pieces[$this->index + 1] = $facing;
+	}
+
 	// Nothing for offset of 2 for some reason
 
 	function Counters() {

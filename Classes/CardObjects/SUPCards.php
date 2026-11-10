@@ -3,65 +3,66 @@
 class rko extends BaseCard {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $mainPlayer, $CombatChain;
-    if ($this->controller == $mainPlayer) {
-      //check to make sure they targeted the current chain link
+    if (str_contains($target, "LAYER") || str_contains($target, "ATTACKQUEUE")) {
+      $obj = MZIndexToObject($this->controller, $target);
+      AddCurrentTurnEffect($this->cardID, $this->controller, $obj->LayerUniqueID());
+    }
+    elseif ($target == "COMBATCHAINLINK-0") {
       $uid = $CombatChain->AttackCard()->UniqueID();
       AddCurrentTurnEffect($this->cardID, $this->controller, $uid);
     }
-    else {
+    elseif (str_contains($target, "COMBATCHAINLINK")) {
       $targetIndex = intval(explode("-", $target, 2)[1]);
       $uid = $CombatChain->Card($targetIndex)->UniqueID();
       AddCurrentTurnEffect($this->cardID, $this->controller, "", $uid);
       ReEvalCombatChain();
     }
+    // handle past chain links later
     return "";
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    global $mainPlayer, $CombatChain;
-    $attackID = $CombatChain->AttackCard()->ID();
     if (CheckTapped("MYCHAR-$index", $this->controller)) return true;
-      if ($this->controller == $mainPlayer) {
-        if(!$CombatChain->HasCurrentLink() && SearchLayersForPhase("RESOLUTIONSTEP") == -1 && !IsLayerStep()) return true;
-        $previousLink = SearchCombatChainAttacks($this->controller, type:"AA") == "";
-        $currentLink = !TypeContains($attackID, "AA", $this->controller);
-        $unresolvedAttacks = SearchLayersCardType("AA") == "";
-        if ($previousLink && $currentLink && $unresolvedAttacks) return true;
+    $targets = $this->GetTargets();
+    return $targets == "";
+  }
+
+  private
+  function GetTargets() {
+    global $mainPlayer, $ChainLinks, $CombatChain;
+    $targets = [];
+    if ($this->controller == $mainPlayer) {
+      $attacks = TargetAttack($this->controller);
+      foreach ($attacks as $attack) {
+        $obj = MZIndexToObject($this->controller, $attack);
+        if (TypeContains($obj->ID(), "AA"))
+          $targets[] = $attack;
       }
-      else {
-        //for now only support buffing cards on the current chain link
-        $numOptions = GetChainLinkCards($this->controller, "AA", "C");
-        if ($numOptions == "") return true;
+    }
+    else {
+      for ($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $LinkCard = $CombatChain->Card($i, true);
+        if (TypeContains($LinkCard->ID(), "AA"))
+          $targets[] = "COMBATCHAINLINK-" . $LinkCard->Index();
       }
-      return false;
+      for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+        $Link = $ChainLinks->GetLink($i);
+        for ($j = 1; $j < $Link->NumCards(); ++$j) {
+          $LinkCard = $Link->GetLinkCard($j, true);
+          $index = $LinkCard->Index();
+          if (TypeContains($LinkCard->ID(), "AA"))
+            $targets[] = "PASTCHAINLINK-$index-$i";
+        }
+      }
+    }
+    return implode(",", $targets);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
-    global $mainPlayer;
+    global $mainPlayer, $ChainLinks;
     $CharacterCard = new CharacterCard($index, $this->controller);
-    if ($this->controller == $mainPlayer) {
-      if (ShouldAutotargetOpponent($this->controller)) {
-        AddDecisionQueue("MULTIZONEINDICES", $this->controller, "ACTIVEATTACK:type=AA");
-      }
-      else AddDecisionQueue("MULTIZONEINDICES", $this->controller, "COMBATCHAINATTACKS:type=AA&ACTIVEATTACK:type=AA");
-      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an attack action card");
-      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-      AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-      AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-    }
-    else {
-      $numOptions = GetChainLinkCards($this->controller, "AA", "C");
-      if ($numOptions != "") {
-        $numOptions = explode(",", $numOptions);
-        $options = [];
-        foreach ($numOptions as $num) $options[] = "COMBATCHAINLINK-$num";
-        $options = implode(",", $options);
-        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a defending card to buff the power of");
-        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, $options, 1);
-        AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
-        AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
-      }
-    }
+    $targets = $this->GetTargets();
+    SetTargetsChoices($this->controller, $this->cardID, $targets, "Choose an attack action card to set to 6 power");
     $CharacterCard->TapForCost();
   }
 
@@ -1984,7 +1985,7 @@ class reckless_stampede_red extends Card {
       AddDecisionQueue("WRITELOG", $this->controller, "Player $this->controller left the revealed card there", 1);
       $otherPlayer = $this->controller == 1 ? 2 : 1;
       $revealedCardController = $otherPlayer;
-      $revealedCardController = $otherPlayer == 1 ? 2 : 1;
+      $revealedCardController = OtherPlayer($otherPlayer);
       AddDecisionQueue("DECKCARDS", $revealedCardController, "0", 1);
       AddDecisionQueue("SETDQVAR", $otherPlayer, "0", 1);
       AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Choose if you want to sink <0>", 1);
@@ -2050,7 +2051,7 @@ class battered_beaten_and_broken_yellow extends Card {
   }
 
   function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    $auraCount = AuraCount($this->controller);
     if (IsHeroAttackTarget() && $auraCount >= 3) {
       if (!$check) AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "ONHITEFFECT");
       return true;
@@ -2059,7 +2060,7 @@ class battered_beaten_and_broken_yellow extends Card {
   }
 
   function PowerModifier($from = '', $resourcesPaid = 0, $repriseActive = -1, $attackID = '-') {
-    $auraCount = intdiv(count(GetAuras($this->controller)), AuraPieces());
+    $auraCount = AuraCount($this->controller);
     return $auraCount >= 3 ? 3 : 0;
   }
 

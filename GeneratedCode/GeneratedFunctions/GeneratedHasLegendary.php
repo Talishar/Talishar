@@ -2,7 +2,6 @@
 function GeneratedHasLegendary($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
-"revere_the_copper_idol_blue" => true,
 "a_drop_in_the_ocean_blue" => true,
 "amethyst_amulet_blue" => true,
 "arknight_shard_blue" => true,
@@ -73,6 +72,7 @@ return match($cardID) {
 "pulse_of_volthaven_red" => true,
 "razor_ring_blue" => true,
 "regicide_blue" => true,
+"revere_the_copper_idol_blue" => true,
 "riches_of_tropal_dhani_yellow" => true,
 "ring_of_roses_yellow" => true,
 "rising_sun_setting_moon_blue" => true,

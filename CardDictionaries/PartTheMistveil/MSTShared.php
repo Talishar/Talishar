@@ -67,7 +67,7 @@ function MSTPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumBluePlayed, $CS_Transcended, $mainPlayer;
   global $combatChain, $defPlayer, $CombatChain, $chainLinks, $CS_NumAttacks;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   $hand = &GetHand($currentPlayer);
   switch ($cardID) {
     case "mistcloak_gully":
@@ -704,7 +704,8 @@ function MSTHitEffect($cardID, $from): void
       $count = 0;
       for ($i = 0; $i < $Discard->NumCards(); ++$i) {
         $DiscardCard = $Discard->Card($i, true);
-        if (SubtypeContains($DiscardCard->CardID(), "Trap") && !TypeContains($DiscardCard->CardID(), "E"))
+        $cost = CardCost($DiscardCard->CardID());
+        if (SubtypeContains($DiscardCard->CardID(), "Trap") && $cost >= 0)
           ++$count;
       }
       if ($count >= 3) {

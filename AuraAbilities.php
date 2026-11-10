@@ -40,7 +40,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
   if (TypeContains($cardID, "T", $player)) $isToken = true;
   if (DelimStringContains(CardSubType($cardID), "Affliction")) {
     $otherPlayer = $player;
-    $player = $player == 1 ? 2 : 1;
+    $player = OtherPlayer($player);
   }
   $auras = &GetAuras($player);
   $numMinusTokens = 0;
@@ -50,6 +50,14 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
       WriteLog("🙇 " . CardLink("preach_modesty_red", "preach_modesty_red") . " prevents the creation of " . CardLink($cardID, $cardID));
       return;
     }
+  }
+  if (SubtypeContains($cardID, "Disease") && SearchCurrentTurnEffects("plague_mask", $player)) {
+    WriteLog("The " . CardLink("plague_mask") . " protects player $player from " . CardLink($cardID) . "!");
+    return;
+  }
+  if (SearchCurrentTurnEffects("self_determination_blue", $player) && $effectAgent != $player) {
+    WriteLog("My " . CardLink("self_determination_blue") . " protects me from your " . CardLink($cardID) . "!");
+    return;
   }
   $MainAuras = new Auras($mainPlayer);
   $DefAuras = new Auras($defPlayer);
@@ -143,7 +151,11 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $auras[] = $holoCounters; // holo counters
     $auras[] = "-"; //bound to
     $uniqueID = "-"; // reset the unique ID
+
+    if ($effectAgent != $player)
+      CheckInfectContracts($effectAgent, $cardID, $number);
   }
+  if ($number > 0 && $effectAgent != $player && SubtypeContains($cardID, "Disease")) LogDiseaseStats($player, $cardID, "created", $number);
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if ($isToken) {
     if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
@@ -472,7 +484,7 @@ function GetAuraObject($player, $location, $index) {
 function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skipTrigger = false, $skipClose = false, $mainPhase = true, $destroyedBy = -1)
 {
   global $combatChainState, $CCS_WeaponIndex, $combatChain, $mainPlayer, $currentPlayer, $CombatChain, $CS_NumControlledAurasDestroyed;
-  global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed, $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed;
+  global $CS_NumLightningFlowDestroyed, $CS_NumLightningFlowsIDestroyed, $CS_FrailtyDestroyed, $CS_InertiaDestroyed, $CS_BloodrotDestroyed, $CS_ExertionDestroyed;
   $AuraCard = GetAuraObject($player, $location, $index);
   $isToken = ($location == "EQUIP") ? true : $AuraCard->IsToken() == 1;
   if ($uniqueID != "") {
@@ -500,6 +512,9 @@ function DestroyAura($player, $index, $uniqueID = "", $location = "AURAS", $skip
       break;
     case "inertia":
       IncrementClassState($player, $CS_InertiaDestroyed);
+      break;
+    case "exertion":
+      IncrementClassState($player, $CS_ExertionDestroyed);
       break;
     default:
       break;
@@ -1645,6 +1660,15 @@ function AuraHitEffects($attackID, $check = false): bool
         break;
     }
     if ($remove == 1) DestroyAura($mainPlayer, $i);
+  }
+  $defAuras = new Auras($defPlayer);
+  for ($i = $defAuras->NumAuras() - 1; $i >= 0; --$i) {
+    $AuraCard = $defAuras->Card($i, true);
+    $card = GetClass($AuraCard->CardID(), $defPlayer);
+    if ($card != "-") {
+      $foundTrigger = $card->PermanentGetHitEffect($i, $attackID, $defPlayer, false, $check);
+      if ($foundTrigger && $check) return true;
+    }
   }
   return false;
 }

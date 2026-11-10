@@ -1,5 +1,7 @@
 <?php
 
+static $OBKDiseases = ["bloodrot_pox", "exertion", "inertia"];
+
 function GiveDisease($player) {
 	$diseases = SearchMultizone($player, "MYAURAS:subtype=Disease");
 	Await($player, "ChooseMultiZone", indices:$diseases, context:"Give a disease to your opponent", subsequent:0);
@@ -8,7 +10,7 @@ function GiveDisease($player) {
 
 function GiveAuraAwait($player) {
 	global $dqVars;
-	$otherPlayer = $player == 1 ? 2 : 1;
+	$otherPlayer = OtherPlayer($player);
 	$MZIndex = $dqVars["MZIndex"] ?? "-";
 	$Disease = MZIndexToObject($player, $MZIndex);
 	if ($Disease != "") {

@@ -12,6 +12,7 @@ include "Libraries/UILibraries.php";
 include "Libraries/PlayerSettings.php";
 include "Libraries/NetworkingLibraries.php";
 include "Libraries/CacheLibraries.php";
+include_once "Libraries/GameHealthLog.php";
 include_once "includes/MetafyHelper.php";
 include "AI/CombatDummy.php";
 include "Libraries/HTTPLibraries.php";
@@ -130,7 +131,7 @@ if (IsReplay() && IsReplayControlMode($mode) && ReadReplayFormat($filepath) !== 
   }
   $currentPointer = intval(trim($commands[0] ?? "0"));
 
-  $finishReplayStateLoad = static function (string $gamestate, int $pointer) use ($filepath, $filename, &$commands, $gameName): void {
+  $finishReplayStateLoad = static function (string $gamestate, int $pointer) use ($filepath, $gameName): void {
     file_put_contents($filepath . "gamestate.txt", $gamestate, LOCK_EX);
     WriteReplayGameLog($filepath, $pointer);
     WriteGamestateCache($gameName, $gamestate);
@@ -283,6 +284,7 @@ if (SaveReplay() && !IsReplay()) {
   fwrite($commandFile, "$playerID $mode $buttonInput $cardID $chkCount " . implode("|", $chkInput) . "\r\n");
   fclose($commandFile);
 }
+LogGameHealthInput($playerID, $mode, $buttonInput);
 
 //Now we can process the command
 ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkInput, false, $inputText);
@@ -298,9 +300,6 @@ if ((int)$mode === 100023) {
     "success" => false,
     "message" => "Snapshot could not be saved. Please try again."
   ]);
-}
-if ((int)$mode === 100025) {
-  echo json_encode($puzzleHintResult ?? ["hint" => null, "index" => 0, "total" => 0]);
 }
 
 // Rematch handling, AI turns, clock accumulation, persistence and backups.

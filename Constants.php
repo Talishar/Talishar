@@ -468,8 +468,12 @@ $classStateDefaults = [
   "InertiaDestroyed" => 0,
   "BloodrotDestroyed" => 0,
   "AllDamageDealtToOpponent" => 0,
+  "ExertionDestroyed" => 0,
+  "DrawOffered" => 0,                         // this player has an open draw offer, so it expires at the end of the turn
+  "GraveyardGemsOff" => "-",                  // unique IDs of this player's graveyard cards whose gem is switched off
+  "ClubDamage" => 0,
 ];
-$persistentClassStates = ["ArsenalFacing", "OriginalHero"];
+$persistentClassStates = ["ArsenalFacing", "OriginalHero", "GraveyardGemsOff"];
 $classStateNames = array_keys($classStateDefaults);
 foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;
 unset($classStateName, $classStateDefault);
@@ -635,7 +639,7 @@ function ResetCombatChainState()
 
 function AttackReplaced($cardID, $player, $from)
 {
-  global $combatChainState, $currentTurnEffects, $mainPlayer;
+  global $combatChainState, $currentTurnEffects, $mainPlayer, $CurrentTurnEffects;
   global $CCS_CurrentAttackGainedGoAgain, $CCS_CachedDominateActive, $CCS_GoesWhereAfterLinkResolves, $CCS_AttackPlayedFrom, $CCS_LinkBasePower, $combatChain;
   global $CS_NumStealthAttacks, $CCS_AttackCost, $CCS_CachedGoAgain, $CCS_AttackDamageDealtToHero, $CCS_CachedVeilActive;
   SetCombatChainState($CCS_CurrentAttackGainedGoAgain, 0);
@@ -667,6 +671,15 @@ function AttackReplaced($cardID, $player, $from)
     }
   }
   CleanUpCombatEffects(true);
+  CacheCombatResult(false);
+  $updatedPower = CachedTotalPower() - LinkBasePower();
+  for ($i = 0; $i < $CurrentTurnEffects->NumEffects(); ++$i) {
+    $Effect = $CurrentTurnEffects->Effect($i, true);
+    $param = explode("-", $Effect->EffectID(), 2)[1] ?? "-";
+    if (ExtractCardID($Effect->EffectID()) == "gauntlets_of_iron_will" && $param != "ACTIVE") $Effect->Replace("gauntlets_of_iron_will-$updatedPower");
+  }
+  $card = GetClass($cardID, $mainPlayer);
+  if ($card != "-") $card->AttackIsBlockedEffect(CombatChainPieces());
 }
 
 function ResetChainLinkState()
@@ -883,7 +896,7 @@ function CombatChainOffset($piece)
 $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_shooting_star", "azalea_ace_in_the_hole", "briar_warden_of_thorns", "dash_inventor_extraordinaire", "dromai_ash_artist", "enigma_ledger_of_ancestry",
                   "florian_rotwood_harbinger", "iyslander_stormbind", "kano_dracai_of_aether", "lexi_livewire", "nuu_alluring_desire", "oldhim_grandfather_of_eternity", "prism_sculptor_of_arc_light",
                   "viserai_rune_blood", "zen_tamer_of_purpose", "kayo_armed_and_dangerous", "verdance_thorn_of_the_rose", "prism_awakener_of_sol", "victor_goldmane_high_and_mighty",
-                  "dash_io", "kassai_of_the_golden_sand", "oscilio_constella_intelligence", "arakni_marionette", "fai_rising_rebellion"];
+                  "dash_io", "kassai_of_the_golden_sand", "oscilio_constella_intelligence", "arakni_marionette", "fai_rising_rebellion", "cindra_dracai_of_retribution"];
 
 $benched = ["briar", "oldhim", "oscilio", "chane"];
 

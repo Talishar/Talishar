@@ -1,5 +1,10 @@
 <?php
 
+function RematchLobbyMarkerPath(string $gameName, string $root = "./"): string
+{
+  return $root . "Games/" . $gameName . "/rematchLobby.txt";
+}
+
 function ResetGameGUIDForRematch(): string
 {
   return GenerateGameGUID();

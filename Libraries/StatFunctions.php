@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ . "/CoreLibraries.php";
 
 define('CARD_STAT_PIECES', 10);
 define('TURN_STAT_PIECES', 15);
@@ -177,7 +178,7 @@ function LogResourcesUsedStats($player, $resourcesUsed)
 function LogDamageStats($player, $damageThreatened, $damageDealt)
 {
   global $TurnStats_DamageThreatened, $TurnStats_DamageDealt;
-  $playerSource = $player == 1 ? 2 : 1;
+  $playerSource = OtherPlayer($player);
   $baseIndex    = GetStatTurnIndex($playerSource) * TURN_STAT_PIECES;
   $damagerStats = &GetTurnStats($playerSource);
   //WriteLog("DEBUG: Logging damage for player $playerSource at turn " . (GetStatTurnIndex($playerSource)) . " with damage threatened $damageThreatened and damage dealt $damageDealt", highlight:true, highlightColor:"blue");
@@ -190,7 +191,7 @@ function LogDamageStats($player, $damageThreatened, $damageDealt)
 function LogArcaneDamageStats($player, $damageDealt)
 {
   global $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
-  $playerSource = $player == 1 ? 2 : 1;
+  $playerSource = OtherPlayer($player);
   $turnIndex = GetStatTurnIndex($playerSource);
   if ($playerSource == 1) {
     AddTurnStat($p1ArcaneDamageDealt, $turnIndex, $damageDealt);
@@ -299,6 +300,40 @@ function GetAllyDamagePrevented($player)
 {
   global $p1AllyDamagePrevented, $p2AllyDamagePrevented;
   return ($player == 1 ? $p1AllyDamagePrevented : $p2AllyDamagePrevented) ?? [];
+}
+
+// Disease tokens are tallied on the player who received them; keys are
+// "created" (count per token the opponent created) and "damage" (damage or
+// life lost per token).
+function LogDiseaseStats($player, $cardID, $kind, $amount)
+{
+  global $p1DiseaseStats, $p2DiseaseStats;
+  $amount = intval($amount);
+  if ($amount <= 0) return;
+  if ($player == 1) $stats = &$p1DiseaseStats;
+  else if ($player == 2) $stats = &$p2DiseaseStats;
+  else return;
+  if (!is_array($stats)) $stats = [];
+  $stats[$kind][$cardID] = intval($stats[$kind][$cardID] ?? 0) + $amount;
+}
+
+function GetDiseaseStats($player)
+{
+  global $p1DiseaseStats, $p2DiseaseStats;
+  $stats = $player == 1 ? $p1DiseaseStats : $p2DiseaseStats;
+  return is_array($stats) ? $stats : [];
+}
+
+function GetDiseasesApplied($player)
+{
+  $stats = GetDiseaseStats($player == 1 ? 2 : 1);
+  $created = $stats["created"] ?? [];
+  if (empty($created)) return [];
+  $applied = ["created" => $created];
+  foreach ($stats["damage"] ?? [] as $cardID => $amount) {
+    if (isset($created[$cardID])) $applied["damage"][$cardID] = $amount;
+  }
+  return $applied;
 }
 
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)

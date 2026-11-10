@@ -135,7 +135,6 @@ function EvaluateCombatChain(&$totalPower, &$totalDefense, &$powerModifiers = []
   if ($canGainAttack || $power < 0) {
     AddPower($totalPower, $power);
   }
-  CurrentEffectAfterPlayOrActivateAbility(false); //checking gauntlets of iron will
   if (!$secondNeedleCheck && isset($combatChain[0])) {
     switch ($combatChain[0]) {
       case "zephyr_needle":
@@ -865,6 +864,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   }
   if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
+  if ($source == "bloodrot_pox") LogDiseaseStats($player, $source, "damage", $damage);
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   //I believe IncrementClassState resets every turn and is used to activate effects that check if arcane was dealt that turn so I added line below
   if ($type == "ARCANE" && $player != $playerSource) LogArcaneDamageStats($player, $damage);
@@ -1053,7 +1053,7 @@ function CombatChainDamageModifiers($player, $source, $type)
 function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSource)
 {
   global $currentTurnEffects, $EffectContext, $CombatChain, $CS_ResolvingLayerUniqueID, $mainPlayer;
-  $otherPlayer = ($target == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($target));
   $sourceType = CardType($source);
   if ($sourceType == "AA" && (SearchAuras("stamp_authority_blue", 1) || SearchAuras("stamp_authority_blue", 2))) return;
   $AttackCard = $CombatChain->AttackCard();
@@ -1084,7 +1084,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))
-          MZMoveCard($target == 1 ? 2 : 1, "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
+          MZMoveCard(OtherPlayer($target), "MYDISCARD:type=A", "MYBANISH,GY,blossoming_spellblade_red", may: true);
         break;
       case "sigil_of_permafrost_red":
       case "sigil_of_permafrost_yellow":
@@ -1143,7 +1143,7 @@ function LoseHealth($amount, $player)
   PlayerLoseHealth($amount, $player);
 }
 
-function GainHealth($amount, $player, $silent = false, $preventable = true)
+function GainHealth($amount, $player, $silent = false, $preventable = true, $fromCardEffect = true)
 {
   global $mainPlayer, $CS_HealthGained;
   $otherPlayer = 3 - $player;
@@ -1158,7 +1158,7 @@ function GainHealth($amount, $player, $silent = false, $preventable = true)
     WriteLog(CardLink("deny_redemption_red", "deny_redemption_red") . " prevented you from gaining life");
     return false;
   }
-  if ((SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade") && $preventable) && $health > $otherHealth) {
+  if ($preventable && (SearchCharacterForCard($player, "reaping_blade") || SearchCharacterForCard($otherPlayer, "reaping_blade")) && $health > $otherHealth) {
     WriteLog("<span style='color:red;'>🗡️ " . CardLink("reaping_blade", "reaping_blade") . " prevented Player " . $player . " from gaining " . $amount . " life</span>");
     return false;
   }
@@ -1249,18 +1249,13 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
-  include_once __DIR__ . "/Libraries/PuzzleGame.php";
-  if (IsPuzzleGame($gameName)) {
-    PuzzleGameOver($playerID);
-    return;
+  try {
+    include_once __DIR__ . "/Libraries/GameHealthLog.php";
+    FlushGameHealthLog($gameName);
+  } catch (Throwable $e) {
+    error_log("PlayerWon: FlushGameHealthLog threw: " . $e->getMessage());
   }
   if (isPlayerAI(2)) return;
-  try {
-    include_once __DIR__ . "/Libraries/PuzzleHarvest.php";
-    HarvestPuzzleCandidate($playerID, $conceded);
-  } catch (Throwable $e) {
-    error_log("PlayerWon: HarvestPuzzleCandidate threw: " . $e->getMessage());
-  }
   try {
     include_once __DIR__ . "/Libraries/HeroMastery.php";
     AwardHeroMastery($conceded);
@@ -1307,6 +1302,7 @@ function UnsetTurnBanish()
     "TT" => true, "INST" => true, "sonic_boom_yellow" => true, "blossoming_spellblade_red" => true,
     "TTFromOtherPlayer" => true, "REMOVEGRAVEYARD" => true, "BOOST" => true,
     "TCL" => true, "TCC" => true, "TCCGorgonsGaze" => true,
+    "shadowrealm_horror_red" => true, "spew_shadow_red" => true, "send_packing_yellow" => true,
   ];
   $p1Banish = new Banish(1);
   $p1Banish->UnsetBanishModifiers($turnModifiers);
@@ -2510,33 +2506,18 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
   $character = &GetPlayerCharacter($mainPlayer);
   $characterCount = count($character);
   $characterPieces = CharacterPieces();
-  $isFirstStealthAttack = HasStealth($attackID) && GetClassState($mainPlayer, $CS_NumStealthAttacks) == 1;
-  $isFirstBloodDebtAttack = HasBloodDebt($attackID, $mainPlayer) && TypeContains($attackID, "AA") && GetClassState($mainPlayer, $CS_NumBloodDebtAttacksPlayed) == 1;
   for ($i = 0; $i < $characterCount; $i += $characterPieces) {
     if ($character[$i + 1] != 2) continue;
     $characterID = ShiyanaCharacter($character[$i]);
-    switch ($characterID) {
-      case "arakni_solitary_confinement": case "arakni_5lp3d_7hru_7h3_cr4x":
-        if ($isFirstStealthAttack) return true;
-        break;
-      case "viserai_usurper":
-        if ($isFirstBloodDebtAttack) return true;
-        break;
-      default:
-        break;
-    }
+    $card = GetClass($characterID, $mainPlayer);
+    if ($card != "-" && $card->PermanentGivesAttackGoAgain($attackID)) return true;
   }
   $otherPlayerCharacter = &GetPlayerCharacter($defPlayer);
   $otherCharCount = count($otherPlayerCharacter);
   for ($j = 0; $j < $otherCharCount; $j += $characterPieces) {
     if ($otherPlayerCharacter[$j + 1] != 2) continue;
-    switch ($otherPlayerCharacter[$j]) {
-      case "arakni_5lp3d_7hru_7h3_cr4x":
-        if ($isFirstStealthAttack) return true;
-        break;
-      default:
-        break;
-    }
+    $card = GetClass($otherPlayerCharacter[$j], $defPlayer);
+    if ($card != "-" && $card->DefPermanentGivesAttackGoAgain($attackID)) return true;
   }
   $mainPitch = &GetPitch($mainPlayer);
    if (HasHighTide($attackID) && HighTideConditionMet($mainPlayer)) {
@@ -2796,6 +2777,20 @@ function AttackDestroyedEffects($attackID)
   }
 }
 
+function IsReactionLayer($Layer)
+{
+  $cardID = $Layer->ID();
+  if ($cardID == "" || isAdministrativeStep($cardID) || $cardID == "TRIGGER" || $cardID == "PRETRIGGER" || $cardID == "ABILITY") return false;
+  $params = explode("|", $Layer->Parameter());
+  $from = $params[0];
+  $abilityIndex = $params[2] ?? "-";
+  $abilityTypes = GetAbilityTypes($cardID, -1, $from);
+  if ($abilityTypes != "" && is_numeric($abilityIndex)) $type = explode(",", $abilityTypes)[intval($abilityIndex)] ?? "";
+  elseif ($from == "PLAY" || $from == "EQUIP") $type = GetAbilityType($cardID, -1, $from, $Layer->PlayerID());
+  else return TypeContains($cardID, "DR") || TypeContains($cardID, "AR");
+  return $type == "AR" || $type == "DR";
+}
+
 function CloseCombatChain($chainClosed = true)
 {
   global $turn, $currentPlayer, $mainPlayer, $combatChainState, $CCS_AttackTarget, $layers, $Stack;
@@ -2806,13 +2801,11 @@ function CloseCombatChain($chainClosed = true)
     $Step = $Stack->FindCardID($step);
     if ($Step != "") $Step->Negate();
   }
-  $layerCount = $Stack->NumLayers();
-  for ($i = 0; $i < $layerCount; $i++) { //7.7.3
+  for ($i = $Stack->NumLayers() - 1; $i >= 0; --$i) { //7.7.3, backwards so negating doesn't skip the next layer
     $Layer = $Stack->Card($i, true);
-    $layerID = $Layer->ID();
-    if (TypeContains($layerID, "DR") || TypeContains($layerID, "AR")) {
-      $Layer->Negate("GY");
-    }
+    if (!IsReactionLayer($Layer)) continue;
+    $from = $Layer->From();
+    $Layer->Negate($from == "PLAY" || $from == "EQUIP" ? "-" : "GY");
   }
   $resolutionStep = $Stack->FindCardID("FINALIZECHAINLINK");
   $closeStep = $Stack->FindCardID("CLOSESTEP");
@@ -2884,7 +2877,12 @@ function RemoveCharacter($player, $index, $skipClose=false)
       CloseCombatChain();
     }
   }
+  if (TypeContains($CharCard->CardID(), "C")) { // player lost their hero
+    WriteLog("Player $player has lost their hero!", highlight:true);
+    LoseHealth(GetHealth($player), $player);
+  }
   array_splice($char, $index, CharacterPieces());
+  
   return $ret;
 }
 
@@ -3169,6 +3167,11 @@ function CanPassPhase($phase)
     default:
       return 1;
   }
+}
+
+function CanUnblockFrom($from)
+{
+  return $from == "HAND" || $from == "EQUIP" || $from == "ARS" || $from == "PLAY";
 }
 
 //Returns true if done for that player
@@ -3639,7 +3642,7 @@ function IsAlternativeCostPaid($cardID, $from)
 function BanishCostModifier($from, $index, $cost)
 {
   global $currentPlayer;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   if ($from != "BANISH" && $from != "THEIRBANISH") return 0;
   $from == "BANISH" ? $banish = GetBanish($currentPlayer) : $banish = GetBanish($otherPlayer);
   $mod = explode("-", $banish[$index + 1]);
@@ -3952,9 +3955,9 @@ function PitchAbility($cardID, $from="HAND", $index=-1)
     LogPlayCardStats($currentPlayer, "vestige_of_sol", "EQUIP", "PASSIVE");
   }
   if ($pitchValue == 1) {
-    $talismanOfRecompenseIndex = GetItemIndex("talisman_of_recompense_yellow", $currentPlayer);
+    $talismanOfRecompenseIndex = SearchItemForIndex("talisman_of_recompense_yellow", $currentPlayer);
     if ($talismanOfRecompenseIndex > -1) {
-      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1 and destroyed itself");
+      WriteLog(CardLink("talisman_of_recompense_yellow", "talisman_of_recompense_yellow") . " gained 3 instead of 1");
       DestroyItemForPlayer($currentPlayer, $talismanOfRecompenseIndex);
       GainResources(2, $currentPlayer);
     }
@@ -4063,7 +4066,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     if ($talismanOfTithes != "") {
       $indices = explode(",", $talismanOfTithes);
       DestroyItemForPlayer($otherPlayer, $indices[0]);
-      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw and was destroyed");
+      WriteLog(CardLink("talisman_of_tithes_blue", "talisman_of_tithes_blue") . " prevented a draw");
       --$num;
     }
   }
@@ -4774,12 +4777,21 @@ function SetTargets($player, $cardID, $search, $N=1, $may=false, $playCard=true,
   }
 }
 
-function SetTargetsChoices($player, $cardID, $choices, $context="") {
-  AddDecisionQueue("PASSPARAMETER", $player, $choices);
-  if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
-  AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
-  AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
-  AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+function SetTargetsChoices($player, $cardID, $choices, $context="", $prepend=false) {
+  if ($prepend) {
+    PrependDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+    PrependDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+    PrependDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    if ($context != "") PrependDecisionQueue("SETDQCONTEXT", $player, $context);
+    PrependDecisionQueue("PASSPARAMETER", $player, $choices);
+  }
+  else {
+    AddDecisionQueue("PASSPARAMETER", $player, $choices);
+    if ($context != "") AddDecisionQueue("SETDQCONTEXT", $player, $context);
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $player, "<-", 1);
+  }
 }
 
 //Parameters:

@@ -10,6 +10,7 @@ include_once '../includes/functions.inc.php';
 include_once '../includes/dbh.inc.php';
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
+include_once "../Libraries/FormatCodes.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/MetafyHelper.php";
 include_once "../Assets/MetafyDictionary.php";
@@ -17,12 +18,10 @@ include_once "../Assets/MetafyDictionary.php";
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
 
-include_once "../Classes/CardObjects/AMOCards.php";
 include_once "../Classes/CardObjects/HVYCards.php"; //needed for windups
-include_once "../Classes/CardObjects/MPWCards.php"; // for now just for the smash palace cards
-include_once "../Classes/CardObjects/MPACards.php";
 include_once "../Classes/CardObjects/OBKCards.php";
 include_once "../Classes/CardObjects/AMGCards.php";
+include_once "../Classes/CardObjects/MPBCards.php";
 // promos for special formats
 include_once "../Classes/CardObjects/LGSCards.php";
 
@@ -45,88 +44,7 @@ if (!function_exists("TypeContains")) {
   }
 }
 
-if (!function_exists("FormatDisplayName")) {
-  function FormatDisplayName($format)
-  {
-    return match ($format) {
-      "cc" => "Classic Constructed",
-      "compcc" => "Competitive Classic Constructed",
-      "blitz" => "Blitz",
-      "compblitz" => "Competitive Blitz",
-      "futurecc" => "Future Classic Constructed",
-      "commoner" => "Commoner",
-      "sealed" => "Sealed",
-      "draft" => "Draft",
-      "llcc" => "Living Legend",
-      "llblitz" => "Living Legend Blitz",
-      "openformatblitz" => "Open Blitz",
-      "clash" => "Clash",
-      "futurell" => "Future Living Legend",
-      "openformatllblitz" => "Open Living Legend Blitz",
-      "compllcc" => "Competitive Living Legend",
-      "sage" => "Silver Age",
-      "compsage" => "Competitive Silver Age",
-      "futuresage" => "Future Silver Age",
-      "open" => "Open",
-      "gage" => "Golden Age",
-      "precon" => "Preconstructed Deck",
-      default => $format,
-    };
-  }
-}
-
-if (!function_exists("CheckHeroPreference")) {
-  function CheckHeroPreference($character, $gameDescription) {
-    $knownClasses = ['assassin', 'brute', 'guardian', 'illusionist', 'mechanologist',
-                     'necromancer', 'ninja', 'pirate', 'ranger', 'runeblade', 'warrior', 'wizard'];
-
-    $preferMode = null;
-    $namesPart = null;
-
-    if (str_starts_with($gameDescription, 'Looking to play against ')) {
-      $after = trim(substr($gameDescription, strlen('Looking to play against ')));
-      if ($after !== 'a specific hero' && $after !== 'a specific class') {
-        $preferMode = 'include';
-        $namesPart = $after;
-      }
-    } elseif (str_starts_with($gameDescription, 'No interest in playing against ')) {
-      $after = trim(substr($gameDescription, strlen('No interest in playing against ')));
-      if ($after !== 'specific hero') {
-        $preferMode = 'exclude';
-        $namesPart = $after;
-      }
-    }
-
-    if (!$preferMode || !$namesPart) return null;
-
-    $rawTokens = explode(', ', $namesPart);
-    $tokens = array_map(function($t) { return strtolower(trim(str_replace(',', '', $t))); }, $rawTokens);
-    $candidates = $tokens;
-    $tokensCount = count($tokens) - 1;
-    for ($i = 0; $i < $tokensCount; $i++) {
-      $candidates[] = $tokens[$i] . ' ' . $tokens[$i + 1];
-    }
-
-    $isClassBased = !empty(array_intersect($tokens, $knownClasses));
-
-    if ($isClassBased) {
-      $heroClasses = explode(',', strtolower(CardClass($character)));
-      $matched = !empty(array_intersect($heroClasses, $candidates));
-    } else {
-      $normalizedHeroName = strtolower(str_replace(',', '', CardName($character)));
-      $matched = in_array($normalizedHeroName, $candidates);
-    }
-
-    if ($preferMode === 'include' && !$matched) {
-      return "⚠️ This lobby is looking to play against specific heroes. Your hero does not match the lobby's preferences.";
-    }
-    if ($preferMode === 'exclude' && $matched) {
-      return "⚠️ This lobby has specified they are not interested in playing against your hero.";
-    }
-
-    return null;
-  }
-}
+include_once __DIR__ . "/../Libraries/HeroPreference.php";
 
 SetHeaders();
 
@@ -162,16 +80,30 @@ if ($favoriteDeckLink != "0" && str_contains($favoriteDeckLink, "<fav>")) {
 if (!isset($matchup)) $matchup = TryPOST("matchup", ""); //The matchup link
 $forceBaseDeckRefresh = ($matchup === "__base__");
 if ($forceBaseDeckRefresh) $matchup = "";
+$changeDeck = filter_var(TryPOST("changeDeck", false), FILTER_VALIDATE_BOOLEAN);
+if ($changeDeck) $matchup = "";
 $starterDeck = false;
 
-// forceBaseDeckRefresh is only valid for a player who is already in the lobby.
-if ($forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) == "") {
+if ($changeDeck && $playerID != 1 && $playerID != 2) {
+  $response->error = "Only seated players can change decks.";
+  echo json_encode($response);
+  exit;
+}
+
+// forceBaseDeckRefresh and changeDeck are only valid for a player who is already in the lobby.
+if (($forceBaseDeckRefresh || $changeDeck) && GetCachePiece($gameName, $playerID + 6) == "") {
   $response->error = "No active session to refresh.";
   echo json_encode($response);
   exit;
 }
 
-if ($matchup == "" && !$forceBaseDeckRefresh && GetCachePiece($gameName, $playerID + 6) != "") {
+if ($changeDeck && $decklink == "" && $favoriteDeckLink == "0") {
+  $response->error = "Choose a deck to switch to.";
+  echo json_encode($response);
+  exit;
+}
+
+if ($matchup == "" && !$forceBaseDeckRefresh && !$changeDeck && GetCachePiece($gameName, $playerID + 6) != "") {
   $response->error = "Another player has already joined the game.";
   echo json_encode($response);
   exit;
@@ -206,6 +138,7 @@ $preconDecklinks = [
   "https://fabrary.net/decks/01KREWW7RJS0GZ2PCCD4BM47QY", //zyggy
   "https://fabrary.net/decks/01KP7ZJNFZZD8YNGP438FT8SFG", //olympia
   "https://fabrary.net/decks/01KXQF1YZHCHP2KAMDBS5WC5Q9", //malice
+  "https://fabrary.net/decks/01M01B0MCJRZHMDRFZNBCT1B1J", //dr. mortimer
 ];
 
 if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
@@ -214,6 +147,36 @@ include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
+
+include_once "../Libraries/RematchLibraries.php";
+
+if ($changeDeck) {
+  include_once "../Libraries/ValidationLibraries.php";
+  $changeDeckAuthKey = TryPOST("authKey", "");
+  if ($changeDeckAuthKey === "") $changeDeckAuthKey = $_SESSION["p" . $playerID . "AuthKey"] ?? "";
+  if (!validateGameAuthKey($playerID, $changeDeckAuthKey, $p1Key, $p2Key)) {
+    $response->error = "Authentication failed";
+    echo json_encode($response);
+    exit;
+  }
+  if (!file_exists(RematchLobbyMarkerPath($gameName, "../"))) {
+    $response->error = "Decks can only be changed in a rematch.";
+    echo json_encode($response);
+    exit;
+  }
+  if ($gameStatus >= $MGS_GameStarted || ($p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1")) {
+    $response->error = "Decks can only be changed before both players lock in their arena.";
+    echo json_encode($response);
+    exit;
+  }
+  if ($playerID == 1) {
+    $p1Matchups = [];
+    $p1deckbuilderID = "";
+  } else {
+    $p2Matchups = [];
+    $p2deckbuilderID = "";
+  }
+}
 
 $joinerName = ($_SESSION["useruid"] ?? "Player 2");
 if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
@@ -243,7 +206,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    }
  }
 
- if ($playerID == 2 && !$forceBaseDeckRefresh && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {
+ if ($playerID == 2 && !$forceBaseDeckRefresh && !$changeDeck && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {
    $response->error = "Unable to join this game.";
    WriteGameFile();
    echo json_encode($response);
@@ -260,7 +223,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    }
  }
 
- if ($matchup == "" && !$forceBaseDeckRefresh && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
+ if ($matchup == "" && !$forceBaseDeckRefresh && !$changeDeck && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
    if ($gameStatus >= $MGS_GameStarted) {
      $response->gameStarted = true;
    }
@@ -666,6 +629,31 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    exit;
  }
 
+ if ($changeDeck) {
+   $otherPlayer = ($playerID == 1 ? 2 : 1);
+   $otherIsAI = ($otherPlayer == 1 ? $p1IsAI : $p2IsAI) == "1";
+   if ($playerID == 1) {
+     $p1SideboardSubmitted = "0";
+     $p1EquipmentSubmitted = "0";
+     if (!$otherIsAI) $p2EquipmentSubmitted = "0";
+   } else {
+     $p2SideboardSubmitted = "0";
+     $p2EquipmentSubmitted = "0";
+     if (!$otherIsAI) $p1EquipmentSubmitted = "0";
+   }
+   WriteGameFile();
+   SetCachePieces($gameName, [$playerID + 6 => TruncateHeroName($character)]);
+   WriteLog("🔄 Player $playerID changed decks to " . CardName($character) . ".", path: "../");
+   GamestateUpdated($gameName);
+   session_write_close();
+   $response->message = "success";
+   $response->gameName = $gameName;
+   $response->playerID = $playerID;
+   $response->hero = $character;
+   echo json_encode($response);
+   exit;
+ }
+
  if ($matchup == "") {
    if ($playerID == 2) {
 
@@ -687,6 +675,8 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        }
        SetCachePiece($gameName, $playerID + 6, "joining");
        if ($p2LH) { flock($p2LH, LOCK_UN); fclose($p2LH); }
+       $rematchMarker = RematchLobbyMarkerPath($gameName, "../");
+       if (file_exists($rematchMarker)) unlink($rematchMarker);
      }
 
      $p2uid = ($_SESSION["useruid"] ?? "Player 2");
@@ -996,7 +986,7 @@ function isSpecialUsePromo($cardID) {
       "runechant_of_pride_yellow", "runechant_of_wrath_yellow", "runechant_of_lust_yellow",
       "runechant_of_sloth_yellow", "runic_reaving_red"
     ]);
-    $unreleasedSetNames = array_flip(["SPW", "MPA", "AMO", "OBK", "AMG", ""]);
+    $unreleasedSetNames = array_flip(["OBK", "AMG", "MPB", ""]);
   }
   if (isset($releaseSet[$cardID])) return false;
   return isset($promoSet[$cardID]) || isset($unreleasedSetNames[CardSet($cardID)]);
@@ -1005,12 +995,10 @@ function isSpecialUsePromo($cardID) {
 function isUnimplemented($cardID) {
   // by default cards from new sets are unimplemented
   switch (CardSet($cardID)) {
-    case "SPW":
-    case "MPA":
-    case "AMO":
     case "OBK":
     case "AMG":
     case "FAB":
+    case "MPB":
     case "": // cards that don't have a set id yet
       $card = GetClass($cardID, 0);
       return $card == "-";
@@ -1050,7 +1038,7 @@ function isBannedInFormat($cardID, $format) {
           "electromagnetic_somersault_red", "electromagnetic_somersault_yellow",
           "channel_lightning_valley_yellow", "phantom_tidemaw_blue", "reaping_blade",
           "volzar_the_lightning_rod", "luminaris_celestial_fury", "luminaris_angels_glow", "remembrance_yellow", "millers_grindstone", "zephyr_needle",
-          "symbiosis_shot", "cintari_saber", "cintari_saber_r", "hunters_klaive", "hunters_klaive_r", "searing_emberblade",
+          "symbiosis_shot", "cintari_saber", "cintari_saber_r", "hunters_klaive", "hunters_klaive_r", "searing_emberblade", "kunai_of_retribution", "kunai_of_retribution_r"
       ], $livingLegends)), // $livingLegends contains the heroes that have LL
       "commoner" => array_flip([
           "amulet_of_ice_blue", "belittle_red", "belittle_yellow", "belittle_blue", "aether_ironweave", "rosetta_thorn",

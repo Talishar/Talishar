@@ -2,36 +2,23 @@
 
 
 
-class Permanents {
-
-  // Properties
-  private $permanents = [];
-  private $player = 0;
+class Permanents extends ZoneObjects {
 
   // Constructor
   function __construct($player) {
-    $this->permanents = &GetPermanents($player);
+    $this->cards = &GetPermanents($player);
     $this->player = $player;
+    $this->pieces = PermanentPieces();
+    $this->uidOffset = 3;
   }
 
-  // Methods
-  function Card($index, $cardNumber=false) {
-    if($cardNumber) $index *= PermanentPieces();
+  protected function NewCard($index) {
     return new PermanentCard($index, $this->player);
   }
 
-  function FindCardUID($uid) {
-    $count = count($this->permanents);
-    if ($count == 0) return "";
-    $permanentPieces = PermanentPieces();
-    for ($i = 0; $i < $count; $i += $permanentPieces) {
-      if ($this->permanents[$i + 3] == $uid) return new PermanentCard($i, $this->player);
-    }
-    return "";
-  }
-
+  // Methods
   function NumPermanents() {
-    return intdiv(count($this->permanents), PermanentPieces());
+    return $this->NumCards();
   }
 }
 
@@ -75,7 +62,7 @@ class PermanentCard {
 
 function GetPermanent($zone, $index, $player) {
 	if (str_contains($zone, "THEIR")) {
-		$player = 2 - $player;
+		$player = 3 - $player;
 		$zone = substr($zone, 5);
 	}
   switch ($zone) {

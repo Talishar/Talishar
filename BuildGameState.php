@@ -2,7 +2,6 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
-include_once __DIR__ . "/Libraries/PuzzleGame.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = NULL;
@@ -95,7 +94,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response = new stdClass();
   $response->playerInventory = [];
 
-  $otherPlayer = $playerID == 1 ? 2 : 1;
+  $otherPlayer = OtherPlayer($playerID);
   $viewerSlotPlayerID = $playerID == 1 ? 1 : 2;
   $cacheVal = intval($buildCacheArr[0] ?? 0);
 
@@ -198,8 +197,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $initialLoad->playerIsPvtVoidPatron = $playerUid == "PvtVoid" || ($playerID != 3 && $sessionIsPvtVoidPatron);
     $initialLoad->opponentIsPvtVoidPatron = $opponentUid == "PvtVoid";
     $initialLoad->isOpponentAI = $playerID == 1 ? ($p2IsAI == "1") : ($p1IsAI == "1");
-    $initialLoad->isPuzzle = IsPuzzleGame($gameName);
-    $initialLoad->puzzle = $initialLoad->isPuzzle ? PuzzleClientInfo($gameName) : null;
     $initialLoad->gameFormat = $format;
 
     if ($playerID == 1 || $playerID == 2) {
@@ -397,13 +394,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($goldOrPitchChoice) $goldOrPitchChoices[$goldOrPitchChoice] = true;
     }
   }
+  $canUnblock = $turnPhase == "B" && $currentPlayer == $playerID && $playerID == $defPlayer && count($layers) == 0;
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieceCount) {
     $action = $currentPlayer == $playerID && $turnPhase != "P" &&
       $currentPlayer == $combatChain[$i + 1] &&
       AbilityPlayableFromCombatChain($combatChain[$i]) &&
       IsPlayable($combatChain[$i], $turnPhase, "PLAY", $i) ? 21 : 0;
+    if ($action == 0 && $i > 0 && $canUnblock && $combatChain[$i + 1] == $playerID && CanUnblockFrom($combatChain[$i + 2])) $action = 10021;
 
-    $borderColor = $action == 21 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2);
+    $borderColor = $action == 10021 ? 8 : ($action != 0 ? 6 : ($combatChain[$i + 1] == $playerID ? 1 : 2));
     if($playerID == 3) $borderColor = $combatChain[$i + 1] == $otherPlayer ? 2 : 1;
 
     $countersMap = null;
@@ -521,12 +520,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $layerFrom = explode("|", $layers[$i + 2])[0];
       if (LayerCardHasGoAgain($layers[$i], $layerFrom)) $layerGoAgain = true;
     }
-    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain);
+    $layerUID = isset($layers[$i + 5]) && $layers[$i + 5] != "-" && $layers[$i + 5] != "-1" ? $layers[$i + 5] : NULL;
+    $layerContents[] = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], label:$label, goAgain:$layerGoAgain, uniqueID:$layerUID);
 
     $layer = new stdClass();
     $borderColor = null;
     if (str_contains($layers[$i+2], "sigil") && $layers[$i+4] == "DESTROY") $borderColor = 9;
-    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label, goAgain:$layerGoAgain);
+    $layer->card = JSONRenderedCard(cardNumber: $layerName, controller: $layers[$i + 1], lightningPlayed:"SKIP", borderColor:$borderColor, label:$label, goAgain:$layerGoAgain, uniqueID:$layerUID);
     $layer->layerID = $i;
     $layer->isReorderable = false;
     $reorderableLayers[] = $layer;
@@ -565,7 +565,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $theirHandCount = count($theirHand);
-  $showTheirHand = $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
+  $theirHandOpen = IsOpenHands($otherPlayer);
+  $showTheirHand = $isGameOver || $isReplay || $theirHandOpen || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
   
   for ($i = 0; $i < $theirHandCount; ++$i) {
     $theirHandContents[] = JSONRenderedCard($showTheirHand ? $theirHand[$i] : $TheirCardBack);
@@ -589,13 +590,17 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   //Display their discard, pitch, deck, and banish
   $opponentDiscardArray = [];
   $theirGYSubtypes = IsNecromancerHero($theirCharacter[0] ?? "", $otherPlayer);
+  $theirGYPileHero = GraveyardPileHero($theirCharacter[0] ?? "", $otherPlayer);
   for ($i = 0; $i < $theirDiscardCount; $i += $discardPieces) {
     if (isset($theirDiscard[$i + 2])) {
       $mod = $theirDiscard[$i + 2];
       $isFaceDown = isFaceDownMod($mod);
       $cardID = $isFaceDown ? $TheirCardBack : $theirDiscard[$i];
       $sType = ($theirGYSubtypes && !$isFaceDown) ? CardSubType($cardID) : "";
-      $opponentDiscardArray[] = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
+      $discardCard = JSONRenderedCard($cardID, sType: $sType !== "" ? $sType : NULL);
+      $pile = $isFaceDown ? "DOWN" : GraveyardPile($cardID, $otherPlayer, $theirGYPileHero);
+      if ($pile !== "") $discardCard->pile = $pile;
+      $opponentDiscardArray[] = $discardCard;
     }
   }
   $response->opponentDiscard = $opponentDiscardArray;
@@ -648,7 +653,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     else $border = CardBorderColor($theirBanish[$i], "BANISH", $action > 0, $otherPlayer, $mod);
 
-    $opponentBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $banishCard = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $pile = BanishPile($theirBanish[$i], $mod, $otherPlayer);
+    if ($pile !== "") $banishCard->pile = $pile;
+    $opponentBanishArr[] = $banishCard;
   }
   $response->opponentBanish = $opponentBanishArr;
 
@@ -735,7 +743,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         subcard: isSubcardEmpty($theirCharacter, $i) ? NULL : ($theirCharacter[$i + 10] ?? "-"),
         marked: ($theirCharacter[$i + 13] ?? 0) == 1,
         tapped: ($theirCharacter[$i + 14] ?? 0) == 1,
-        slot: $theirCharacter[$i + 15] ?? "-"
+        slot: $theirCharacter[$i + 15] ?? "-",
+        uniqueID: $theirCharacter[$i + 11] ?? NULL
         );
       }
     } else {
@@ -772,7 +781,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $handPieces = HandPieces();
   $handChoiceIndices = "," . $turn[2] . ",";
   $myHandIDs = HandInstanceIDsFor($playerID);
-  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay);
+  $spectatorCanSeeP2Hand = $playerID == 3 && ($isCasterMode || $isGameOver || ($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) || $isReplay || IsOpenHands(2));
   for ($i = 0; $i < $myHandCount; $i += $handPieces) {
     $label = "";
     if ($playerID == 3) {
@@ -815,6 +824,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $playerDiscardArr = [];
   $myDiscardCount = count($myDiscard);
   $myGYSubtypes = IsNecromancerHero($myCharacter[0] ?? "", $playerID == 1 ? 1 : 2);
+  $myGYPileHero = GraveyardPileHero($myCharacter[0] ?? "", $viewerSlotPlayerID);
   for($i = 0; $i < $myDiscardCount; $i += $discardPieces) {
     if (isset($myDiscard[$i+2])) {
       $overlay = 0;
@@ -830,7 +840,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       }
       elseif (isFaceDownMod($mod) && $playerID == 3) $cardID = $MyCardBack;
       $sType = ($myGYSubtypes && $overlay != 1 && $cardID != $MyCardBack) ? CardSubType($cardID) : "";
-      $playerDiscardArr[] = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
+      $discardCard = JSONRenderedCard($cardID, action: $action, overlay: $overlay, borderColor: $border, actionDataOverride: strval($i), sType: $sType !== "" ? $sType : NULL);
+      $pile = isFaceDownMod($mod) ? "DOWN" : GraveyardPile($myDiscard[$i], $viewerSlotPlayerID, $myGYPileHero);
+      if ($pile !== "") $discardCard->pile = $pile;
+      if ($playerID != 3 && $overlay != 1 && HasGraveyardGem($cardID)) {
+        $discardCard->gem = IsGraveyardGemActive($viewerSlotPlayerID, $myDiscard[$i + 1]) ? 1 : 2;
+        $discardCard->zone = "GY";
+        $discardCard->controller = $playerID;
+      }
+      $playerDiscardArr[] = $discardCard;
     }
   }
   $myBlessingsCount = SearchCount(SearchDiscardForCard($viewerSlotPlayerID, "count_your_blessings_red", "count_your_blessings_yellow", "count_your_blessings_blue"));
@@ -899,9 +917,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       $label = "Intimidated";
     }
     if (isset($myBanish[$i + 2])) {
-      $label = GetCardEffectLabel($myBanish[$i + 2], $currentTurnEffects);
+      $label = GetCardEffectLabel($myBanish[$i + 2], $currentTurnEffects) ?: $label;
     }
-    $playerBanishArr[] = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $banishCard = JSONRenderedCard($cardID, $action, $overlay, borderColor: $border, actionDataOverride: strval($i), label: $label);
+    $pile = BanishPile($myBanish[$i], $mod, $viewerSlotPlayerID);
+    if ($pile !== "") $banishCard->pile = $pile;
+    $playerBanishArr[] = $banishCard;
   }
   $response->playerBanish = $playerBanishArr;
   unset($playerBanishArr);
@@ -1007,7 +1028,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           subcard: isSubcardEmpty($myCharacter, $i) ? NULL : ($myCharacter[$i+10] ?? null),
           marked: ($myCharacter[$i + 13] ?? 0) == 1,
           tapped: ($myCharacter[$i + 14] ?? 0) == 1,
-          slot: ($myCharacter[$i + 15] ?? "-"));
+          slot: ($myCharacter[$i + 15] ?? "-"),
+          uniqueID: $myCharacter[$i + 11] ?? NULL);
       }
     }
   }
@@ -1056,18 +1078,19 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $theirArsenalCount = count($theirArsenal);
     for ($i = 0; $i < $theirArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $theirArsenal[$i + 1] = "UP";
-      if ($theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends)) {
+      $theirArsenalRevealed = $theirArsenal[$i + 1] == "UP" || $playerID == 3 && $isCasterMode || $isGameOver || $isReplay || ($playerID == 3 && $spectatorIsFriendOfP1 && !$hideP1HandFromFriends);
+      if ($theirArsenalRevealed || $theirHandOpen) {
         $overlay = 0;
         $border = 0;
         $cardID = $theirArsenal[$i];
-        $action = $currentPlayer == $playerID && IsPlayable($cardID, $turnPhase, "THEIRARS", $i) ? 37 : 0;
+        $action = $theirArsenalRevealed && $currentPlayer == $playerID && IsPlayable($cardID, $turnPhase, "THEIRARS", $i) ? 37 : 0;
         $border = CardBorderColor($cardID, "THEIRARS", $action > 0, $playerID);
         $theirArse[] = JSONRenderedCard(
           cardNumber: $theirArsenal[$i],
           action: $action,
           overlay: $overlay,
           borderColor: $border,
-          controller: $playerID == 1 ? 2 : 1,
+          controller: OtherPlayer($playerID),
           facing: $theirArsenal[$i + 1],
           countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
           isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -1077,7 +1100,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         );
       } else $theirArse[] = JSONRenderedCard(
         cardNumber: $TheirCardBack,
-        controller: $playerID == 1 ? 2 : 1,
+        controller: OtherPlayer($playerID),
         facing: $theirArsenal[$i + 1],
         countersMap: (object) ["counters" => $theirArsenal[$i + 3]],
         isFrozen: IsFrozenMZ($theirArsenal, "ARS", $i, $otherPlayer),
@@ -1091,7 +1114,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       if ($combatChain[$j + 1] == $otherPlayer && $combatChain[$j + 2] == "ARS") {
         $theirArse[] = JSONRenderedCard(
           cardNumber: $TheirCardBack,
-          controller: $playerID == 1 ? 2 : 1,
+          controller: OtherPlayer($playerID),
           facing: "DOWN", // Technically false, but we currently do not store the facing of an arsenal card once it left the arsenal zone. Likely will be reported as bug at some point
           uniqueID: $combatChain[$j + 7]
         );
@@ -1107,7 +1130,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $myArsenalCount = count($myArsenal);
     for ($i = 0; $i < $myArsenalCount; $i += $arsenalPieces) {
       if ($isGameOver) $myArsenal[$i + 1] = "UP";
-      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !$isReplay && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends)) {
+      if ($playerID == 3 && !$isCasterMode && $myArsenal[$i + 1] != "UP" && !$isGameOver && !$isReplay && !($spectatorIsFriendOfP2 && !$hideP2HandFromFriends) && !IsOpenHands(2)) {
         $myArse[] = JSONRenderedCard(
           cardNumber: $MyCardBack,
           controller: 2,
@@ -1156,10 +1179,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
 
   //Their Allies
   $theirAlliesOutput = [];
-  $theirAllies = GetAllies($playerID == 1 ? 2 : 1);
+  $theirAllies = GetAllies(OtherPlayer($playerID));
   $theirAlliesCount = count($theirAllies);
   $allyPieces = AllyPieces();
-  $theirAurasObj = new Auras($playerID == 1 ? 2 : 1);
+  $theirAurasObj = new Auras(OtherPlayer($playerID));
   $theirAurasObj->BuildBoundIndex();
 
   $layerTargetHaystack = "";
@@ -1212,7 +1235,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         powerCounters:$theirAllies[$i+9],
         label: $label,
         tapped: $theirAllies[$i+11] == 1,
-        steamCounters: $theirAllies[$i + 12]);
+        steamCounters: $theirAllies[$i + 12],
+        uniqueID: $uniqueID);
   }
   $response->opponentAllies = $theirAlliesOutput;
 
@@ -1250,7 +1274,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($theirAuras, "AURAS", $i, $otherPlayer),
       tapped: $theirAuras[$i+12] == "1",
-      holoCounters: $holoCounters > 0
+      holoCounters: $holoCounters > 0,
+      uniqueID: $theirAuras[$i + 6]
       );
   }
   $response->opponentAuras = $theirAurasOutput;
@@ -1263,31 +1288,32 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $type = CardType($theirItems[$i]);
     $sType = CardSubType($theirItems[$i]);
     $gem = $theirItems[$i + 6] != 2 ? $theirItems[$i + 6] : NULL;
-    $label = "";
-    if($theirItems[$i] == "null_time_zone_blue") {
-      $label = GamestateUnsanitize($theirItems[$i + 8]);
-    }
+    $itemState = ItemDisplayState($theirItems[$i], $theirItems[$i + 8]);
     $theirItemsOutput[] = JSONRenderedCard(
       cardNumber: $theirItems[$i],
       actionDataOverride: strval($i),
-      overlay: $theirItems[$i + 2] != 2 ? 1 : 0,
+      overlay: ItemOverlay($theirItems[$i], $theirItems[$i + 2], $theirItems[$i + 3]),
       counters: $theirItems[$i + 1],
       controller: $otherPlayer,
       type: $type,
       sType: $sType,
       isFrozen: IsFrozenMZ($theirItems, "ITEMS", $i, $otherPlayer),
       gem: $gem,
-      label: $label,
+      label: $itemState["label"],
+      rustCounters: $itemState["rust"],
+      verseCounters: $itemState["verse"],
+      flowCounters: $itemState["flow"],
       tapped: $theirItems[$i + 10] == 1,
       subcard: $theirItems[$i+11] != "-" ? $theirItems[$i+11] : NULL,
       defCounters: $theirItems[$i + 12],
-      onChain: $theirItems[$i + 13] == 1);
+      onChain: $theirItems[$i + 13] == 1,
+      uniqueID: $theirItems[$i + 4]);
   }
   $response->opponentItems = $theirItemsOutput;
 
   //Their Permanents
   $theirPermanentsOutput = [];
-  $theirPermanents = GetPermanents($playerID == 1 ? 2 : 1);
+  $theirPermanents = GetPermanents(OtherPlayer($playerID));
   $theirPermanentsCount = count($theirPermanents);
   $permanentPieces = PermanentPieces();
   for ($i = 0; $i + $permanentPieces - 1 < $theirPermanentsCount; $i += $permanentPieces) {
@@ -1348,7 +1374,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       powerCounters: $myAllies[$i+9],
       label: $label,
       tapped: $myAllies[$i + 11] == 1,
-      steamCounters: $myAllies[$i + 12]
+      steamCounters: $myAllies[$i + 12],
+      uniqueID: $uniqueID
     );
   }
   $response->playerAllies = $myAlliesOutput;
@@ -1394,7 +1421,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       label: $label,
       isFrozen: IsFrozenMZ($myAuras, "AURAS", $i, $playerID),
       tapped: $myAuras[$i + 12] == 1,
-      holoCounters: $holoCounters > 0
+      holoCounters: $holoCounters > 0,
+      uniqueID: $myAuras[$i + 6]
     );
   }
   $response->playerAuras = $myAurasOutput;
@@ -1409,21 +1437,10 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $playable = $currentPlayer == $playerID ? ($isGoldPaymentChoice ? $goldOrPitchChoice : IsPlayable($myItems[$i], $turnPhase, "PLAY", $i, $restriction)) : false;
     $border = CardBorderColor($myItems[$i], "PLAY", $playable, $playerID);
     $actionTypeOut = $currentPlayer == $playerID && $playable == 1 ? ($goldOrPitchChoice ? 16 : 10) : 0;
-    $label = "";
     if ($restriction !== "" && str_contains($restriction, ' ')) $restriction = str_replace(' ', '_', $restriction);
     $actionDataOverride = $goldOrPitchChoice ? "MYITEMS-$i" : strval($i);
     $gem = $myItems[$i + 5] != 2 ? $myItems[$i + 5] : NULL;
-    $rustCounters = null;
-    $verseCounters = null;
-    $flowCounters = null;
-    if ($myItems[$i] == "micro_processor_blue") {
-      if (DelimStringContains($myItems[$i + 8], "Opt", true)) $verseCounters = 1;
-      if (DelimStringContains($myItems[$i + 8], "Draw_then_top_deck", true)) $rustCounters = 1;
-      if (DelimStringContains($myItems[$i + 8], "Banish_top_deck", true)) $flowCounters = 1;
-    }
-    if ($myItems[$i] == "null_time_zone_blue") {
-      $label = GamestateUnsanitize($myItems[$i + 8]);
-    }
+    $itemState = ItemDisplayState($myItems[$i], $myItems[$i + 8]);
     $myItemsOutput[] = JSONRenderedCard(
       cardNumber: $myItems[$i],
       action: $actionTypeOut,
@@ -1437,14 +1454,15 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
       isFrozen: IsFrozenMZ($myItems, "ITEMS", $i, $playerID),
       gem: $gem,
       restriction: $restriction,
-      label: $label,
-      rustCounters: $rustCounters,
-      verseCounters: $verseCounters,
-      flowCounters: $flowCounters,
+      label: $itemState["label"],
+      rustCounters: $itemState["rust"],
+      verseCounters: $itemState["verse"],
+      flowCounters: $itemState["flow"],
       tapped: $myItems[$i + 10] == 1,
       subcard: $myItems[$i+11] != "-" ? $myItems[$i+11] : NULL,
       defCounters: $myItems[$i + 12],
-      onChain: $myItems[$i + 13] == 1);
+      onChain: $myItems[$i + 13] == 1,
+      uniqueID: $myItems[$i + 4]);
   }
   $response->playerItems = $myItemsOutput;
 
@@ -1514,6 +1532,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $effectCardIds = [];
   $adminEffectIdx = [];
   $fancyCountersCache = [];
+  $friendlyEffectIdx = [];
+  $opponentEffectIdx = [];
 
   for ($i = 0; $i + $currentTurnEffectsPieces - 1 < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
       $raw = $currentTurnEffects[$i];
@@ -1534,11 +1554,13 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           $friendlyCounts[$cardID]++;
           if (!isset($friendlyComponentCounts[$cardID][$raw])) $friendlyComponentCounts[$cardID][$raw] = 0;
           $friendlyComponentCounts[$cardID][$raw]++;
+          $friendlyEffectIdx[$cardID][] = $i;
       } else {
           if (!isset($opponentCounts[$cardID])) $opponentCounts[$cardID] = 0;
           $opponentCounts[$cardID]++;
           if (!isset($opponentComponentCounts[$cardID][$raw])) $opponentComponentCounts[$cardID][$raw] = 0;
           $opponentComponentCounts[$cardID][$raw]++;
+          $opponentEffectIdx[$cardID][] = $i;
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1596,7 +1618,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
                 $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
               }
               $friendlyRenderedEffects[$cardID] = true;
-              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
+              $ampIdx = $doesStack ? [$i] : ($friendlyEffectIdx[$cardID] ?? [$i]);
+              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
           }
       } elseif (!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || $doesStack) {
           $card = GetClass($cardID, 0);
@@ -1612,7 +1635,8 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
             $counters = intval($separatorPosition === false ? $currentTurnEffects[$i] : substr($currentTurnEffects[$i], $separatorPosition + 1));
           }
           $opponentRenderedEffects[$cardID] = true;
-          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".$i);
+          $ampIdx = $doesStack ? [$i] : ($opponentEffectIdx[$cardID] ?? [$i]);
+          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1732,7 +1756,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   $response->amIActivePlayer = ($turn[1] == $playerID) ? true : false;
 
   $response->turnPlayer = $mainPlayer;
-  $response->otherPlayer = $playerID == 1 ? 2 : 1;
+  $response->otherPlayer = OtherPlayer($playerID);
   $response->firstPlayer = $firstPlayer;
   $response->turnNo = $currentTurn;
   $response->clock = $p1TotalTime + $p2TotalTime;

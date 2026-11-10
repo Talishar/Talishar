@@ -66,7 +66,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
 {
   global $currentPlayer, $CS_NumLightningPlayed, $CS_ArcaneDamageTaken;
   global $mainPlayer, $CCS_EclecticMag, $CS_ActionsPlayed;
-  $otherPlayer = ($currentPlayer == 1 ? 2 : 1);
+  $otherPlayer = (OtherPlayer($currentPlayer));
   switch ($cardID) {
     case "germinate_blue":
       $xVal = $resourcesPaid / 2;

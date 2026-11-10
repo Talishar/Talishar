@@ -2,11 +2,28 @@
 function GeneratedHasContract($cardID) {
 if(is_int($cardID)) return false;
 return match($cardID) {
+"sick_intent_red" => true,
+"decapitate_the_disloyal_red" => true,
+"decapitate_the_disloyal_yellow" => true,
+"decapitate_the_disloyal_blue" => true,
+"break_down_the_bloodline_red" => true,
+"break_down_the_bloodline_yellow" => true,
+"break_down_the_bloodline_blue" => true,
+"eviscerate_the_enervated_red" => true,
+"eviscerate_the_enervated_yellow" => true,
+"eviscerate_the_enervated_blue" => true,
+"professional_rivalry_blue" => true,
+"slice_the_sickly_red" => true,
+"slice_the_sickly_yellow" => true,
+"slice_the_sickly_blue" => true,
+"viral_sampling_red" => true,
+"viral_sampling_yellow" => true,
 "already_dead_red" => true,
 "annihilate_the_armed_red" => true,
 "annihilate_the_armed_yellow" => true,
 "annihilate_the_armed_blue" => true,
 "defang_the_dragon_red" => true,
+"demoralize_the_dracai_red" => true,
 "eradicate_yellow" => true,
 "excessive_bloodloss_red" => true,
 "excessive_bloodloss_yellow" => true,
@@ -35,6 +52,8 @@ return match($cardID) {
 "slay_the_scholars_yellow" => true,
 "slay_the_scholars_blue" => true,
 "surgical_extraction_blue" => true,
+"tailored_targeting_red" => true,
+"viral_sampling_blue" => true,
 default => false
 };
 }

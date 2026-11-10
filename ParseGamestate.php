@@ -12,6 +12,13 @@ function GetStringArray($line)
   return explode(" ", $line);
 }
 
+function CardTurnLogJSON($log)
+{
+  if (!is_string($log)) return json_encode($log);
+  if (preg_match('/^\[(?:\[(?:0|[1-9][0-9]{0,17}),"[A-Za-z0-9_\-]*","[A-Za-z0-9_\-]*"\](?:,\[(?:0|[1-9][0-9]{0,17}),"[A-Za-z0-9_\-]*","[A-Za-z0-9_\-]*"\])*)?\]$/D', $log)) return $log;
+  return json_encode(json_decode($log, true) ?? []);
+}
+
 if(!is_numeric($gameName)) exit;
 if(!isset($filename) || !str_contains($filename, "gamestate.txt")) $filename = "./Games/" . $gameName . "/gamestate.txt";
 if(!isset($filepath)) $filepath = "./Games/" . $gameName . "/";
@@ -37,7 +44,7 @@ function ParseGamestate($parseHistoricalStats = true)
   global $p2ClassState, $p2CharacterEffects, $p2Soul, $p2CardStats, $p2TurnStats, $p2Allies, $p2Permanents, $p2Settings;
   global $p1CardTurnLog, $p2CardTurnLog, $p1LifeHistory, $p2LifeHistory, $p1ArcaneDamageDealt, $p2ArcaneDamageDealt;
   global $p1ContractsCompleted, $p2ContractsCompleted, $p1CardsDisrupted, $p2CardsDisrupted;
-  global $p1AllyDamagePrevented, $p2AllyDamagePrevented;
+  global $p1AllyDamagePrevented, $p2AllyDamagePrevented, $p1DiseaseStats, $p2DiseaseStats;
   global $landmarks, $winner, $firstPlayer, $currentPlayer, $currentTurn, $turn, $actionPoints, $combatChain, $combatChainState;
   global $currentTurnEffects, $currentTurnEffectsFromCombat, $nextTurnEffects, $decisionQueue, $dqVars, $dqState;
   global $layers, $layerPriority, $mainPlayer, $defPlayer, $lastPlayed, $chainLinks, $chainLinkSummary, $p1Key, $p2Key;
@@ -86,8 +93,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p1ClassState = ClassStateFromString($gamestateContent[11]); // 12
   $p1CharacterEffects = GetStringArray($gamestateContent[12]); // 13
   $p1Soul = GetStringArray($gamestateContent[13]); // 14
-  $p1CardStats = GetStringArray($gamestateContent[14]); // 15
-  $p1TurnStats = GetStringArray($gamestateContent[15]); // 16
+  $p1CardStats = trim($gamestateContent[14]); // 15
+  $p1TurnStats = trim($gamestateContent[15]); // 16
   $p1Allies = GetStringArray($gamestateContent[16]); // 17
   $p1Permanents = GetStringArray($gamestateContent[17]); // 18
   $p1Settings = GetStringArray($gamestateContent[18]); // 19
@@ -107,8 +114,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2ClassState = ClassStateFromString($gamestateContent[29]); // 30
   $p2CharacterEffects = GetStringArray($gamestateContent[30]); // 31
   $p2Soul = GetStringArray($gamestateContent[31]); // 32
-  $p2CardStats = GetStringArray($gamestateContent[32]); // 33
-  $p2TurnStats = GetStringArray($gamestateContent[33]); // 34
+  $p2CardStats = trim($gamestateContent[32]); // 33
+  $p2TurnStats = trim($gamestateContent[33]); // 34
   $p2Allies = GetStringArray($gamestateContent[34]); // 35
   $p2Permanents = GetStringArray($gamestateContent[35]); // 36
   $p2Settings = GetStringArray($gamestateContent[36]); // 37
@@ -162,8 +169,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $p2IsAI = trim($gamestateContent[75+$numChainLinks]);
   $AIHasInfiniteHP = isset($gamestateContent[76+$numChainLinks]) ? trim($gamestateContent[76+$numChainLinks]) == "1" : false;
   if ($parseHistoricalStats) {
-    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? json_decode(trim($gamestateContent[77+$numChainLinks]), true) ?? [] : [];
-    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? json_decode(trim($gamestateContent[78+$numChainLinks]), true) ?? [] : [];
+    $p1CardTurnLog = isset($gamestateContent[77+$numChainLinks]) ? trim($gamestateContent[77+$numChainLinks]) : [];
+    $p2CardTurnLog = isset($gamestateContent[78+$numChainLinks]) ? trim($gamestateContent[78+$numChainLinks]) : [];
   } else {
     $p1CardTurnLog = [];
     $p2CardTurnLog = [];
@@ -201,6 +208,8 @@ function ParseGamestate($parseHistoricalStats = true)
   $handInstanceIDs = DecodeHandInstanceIDs($gamestateContent[91+$numChainLinks] ?? "");
   $p1AllyDamagePrevented = json_decode(trim($gamestateContent[92+$numChainLinks] ?? ""), true) ?? [];
   $p2AllyDamagePrevented = json_decode(trim($gamestateContent[93+$numChainLinks] ?? ""), true) ?? [];
+  $p1DiseaseStats = json_decode(trim($gamestateContent[94+$numChainLinks] ?? ""), true) ?? [];
+  $p2DiseaseStats = json_decode(trim($gamestateContent[95+$numChainLinks] ?? ""), true) ?? [];
   BuildMyGamestate($playerID);
 }
 
@@ -349,7 +358,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
   if ($filename != "gamestateBackup.txt") {
-    if(!file_exists($filepath . $filename)) return;
+    if(!file_exists($filepath . $filename)) return false;
     // apply current settings to the backup, they are preferences and not game state
     $gamestateBackup = file($filepath . $filename);
     if (isset($gamestateBackup[18])) $gamestateBackup[18] = implode(" ", $p1Settings) . "\r\n";
@@ -359,16 +368,16 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $skipWriteGamestate = true;
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
-    return;
+    return true;
   }
-  
+
   // Multi-level undo: Revert to backup N steps back
   $targetBackup = $stepsBack - 1; // stepsBack=1 means backup_0, stepsBack=2 means backup_1, etc.
   $backupFile = $filepath . "gamestateBackup_" . $targetBackup . ".txt";
   
   if(!file_exists($backupFile)) {
     WriteLog("Cannot undo further: Please revert to start of this/previous turn instead.");
-    return;
+    return false;
   }
   // apply current settings to the backup
   $gamestateBackup = file($backupFile);
@@ -387,7 +396,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $gamestate = implode('', $gamestateBackup);
   if (!file_exists($backupFile)) {
     WriteLog("Cannot undo further: the game session was cleaned up before the undo could complete.");
-    return;
+    return false;
   }
   // Restore the target backup as current gamestate
   WriteGamestateFileAtomic($filepath . "gamestate.txt", $gamestate);
@@ -410,6 +419,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   }
   $result = SaveGamestateSnapshot($filepath . $filename);
   if(!$result) WriteLog("Copy of gamestate into " . $filename . " failed.");
+  return true;
 }
 
 function SaveReplay() {

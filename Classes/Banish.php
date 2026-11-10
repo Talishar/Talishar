@@ -85,9 +85,11 @@ class BanishCard {
     // Properties
     private $banish = [];
     private $index;
+    private $playerID;
 
     // Constructor
     function __construct($playerID, $index) {
+      $this->playerID = $playerID;
       $this->banish = &GetBanish($playerID);
       $this->index = $index;
     }
@@ -135,9 +137,7 @@ class BanishCard {
     function Remove()
     {
       if (isset($this->banish[$this->index])) {
-        $cardID = $this->banish[$this->index];
-        array_splice($this->banish, $this->index, BanishPieces());
-        return $cardID;
+        return RemoveBanish($this->playerID, $this->index);
       }
       return "-";
     }

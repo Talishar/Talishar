@@ -2120,17 +2120,8 @@ class song_of_larinkmorth_white_blue extends Card {
 
 class knife_through extends BaseCard {
   function DoesAttackHaveGoAgain() {
-    global $combatChainState, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary;
-    $numDaggerHits = 0;
-    $count = count($chainLinks);
-    $chainLinkSummaryPieces = ChainLinkSummaryPieces();
-    for($i=0; $i<$count; ++$i)
-    {
-      if(SubtypeContains($chainLinks[$i][0], "Dagger") && $chainLinkSummary[$i*$chainLinkSummaryPieces] > 0) 
-        ++$numDaggerHits;
-    }
-    $numDaggerHits += GetCombatChainState($CCS_FlickedDamage);
-    return $numDaggerHits > 0;
+    
+    return NumDaggerHits() > 0;
   }
 }
 
@@ -2949,7 +2940,7 @@ class frail_swingline_blue extends Card {
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     $otherPlayer = $this->controller == 1 ? 2 : 1;
     $targetPlayer = str_contains($target, "THEIR") ? $otherPlayer : $this->controller;
-    PlayAura("frailty", $targetPlayer);
+    PlayAura("frailty", $targetPlayer, effectController:$this->controller, effectSource:$this->cardID);
   }
 
   function PayAdditionalCosts($from, $index = '-') {
@@ -3981,7 +3972,7 @@ class concealed_pathogen extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("bloodrot_pox", $mainPlayer);
+    PlayAura("bloodrot_pox", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
@@ -4012,7 +4003,7 @@ class concealed_sedative extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("inertia", $mainPlayer);
+    PlayAura("inertia", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
@@ -4043,7 +4034,7 @@ class concealed_nerve_gas extends Card {
     $Character = new PlayerCharacter($this->controller);
     $CharCard = $Character->FindCardID($this->cardID);
     $CharCard->Destroy();
-    PlayAura("frailty", $mainPlayer);
+    PlayAura("frailty", $mainPlayer, effectSource:$this->cardID, effectAgent:$this->controller);
   }
 }
 
