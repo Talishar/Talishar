@@ -2,6 +2,7 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
+include_once __DIR__ . "/Libraries/HitPreview.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = NULL;
@@ -102,7 +103,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     // Historical stat blobs are not part of the live state response.
     $parseGamestateHistoricalStats = false;
     include_once "ParseGamestate.php";
-  } else {
+  } else if (!isset($GLOBALS["hitPreview"])) {
     ParseGamestate(false);
   }
 
@@ -169,6 +170,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $response->lastUpdate = $cacheVal;
+  $response->hitPreviewOpen = !$isReplay && HitPreviewOpen();
 
   // Spectator count and names
   $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];
