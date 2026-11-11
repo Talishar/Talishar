@@ -90,6 +90,18 @@ if ($playerID == 0 && $profilePopup) {
 
 $response = new stdClass();
 switch ($popupType) {
+  case "hitPreview":
+    include_once "./WriteLog.php";
+    include_once "./Libraries/NetworkingLibraries.php";
+    include_once "./Libraries/CacheLibraries.php";
+    include_once "./Libraries/FriendLibraries.php";
+    include_once "./AI/CombatDummy.php";
+    include_once "./BuildGameState.php";
+    include_once "./BuildPlayerInputPopup.php";
+    $viewerUserId = $playerID == 3 ? $sessionUserId : null;
+    $friendList = is_numeric($viewerUserId) ? GetUserFriendUsernames((int)$viewerUserId) : [];
+    echo json_encode(HitPreviewResponse($gameName, $playerID, $authKey, ["friendList" => $friendList, "viewerColorblindMode" => LoadViewerColorblindMode($viewerUserId)]));
+    exit;
   case "attackSummary":
     $totalPower = 0;
     $totalDefense = 0;

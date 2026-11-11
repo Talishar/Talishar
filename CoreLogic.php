@@ -1235,7 +1235,7 @@ function PlayerWon($playerID, $conceded = false)
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
   global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
-  if (IsGameOver()) return;
+  if (IsGameOver() || isset($GLOBALS["hitPreview"])) return;
   include_once __DIR__ . "/MenuFiles/ParseGamefile.php";
   SetClassState(1, $CS_SkipAllRunechants, 0);
   SetClassState(2, $CS_SkipAllRunechants, 0);
