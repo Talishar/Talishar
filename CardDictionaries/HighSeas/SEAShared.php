@@ -1282,7 +1282,7 @@ function isUntappedPrevented($MZindex, $zoneName, $player, $endStepUntap=false):
     SearchCurrentTurnEffects("clap_em_in_irons_blue", $player, returnUniqueID:true) == $uid ? $untapPrevented = true : $untapPrevented = false;
   }
   $noUntap = ["havoc_wrap" => true, "cogwerx_gyrostriders" => true];
-  if ($noUntap[GetMZCard($player, $MZindex)] && $endStepUntap) $untapPrevented = true;
+  if ($endStepUntap && isset($noUntap[GetMZCard($player, $MZindex)])) $untapPrevented = true;
   return $untapPrevented;
 }
 
