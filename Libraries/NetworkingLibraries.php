@@ -2630,7 +2630,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
   global $CS_NumAuras, $CS_BanishPlayMode;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
-  global $ChainLinks;
+  global $ChainLinks, $CS_ArcaneCardsPlayed;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -2885,14 +2885,6 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   //We've paid resources, now pay action points if applicable
   if ($playingCard) {
     $canPlayAsInstant = CanPlayAsInstant($cardID, $index, $from, true) || ($isInstantType && $turn[0] != "M");
-    if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) {
-      if(!$hasMeld && !$isActivated || ($hasMeld && ($cachedAdditionalCosts != "Life" && $cachedAdditionalCosts != "Null")))
-      {
-        AssignArcaneBonus($currentPlayer, $layerIndex);
-      }
-      else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
-    }
-    else ClearNextCardArcaneBuffs($currentPlayer, $cardID, $from);
     AssignEffectToCard($cardID, $currentPlayer, $from);
     SetClassState($currentPlayer, $CS_PlayedAsInstant, "0");
     IncrementClassState($currentPlayer, $CS_NumCardsPlayed);
@@ -3067,6 +3059,8 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (TalentContains($cardID, "LIGHTNING", $currentPlayer) && $from != "EQUIP" && $from != "PLAY" && $resolvedAbilityType != "I") {
       IncrementClassState($currentPlayer, $CS_NumLightningPlayed);
     }
+    if (ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID))
+      IncrementClassState($currentPlayer, $CS_ArcaneCardsPlayed);
     if($isInstantType) {
       if(!$hasMeld) IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
       elseif($from != "MELD") IncrementClassState($currentPlayer, $CS_NumInstantPlayed);
@@ -4086,12 +4080,6 @@ function PayAdditionalCosts($cardID, $from, $index="-")
       if (ArsenalHasFaceDownCard($currentPlayer)) {
         SetArsenalFacing("UP", $currentPlayer);
       }
-      break;
-    case "tome_of_aetherwind_red":
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");
-      AddDecisionQueue("MULTICHOOSETEXT", $currentPlayer, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card-2");
-      AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_AdditionalCosts, 1);
-      AddDecisionQueue("SHOWMODES", $currentPlayer, $cardID, 1);
       break;
     case "art_of_war_yellow":
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose 2 modes");

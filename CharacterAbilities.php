@@ -1207,7 +1207,6 @@ function EquipPayAdditionalCosts($cardIndex)
     case "silken_form":
     case "heat_wave":
     case "sash_of_sandikai":
-    case "conduit_of_frostburn":
     case "glacial_horns":
     case "tide_flippers":
     case "spellfire_cloak":
@@ -1681,9 +1680,6 @@ function MainCharacterPlayCardAbilities($cardID, $from)
         if (!IsActivated($cardID, $from) && ClassContains($cardID, "RUNEBLADE", $currentPlayer) && !TypeContains($cardID, "B", $currentPlayer)) {
           AddLayer("TRIGGER", $currentPlayer, $characterID, $cardID);
         }
-        break;
-      case "metacarpus_node":
-        if ((ActionsThatDoArcaneDamage($cardID, $currentPlayer) || ActionsThatDoXArcaneDamage($cardID)) && SearchCharacterActive($currentPlayer, "metacarpus_node", checkGem: true) && GetResolvedAbilityType($cardID) != "I") AddLayer("TRIGGER", $currentPlayer, "metacarpus_node");
         break;
       case "briar_warden_of_thorns":
       case "briar":

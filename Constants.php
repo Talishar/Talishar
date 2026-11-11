@@ -472,6 +472,7 @@ $classStateDefaults = [
   "DrawOffered" => 0,                         // this player has an open draw offer, so it expires at the end of the turn
   "GraveyardGemsOff" => "-",                  // unique IDs of this player's graveyard cards whose gem is switched off
   "ClubDamage" => 0,
+  "ArcaneCardsPlayed" => 0,                   // used for surgent aethertide
 ];
 $persistentClassStates = ["ArsenalFacing", "OriginalHero", "GraveyardGemsOff"];
 $classStateNames = array_keys($classStateDefaults);

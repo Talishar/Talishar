@@ -2326,14 +2326,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         if (GetClassState($player, $CS_NumNonAttackCards) > 0) PlayAura("runechant", $player);
         if (GetClassState($player, $CS_ArcaneDamageDealt) > 0) PlayAura("runechant", $player);
         break;
-      case "metacarpus_node":
-        AddPayPrompt("YESNO", $player, "if_you_want_to_pay_1_to_give_+1_arcane_damage");
-        AddDecisionQueue("NOPASS", $player, "-", 1, 1);
-        AddDecisionQueue("PAYRESOURCES", $player, "1", 1);
-        AddDecisionQueue("PASSPARAMETER", $player, "1", 1);
-        AddDecisionQueue("BUFFARCANEPREVLAYER", $player, "metacarpus_node", 1);
-        AddDecisionQueue("CHARFLAGDESTROY", $player, FindCharacterIndex($player, "metacarpus_node"), 1);
-        break;
       case "BLOODDEBT":
         if (IsImmuneToBloodDebt($mainPlayer)) return;
         $numBloodDebt = $additionalCosts;

@@ -394,18 +394,9 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "aetherize_blue":
       NegateLayer($target);
       return "";
-    case "cindering_foresight_red": case "cindering_foresight_yellow": case "cindering_foresight_blue":
-      $optAmount = ByColor($cardID, 3, 2, 1);
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      PlayerOpt($currentPlayer, $optAmount);
-      return "";
     case "foreboding_bolt_red": case "foreboding_bolt_yellow": case "foreboding_bolt_blue":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
       PlayerOpt($currentPlayer, 1);
-      return "";
-    case "rousing_aether_red": case "rousing_aether_yellow": case "rousing_aether_blue":
-      DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target);
-      AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "snapback_red": case "snapback_yellow": case "snapback_blue":
       DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD",$cardID, resolvedTarget: $target);

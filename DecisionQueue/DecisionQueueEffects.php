@@ -271,17 +271,6 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         case "Go_Again": AddCurrentTurnEffect("$card-2", $player); return 2;
       }
       return $lastResult;
-    case "TOMEOFAETHERWIND":
-      $params = explode(",", $lastResult);
-      $countParams = count($params);
-      for($i = 0; $i < $countParams; ++$i) {
-        switch($params[$i]) {
-          case "Buff_Arcane": AddCurrentTurnEffect("tome_of_aetherwind_red", $player); break;
-          case "Draw_card": Draw($player); break;
-          default: break;
-        }
-      }
-      return $lastResult;
     case "BLOODONHERHANDS":
       $choices = explode(",", $lastResult);
       $countChoices = count($choices);

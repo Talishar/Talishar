@@ -60,9 +60,6 @@
         else $source = $cardID;
         DealArcane($damage, 2, "PLAYCARD", $source, false, $currentPlayer, false, false, !DelimStringContains($additionalCosts, "ICE"), resolvedTarget: $target);
         return "";
-      case "conduit_of_frostburn":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-        return "";
       case "aether_hail_red": case "aether_hail_yellow": case "aether_hail_blue":
         $damage = ByColor($cardID, 4, 3, 2);
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);

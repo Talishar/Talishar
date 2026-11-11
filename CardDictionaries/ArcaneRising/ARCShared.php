@@ -17,7 +17,6 @@
       case "grasp_of_the_arknight": return 2 + NumRunechants($currentPlayer);
       case "crown_of_dichotomy": return 1;
       case "kano_dracai_of_aether": case "kano": return 3;
-      case "crucible_of_aetherweave": return 1;
       case "storm_striders": return 1;
       case "robe_of_rapture": return 0;
       case "mage_master_boots": return 1;
@@ -43,7 +42,7 @@
       case "nebula_blade": return "AA";
       case "grasp_of_the_arknight": return "A";
       case "crown_of_dichotomy": return "A";
-      case "kano_dracai_of_aether": case "kano": case "crucible_of_aetherweave": case "storm_striders": return "I";
+      case "kano_dracai_of_aether": case "kano": case "storm_striders": return "I";
       case "robe_of_rapture": return "A";
       case "talismanic_lens": return "I";
       case "bracers_of_belief": case "mage_master_boots": return "A";
@@ -122,6 +121,16 @@ function ARCCombatEffectActive($cardID, $attackID)
     case "force_sight_red": case "force_sight_yellow": case "force_sight_blue": return CardType($attackID) == "AA";
     default: return false;
   }
+}
+
+function AssignEffectToArcaneCard($effectIndex, $cardID, $player, $from) {
+  global $Stack;
+  $Effect = new CurrentEffect($effectIndex);
+  $TopLayer = $Stack->TopLayer($cardID);
+  if ($TopLayer->PlayerID() != $player) return;
+  if (IsActivated($cardID, $from)) return;
+  if (ActionsThatDoArcaneDamage($TopLayer->CardID(), $player) || ActionsThatDoXArcaneDamage($cardID))
+    $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
 }
 
 ?>

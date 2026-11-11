@@ -31,7 +31,6 @@
       case "heat_wave": return "I";
       case "flamescale_furnace": return "I";
       case "sash_of_sandikai": return "I";
-      case "conduit_of_frostburn": return "I";
       case "coronet_peak": return "A";
       case "glacial_horns": return "A";
       case "ghostly_touch": return "A";

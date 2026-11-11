@@ -22,9 +22,6 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("OK", $currentPlayer, "whether to banish a card with ". CardLink($cardID, $cardID), 1);
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "-");
       return "";
-    case "crucible_of_aetherweave":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "storm_striders":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       SetClassState($currentPlayer, $CS_NextWizardNAAInstant, 1);
@@ -76,15 +73,6 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       AddDecisionQueue("MULTIADDTOPDECK", $currentPlayer, "-", 1);
       AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       return "";
-    case "tome_of_aetherwind_red":
-      AddDecisionQueue("PASSPARAMETER", $currentPlayer, $additionalCosts, 1);
-      AddDecisionQueue("MODAL", $currentPlayer, "TOMEOFAETHERWIND", 1);
-      return "";
-    case "absorb_in_aether_red":
-    case "absorb_in_aether_yellow":
-    case "absorb_in_aether_blue":
-      AddCurrentTurnEffect($cardID, $currentPlayer);
-      return "";
     case "aether_spindle_red":
     case "aether_spindle_yellow":
     case "aether_spindle_blue":
@@ -92,12 +80,6 @@ function ARCWizardPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $ad
       SetClassState($currentPlayer, $CS_CardsInDeckBeforeOpt, $deck->RemainingCards());
       DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
       AddDecisionQueue("OPTX", $currentPlayer, "<-", 1);
-      return "";
-    case "aether_flare_red":
-    case "aether_flare_yellow":
-    case "aether_flare_blue":
-      DealArcane(ArcaneDamage($cardID), 1, "PLAYCARD", $cardID, resolvedTarget: $target);
-      AddDecisionQueue("BUFFARCANE", $currentPlayer, $cardID, 1);
       return "";
     case "index_red":
     case "index_yellow":
@@ -300,10 +282,6 @@ function PlayRequiresTarget($cardID, $from)
     case "aether_spindle_yellow":
     case "aether_spindle_blue":
       return 1;
-    case "aether_flare_red":
-    case "aether_flare_yellow":
-    case "aether_flare_blue":
-      return 1;
     case "reverberate_red":
     case "reverberate_yellow":
     case "reverberate_blue":
@@ -325,10 +303,6 @@ function PlayRequiresTarget($cardID, $from)
     case "foreboding_bolt_red":
     case "foreboding_bolt_yellow":
     case "foreboding_bolt_blue":
-      return 0;
-    case "rousing_aether_red":
-    case "rousing_aether_yellow":
-    case "rousing_aether_blue":
       return 0;
     case "snapback_red":
     case "snapback_yellow":
@@ -508,44 +482,10 @@ function ArcaneModifierAmount($source, $player, $index)
     $card = GetClass($effectArr[0], $player);
     if ($card != "-") {
       $ret = $card->ArcaneModifier($remove, $player, $index, amount:true);
-      if ($ret == 0) $ret = $card->CardEffectArcaneBonus();
+      if ($ret == 0) $ret = $card->CardEffectArcaneBonus($index);
       return $ret;
     }
     switch ($effectArr[0]) {
-      case "crucible_of_aetherweave":
-        return 1;
-      case "tome_of_aetherwind_red":
-        return 1;
-      case "absorb_in_aether_red":
-      case "absorb_in_aether_yellow":
-      case "absorb_in_aether_blue":
-        return 2;
-      case "aether_flare_red":
-      case "aether_flare_yellow":
-      case "aether_flare_blue":
-        return $effectArr[1];
-      case "metacarpus_node":
-        return 1;
-      case "cindering_foresight_red":
-      case "cindering_foresight_yellow":
-      case "cindering_foresight_blue":
-        return 1;
-      case "rousing_aether_red":
-      case "rousing_aether_yellow":
-      case "rousing_aether_blue":
-        return 1;
-      case "surgent_aethertide":
-        return $effectArr[1];
-      case "blessing_of_aether_red":
-        return 3;
-      case "blessing_of_aether_yellow":
-        return 2;
-      case "blessing_of_aether_blue":
-        return 1;
-      case "tempest_aurora_red":
-      case "tempest_aurora_yellow":
-      case "tempest_aurora_blue":
-        return 1;  
       case "aether_wildfire_red":
         return $effectArr[1];
       case "rampant_growth__life_yellow":
@@ -683,24 +623,24 @@ function ArcaneDamage($cardID): int
     "voltic_bolt_red", "timekeepers_whim_red", "freezing_point_red", "ice_bolt_red", "succumb_to_winter_red", "aether_icevein_red", 
     "swell_tidings_red" => 5,
 
-    "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "rousing_aether_red", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", 
+    "aether_spindle_red", "scalding_rain_red", "voltic_bolt_yellow", "emeritus_scolding_red", "aether_wildfire_red", "timekeepers_whim_yellow", 
     "dampen_red", "ice_bolt_yellow", "aether_hail_red", "polar_cap_red", "succumb_to_winter_yellow", "aether_icevein_yellow", "aether_quickening_red", "eternal_inferno_red", 
     "chorus_of_the_amphitheater_red", "photon_splicing_red" => 4,
 
-    "sonic_boom_yellow", "lesson_in_lava_yellow", "aether_spindle_yellow", "aether_flare_red", "reverberate_red", "scalding_rain_yellow", "zap_red", "voltic_bolt_blue", 
+    "sonic_boom_yellow", "lesson_in_lava_yellow", "aether_spindle_yellow", "reverberate_red", "scalding_rain_yellow", "zap_red", "voltic_bolt_blue", 
     "emeritus_scolding_yellow", "timekeepers_whim_blue", "aether_quickening_yellow", "prognosticate_red", "sap_red", "chain_lightning_yellow", "foreboding_bolt_red", 
-    "rousing_aether_yellow", "snapback_red", "aether_dart_red", "dampen_yellow", "ice_bolt_blue", "frosting_red", "aether_hail_yellow", "polar_cap_yellow", "succumb_to_winter_blue", 
+    "snapback_red", "aether_dart_red", "dampen_yellow", "ice_bolt_blue", "frosting_red", "aether_hail_yellow", "polar_cap_yellow", "succumb_to_winter_blue", 
     "aether_icevein_blue", "encase_red", "icebind_red", "chorus_of_the_amphitheater_yellow", "pop_the_bubble_red", "arcane_twining_red", "etchings_of_arcana_red", 
     "open_the_flood_gates_red", "overflow_the_aetherwell_red", "perennial_aetherbloom_red", "trailblazing_aether_red", "glyph_overlay_red", 
     "photon_splicing_yellow" => 3,
 
-    "forked_lightning_red", "foreboding_bolt_yellow", "rousing_aether_blue", "snapback_yellow", "emeritus_scolding_blue", "aether_dart_yellow", "dampen_blue", "frosting_yellow", 
+    "forked_lightning_red", "foreboding_bolt_yellow", "snapback_yellow", "emeritus_scolding_blue", "aether_dart_yellow", "dampen_blue", "frosting_yellow", 
     "aether_hail_blue", "polar_cap_blue", "icebind_yellow", "mind_warp_yellow", "aether_quickening_blue", "prognosticate_yellow", "sap_yellow", "chorus_of_the_amphitheater_blue", 
     "pop_the_bubble_yellow", "arcane_twining_yellow", "etchings_of_arcana_yellow", "open_the_flood_gates_yellow", "overflow_the_aetherwell_yellow", "perennial_aetherbloom_yellow", 
-    "trailblazing_aether_yellow", "glyph_overlay_yellow", "aether_spindle_blue","aether_flare_yellow", "reverberate_yellow", "scalding_rain_blue", "zap_yellow", 
+    "trailblazing_aether_yellow", "glyph_overlay_yellow", "aether_spindle_blue", "reverberate_yellow", "scalding_rain_blue", "zap_yellow", 
     "photon_splicing_blue" => 2,
 
-    "aether_flare_blue", "reverberate_blue", "zap_blue", "foreboding_bolt_blue", "snapback_blue", "aether_dart_blue", "singe_red", "singe_yellow", "singe_blue", 
+    "reverberate_blue", "zap_blue", "foreboding_bolt_blue", "snapback_blue", "aether_dart_blue", "singe_red", "singe_yellow", "singe_blue", 
     "frosting_blue", "icebind_blue", "prognosticate_blue", "sap_blue", "aether_arc_blue", "destructive_aethertide_blue", "pop_the_bubble_blue", "arcane_twining_blue", 
     "etchings_of_arcana_blue", "open_the_flood_gates_blue", "overflow_the_aetherwell_blue", "perennial_aetherbloom_blue", "trailblazing_aether_blue", 
     "glyph_overlay_blue" => 1,
@@ -740,9 +680,6 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "aether_spindle_red":
     case "aether_spindle_yellow":
     case "aether_spindle_blue":
-    case "aether_flare_red":
-    case "aether_flare_yellow":
-    case "aether_flare_blue":
     case "reverberate_red":
     case "reverberate_yellow":
     case "reverberate_blue":
@@ -760,9 +697,6 @@ function ActionsThatDoArcaneDamage($cardID, $playerID)
     case "foreboding_bolt_red":
     case "foreboding_bolt_yellow":
     case "foreboding_bolt_blue":
-    case "rousing_aether_red":
-    case "rousing_aether_yellow":
-    case "rousing_aether_blue":
     case "snapback_red":
     case "snapback_yellow":
     case "snapback_blue":
