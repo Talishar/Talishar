@@ -1619,7 +1619,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
               }
               $friendlyRenderedEffects[$cardID] = true;
               $ampIdx = $doesStack ? [$i] : ($friendlyEffectIdx[$cardID] ?? [$i]);
-              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
+              $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, type:CardType($cardID) ?: NULL, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
           }
       } elseif (!isset($opponentRenderedEffects[$cardID]) && $otherPlayer == $currentTurnEffects[$i + 1] || $doesStack) {
           $card = GetClass($cardID, 0);
@@ -1636,7 +1636,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           }
           $opponentRenderedEffects[$cardID] = true;
           $ampIdx = $doesStack ? [$i] : ($opponentEffectIdx[$cardID] ?? [$i]);
-          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
+          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, type:CardType($cardID) ?: NULL, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP", showAmpAmount:"Effect-".implode("-", $ampIdx));
       }
   }
   if (!empty($staticBuffsArr)) {
@@ -1654,12 +1654,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         if ($isFriendly || $playerID == 3 && !$isFriendly) {
           if (!isset($friendlyRenderedEffects[$cardID]) || $buffDoesStack) {
             $friendlyRenderedEffects[$cardID] = true;
-            $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
+            $playerEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, type:CardType($cardID) ?: NULL, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
           }
         }
         elseif (!isset($opponentRenderedEffects[$cardID]) && !$isFriendly || $buffDoesStack) {
           $opponentRenderedEffects[$cardID] = true;
-          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
+          $opponentEffects[] = JSONRenderedCard($cardID, borderColor:$BorderColor, type:CardType($cardID) ?: NULL, counters:$counters > 1 ? $counters : NULL, lightningPlayed:"SKIP");
         }
       }
     }
