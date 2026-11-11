@@ -1886,7 +1886,7 @@ class oasis_respite extends BaseCard {
     AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
     AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
     Await($this->controller, $this->cardID, targetHero:$targetHero, final:true);
-    if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
+    // if(PlayerHasLessHealth($targetHero)) GainHealth(1, $targetHero);
     return "";
   }
 
@@ -1912,6 +1912,16 @@ class oasis_respite extends BaseCard {
     else
       $uid = $object->UniqueID();
     AddCurrentTurnEffect($this->cardID, $targetHero, uniqueID:$uid);
+    if(PlayerHasLessHealth($targetHero)) {
+      if (ShouldAutotargetOpponent($targetHero))
+        GainHealth(1, $targetHero);
+      else {
+        $message = "if_you_want_to_gain_life";
+	      $context = "Choose if you want to gain 1 life";
+        Await($targetHero, "GainHealth", prepend:true);
+        Await($targetHero, "YesNo", message:$message, context:$context, prepend:true);
+      }
+    }
   }
 
   function PayAdditionalCosts() {
