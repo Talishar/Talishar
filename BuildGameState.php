@@ -39,6 +39,24 @@ function GetChainCardSubcards($controller, ...$uniqueIDs) {
   return NULL;
 }
 
+function LoadPlayerUids($gameName)
+{
+  global $p1uid, $p2uid;
+  if (!empty($p1uid) && !empty($p2uid)) return;
+  $gameFilePath = "./Games/" . $gameName . "/GameFile.txt";
+  $gameFileHead = @file_get_contents($gameFilePath, false, null, 0, 8192);
+  $gameFileLines = false;
+  if ($gameFileHead !== false) {
+    $headLines = explode("\n", $gameFileHead, 12);
+    if (count($headLines) >= 12 || strlen($gameFileHead) < 8192) $gameFileLines = $headLines;
+  }
+  if ($gameFileLines === false) $gameFileLines = @file($gameFilePath, FILE_IGNORE_NEW_LINES);
+  if ($gameFileLines !== false && count($gameFileLines) >= 11) {
+    if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
+    if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
+  }
+}
+
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null, $includeChatLog = true) {
   global $myHand, $myPitch, $myDeck, $myDiscard, $myBanish, $myArsenal, $myCharacter;
   global $p1CharEquip, $p2CharEquip;
@@ -107,20 +125,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     ParseGamestate(false);
   }
 
-  if (empty($p1uid) || empty($p2uid)) {
-    $gameFilePath = "./Games/" . $gameName . "/GameFile.txt";
-    $gameFileHead = @file_get_contents($gameFilePath, false, null, 0, 8192);
-    $gameFileLines = false;
-    if ($gameFileHead !== false) {
-      $headLines = explode("\n", $gameFileHead, 12);
-      if (count($headLines) >= 12 || strlen($gameFileHead) < 8192) $gameFileLines = $headLines;
-    }
-    if ($gameFileLines === false) $gameFileLines = @file($gameFilePath, FILE_IGNORE_NEW_LINES);
-    if ($gameFileLines !== false && count($gameFileLines) >= 11) {
-      if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
-      if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
-    }
-  }
+  LoadPlayerUids($gameName);
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
