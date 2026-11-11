@@ -53,8 +53,7 @@ if ($slotStatus["slotsFull"]) {
   ExitJsonResponse($response, 409);
 }
 
-$pack = ReadRecentGamePack($token);
-$restoreDirectory = $pack === null ? null : RestoreRecentGameDirectory($pack);
+$restoreDirectory = RestoreRecentGameDirectory($token);
 if ($restoreDirectory === null) {
   $response->error = "This game's replay data could not be read.";
   ExitJsonResponse($response, 500);

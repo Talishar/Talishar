@@ -6,6 +6,11 @@ const RECENT_GAME_TTL_SECONDS = 86400;
 const RECENT_GAMES_PER_USER = 3;
 const RECENT_GAMES_FREE_USER_SLOTS_FULL = 1;
 const RECENT_GAME_MARKER_FILENAME = "recentGameStashed.txt";
+const RECENT_GAME_PACK_HEADER = "TALISHAR_RECENT_GAME_PACK 1";
+const RECENT_GAME_PACK_END = "END";
+const RECENT_GAME_SOURCE_REQUIRED = 0;
+const RECENT_GAME_SOURCE_COMPRESSED = 1;
+const RECENT_GAME_SOURCE_OPTIONAL = 2;
 
 function RecentGamesRoot(): string
 {
@@ -92,32 +97,27 @@ function StashRecentGame(string $gameDirectory): ?string
   if (count($userIds) === 0) return null;
 
   $initialState = @file_get_contents($gameDirectory . "origGamestate.txt");
-  $commandFile = @file_get_contents($gameDirectory . "commandfile.txt");
   $pointers = ReplayStatePointers($gameDirectory);
-  if (!is_string($initialState) || !is_string($commandFile) || count($pointers) === 0) return null;
+  if (!is_string($initialState) || !is_file($gameDirectory . "commandfile.txt") || count($pointers) === 0) return null;
 
-  $files = [
-    "origGamestate.txt" => $initialState,
-    "commandfile.txt" => $commandFile,
+  $sources = [
+    "origGamestate.txt" => [$gameDirectory . "origGamestate.txt", RECENT_GAME_SOURCE_REQUIRED],
+    "commandfile.txt" => [$gameDirectory . "commandfile.txt", RECENT_GAME_SOURCE_REQUIRED],
   ];
   foreach ($pointers as $pointer) {
-    $compressed = @file_get_contents(ReplayStateFilename($gameDirectory, $pointer));
-    $gamestate = is_string($compressed) ? @gzdecode($compressed) : false;
-    if (!is_string($gamestate)) return null;
-    $files["replayState_$pointer.txt"] = $gamestate;
+    $sources["replayState_$pointer.txt"] = [ReplayStateFilename($gameDirectory, $pointer), RECENT_GAME_SOURCE_COMPRESSED];
   }
   foreach (glob($gameDirectory . "turn_*-*_Gamestate.txt") ?: [] as $source) {
     $basename = basename($source);
     if (!preg_match('/^turn_[12]-\d+_Gamestate\.txt$/', $basename)) continue;
-    $content = @file_get_contents($source);
-    if (is_string($content)) $files[$basename] = $content;
+    $sources[$basename] = [$source, RECENT_GAME_SOURCE_OPTIONAL];
   }
   foreach ([REPLAY_LOG_FILENAME, REPLAY_LOG_INDEX_FILENAME] as $basename) {
-    $content = @file_get_contents($gameDirectory . $basename);
-    if (is_string($content)) $files[$basename] = $content;
+    if (is_file($gameDirectory . $basename)) $sources[$basename] = [$gameDirectory . $basename, RECENT_GAME_SOURCE_OPTIONAL];
   }
 
   $initialLines = explode("\r\n", $initialState, 23);
+  unset($initialState);
   $p1Hero = RecentGameHeroFromGamestate($initialLines, 3);
   $p2Hero = RecentGameHeroFromGamestate($initialLines, 21);
   $endedAt = time();
@@ -136,15 +136,16 @@ function StashRecentGame(string $gameDirectory): ?string
     "stateCount" => count($pointers),
   ];
 
-  $packed = gzencode(serialize(["summary" => $summary, "files" => $files]), 6);
-  if ($packed === false) return null;
-
   $gamesDirectory = RecentGamesRoot() . "games/";
   if (!is_dir($gamesDirectory) && !@mkdir($gamesDirectory, 0777, true) && !is_dir($gamesDirectory)) return null;
   $token = bin2hex(random_bytes(16));
   $packPath = RecentGamePackPath($token);
   $temporaryPath = $packPath . ".tmp";
-  if (@file_put_contents($temporaryPath, $packed, LOCK_EX) === false || !@rename($temporaryPath, $packPath)) {
+  $handle = @gzopen($temporaryPath, "wb6");
+  if ($handle === false) return null;
+  $written = WriteRecentGamePack($handle, $summary, $sources);
+  $closed = gzclose($handle);
+  if (!$written || !$closed || !@rename($temporaryPath, $packPath)) {
     @unlink($temporaryPath);
     return null;
   }
@@ -234,35 +235,103 @@ function PruneExpiredRecentGames(): void
   }
 }
 
-function ReadRecentGamePack(string $token): ?array
+function WriteRecentGamePack($handle, array $summary, array $sources): bool
 {
-  if (!IsValidRecentGameToken($token)) return null;
-  $packed = @file_get_contents(RecentGamePackPath($token));
-  $serialized = is_string($packed) ? @gzdecode($packed) : false;
-  if (!is_string($serialized)) return null;
-  $pack = @unserialize($serialized, ["allowed_classes" => false]);
-  if (!is_array($pack) || !is_array($pack["files"] ?? null) || !is_array($pack["summary"] ?? null)) return null;
-  return $pack;
+  $summaryJson = json_encode($summary, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+  if (!is_string($summaryJson) || !WriteRecentGamePackBytes($handle, RECENT_GAME_PACK_HEADER . "\n" . $summaryJson . "\n")) return false;
+  foreach ($sources as $basename => [$path, $kind]) {
+    $content = @file_get_contents($path);
+    if ($kind === RECENT_GAME_SOURCE_COMPRESSED && is_string($content)) $content = @gzdecode($content);
+    if (!is_string($content)) {
+      if ($kind === RECENT_GAME_SOURCE_OPTIONAL) continue;
+      return false;
+    }
+    if (!WriteRecentGamePackBytes($handle, $basename . " " . strlen($content) . "\n") || !WriteRecentGamePackBytes($handle, $content)) return false;
+    unset($content);
+  }
+  return WriteRecentGamePackBytes($handle, RECENT_GAME_PACK_END . "\n");
 }
 
-function RestoreRecentGameDirectory(array $pack): ?string
+function WriteRecentGamePackBytes($handle, string $bytes): bool
 {
+  return $bytes === "" || gzwrite($handle, $bytes) === strlen($bytes);
+}
+
+function ReadRecentGamePackBytes($handle, int $length): ?string
+{
+  $content = "";
+  while (strlen($content) < $length) {
+    $chunk = gzread($handle, min(1048576, $length - strlen($content)));
+    if (!is_string($chunk) || $chunk === "") return null;
+    $content .= $chunk;
+  }
+  return $content;
+}
+
+function RestoreRecentGameDirectory(string $token): ?string
+{
+  if (!IsValidRecentGameToken($token)) return null;
+  $handle = @gzopen(RecentGamePackPath($token), "rb");
+  if ($handle === false) return null;
+  $header = gzgets($handle, strlen(RECENT_GAME_PACK_HEADER) + 2);
+  if (!is_string($header) || rtrim($header, "\n") !== RECENT_GAME_PACK_HEADER) {
+    gzclose($handle);
+    return RestoreLegacyRecentGameDirectory($token);
+  }
+  $directory = RecentGamesRoot() . "restore-" . bin2hex(random_bytes(8)) . "/";
+  if (!@mkdir($directory, 0777, true)) {
+    gzclose($handle);
+    return null;
+  }
+  $restored = RestoreRecentGamePackFiles($handle, $directory);
+  gzclose($handle);
+  if (!$restored) {
+    RemoveReplayDirectory($directory);
+    return null;
+  }
+  return $directory;
+}
+
+function RestoreRecentGamePackFiles($handle, string $directory): bool
+{
+  if (gzgets($handle) === false) return false;
+  while (($line = gzgets($handle)) !== false) {
+    $line = rtrim($line, "\n");
+    if ($line === RECENT_GAME_PACK_END) return true;
+    if (!preg_match('/^(\S+) (\d+)$/', $line, $matches)) return false;
+    $content = ReadRecentGamePackBytes($handle, (int)$matches[2]);
+    if ($content === null || !RestoreRecentGameFile($directory, $matches[1], $content)) return false;
+    unset($content);
+  }
+  return false;
+}
+
+function RestoreRecentGameFile(string $directory, string $basename, string $content): bool
+{
+  if (preg_match('/^replayState_(\d+)\.txt$/', $basename, $matches)) {
+    $compressed = gzencode($content, 3);
+    return $compressed !== false && file_put_contents(ReplayStateFilename($directory, (int)$matches[1]), $compressed) !== false;
+  }
+  $isKnownFile = in_array($basename, ["origGamestate.txt", "commandfile.txt", REPLAY_LOG_FILENAME, REPLAY_LOG_INDEX_FILENAME], true)
+    || preg_match('/^turn_[12]-\d+_Gamestate\.txt$/', $basename) === 1;
+  if (!$isKnownFile) return true;
+  return file_put_contents($directory . $basename, $content) !== false;
+}
+
+function RestoreLegacyRecentGameDirectory(string $token): ?string
+{
+  $packed = @file_get_contents(RecentGamePackPath($token));
+  $serialized = is_string($packed) ? @gzdecode($packed) : false;
+  unset($packed);
+  if (!is_string($serialized)) return null;
+  $pack = @unserialize($serialized, ["allowed_classes" => false]);
+  unset($serialized);
+  if (!is_array($pack) || !is_array($pack["files"] ?? null) || !is_array($pack["summary"] ?? null)) return null;
   $directory = RecentGamesRoot() . "restore-" . bin2hex(random_bytes(8)) . "/";
   if (!@mkdir($directory, 0777, true)) return null;
   foreach ($pack["files"] as $basename => $content) {
     if (!is_string($basename) || !is_string($content)) continue;
-    if (preg_match('/^replayState_(\d+)\.txt$/', $basename, $matches)) {
-      $compressed = gzencode($content, 3);
-      if ($compressed === false || file_put_contents(ReplayStateFilename($directory, (int)$matches[1]), $compressed) === false) {
-        RemoveReplayDirectory($directory);
-        return null;
-      }
-      continue;
-    }
-    $isKnownFile = in_array($basename, ["origGamestate.txt", "commandfile.txt", REPLAY_LOG_FILENAME, REPLAY_LOG_INDEX_FILENAME], true)
-      || preg_match('/^turn_[12]-\d+_Gamestate\.txt$/', $basename) === 1;
-    if (!$isKnownFile) continue;
-    if (file_put_contents($directory . $basename, $content) === false) {
+    if (!RestoreRecentGameFile($directory, $basename, $content)) {
       RemoveReplayDirectory($directory);
       return null;
     }
