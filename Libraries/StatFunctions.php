@@ -317,6 +317,20 @@ function LogDiseaseStats($player, $cardID, $kind, $amount)
   $stats[$kind][$cardID] = intval($stats[$kind][$cardID] ?? 0) + $amount;
 }
 
+function LogFrailtyPreventedStats($powerModifiers, $totalPower, $totalDefense)
+{
+  global $CombatChain, $mainPlayer;
+  if (PowerCantBeModified($CombatChain->AttackCard()->ID())) return;
+  $frailtyPower = 0;
+  $count = count($powerModifiers);
+  for ($i = 0; $i + 1 < $count; $i += 2) {
+    if ($powerModifiers[$i] == "frailty") $frailtyPower -= intval($powerModifiers[$i + 1]);
+  }
+  if ($frailtyPower <= 0) return;
+  $prevented = max(0, $totalPower + $frailtyPower - $totalDefense) - max(0, $totalPower - $totalDefense);
+  LogDiseaseStats($mainPlayer, "frailty", "damage", $prevented);
+}
+
 function GetDiseaseStats($player)
 {
   global $p1DiseaseStats, $p2DiseaseStats;

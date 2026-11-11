@@ -3073,13 +3073,28 @@ function AbilityModePassDefault()
   return "";
 }
 
+function AbilityModeCardPassDefault()
+{
+  global $turn, $decisionQueue;
+  static $cardModes = [
+    "voltbound_duality_red" => "Attack", "voltbound_duality_yellow" => "Attack", "voltbound_duality_blue" => "Attack"
+  ];
+  if (($decisionQueue[0] ?? "") != "SETABILITYTYPE") return "";
+  $mode = $cardModes[$decisionQueue[2] ?? ""] ?? "";
+  if ($mode === "") return "";
+  foreach (explode(",", (string)($turn[2] ?? "")) as $option) {
+    if (GamestateUnsanitize($option) == $mode) return $option;
+  }
+  return "";
+}
+
 function ButtonInputPassDefault()
 {
   global $turn, $EffectContext;
   if (($turn[0] ?? "") != "BUTTONINPUT") return "";
   if ($EffectContext == "blizzard_blue" && GetDQHelpText() == "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again"
       && in_array("0", explode(",", (string)($turn[2] ?? "")), true)) return "0";
-  return AbilityModePassDefault();
+  return AbilityModeCardPassDefault() ?: AbilityModePassDefault();
 }
 
 // Triggers whose resolution order cannot change the outcome go on the stack without the ordering prompt.

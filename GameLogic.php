@@ -1355,6 +1355,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "WRITELOG":
       WriteLog(GamestateUnsanitize($parameter));
       return $lastResult;
+    case "WRITEREPLAYLOG":
+      WriteReplayLog(GamestateUnsanitize($parameter));
+      return $lastResult;
     case "WRITELOGCARDLINK":
       WriteLog(CardLink($parameter, $parameter) . " was chosen");
       return $lastResult;
