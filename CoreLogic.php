@@ -893,12 +893,6 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
 function DamageDealtAbilities($target, $damage, $type, $source)
 {
   global $mainPlayer, $combatChainState, $CCS_AttackFused;
-  if ($type == "COMBAT") {
-    if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer)) {
-      WriteLog("Damage effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-      return;
-    }
-  }
   if (($source == "explosive_growth_red" || $source == "explosive_growth_yellow" || $source == "explosive_growth_blue") && GetCombatChainState($CCS_AttackFused)) AddCurrentTurnEffect($source, $mainPlayer);
   if ($source == "suraya_archangel_of_knowledge") GainHealth($damage, $mainPlayer);
   $card = GetClass($source, $mainPlayer);
@@ -3733,7 +3727,7 @@ function HitEffectsArePrevented($cardID)
   global $combatChainState, $CCS_ChainLinkHitEffectsPrevented, $mainPlayer, $defPlayer;
   if (SearchCurrentTurnEffects("gallow_end_of_the_line_yellow", $mainPlayer)) return true;
   if (SearchCurrentTurnEffects("dense_blue_mist_blue-HITPREVENTION", $defPlayer)) return true;
-  if (GetCombatChainState($CCS_ChainLinkHitEffectsPrevented)) SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, true);
+  if (TypeContains($cardID, "AA") && SearchCurrentTurnEffects("tarpit_trap_yellow", $defPlayer)) return true;
   return GetCombatChainState($CCS_ChainLinkHitEffectsPrevented);
 }
 

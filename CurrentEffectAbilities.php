@@ -9,16 +9,6 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
   global $chainLinks, $chainLinkSummary, $CCS_AttackTargetUID;
   $attackID = $CombatChain->AttackCard()->ID();
   $layerCheck = count($layers) < LayerPieces();
-  if ($source == "-") {
-    if (CardType($attackID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $layerCheck)) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-      return true;
-    }
-  }
-  else if (CardType($source) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $layerCheck)) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-    return true;
-  }
   $effectArr = explode(",", $cardID);
   $cardID = $effectArr[0];
   $mode = explode("-", $cardID, 2)[1] ?? "-";

@@ -4,18 +4,6 @@ function ProcessHitEffect($cardID, $from = "-", $uniqueID = -1, $target="-")
 {
   global $CombatChain, $layers, $mainPlayer;
   WriteLog("Processing hit effect for " . CardLink($cardID, $cardID));
-  $noLayers = count($layers) < LayerPieces();
-  if (!DelimStringContains(CardType($cardID), "W")) {//stops flicks from interacting with tarpit trap
-    if (CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $noLayers)) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-      return true;
-    }
-  }
-  //check tarpit trap against flicked kiss of death if the current attack is a dagger
-  if (CardType($cardID) == "AA" && SubtypeContains($cardID, "Dagger", $mainPlayer) && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, $noLayers)) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-    return true;
-  }
   $cardID = ShiyanaCharacter($cardID);
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") return $card->HitEffect($cardID, $from, $uniqueID, $target);
@@ -775,7 +763,6 @@ function OnDefenseReactionResolveEffects($from, $cardID)
       if (HasIncreasedAttack()) AddLayer("TRIGGER", $defPlayer, $cardID);
       break;
     case "collapsing_trap_blue":
-    case "tarpit_trap_yellow":
     case "frailty_trap_red":
     case "lair_of_the_spider_red":
     case "chain_reaction_yellow":

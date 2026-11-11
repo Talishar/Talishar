@@ -67,10 +67,6 @@
   {
     global $mainPlayer, $defPlayer, $layers;
     if(!IsHeroAttackTarget()) return;
-    if(CardType($cardID) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-      WriteLog("Tower effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-      return true;
-    }
     $card = GetClass($cardID, $mainPlayer);
     if ($card != "-") return $card->ProcessTowerEffect();
     switch($cardID)

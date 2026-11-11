@@ -1647,10 +1647,6 @@ function ProcessMainCharacterHitEffect($cardID, $player, $target)
 {
   global $combatChain, $mainPlayer, $layers, $defPlayer;
   $character = &GetPlayerCharacter($player);
-  if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-    return true;
-  }
   switch ($cardID) {
     case "katsu_the_wanderer":
     case "katsu":
@@ -1777,10 +1773,6 @@ function ProcessItemsEffect($cardID, $player, $target, $uniqueID)
 {
   global $layers, $combatChainState, $CCS_GoesWhereAfterLinkResolves;
   $otherPlayer = 3 - $player;
-  if (CardType($target) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $player, count($layers) <= LayerPieces())) {
-    WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-    return false;
-  }
   switch ($cardID) {
     case "powder_keg_blue":
       AddDecisionQueue("YESNO", $player, "if_you_want_to_destroy_" . CardLink($cardID, $cardID) . "_and_a_defending_equipment?");
@@ -2883,7 +2875,6 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         LookAtTopCard($player, "wayfinders_crest");
         break;
       case "buzzsaw_trap_blue":
-      case "tarpit_trap_yellow":
       case "kabuto_of_imperial_authority":
         AddCurrentTurnEffect($parameter, $mainPlayer);
         break;

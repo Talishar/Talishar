@@ -527,10 +527,6 @@
   {
     global $mainPlayer, $defPlayer, $CombatChain, $combatChainState, $CCS_DamageDealt, $layers, $combatChain, $chainLinks;
     if(!IsHeroAttackTarget()) return;
-    if(CardType($CombatChain->AttackCard()->ID()) == "AA" && SearchCurrentTurnEffects("tarpit_trap_yellow", $mainPlayer, count($layers) <= LayerPieces())) {
-      WriteLog("Hit effect prevented by " . CardLink("tarpit_trap_yellow", "tarpit_trap_yellow"));
-      return true;
-    }
     $card = GetClass($cardID, $mainPlayer);
     if ($card != "-") return $card->ProcessCrushEffect();
     switch($cardID) {

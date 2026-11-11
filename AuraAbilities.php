@@ -1441,7 +1441,7 @@ function AuraDamageTakenAbilities($player, $damage, $source, $playerSource)
         if (!$selfInflicted) {
           if(GetClassState($otherPlayer, $CS_DamageDealtToOpponent) == 0 && $damage > 0 && $otherAuras[$i + 5] > 0){
             $otherAuras[$i + 5] -= 1;
-            if (CardType($source) != "AA" || !SearchCurrentTurnEffects("tarpit_trap_yellow", $otherPlayer) && !HitEffectsArePrevented($source)) {
+            if (!HitEffectsArePrevented($source)) {
               AddLayer("TRIGGER", $otherPlayer, $otherAuras[$i], uniqueID: $otherAuras[$i + 6]);
             }
           }

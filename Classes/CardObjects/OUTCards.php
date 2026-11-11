@@ -2533,17 +2533,28 @@ class premeditate_red extends Card {
 // }
 
 
-// class tarpit_trap_yellow extends Card {
+class tarpit_trap_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tarpit_trap_yellow";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "tarpit_trap_yellow";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function SpecificLogic() {
+    SearchCurrentTurnEffects($this->cardID, $this->controller, true);
+  }
+
+  function OnDefenseReactionResolveEffects($from, $blockedFromHand) {
+    if (DoesAttackHaveGoAgain()) AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
+}
 
 
 // class threadbare_tunic extends Card {

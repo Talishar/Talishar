@@ -3045,7 +3045,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         $sourceUID = $mainChar[$ind] == $cardID ? $mainChar[$ind + 11] : -1;
       }
       IncrementClassState($mainPlayer, $CS_HitCounter);
-      if (!SearchCurrentTurnEffects("tripwire_trap_red", $mainPlayer)) { //tripwire got an unannounced eratta to block flick hits
+      if (!HitEffectsArePrevented($cardID)) { //tripwire got an unannounced eratta to block flick hits
         AddOnHitTrigger($cardID, $sourceUID, targetPlayer: $targetPlayer);
         if (DelimStringContains($location, "COMBATCHAINATTACKS", true) && TypeContains($cardID, "AA")) { //Kiss of Death added effects
           $index = intval(explode("-", $location, 2)[1]) / ChainLinksPieces();
@@ -3089,10 +3089,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         CheckHitContracts($mainPlayer, $defPlayer);
       }
-      else WriteLog(CardLink("tripwire_trap_red", "tripwire_trap_red") . " received an eratta that causes to prevent flick effects.");
       //handling flick knives and mark
       if (CheckMarked($defPlayer) && $targetPlayer == $defPlayer) {
         RemoveMark($defPlayer);
+      }
+      if (TypeContains($cardID, "AA") && SearchCurrentTurnEffects("tarpit_trap_yellow", $defPlayer)) {
+        Await($defPlayer, "tarpit_trap_yellow", prepend:true, subsequent:0, final:true);
       }
       return $parameters[0];
     case "AWAKEN":

@@ -1962,7 +1962,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   global $combatChain, $combatChainState, $currentPlayer, $mainPlayer, $currentTurnEffects;
   global $CCS_DamageDealt, $CCS_HitsWithWeapon, $EffectContext, $CS_HitsWithWeapon, $CS_DamageDealt, $CS_PowDamageDealt;
   global $CS_HitsWithSword, $CCS_CurrentAttackGainedGoAgain, $CCS_ChainLinkHitEffectsPrevented, $defPlayer, $CS_HitsWDawnblade;
-  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain, $Landmarks, $CS_ClubDamage;
+  global $CS_HitCounter, $CS_ResolvingLayerUniqueID, $CombatChain, $Landmarks, $CS_ClubDamage, $CombatChain;
   $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
   $wasHit = $damageDone > 0;
   $cardID = $combatChain[0];
@@ -2092,6 +2092,8 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
   else {
     NonHitEffects($cardID);
   }
+  if ($wasHit && TypeContains($cardID, "AA") && SearchCurrentTurnEffects("tarpit_trap_yellow", $defPlayer))
+    Await($defPlayer, "tarpit_trap_yellow", prepend:true, subsequent:0, final:true);
   ResolveWagers(false);
   $character = &GetPlayerCharacter($mainPlayer);
   $charID = $character[0];
@@ -2289,9 +2291,6 @@ function CleanUpCombatEffects($weaponSwap = false, $isSpectraTarget = false)
       case "rally_the_shadow_horde_yellow":
       case "rally_the_shadow_horde_blue":
         $effectsToRemove[] = $i;
-        break;
-      case "tarpit_trap_yellow":
-        if (GetCombatChainState($CCS_DamageDealt) > 0 && CardType($combatChain[0]) == "AA") $effectsToRemove[] = $i;
         break;
       default:
         break;
