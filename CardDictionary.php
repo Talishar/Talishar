@@ -3781,7 +3781,7 @@ function CharacterDefaultActiveState($cardID)
   $card = GetClass($cardID, 0);
   if ($card != "-") return $card->DefaultActiveState();
   static $state0 = [
-    "silken_form" => 1, "heat_wave" => 1, "conduit_of_frostburn" => 1,
+    "silken_form" => 1, "heat_wave" => 1,
     "quelling_robe" => 1, "quelling_sleeves" => 1, "quelling_slippers" => 1,
     "shroud_of_darkness" => 1, "cloak_of_darkness" => 1, "grasp_of_darkness" => 1,
     "dance_of_darkness" => 1, "blasmophet_levia_consumed" => 1,
@@ -3791,7 +3791,7 @@ function CharacterDefaultActiveState($cardID)
   ];
   static $state1 = [
     "refraction_bolters" => 1, "vest_of_the_first_fist" => 1, "breeze_rider_boots" => 1,
-    "metacarpus_node" => 1, "hooves_of_the_shadowbeast" => 1, "plume_of_evergrowth" => 1,
+    "hooves_of_the_shadowbeast" => 1, "plume_of_evergrowth" => 1,
     "shock_charmers" => 1, "mark_of_lightning" => 1, "halo_of_illumination" => 1,
     "dream_weavers" => 1, "ebon_fold" => 1, "spell_fray_tiara" => 1,
     "spell_fray_cloak" => 1, "spell_fray_gloves" => 1, "spell_fray_leggings" => 1,

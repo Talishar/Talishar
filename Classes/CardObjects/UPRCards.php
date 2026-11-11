@@ -560,17 +560,34 @@ class combustion_point_red extends Card {
 }
 
 
-// class conduit_of_frostburn extends Card {
+class conduit_of_frostburn extends Card {
+  function __construct($controller) {
+    $this->cardID = "conduit_of_frostburn";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "conduit_of_frostburn";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $CharacterCard = new CharacterCard($index, $this->controller);
+    $CharacterCard->Destroy();
+  }
+
+  function DefaultActiveState() {
+    return 1;
+  }
+}
 
 
 // class coronet_peak extends Card {

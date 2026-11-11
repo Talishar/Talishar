@@ -12,7 +12,6 @@ function DYNAbilityCost($cardID)
     case "spiders_bite": case "spiders_bite_r": return 2;
     case "sandscour_greatbow": return 1;
     case "annals_of_sutcliffe": return 3;
-    case "surgent_aethertide": return 2;
     case "seerstone": return 3;
     case "ornate_tessen": return 1;
     case "imperial_warhorn_red": return 1;
@@ -39,7 +38,6 @@ function DYNAbilityType($cardID, $index = -1)
     case "sandscour_greatbow": return "A";
     case "amethyst_tiara": return "I";
     case "annals_of_sutcliffe": return "A";
-    case "surgent_aethertide": return "A";
     case "seerstone": return "A";
     case "ornate_tessen": return "I";
     case "imperial_edict_red": return "A";
@@ -54,7 +52,7 @@ function DYNAbilityType($cardID, $index = -1)
 function DYNAbilityHasGoAgain($cardID)
 {
   switch($cardID) {
-    case "sandscour_greatbow": case "surgent_aethertide": case "imperial_edict_red": case "gold": return true;
+    case "sandscour_greatbow": case "imperial_edict_red": case "gold": return true;
     default: return false;
   }
 }
@@ -344,12 +342,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $deck = new Deck($currentPlayer);
       if($deck->Reveal(1)) if(ColorContains($deck->Top(), PitchValue($cardID), $currentPlayer)) PlayAura("runechant", $currentPlayer, 1, true);
       return "";
-    case "surgent_aethertide":
-      DealArcane(1, 1, "ABILITY", $cardID, resolvedTarget: $target);
-      AddDecisionQueue("GREATERTHAN0ORPASS", $currentPlayer, "");
-      AddDecisionQueue("PREPENDLASTRESULT", $currentPlayer, "surgent_aethertide,", 1);
-      AddDecisionQueue("ADDCURRENTTURNEFFECT", $currentPlayer, "<-", 1);
-      return "";
     case "seerstone":
       PlayerOpt($currentPlayer, 1, false);
       PlayAura("ponder", $currentPlayer);
@@ -357,7 +349,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
   	case "mind_warp_yellow": case "swell_tidings_red": case "aether_quickening_red": case "aether_quickening_yellow": case "aether_quickening_blue": case "prognosticate_red": case "prognosticate_yellow": case "prognosticate_blue":
     case "sap_red": case "sap_yellow": case "sap_blue": DealArcane(ArcaneDamage($cardID), 0, "PLAYCARD", $cardID, resolvedTarget: $target); return "";
     case "brainstorm_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
-    case "tempest_aurora_red": case "tempest_aurora_yellow": case "tempest_aurora_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "invoke_suraya_yellow": Transform($currentPlayer, "spectral_shield", "suraya_archangel_of_knowledge"); return "";
     case "phantasmal_symbiosis_yellow":
       AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");

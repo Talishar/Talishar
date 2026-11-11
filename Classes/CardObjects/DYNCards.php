@@ -233,44 +233,64 @@
 //   }
 // }
 
+class blessing_of_aether extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class blessing_of_aether_red extends Card {
+	function StartTurnAbility($index) {
+		$AuraCard = new AuraCard($index, $this->controller);
+		AddCurrentTurnEffect($this->cardID, $this->controller, "PLAY");
+		return true;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "blessing_of_aether_red";
-//     $this->controller = $controller;
-//     }
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		if (ActionsThatDoArcaneDamage($cardID, $this->controller) || ActionsThatDoXArcaneDamage($cardID))
+			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+		elseif (!IsActivated($cardID, $from)) {
+			$Effect = new CurrentEffect($effectIndex);
+			if ($Effect->AppliestoUniqueID() == -1)
+				$Effect->Remove();
+		}
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class blessing_of_aether_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_aether_red";
+    $this->controller = $controller;
+		$this->baseCard = new blessing_of_aether($this->cardID, $this->controller);
+	}
+
+	function CardEffectArcaneBonus($effectInd) {
+		return 3;
+	}
+}
 
 
-// class blessing_of_aether_yellow extends Card {
+class blessing_of_aether_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_aether_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new blessing_of_aether($this->cardID, $this->controller);
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "blessing_of_aether_yellow";
-//     $this->controller = $controller;
-//     }
+	function CardEffectArcaneBonus($effectInd) {
+		return 2;
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class blessing_of_aether_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "blessing_of_aether_blue";
+    $this->controller = $controller;
+		$this->baseCard = new blessing_of_aether($this->cardID, $this->controller);
+	}
 
-
-// class blessing_of_aether_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "blessing_of_aether_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CardEffectArcaneBonus($effectInd) {
+		return 1;
+	}
+}
 
 
 // class blessing_of_focus_red extends Card {
@@ -612,35 +632,35 @@
 
 
 class celestial_kimono extends Card {
-	function __construct($controller) {
-		$this->cardID = "celestial_kimono";
-		$this->controller = $controller;
+  function __construct($controller) {
+    $this->cardID = "celestial_kimono";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-', $owner = '-') {
+    if ($from != "PLAY" && $from != "CHAR") return;
+    $DisCard = new DiscardCard($discardIndex, $owner == "-" ? $this->controller : $owner);
+    $CharacterCard = new CharacterCard($permIndex, $this->controller);
+    $isToken = TypeContains($DisCard->CardID(), "T");
+    if (!$isToken && SubtypeContains($DisCard->CardID(), "Aura")) { // check if it was a token copy
+      $Auras = new Auras($this->controller);
+      $AuraCard = $Auras->FindCardUID($uniqueID);
+      if ($AuraCard->IsToken())
+        $isToken = true;
     }
+    if (HasWard($DisCard->CardID(), $this->controller) && $CharacterCard->NumUses() > 0 && !$isToken) {
+      AddLayer("TRIGGER", $this->controller, $this->cardID);
+      $CharacterCard->AddUse(-1);
+    }
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
-
-	function PermanentAddGraveyardAbility($discardIndex, $permIndex, $from, $uniqueID = '-', $owner = '-') {
-		if ($from != "PLAY" && $from != "CHAR") return;
-		$DisCard = new DiscardCard($discardIndex, $owner == "-" ? $this->controller : $owner);
-		$CharacterCard = new CharacterCard($permIndex, $this->controller);
-		$isToken = TypeContains($DisCard->CardID(), "T");
-		if (!$isToken && SubtypeContains($DisCard->CardID(), "Aura")) { // check if it was a token copy
-			$Auras = new Auras($this->controller);
-			$AuraCard = $Auras->FindCardUID($uniqueID);
-			if ($AuraCard->IsToken())
-				$isToken = true;
-		}
-		if (HasWard($DisCard->CardID(), $this->controller) && $CharacterCard->NumUses() > 0 && !$isToken) {
-			AddLayer("TRIGGER", $this->controller, $this->cardID);
-			$CharacterCard->AddUse(-1);
-		}
-	}
-
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		GainResources(1, $this->controller);
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    GainResources(1, $this->controller);
+  }
 }
 
 
@@ -659,94 +679,94 @@ class celestial_kimono extends Card {
 
 class construct_nitro_mechanoid_yellow extends Card {
 
-	function __construct($controller) {
-		$this->cardID = "construct_nitro_mechanoid_yellow";
-		$this->controller = $controller;
-	}
+  function __construct($controller) {
+    $this->cardID = "construct_nitro_mechanoid_yellow";
+    $this->controller = $controller;
+  }
 
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		return CheckIfConstructNitroMechanoidConditionsAreMet($this->controller) != "";
-	}
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    return CheckIfConstructNitroMechanoidConditionsAreMet($this->controller) != "";
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    	$conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
-		if ($conditionsMet != "") return $conditionsMet;
-		$Items = new Items($this->controller);
-		// Add the new item so we can put cards under it
-		PutItemIntoPlayForPlayer("nitro_mechanoidc", $this->controller);
-		// We don't want function calls in every iteration check
-		$mechanoidIndex = $Items->NumItems() - 1; // we pushed it, so should be the last element
-		$Mechanoid = $Items->Card($mechanoidIndex, true);
-		//Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
-		$Character = new PlayerCharacter($this->controller);
-		$addedWeapon = false;
-		for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
-			$CharCard = $Character->Card($i, true);
-			if (TypeContains($CharCard->CardID(), "W")) {
-				if ($addedWeapon) continue;
-				else $addedWeapon = true;
-			}
-			$charCardType = CardType($CharCard->CardID());
-			if($charCardType != "C" && $charCardType != "Companion") {
-				$Mechanoid->AddSubcard($CharCard->CardID());
-				$characterSubCards = $CharCard->Subcards();
-				if ($characterSubCards != "-") {
-					foreach (explode(",", $characterSubCards) as $subcard) 
-						$Mechanoid->AddSubcard($subcard);
-				}
-				$CharCard->Destroy(true);
-			}
-		}
+    $conditionsMet = CheckIfConstructNitroMechanoidConditionsAreMet($this->controller);
+    if ($conditionsMet != "") return $conditionsMet;
+    $Items = new Items($this->controller);
+    // Add the new item so we can put cards under it
+    PutItemIntoPlayForPlayer("nitro_mechanoidc", $this->controller);
+    // We don't want function calls in every iteration check
+    $mechanoidIndex = $Items->NumItems() - 1; // we pushed it, so should be the last element
+    $Mechanoid = $Items->Card($mechanoidIndex, true);
+    //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
+    $Character = new PlayerCharacter($this->controller);
+    $addedWeapon = false;
+    for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
+      $CharCard = $Character->Card($i, true);
+      if (TypeContains($CharCard->CardID(), "W")) {
+        if ($addedWeapon) continue;
+        else $addedWeapon = true;
+      }
+      $charCardType = CardType($CharCard->CardID());
+      if($charCardType != "C" && $charCardType != "Companion") {
+        $Mechanoid->AddSubcard($CharCard->CardID());
+        $characterSubCards = $CharCard->Subcards();
+        if ($characterSubCards != "-") {
+          foreach (explode(",", $characterSubCards) as $subcard) 
+            $Mechanoid->AddSubcard($subcard);
+        }
+        $CharCard->Destroy(true);
+      }
+    }
 
-		$hyperDrivers = SearchMultizone($this->controller, "MYITEMS:isSameName=hyper_driver_red");
-		$hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
-		AddDecisionQueue("MULTICHOOSEITEMS", $this->controller, "3-" . $hyperDrivers. "-3");
-		AddDecisionQueue("SPECIFICCARD", $this->controller, "CONSTRUCTNITROMECHANOID,$mechanoidIndex", 1);
-		return "";
+    $hyperDrivers = SearchMultizone($this->controller, "MYITEMS:isSameName=hyper_driver_red");
+    $hyperDrivers = str_replace("MYITEMS-", "", $hyperDrivers); // MULTICHOOSEITEMS expects indexes only but SearchItems does not have a sameName parameter
+    AddDecisionQueue("MULTICHOOSEITEMS", $this->controller, "3-" . $hyperDrivers. "-3");
+    AddDecisionQueue("SPECIFICCARD", $this->controller, "CONSTRUCTNITROMECHANOID,$mechanoidIndex", 1);
+    return "";
   }
 }
 
 // the item produced, named for backwards compatibility
 class nitro_mechanoidc extends Card {
-	function __construct($controller) {
+  function __construct($controller) {
     $this->cardID = "nitro_mechanoidc";
     $this->controller = $controller;
-	}
+  }
 
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		$Mechanoid = new ItemCard($index, $this->controller);
-		return $Mechanoid->SubCards() == "-";
-	}
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $Mechanoid = new ItemCard($index, $this->controller);
+    return $Mechanoid->SubCards() == "-";
+  }
 
-	function SpecialType() {
-		return "W,E";
-	}
+  function SpecialType() {
+    return "W,E";
+  }
 
-	function GoesOnCombatChain($phase, $from) {
-		return true;
-	}
+  function GoesOnCombatChain($phase, $from) {
+    return true;
+  }
 
-	function AbilityType($index = -1, $from = '-') {
-		return "AA";
-	}
+  function AbilityType($index = -1, $from = '-') {
+    return "AA";
+  }
 
-	function SpecialBlock() {
-		return 5;
-	}
+  function SpecialBlock() {
+    return 5;
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		$Mechanoid = new ItemCard($index, $this->controller);
-		$Mechanoid->SetStatus(2);
-		$Mechanoid->AddUses();
-		$otherPlayer = $this->controller == 1 ? 2 : 1;
-		$destPlayer = str_contains($Mechanoid->From(), "THEIR") ? $otherPlayer : $this->controller;
-		ItemChooseaAndRemoveSubcard($this->controller, $index, count: 1);
-		AddDecisionQueue("MULTIBANISH", $destPlayer, "EQUIP,-", 1);
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    $Mechanoid = new ItemCard($index, $this->controller);
+    $Mechanoid->SetStatus(2);
+    $Mechanoid->AddUses();
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    $destPlayer = str_contains($Mechanoid->From(), "THEIR") ? $otherPlayer : $this->controller;
+    ItemChooseaAndRemoveSubcard($this->controller, $index, count: 1);
+    AddDecisionQueue("MULTIBANISH", $destPlayer, "EQUIP,-", 1);
+  }
 
-	function HasTemper() {
-		return true;
-	}
+  function HasTemper() {
+    return true;
+  }
 }
 
 // class crankshaft_red extends Card {
@@ -868,38 +888,38 @@ class nitro_mechanoidc extends Card {
 
 class dead_eye_yellow extends Card {
 
-	function __construct($controller) {
-		$this->cardID = "dead_eye_yellow";
-		$this->controller = $controller;
-    }
+  function __construct($controller) {
+    $this->cardID = "dead_eye_yellow";
+    $this->controller = $controller;
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    return "";
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return 3;
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		global $CombatChain;
-		$attackID = $CombatChain->AttackCard()->ID();
-		return CardSubType($attackID) == "Arrow";
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    global $CombatChain;
+    $attackID = $CombatChain->AttackCard()->ID();
+    return CardSubType($attackID) == "Arrow";
+  }
 
-	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if (!HasAimCounter()) return false;
-		return HeroHitTrigger($this->controller, $this->cardID, $check, true);
-	}
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if (!HasAimCounter()) return false;
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-		AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND");
-        AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card you want your opponent to discard", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
-        AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
-        AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
-	}
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND");
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose which card you want your opponent to discard", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZDISCARD", $this->controller, "HAND," . $this->controller, 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+  }
 }
 
 
@@ -1438,36 +1458,36 @@ class dead_eye_yellow extends Card {
 
 class leave_no_witnesses_red extends Card {
 
-	function __construct($controller) {
-		$this->cardID = "leave_no_witnesses_red";
-		$this->controller = $controller;
-    }
+  function __construct($controller) {
+    $this->cardID = "leave_no_witnesses_red";
+    $this->controller = $controller;
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-		return HeroHitTrigger($this->controller, $this->cardID, $check);
-	}
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
 
-	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-		global $defPlayer;
-        $deck = new Deck($defPlayer);
-        if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
-        else $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
-		Await($this->controller, "MultiZoneIndices", search:"THEIRARS", subsequent:0);
-		Await($this->controller, "ChooseMultiZone", exp_may:true);
-		Await($this->controller, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, final:true);
-	}
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    $deck = new Deck($defPlayer);
+    if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); }
+    else $deck->BanishTop(banishedBy:$cardID, banisher:$this->controller);
+    Await($this->controller, "MultiZoneIndices", search:"THEIRARS", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", exp_may:true);
+    Await($this->controller, "MZRemoveAndBanish", banishedBy:$this->cardID, banisher:$this->controller, final:true);
+  }
 
-	function ContractType($chosenName = '') {
-		return "REDPITCH";
-	}
+  function ContractType($chosenName = '') {
+    return "REDPITCH";
+  }
 
-	function ContractCompleted() {
-		PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
-	}
+  function ContractCompleted() {
+    PutItemIntoPlayForPlayer("silver", $this->controller, effectSource:$this->cardID);
+  }
 }
 
 
@@ -2032,43 +2052,43 @@ class leave_no_witnesses_red extends Card {
 
 class pulsewave_harpoon_red extends Card {
 
-	function __construct($controller) {
-		$this->cardID = "pulsewave_harpoon_red";
-		$this->controller = $controller;
+  function __construct($controller) {
+    $this->cardID = "pulsewave_harpoon_red";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if (IsHeroAttackTarget())
+      AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+    return "";
+  }
+
+  function ProcessAttackTrigger($target, $uniqueID) {
+    global $CCS_NumBoosted;
+    $numBoosted = GetCombatChainState($CCS_NumBoosted);
+    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $otherPlayerHand = GetHand($otherPlayer);
+    if($numBoosted > 0 && count($otherPlayerHand) > 0)
+    {
+      $numToReveal = min($numBoosted, count($otherPlayerHand));
+      AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "0");
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
+      AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Select exactly $numToReveal card(s) from your hand to reveal", 1);
+      AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
+      AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
+      AddDecisionQueue("SETDQVAR", $this->controller, "1");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "{1}", 1);
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a revealed action card with $numBoosted or less defense to add as a defending card", 1);
+      AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
+      AddDecisionQueue("CHOOSETHEIRHAND", $this->controller, "<-", 1);
+      AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
     }
-
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if (IsHeroAttackTarget())
-			AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-		return "";
-	}
-
-	function ProcessAttackTrigger($target, $uniqueID) {
-		global $CCS_NumBoosted;
-		$numBoosted = GetCombatChainState($CCS_NumBoosted);
-		$otherPlayer = ($this->controller == 1 ? 2 : 1);
-		$otherPlayerHand = GetHand($otherPlayer);
-		if($numBoosted > 0 && count($otherPlayerHand) > 0)
-		{
-			$numToReveal = min($numBoosted, count($otherPlayerHand));
-			AddDecisionQueue("PASSPARAMETER", $otherPlayer, $numBoosted, 1);
-			AddDecisionQueue("SETDQVAR", $this->controller, "0");
-			AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
-			AddDecisionQueue("APPENDLASTRESULT", $otherPlayer, "-{0}", 1);
-			AddDecisionQueue("PREPENDLASTRESULT", $otherPlayer, "{0}-", 1);
-			AddDecisionQueue("SETDQCONTEXT", $otherPlayer, "Select exactly $numToReveal card(s) from your hand to reveal", 1);
-			AddDecisionQueue("MULTICHOOSEHAND", $otherPlayer, "<-", 1);
-			AddDecisionQueue("IMPLODELASTRESULT", $otherPlayer, ",", 1);
-			AddDecisionQueue("SETDQVAR", $this->controller, "1");
-			AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "<-", 1);
-			AddDecisionQueue("PASSPARAMETER", $this->controller, "{1}", 1);
-			AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a revealed action card with $numBoosted or less defense to add as a defending card", 1);
-			AddDecisionQueue("SPECIFICCARD", $otherPlayer, "PULSEWAVEHARPOONFILTER", 1);
-			AddDecisionQueue("CHOOSETHEIRHAND", $this->controller, "<-", 1);
-			AddDecisionQueue("MULTIREMOVEHAND", $otherPlayer, "-", 1);
-			AddDecisionQueue("ADDCARDTOCHAINASDEFENDINGCARD", $otherPlayer, "HAND", 1);
-		}
-	}
+  }
 }
 
 
@@ -2788,168 +2808,168 @@ class pulsewave_harpoon_red extends Card {
 
 
 class spectral_prowler extends BaseCard {
-	function ProcessTrigger() {
-		if(SearchAuras("spectral_shield", $this->controller)) GiveAttackGoAgain();
-	}
+  function ProcessTrigger() {
+    if(SearchAuras("spectral_shield", $this->controller)) GiveAttackGoAgain();
+  }
 
-	function PlayTrigger() {
-		AddLayer("TRIGGER", $this->controller, $this->cardID);
-	}
+  function PlayTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 }
 
 class spectral_prowler_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_prowler_red";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
-	}
-	
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_prowler_red";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 class spectral_prowler_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_prowler_yellow";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
-	}
-	
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_prowler_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 class spectral_prowler_blue extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_prowler_blue";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_prowler($this->cardID, $this->controller);
-	}
-	
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_prowler_blue";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_prowler($this->cardID, $this->controller);
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 
 class spectral_rider extends BaseCard {
-	function ProcessTrigger() {
-		if(SearchAuras("spectral_shield", $this->controller)) AddCurrentTurnEffect($this->cardID, $this->controller);
-	}
+  function ProcessTrigger() {
+    if(SearchAuras("spectral_shield", $this->controller)) AddCurrentTurnEffect($this->cardID, $this->controller);
+  }
 
-	function PlayTrigger() {
-		AddLayer("TRIGGER", $this->controller, $this->cardID);
-	}
+  function PlayTrigger() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID);
+  }
 }
 
 class spectral_rider_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_rider_red";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
-	}
-  
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_rider_red";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_rider($this->cardID, $this->controller);
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function DoesEffectGrantOverpower() {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 class spectral_rider_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_rider_yellow";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
-	}
-  
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_rider_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_rider($this->cardID, $this->controller);
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function DoesEffectGrantOverpower() {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 class spectral_rider_blue extends Card {
-	function __construct($controller) {
-		$this->cardID = "spectral_rider_blue";
-		$this->controller = $controller;
-		$this->baseCard = new spectral_rider($this->cardID, $this->controller);
-	}
-  
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function __construct($controller) {
+    $this->cardID = "spectral_rider_blue";
+    $this->controller = $controller;
+    $this->baseCard = new spectral_rider($this->cardID, $this->controller);
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function DoesEffectGrantOverpower() {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
-		$this->baseCard->ProcessTrigger();
-	}
+  function DoesEffectGrantOverpower() {
+    return true;
+  }
 
-	function PlayTrigger($from) {
-		$this->baseCard->PlayTrigger();
-	}
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $this->baseCard->ProcessTrigger();
+  }
+
+  function PlayTrigger($from) {
+    $this->baseCard->PlayTrigger();
+  }
 }
 
 
@@ -3070,17 +3090,45 @@ class spectral_rider_blue extends Card {
 // }
 
 
-// class surgent_aethertide extends Card {
+class surgent_aethertide extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "surgent_aethertide";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "surgent_aethertide";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    DealArcane(1, 1, "ABILITY", $this->cardID, resolvedTarget: $target);
+		AddDecisionQueue("GREATERTHAN0ORPASS", $this->controller, "");
+		AddDecisionQueue("PREPENDLASTRESULT", $this->controller, "$this->cardID,", 1);
+		AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, "<-", 1);
+		return "";
+  }
+
+	function CardEffectArcaneBonus($effectInd) {
+		$Effect = new CurrentEffect($effectInd);
+		$modifier = explode(",", $Effect->EffectID())[1] ?? 0;
+		return intval($modifier);
+	}
+
+	function AbilityType($index = -1, $from = '-') {
+		return "A";
+	}
+
+	function AbilityCost() {
+		return 2;
+	}
+
+	function AbilityHasGoAgain($from) {
+		return true;
+	}
+
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		global $CS_ArcaneCardsPlayed;
+		if (GetClassState($this->controller, $CS_ArcaneCardsPlayed) == 0)
+			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+	}
+}
 
 
 // class surgical_extraction_blue extends Card {
@@ -3121,44 +3169,46 @@ class spectral_rider_blue extends Card {
 //   }
 // }
 
+class tempest_aurora extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+  }
 
-// class tempest_aurora_red extends Card {
+	function CardEffectArcaneBonus($effectInd) {
+		return 1;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "tempest_aurora_red";
-//     $this->controller = $controller;
-//     }
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		$costVal = ByColor($this->cardID, 2, 1, 0);
+		if (CardCost($cardID) <= $costVal)
+			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+	}
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class tempest_aurora_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tempest_aurora_red";
+    $this->controller = $controller;
+		$this->baseCard = new tempest_aurora($this->cardID, $this->controller);
+	}
+}
 
+class tempest_aurora_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "tempest_aurora_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new tempest_aurora($this->cardID, $this->controller);
+	}
+}
 
-// class tempest_aurora_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "tempest_aurora_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class tempest_aurora_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "tempest_aurora_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class tempest_aurora_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "tempest_aurora_blue";
+    $this->controller = $controller;
+		$this->baseCard = new tempest_aurora($this->cardID, $this->controller);
+	}
+}
 
 
 // class tiger_swipe_red extends Card {

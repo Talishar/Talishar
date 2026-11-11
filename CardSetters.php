@@ -606,126 +606,25 @@ function RemoveSoul($player, $index)
   }
 }
 
-function EffectArcaneBonus($source)
+function EffectArcaneBonus($source, $effectInd)
 {
   $idArr = explode(",", $source);
   $source = $idArr[0];
-  $modifier = (count($idArr) > 1 ? $idArr[1] : 0);
   $card = GetClass($source, 0);
-  if ($card != "-") return $card->CardEffectArcaneBonus();
-  switch ($source) {
-    case "crucible_of_aetherweave":
-      return 1;
-    case "tome_of_aetherwind_red":
-      return 1;
-    case "absorb_in_aether_red":
-    case "absorb_in_aether_yellow":
-    case "absorb_in_aether_blue":
-      return 2;
-    case "aether_flare_red":
-    case "aether_flare_yellow":
-    case "aether_flare_blue":
-      return intval($modifier);
-    case "metacarpus_node":
-      return 1;
-    case "cindering_foresight_red":
-    case "cindering_foresight_yellow":
-    case "cindering_foresight_blue":
-      return 1;
-    case "rousing_aether_red":
-    case "rousing_aether_yellow":
-    case "rousing_aether_blue":
-      return 1;
-    case "surgent_aethertide":
-      return intval($modifier);
-    case "blessing_of_aether_red":
-      return 3;
-    case "blessing_of_aether_yellow":
-      return 2;
-    case "blessing_of_aether_blue":
-      return 1;
-    case "tempest_aurora_red":
-    case "tempest_aurora_yellow":
-    case "tempest_aurora_blue":
-      return 1;
-    default:
-      return 0;
-  }
+  if ($card != "-") return $card->CardEffectArcaneBonus($effectInd);
+  return 0;
 }
 
 function AssignEffectToCard($cardID, $player, $from) {
   global $CurrentTurnEffects;
   $numEffects = $CurrentTurnEffects->NumEffects();
-  for ($i = 0; $i < $numEffects; ++$i) {
+  for ($i = $numEffects - 1; $i >= 0; --$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     $appliesToUniqueID = $Effect->AppliestoUniqueID();
     if ($appliesToUniqueID != -1 && $appliesToUniqueID != "MISSED") continue;
     $card = GetClass($Effect->EffectID(), $player);
     if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from);
-  }
-}
-
-function AssignArcaneBonus($playerID, $layerIndex=0)
-{
-  global $currentTurnEffects, $layers;
-  //not a damage bonus, but needs to be associated with the first card played
-  $ind = SearchCurrentTurnEffectsForIndex("conduit_of_frostburn", $playerID);
-  $Layer = new Layer($layerIndex);
-  if ($ind != -1) $currentTurnEffects[$ind + 2] = $Layer->UniqueID();
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  $layerPieces = LayerPieces();
-  for ($i = 0; $i < $currentTurnEffectsCount; $i += $currentTurnEffectsPieces) {
-    if ($currentTurnEffects[$i + 1] == $playerID && EffectArcaneBonus($currentTurnEffects[$i]) > 0) {
-      $skip = intval($currentTurnEffects[$i + 2]) != -1;
-      switch ($currentTurnEffects[$i]) {
-        case "tempest_aurora_red":
-          if (CardCost($layers[$layerIndex]) > 2) $skip = true;
-          break;
-        case "tempest_aurora_yellow":
-          if (CardCost($layers[$layerIndex]) > 1) $skip = true;
-          break;
-        case "tempest_aurora_blue":
-          if (CardCost($layers[$layerIndex]) > 0) $skip = true;
-          break;
-        default:
-          break;
-      }
-      if (!$skip) {
-        while ($layers[$layerIndex] == "TRIGGER" || $layers[$layerIndex] == "PRETRIGGER") {
-          $layerIndex += $layerPieces;
-        }
-        $effectID = ExtractCardID($currentTurnEffects[$i]);
-        WriteLog("Arcane bonus from " . CardLink($effectID, $effectID) . " associated with " . CardLink($layers[$layerIndex], $layers[$layerIndex]));
-        $uniqueID = $layers[$layerIndex + 6];
-        $currentTurnEffects[$i + 2] = $uniqueID;
-      }
-    }
-  }
-}
-
-function ClearNextCardArcaneBuffs($player, $playedCard = "", $from = "")
-{
-  global $currentTurnEffects;
-  $currentTurnEffectsCount = count($currentTurnEffects);
-  $currentTurnEffectsPieces = CurrentTurnEffectsPieces();
-  for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-    $remove = 0;
-    if ($currentTurnEffects[$i + 1] == $player) {
-      switch ($currentTurnEffects[$i]) {
-        case "blessing_of_aether_red":
-        case "blessing_of_aether_yellow":
-        case "blessing_of_aether_blue":
-          if ($currentTurnEffects[$i + 2] == -1) {
-            if (!IsStaticType(CardType($playedCard), $from, $playedCard) && GetResolvedAbilityType($playedCard, $from) != "I") $remove = 1;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-    if ($remove == 1) RemoveCurrentTurnEffect($i);
   }
 }
 
@@ -745,7 +644,7 @@ function ConsumeArcaneBonus($player, $noRemove = false)
   for ($i = $currentTurnEffectsCount - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
     $remove = 0;
     if ($currentTurnEffects[$i + 1] == $player && ($currentTurnEffects[$i + 2] == $uniqueID || DelimStringContains($uniqueID, "MELD", true))) {
-      $bonus = EffectArcaneBonus($currentTurnEffects[$i]);
+      $bonus = EffectArcaneBonus($currentTurnEffects[$i], $i);
       if ($bonus > 0) {
         if ($activeArcaneCompliance == -1) $totalBonus += $bonus;
         if (!$noRemove) $remove = 1;

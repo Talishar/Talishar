@@ -1995,11 +1995,6 @@ function CanPlayAsInstant($cardID, $index = -1, $from = "", $secondCheck = false
     case "snapback_blue":
       if (GetClassState($currentPlayer, $CS_NumWizardNonAttack)) return true;
       break;
-    case "cindering_foresight_red":
-    case "cindering_foresight_yellow":
-    case "cindering_foresight_blue":
-      if ($currentPlayer != $mainPlayer) return true;
-      break;
     case "rejuvenate_red":
     case "rejuvenate_yellow":
     case "rejuvenate_blue":

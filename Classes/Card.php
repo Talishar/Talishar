@@ -1292,9 +1292,9 @@ class Card {
     return;
   }
 
-  function CardEffectArcaneBonus() {
+  function CardEffectArcaneBonus($effectInd) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "CardEffectArcaneBonus"))
-      return $this->baseCard->CardEffectArcaneBonus();
+      return $this->baseCard->CardEffectArcaneBonus($effectInd);
     return 0;
   }
 

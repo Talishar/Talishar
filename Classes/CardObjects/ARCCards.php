@@ -1,42 +1,43 @@
 <?php
 
-// class absorb_in_aether_red extends Card {
+class absorb_in_aether extends BaseCard {
+	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "absorb_in_aether_red";
-//     $this->controller = $controller;
-//     }
+	function CardEffectArcaneBonus($effectInd) {
+		return 2;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+	}
+}
 
+class absorb_in_aether_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "absorb_in_aether_red";
+    $this->controller = $controller;
+		$this->baseCard = new absorb_in_aether($this->cardID, $this->controller);
+	}
+}
 
-// class absorb_in_aether_yellow extends Card {
+class absorb_in_aether_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "absorb_in_aether_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new absorb_in_aether($this->cardID, $this->controller);
+	}
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "absorb_in_aether_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class absorb_in_aether_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "absorb_in_aether_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class absorb_in_aether_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "absorb_in_aether_blue";
+    $this->controller = $controller;
+		$this->baseCard = new absorb_in_aether($this->cardID, $this->controller);
+	}
+}
 
 
 // class achilles_accelerator extends Card {
@@ -51,127 +52,149 @@
 //   }
 // }
 
-
-// class aether_flare_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "aether_flare_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class aether_flare_yellow extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "aether_flare_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class aether_flare_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "aether_flare_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-class aether_sink_yellow extends Card {
-
-	function __construct($controller) {
-		$this->cardID = "aether_sink_yellow";
-		$this->controller = $controller;
-	}
-
+class aether_flare extends BaseCard {
 	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		if ($from == "PLAY") {
-			$Items = new Items($this->controller);
-			$ItemCard = $Items->FindCardUID($target);
-			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
-			if ($abilityType == "I")
-				AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $target);
-			elseif ($ItemCard->NumCounters() == 0)
-				$ItemCard->AddCounters(1);
-		}
+    DealArcane(ArcaneDamage($this->cardID), 1, "PLAYCARD", $this->cardID, resolvedTarget: $target);
+		AddDecisionQueue("BUFFARCANE", $this->controller, $this->cardID, 1);
 		return "";
-	}
+  }
 
-	function HasGoAgain($from) {
-		return $from == "PLAY";
-	}
-
-	function AbilityHasGoAgain($from) {
-		if ($from == "PLAY") {
-			return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
-		}
-		return false;
+	function CardEffectArcaneBonus($effectInd) {
+		$Effect = new CurrentEffect($effectInd);
+		$modifier = explode(",", $Effect->EffectID())[1] ?? 0;
+		return intval($modifier);
 	}
 
 	function PayAdditionalCosts($from, $index = '-') {
-		global $Stack;
-		if ($from == "PLAY") {
-			$ItemCard = new ItemCard($index, $this->controller);
-			$abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
-			if ($abilityType == "I")
-				$ItemCard->AddCounters(-1);
-			$Layer = $Stack->TopLayer($this->cardID);
-			$Layer->AddTarget($ItemCard->UniqueID());
-			$ItemCard->AddUses(1); // not once per turn
-		}
+		SetArcaneTarget($this->controller, $this->cardID, "their_hero");
 	}
 
-	function AbilityCost() {
-		return GetResolvedAbilityType($this->cardID, "PLAY") == "A" ? 1 : 0;
+	function ActionsThatDoArcaneDamage() {
+		return true;
 	}
 
-	function GetAbilityTypes($index = -1, $from = '-') {
-		return ($from != "PLAY") ? "" : "I,A";
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+	}
+}
+
+class aether_flare_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "aether_flare_red";
+    $this->controller = $controller;
+		$this->baseCard = new aether_flare($this->cardID, $this->controller);
 	}
 
-	function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
-		global $mainPlayer, $actionPoints;
-		$names = ["-", "-"];
-		$ItemCard = new ItemCard($index, $this->controller);
-		if ($ItemCard->NumCounters() > 0) $names[0] = "Gain Arcane Barrier";
-		if ($this->controller == $mainPlayer && $actionPoints > 0) $names[1] = "Add Steam";
-		$ret = implode(",", $names);
-		return $ret;
+	function ArcaneDamage() {
+		return 3;
+	}
+}
+
+class aether_flare_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "aether_flare_yellow";
+    $this->controller = $controller;
+		$this->baseCard = new aether_flare($this->cardID, $this->controller);
 	}
 
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $mainPlayer, $turn, $actionPoints;
-		if ($from != "PLAY") return false;
-		$ItemCard = new ItemCard($index, $this->controller);
-		if ($ItemCard->NumCounters() > 0) return false;
-		if ($this->controller != $mainPlayer || $turn[0] != "M" || $actionPoints == 0) return true;
-		return false;
+	function ArcaneDamage() {
+		return 2;
+	}
+}
+
+class aether_flare_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "aether_flare_blue";
+    $this->controller = $controller;
+		$this->baseCard = new aether_flare($this->cardID, $this->controller);
 	}
 
-	function AbilityType($index = -1, $from = '-') {
-		return "I";
+	function ArcaneDamage() {
+		return 1;
 	}
+}
 
-	function ArcaneBarrier($index) {
-		global $CurrentTurnEffects;
-		$ItemCard = new ItemCard($index, $this->controller);
-		$Effect = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $ItemCard->UniqueID(), $this->controller);
-		return $Effect->Index() != -1 ?  2 : 0;
-	}
+class aether_sink_yellow extends Card {
+
+  function __construct($controller) {
+    $this->cardID = "aether_sink_yellow";
+    $this->controller = $controller;
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if ($from == "PLAY") {
+      $Items = new Items($this->controller);
+      $ItemCard = $Items->FindCardUID($target);
+      $abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
+      if ($abilityType == "I")
+        AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID: $target);
+      elseif ($ItemCard->NumCounters() == 0)
+        $ItemCard->AddCounters(1);
+    }
+    return "";
+  }
+
+  function HasGoAgain($from) {
+    return $from == "PLAY";
+  }
+
+  function AbilityHasGoAgain($from) {
+    if ($from == "PLAY") {
+      return GetResolvedAbilityType($this->cardID, $from, $this->controller) == "A";
+    }
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    global $Stack;
+    if ($from == "PLAY") {
+      $ItemCard = new ItemCard($index, $this->controller);
+      $abilityType = GetResolvedAbilityType($this->cardID, $from, $this->controller);
+      if ($abilityType == "I")
+        $ItemCard->AddCounters(-1);
+      $Layer = $Stack->TopLayer($this->cardID);
+      $Layer->AddTarget($ItemCard->UniqueID());
+      $ItemCard->AddUses(1); // not once per turn
+    }
+  }
+
+  function AbilityCost() {
+    return GetResolvedAbilityType($this->cardID, "PLAY") == "A" ? 1 : 0;
+  }
+
+  function GetAbilityTypes($index = -1, $from = '-') {
+    return ($from != "PLAY") ? "" : "I,A";
+  }
+
+  function GetAbilityNames($index = -1, $from = '-', $foundNullTime = false, $layerCount = 0, $facing = "-", $allNames = false) {
+    global $mainPlayer, $actionPoints;
+    $names = ["-", "-"];
+    $ItemCard = new ItemCard($index, $this->controller);
+    if ($ItemCard->NumCounters() > 0) $names[0] = "Gain Arcane Barrier";
+    if ($this->controller == $mainPlayer && $actionPoints > 0) $names[1] = "Add Steam";
+    $ret = implode(",", $names);
+    return $ret;
+  }
+
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $mainPlayer, $turn, $actionPoints;
+    if ($from != "PLAY") return false;
+    $ItemCard = new ItemCard($index, $this->controller);
+    if ($ItemCard->NumCounters() > 0) return false;
+    if ($this->controller != $mainPlayer || $turn[0] != "M" || $actionPoints == 0) return true;
+    return false;
+  }
+
+  function AbilityType($index = -1, $from = '-') {
+    return "I";
+  }
+
+  function ArcaneBarrier($index) {
+    global $CurrentTurnEffects;
+    $ItemCard = new ItemCard($index, $this->controller);
+    $Effect = $CurrentTurnEffects->FindSpecificEffect($this->cardID, $ItemCard->UniqueID(), $this->controller);
+    return $Effect->Index() != -1 ?  2 : 0;
+  }
 }
 
 
@@ -267,32 +290,32 @@ class aether_sink_yellow extends Card {
 
 
 class arknight_ascendancy_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "arknight_ascendancy_red";
-		$this->controller = $controller;
-    }
+  function __construct($controller) {
+    $this->cardID = "arknight_ascendancy_red";
+    $this->controller = $controller;
+  }
 
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-	function HasDominate() {
-		return true;
-	}
+  function HasDominate() {
+    return true;
+  }
 
-	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-		return AnyHitTrigger($this->controller, $this->cardID, $check);
-	}
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
 
-	function SelfCostModifier($from) {
-		return -1 * NumRunechants($this->controller);
-	}
+  function SelfCostModifier($from) {
+    return -1 * NumRunechants($this->controller);
+  }
 
-	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-		global $CCS_DamageDealt;
-		$damageDone = GetCombatChainState($CCS_DamageDealt);
-        PlayAura("runechant", $this->controller, $damageDone);
-	}
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $CCS_DamageDealt;
+    $damageDone = GetCombatChainState($CCS_DamageDealt);
+    PlayAura("runechant", $this->controller, $damageDone);
+  }
 }
 
 
@@ -483,74 +506,74 @@ class cognition_nodes_blue extends Card {
   function __construct($controller) {
     $this->cardID = "cognition_nodes_blue";
     $this->controller = $controller;
-	}
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_PlayIndex, $CombatChain;
-		if($from == "PLAY") {
-			$Item = new ItemCard(GetClassState($this->controller, $CS_PlayIndex), $this->controller);
-			if(!$CombatChain->HasCurrentLink()) {
-				if ($Item->NumCounters() == 0) $Item->AddCounters(1);
-			}
-			else AddCurrentTurnEffect($this->cardID, $this->controller, $from);
-		}
-		return "";
+    if($from == "PLAY") {
+      $Item = new ItemCard(GetClassState($this->controller, $CS_PlayIndex), $this->controller);
+      if(!$CombatChain->HasCurrentLink()) {
+        if ($Item->NumCounters() == 0) $Item->AddCounters(1);
+      }
+      else AddCurrentTurnEffect($this->cardID, $this->controller, $from);
+    }
+    return "";
   }
 
-	function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-		global $CombatChain;
-		$Item = new ItemCard($index, $this->controller);
-		return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($Item->NumCounters() == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $Item->NumUses() <= 0);
-	}
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    global $CombatChain;
+    $Item = new ItemCard($index, $this->controller);
+    return $CombatChain->HasCurrentLink() && $from == "PLAY" && ($Item->NumCounters() == 0 || CardType($CombatChain->AttackCard()->ID()) != "AA" || $Item->NumUses() <= 0);
+  }
 
-	function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-		if(!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
-		return true;
-	}
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    if(!$check) AddLayer("TRIGGER", $this->controller, $parameter, $this->cardID, "EFFECTHITEFFECT", $source);
+    return true;
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function PayAdditionalCosts($from, $index = '-') {
-		$Item = new ItemCard($index, $this->controller);
-		$abilityType = GetResolvedAbilityType($this->cardID);
-		if ($from == "PLAY" && $abilityType == "AR")
-			$Item->AddCounters(-1);
-		elseif ($from == "PLAY")
-			$Item->AddUses(1);
-	}
+  function PayAdditionalCosts($from, $index = '-') {
+    $Item = new ItemCard($index, $this->controller);
+    $abilityType = GetResolvedAbilityType($this->cardID);
+    if ($from == "PLAY" && $abilityType == "AR")
+      $Item->AddCounters(-1);
+    elseif ($from == "PLAY")
+      $Item->AddUses(1);
+  }
 
-	function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
-		global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
-		$otherPlayer = $this->controller == 1 ? 2 : 1;
-		if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
-			SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
-			$destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
-			$attackCardID = $CombatChain->AttackCard()->ID();
-			AddBottomDeck($attackCardID, $destPlayer, "CC");
-			WriteLog("⬇️ Adding " . CardLink($attackCardID) . " to the bottom of the deck");
-		}
-	}
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target="-") {
+    global $CCS_GoesWhereAfterLinkResolves, $combatChainState, $CombatChain;
+    $otherPlayer = $this->controller == 1 ? 2 : 1;
+    if (GetCombatChainState($CCS_GoesWhereAfterLinkResolves) != "-") {
+      SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
+      $destPlayer = (substr($from, 0, 5) == "THEIR") ? $otherPlayer : $this->controller;
+      $attackCardID = $CombatChain->AttackCard()->ID();
+      AddBottomDeck($attackCardID, $destPlayer, "CC");
+      WriteLog("⬇️ Adding " . CardLink($attackCardID) . " to the bottom of the deck");
+    }
+  }
 
-	function AbilityCost() {
-		global $CombatChain;
-		return $CombatChain->HasCurrentLink() ? 0 : 1;
-	}
+  function AbilityCost() {
+    global $CombatChain;
+    return $CombatChain->HasCurrentLink() ? 0 : 1;
+  }
 
-	function AbilityType($index=-1, $from="-") {
-		global $CombatChain;
-		return ($CombatChain->HasCurrentLink() ? "AR" : "A");
-	}
+  function AbilityType($index=-1, $from="-") {
+    global $CombatChain;
+    return ($CombatChain->HasCurrentLink() ? "AR" : "A");
+  }
 
-	function AbilityHasGoAgain($from) {
-		$abilityType = GetResolvedAbilityType($this->cardID);
-		return $abilityType == "A";
-	}
+  function AbilityHasGoAgain($from) {
+    $abilityType = GetResolvedAbilityType($this->cardID);
+    return $abilityType == "A";
+  }
 
-	function HasGoAgain($from) {
-		return false;
-	}
+  function HasGoAgain($from) {
+    return false;
+  }
 }
 
 
@@ -632,17 +655,34 @@ class cognition_nodes_blue extends Card {
 // }
 
 
-// class crucible_of_aetherweave extends Card {
+class crucible_of_aetherweave extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "crucible_of_aetherweave";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "crucible_of_aetherweave";
+    $this->controller = $controller;
+	}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+		return "";
+  }
+
+	function CardEffectArcaneBonus($effectInd) {
+		return 1;
+	}
+
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+  }
+
+	function AbilityType($index = -1, $from = '-') {
+		return "I";
+	}
+
+	function AbilityCost() {
+		return 1;
+	}
+}
 
 
 // class dash extends Card {
@@ -1321,66 +1361,66 @@ class cognition_nodes_blue extends Card {
 // }
 
 class moon_wish extends BaseCard {
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		AddCurrentTurnEffect("moon_wish_red-GA", $this->controller);
-		return "";
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    AddCurrentTurnEffect("moon_wish_red-GA", $this->controller);
+    return "";
+  }
 
-	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-		return AnyHitTrigger($this->controller, $this->cardID, $check);
-	}
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return AnyHitTrigger($this->controller, $this->cardID, $check);
+  }
 
-	function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
-		MZMoveCard($this->controller, "MYDECK:isSameName=sun_kiss_red", "MYHAND", may:true, isReveal:true);
-      	AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
-	}
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    MZMoveCard($this->controller, "MYDECK:isSameName=sun_kiss_red", "MYHAND", may:true, isReveal:true);
+    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+  }
 
-	function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
-		$Effect = new CurrentEffect($index);
-		if ($Effect->EffectID() == $this->cardID) {
-			$remove = true;
-			return true;
-		}
-		else
-			return false;
-	}
+  function CurrentTurnEffectPaid($cardID, $from, &$remove, $index) {
+    $Effect = new CurrentEffect($index);
+    if ($Effect->EffectID() == $this->cardID) {
+      $remove = true;
+      return true;
+    }
+    else
+      return false;
+  }
 
-	function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
-		HandToTopDeck($this->controller);
-      	AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
-	}
+  function AddPrePitchDecisionQueue($from, $index = -1, $facing = '-') {
+    HandToTopDeck($this->controller);
+    AddDecisionQueue("ADDCURRENTTURNEFFECT", $this->controller, $this->cardID, 1);
+  }
 
-	function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
-		if (str_contains($cardID, "sun_kiss") && $parameter == "GA") {
-			return true;
-		}
-		return false;
-	}
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    if (str_contains($cardID, "sun_kiss") && $parameter == "GA") {
+      return true;
+    }
+    return false;
+  }
 }
 
 class moon_wish_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "moon_wish_red";
-		$this->controller = $controller;
-		$this->baseCard = new moon_wish($this->cardID, $this->controller);
-    }
+  function __construct($controller) {
+    $this->cardID = "moon_wish_red";
+    $this->controller = $controller;
+    $this->baseCard = new moon_wish($this->cardID, $this->controller);
+  }
 }
 
 
 class moon_wish_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "moon_wish_yellow";
-		$this->controller = $controller;
-		$this->baseCard = new moon_wish($this->cardID, $this->controller);
-    }
+  function __construct($controller) {
+    $this->cardID = "moon_wish_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new moon_wish($this->cardID, $this->controller);
+  }
 }
 
 class moon_wish_blue extends Card {
-	function __construct($controller) {
-		$this->cardID = "moon_wish_blue";
-		$this->controller = $controller;
-		$this->baseCard = new moon_wish($this->cardID, $this->controller);
-    }
+  function __construct($controller) {
+    $this->cardID = "moon_wish_blue";
+    $this->controller = $controller;
+    $this->baseCard = new moon_wish($this->cardID, $this->controller);
+  }
 }
 
 
@@ -1761,26 +1801,26 @@ class moon_wish_blue extends Card {
 // }
 
 class ravenous_rabble extends BaseCard {
-	function PlayAbility() {
-		AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
-	}
+  function PlayAbility() {
+    AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ATTACKTRIGGER");
+  }
 
-	function ProcessAttackTrigger() {
-  	$deck = new Deck($this->controller);
-		if($deck->Empty()) return CardLink($this->cardID, $this->cardID). " does not get negative power because your deck is empty";
-		if($deck->Reveal(1)) {
-			$top = $deck->Top();
-			$pitch = PitchValue($top);
-			$pitch = $pitch > -1 ? $pitch : 0;
-			AddCurrentTurnEffect($this->cardID . "-$pitch", $this->controller);
-			return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
-		}
-		return CardLink($this->cardID, $this->cardID). " does not get negative power because the reveal was prevented";
-	}
+  function ProcessAttackTrigger() {
+  $deck = new Deck($this->controller);
+    if($deck->Empty()) return CardLink($this->cardID, $this->cardID). " does not get negative power because your deck is empty";
+    if($deck->Reveal(1)) {
+      $top = $deck->Top();
+      $pitch = PitchValue($top);
+      $pitch = $pitch > -1 ? $pitch : 0;
+      AddCurrentTurnEffect($this->cardID . "-$pitch", $this->controller);
+      return "Reveals " . CardLink($top, $top) . " and gets -" . $pitch . " power";
+    }
+    return CardLink($this->cardID, $this->cardID). " does not get negative power because the reveal was prevented";
+  }
 
-	function EffectPowerModifier($param) {
-		return -1 * intval($param);
-	}
+  function EffectPowerModifier($param) {
+    return -1 * intval($param);
+  }
 }
 
 class ravenous_rabble_red extends Card {
@@ -1788,24 +1828,24 @@ class ravenous_rabble_red extends Card {
   function __construct($controller) {
     $this->cardID = "ravenous_rabble_red";
     $this->controller = $controller;
-		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
-	}
+    $this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return $this->baseCard->PlayAbility();
   }
 
-	function ProcessAttackTrigger($target, $uniqueID) {
-		return $this->baseCard->ProcessAttackTrigger();
-	}
+  function ProcessAttackTrigger($target, $uniqueID) {
+    return $this->baseCard->ProcessAttackTrigger();
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return $this->baseCard->EffectPowerModifier($param);
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param);
+  }
 }
 
 
@@ -1814,24 +1854,24 @@ class ravenous_rabble_yellow extends Card {
   function __construct($controller) {
     $this->cardID = "ravenous_rabble_yellow";
     $this->controller = $controller;
-		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
-	}
+    $this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return $this->baseCard->PlayAbility();
   }
 
-	function ProcessAttackTrigger($target, $uniqueID) {
-		return $this->baseCard->ProcessAttackTrigger();
-	}
+  function ProcessAttackTrigger($target, $uniqueID) {
+    return $this->baseCard->ProcessAttackTrigger();
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return $this->baseCard->EffectPowerModifier($param);
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param);
+  }
 }
 
 
@@ -1840,24 +1880,24 @@ class ravenous_rabble_blue extends Card {
   function __construct($controller) {
     $this->cardID = "ravenous_rabble_blue";
     $this->controller = $controller;
-		$this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
-	}
+    $this->baseCard = new ravenous_rabble($this->cardID, $this->controller);
+  }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     return $this->baseCard->PlayAbility();
   }
 
-	function ProcessAttackTrigger($target, $uniqueID) {
-		return $this->baseCard->ProcessAttackTrigger();
-	}
+  function ProcessAttackTrigger($target, $uniqueID) {
+    return $this->baseCard->ProcessAttackTrigger();
+  }
 
-	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
-	}
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-	function EffectPowerModifier($param, $attached = false) {
-		return $this->baseCard->EffectPowerModifier($param);
-	}
+  function EffectPowerModifier($param, $attached = false) {
+    return $this->baseCard->EffectPowerModifier($param);
+  }
 }
 
 
@@ -2460,84 +2500,60 @@ class ravenous_rabble_blue extends Card {
 
 
 class stir_the_aetherwinds extends BaseCard {
-	function PlayAbility() {
-		global $CS_NextWizardNAAInstant;
-		AddCurrentTurnEffect($this->cardID, $this->controller);
-		SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
-	}
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    global $CS_NextWizardNAAInstant;
+    AddCurrentTurnEffect($this->cardID, $this->controller);
+    SetClassState($this->controller, $CS_NextWizardNAAInstant, 1);
+		return "";
+  }
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
-		global $Stack;
-		$Effect = new CurrentEffect($effectIndex);
-		$TopLayer = $Stack->TopLayer($cardID);
-		if ($TopLayer->PlayerID() != $this->controller) return;
-		if (IsActivated($cardID, $from)) return;
-		if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A"))
-			$Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
-	}
+  function AssignEffectToCard($cardID, $effectIndex, $from) {
+    global $Stack;
+    $Effect = new CurrentEffect($effectIndex);
+    $TopLayer = $Stack->TopLayer($cardID);
+    if ($TopLayer->PlayerID() != $this->controller) return;
+    if (IsActivated($cardID, $from)) return;
+    if (ClassContains($TopLayer->ID(), "WIZARD", $this->controller) && TypeContains($TopLayer->ID(), "A")) {
+      $Effect->ApplyToUniqueID($TopLayer->LayerUniqueID());
+		}
+  }
 }
 
 class stir_the_aetherwinds_red extends Card {
-	function __construct($controller) {
-		$this->cardID = "stir_the_aetherwinds_red";
-		$this->controller = $controller;
-		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-	}
-  
-  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    	$this->baseCard->PlayAbility();
-		return "";
-  	}
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_red";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
 
-  	function CardEffectArcaneBonus() {
-		return 3;
-  	}
+  function CardEffectArcaneBonus($effectInd) {
+    return 3;
+  }
 
-  	function AssignEffectToCard($cardID, $effectIndex, $from) {
-		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  	}
 }
 
 class stir_the_aetherwinds_yellow extends Card {
-	function __construct($controller) {
-		$this->cardID = "stir_the_aetherwinds_yellow";
-		$this->controller = $controller;
-		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-	}
-  
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
-		return "";
-  	}
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
 
-	function CardEffectArcaneBonus() {
-			return 2;
-	}
-
-  	function AssignEffectToCard($cardID, $effectIndex, $from) {
-		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  	}
+  function CardEffectArcaneBonus($effectInd) {
+      return 2;
+  }
 }
 
 class stir_the_aetherwinds_blue extends Card {
-	function __construct($controller) {
-		$this->cardID = "stir_the_aetherwinds_blue";
-		$this->controller = $controller;
-		$this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
-	}
-  
-	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-		$this->baseCard->PlayAbility();
-		return "";
-  	}
+  function __construct($controller) {
+    $this->cardID = "stir_the_aetherwinds_blue";
+    $this->controller = $controller;
+    $this->baseCard = new stir_the_aetherwinds($this->cardID, $this->controller);
+  }
 
- 	function CardEffectArcaneBonus() {
-		return 1;
-  	}
-
-  	function AssignEffectToCard($cardID, $effectIndex, $from) {
-		$this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
-  	}
+  function CardEffectArcaneBonus($effectInd) {
+    return 1;
+  }
 }
 
 
@@ -2775,17 +2791,45 @@ class stir_the_aetherwinds_blue extends Card {
 // }
 
 
-// class tome_of_aetherwind_red extends Card {
+class tome_of_aetherwind_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "tome_of_aetherwind_red";
+    $this->controller = $controller;
+	}
 
-//   function __construct($controller) {
-//     $this->cardID = "tome_of_aetherwind_red";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+		$params = explode(",", $additionalCosts);
+		$countParams = count($params);
+		for($i = 0; $i < $countParams; ++$i) {
+			switch($params[$i]) {
+				case "Buff_Arcane":
+					AddCurrentTurnEffect("tome_of_aetherwind_red", $this->controller);
+					break;
+				case "Draw_card":
+					Draw($this->controller);
+					break;
+				default: break;
+			}
+		}
+		return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function CardEffectArcaneBonus($effectInd) {
+		return 1;
+	}
+
+	function PayAdditionalCosts($from, $index = '-') {
+		global $CS_AdditionalCosts;
+		AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose 2 modes");
+		AddDecisionQueue("MULTICHOOSETEXT", $this->controller, "2-Buff_Arcane,Buff_Arcane,Draw_card,Draw_card-2");
+		AddDecisionQueue("SETCLASSSTATE", $this->controller, $CS_AdditionalCosts, 1);
+		AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
+	}
+
+	function AssignEffectToCard($cardID, $effectIndex, $from) {
+		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
+  }
+}
 
 
 // class tome_of_the_arknight_blue extends Card {

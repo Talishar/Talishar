@@ -751,9 +751,6 @@ function AuraStartTurnAbilities()
         PlayAura("runechant", $mainPlayer, $amount, true);
         DestroyAuraUniqueID($mainPlayer, $auras[$i + 6]);
         break;
-      case "blessing_of_aether_red":
-      case "blessing_of_aether_yellow":
-      case "blessing_of_aether_blue":
       case "crash_down_red":
       case "earthlore_empowerment_red":
       case "crash_down_yellow":
