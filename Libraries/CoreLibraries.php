@@ -55,10 +55,19 @@ function GetRandom($low=-1, $high=-1, $reroll=false)
   return mt_rand($low, $high);
 }
 
+function RandomHandIndex($hand, $roll)
+{
+  $sorted = $hand;
+  sort($sorted, SORT_STRING);
+  return array_search($sorted[$roll], $hand, true);
+}
+
 function SeedRandom($reroll=false)
 {
   global $randomSeeded, $currentTurn, $turn, $currentPlayer, $layers, $combatChain;
-  $seedString = $currentTurn . implode("", $turn) . $currentPlayer;
+  $seedTurn = $turn;
+  unset($seedTurn[5]);
+  $seedString = $currentTurn . implode("", $seedTurn) . $currentPlayer;
   if(!empty($layers)) $seedString .= implode("", $layers);
   if(!empty($combatChain)) $seedString .= implode("", $combatChain);
 
