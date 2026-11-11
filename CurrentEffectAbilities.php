@@ -112,7 +112,7 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
         $cards = [];
         $handCount = count($hand);
         for ($i = 0; $i < 2 && $handCount > 0; ++$i) {
-          $index = GetRandom() % $handCount;
+          $index = RandomHandIndex($hand, GetRandom() % $handCount);
           $cards[] = $hand[$index];
           array_splice($hand, $index, 1);
           --$handCount;

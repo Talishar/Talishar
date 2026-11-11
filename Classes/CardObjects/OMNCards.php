@@ -7986,7 +7986,7 @@ class induce_panic_yellow extends Card {
       if (!CanRevealCards($player)) continue;
       $hand = GetHand($player);
       if (count($hand) == 0) continue;
-      $roll = GetRandom(0, count($hand)-1);
+      $roll = RandomHandIndex($hand, GetRandom(0, count($hand)-1));
       RevealCards($hand[$roll], $player);
       if (ColorContains($hand[$roll], $color, $player))
         DiscardCard($player, $roll, source:$this->cardID, effectController:$this->controller);

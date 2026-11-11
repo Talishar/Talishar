@@ -710,7 +710,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       $index = explode("-", $dqVars[0], 2)[1];
       $hand = &GetHand($otherPlayer);
       $chosenName = CardName($hand[$index]);
-      $rand = GetRandom(0, count($hand) - 1);
+      $rand = RandomHandIndex($hand, GetRandom(0, count($hand) - 1));
       if (RevealCards($hand[$rand], $player) && $chosenName == CardName($hand[$rand])) {
         WriteLog("Bingo! Your opponent tossed you a silver.");
         PutItemIntoPlayForPlayer("silver", $player);

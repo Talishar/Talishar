@@ -2814,22 +2814,50 @@ class emergency_services_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_AdditionalCosts;
-    $otherPlayer = OtherPlayer($this->controller);
-    $numDiseases = SearchCount(SearchMultizone($this->controller, "THEIRAURAS:subtype=Disease"));
-    for ($i = 0; $i < $numDiseases; ++$i) {
-      CureThem($this->controller, may:true);
-      Await($this->controller, "IncrementClassState", piece:$CS_AdditionalCosts);
+    SetClassState($this->controller, $CS_AdditionalCosts, "-");
+    $names = [];
+    $diseases = SearchMultizone($this->controller, "THEIRAURAS:subtype=Disease");
+    if ($diseases != "") {
+      foreach (explode(",", $diseases) as $mzIndex)
+        $names[GetMZCard($this->controller, $mzIndex)] = true;
     }
-    Await($this->controller, $this->cardID, subsequent:0, final:true);
+    for ($i = 0; $i < count($names); ++$i) {
+      Await($this->controller, $this->cardID, "indices", mode:"indices", subsequent:0);
+      Await($this->controller, "ChooseMultiZone", "MZInd", context:"Cure a disease with a different name", may:true);
+      Await($this->controller, $this->cardID, mode:"cure");
+    }
+    Await($this->controller, $this->cardID, mode:"silver", subsequent:0, final:true);
     return "";
   }
 
   function SpecificLogic() {
-    global $CS_AdditionalCosts;
-    $num = GetClassState($this->controller, $CS_AdditionalCosts);
-    if (!is_numeric($num)) $num = 0;
-    PutItemIntoPlayForPlayer("silver", $this->controller, number:2 * $num, effectSource:$this->cardID);
-    SetClassState($this->controller, $CS_AdditionalCosts, "-");
+    global $CS_AdditionalCosts, $dqVars;
+    $cured = GetClassState($this->controller, $CS_AdditionalCosts);
+    $cured = ($cured == "-" || $cured == "" || $cured == "0") ? [] : explode(",", $cured);
+    switch ($dqVars["mode"] ?? "-") {
+      case "indices":
+        $indices = [];
+        $diseases = SearchMultizone($this->controller, "THEIRAURAS:subtype=Disease");
+        if ($diseases != "") {
+          foreach (explode(",", $diseases) as $mzIndex) {
+            if (!in_array(GetMZCard($this->controller, $mzIndex), $cured)) $indices[] = $mzIndex;
+          }
+        }
+        return count($indices) > 0 ? implode(",", $indices) : "PASS";
+      case "cure":
+        $mzIndex = $dqVars["MZInd"] ?? "-";
+        $cardID = GetMZCard($this->controller, $mzIndex);
+        if ($cardID == "" || $cardID == "-") return "PASS";
+        AppendClassState($this->controller, $CS_AdditionalCosts, $cardID);
+        MZDestroy($this->controller, $mzIndex);
+        return "";
+      case "silver":
+        if (count($cured) > 0)
+          PutItemIntoPlayForPlayer("silver", $this->controller, number:2 * count($cured), effectSource:$this->cardID);
+        SetClassState($this->controller, $CS_AdditionalCosts, "-");
+        return "";
+    }
+    return "PASS";
   }
 }
 
