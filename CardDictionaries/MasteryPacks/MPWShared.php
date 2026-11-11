@@ -106,6 +106,8 @@ function TargetSwordAttack($player) {
 }
 
 function DrawAndPutBack($player, $cardID, $bottom=false) {
+  $Deck = new Deck($player);
+  $topCard = $Deck->Top();
   Draw($player, effectSource:$cardID);
   $hand = GetHand($player);
   Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
@@ -121,9 +123,10 @@ function DrawAndPutBack($player, $cardID, $bottom=false) {
       $unique[] = $hand[$i];
   }
   if (count($unique) == 1) { //handle case where the game automates putting a card back
-    AddDecisionQueue("DECKCARDS", $player, "0", 1);
+    AddDecisionQueue("PASSPARAMETER", $player, $topCard, 1);
     AddDecisionQueue("SETDQVAR", $player, "1", 1);
-    AddDecisionQueue("SETDQCONTEXT", $player, "You drew <1> and placed it back on top", 1);
+    $context = $bottom ? "You drew <1> and put it on the bottom" : "You drew <1> and placed it back on top";
+    AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
     AddDecisionQueue("OK", $player, "-", 1);
     AddDecisionQueue("SETDQCONTEXT", $player, "-");
   }
