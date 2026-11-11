@@ -120,8 +120,8 @@ array_push($gamestateLines,
   json_encode(UpdateHandInstanceIDs()),
   json_encode($p1AllyDamagePrevented ?? []), // Damage player 1's allies took, per turn
   json_encode($p2AllyDamagePrevented ?? []), // Damage player 2's allies took, per turn
-  json_encode((object)($p1DiseaseStats ?? [])), // Disease tokens player 1 received and the damage they took from them
-  json_encode((object)($p2DiseaseStats ?? [])) // Disease tokens player 2 received and the damage they took from them
+  json_encode((object)($p1CreatedCardStats ?? [])), // Tokens player 1 created, with the damage they dealt and prevented
+  json_encode((object)($p2CreatedCardStats ?? [])) // Tokens player 2 created, with the damage they dealt and prevented
 );
 
 $gamestateContent = implode("\r\n", $gamestateLines) . "\r\n";

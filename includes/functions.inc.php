@@ -1165,8 +1165,8 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 
 	$contractsCompleted = GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
-	$diseasesApplied = GetDiseasesApplied($player);
-	if (!empty($diseasesApplied)) $deck["diseasesApplied"] = $diseasesApplied;
+	$createdCardResults = GetCreatedCardResults($player);
+	if (!empty($createdCardResults)) $deck["createdCardResults"] = $createdCardResults;
 
 	if($includeFullLog) { $deck["fullLog"] = IsPatron($player) ? implode("<BR>", explode("\r\n", @file_get_contents("./Games/" . $gameID . "/fullGamelog.txt"))) : ""; }
 	
@@ -1219,8 +1219,8 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 
 	$contractsCompleted = GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
-	$diseasesApplied = GetDiseasesApplied($player);
-	if (!empty($diseasesApplied)) $deck["diseasesApplied"] = $diseasesApplied;
+	$createdCardResults = GetCreatedCardResults($player);
+	if (!empty($createdCardResults)) $deck["createdCardResults"] = $createdCardResults;
 
 	// FaB Insights and FaB Bazaar consume this payload, so it keeps the two
 	// variants it has always had, with the averages still omitting turn 0. The
@@ -1252,7 +1252,7 @@ function SerializeDetailedGameResult($player, $DeckLink, $deckAfterSB, $gameID =
 		unset($deck["yourTime"]);
 		unset($deck["turnResults"]);
 		unset($deck["contractsCompleted"]);
-		unset($deck["diseasesApplied"]);
+		unset($deck["createdCardResults"]);
 		foreach (["", "_NoLast"] as $suffix) {
 			foreach (["totalDamageThreatened", "totalDamageDealt", "totalLifeGained", "totalDamageBlocked",
 				"totalDamagePrevented", "totalLifeLost", "averageDamageThreatenedPerTurn", "averageDamageDealtPerTurn",

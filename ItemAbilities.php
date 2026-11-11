@@ -55,6 +55,7 @@ function PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier = 0, $
       DestroyItemForPlayer($player, count($items) - $itemPieces);
     }
   }
+  if ($isToken) LogCreatedCardStats($effectAgent, $cardID, "created", $number);
   $char = &GetPlayerCharacter($player);
   $hero = ShiyanaCharacter($char[0], $player);
   if (($symbiosisIndex = FindCharacterIndex($player, "symbiosis_shot")) > 0 && ClassContains($cardID, "MECHANOLOGIST", $player)) {

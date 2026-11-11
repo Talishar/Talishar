@@ -672,7 +672,7 @@ class exertion extends Card {
         global $CS_HealthLost;
         $healthLostBefore = GetClassState($this->controller, $CS_HealthLost);
         LoseHealth(1, $this->controller);
-        LogDiseaseStats($this->controller, $this->cardID, "damage", GetClassState($this->controller, $CS_HealthLost) - $healthLostBefore);
+        LogCreatedCardStats(3 - $this->controller, $this->cardID, "lifeLost",GetClassState($this->controller, $CS_HealthLost) - $healthLostBefore);
         break;
       case "DESTROY":
         DestroyAuraUniqueID($this->controller, $uniqueID, mainPhase:false);

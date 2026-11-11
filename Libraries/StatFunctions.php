@@ -302,24 +302,44 @@ function GetAllyDamagePrevented($player)
   return ($player == 1 ? $p1AllyDamagePrevented : $p2AllyDamagePrevented) ?? [];
 }
 
-// Disease tokens are tallied on the player who received them; keys are
-// "created" (count per token the opponent created) and "damage" (damage or
-// life lost per token).
-function LogDiseaseStats($player, $cardID, $kind, $amount)
+// Created tokens are credited to the player whose effect created them. Damage
+// a token deals is credited to the damaged player's opponent, damage it
+// prevents to the player it protected. Kinds: created, damage, lifeLost,
+// prevented.
+function LogCreatedCardStats($player, $cardID, $kind, $amount)
 {
-  global $p1DiseaseStats, $p2DiseaseStats;
+  global $p1CreatedCardStats, $p2CreatedCardStats;
   $amount = intval($amount);
   if ($amount <= 0) return;
-  if ($player == 1) $stats = &$p1DiseaseStats;
-  else if ($player == 2) $stats = &$p2DiseaseStats;
+  if ($player == 1) $stats = &$p1CreatedCardStats;
+  else if ($player == 2) $stats = &$p2CreatedCardStats;
   else return;
   if (!is_array($stats)) $stats = [];
-  $stats[$kind][$cardID] = intval($stats[$kind][$cardID] ?? 0) + $amount;
+  $stats[$cardID][$kind] = intval($stats[$cardID][$kind] ?? 0) + $amount;
+}
+
+function LogTokenPreventedStats($player, $cardID, $amount)
+{
+  if ($cardID != "" && TypeContains($cardID, "T")) LogCreatedCardStats($player, $cardID, "prevented", $amount);
+}
+
+function PreventionCardID($player, $mzIndex)
+{
+  $parts = explode("-", $mzIndex, 2);
+  if (!isset($parts[1])) return "";
+  $zone = match ($parts[0]) {
+    "MYAURAS" => GetAuras($player),
+    "MYITEMS" => GetItems($player),
+    "MYALLY" => GetAllies($player),
+    "MYPERM" => GetPermanents($player),
+    default => [],
+  };
+  return $zone[intval($parts[1])] ?? "";
 }
 
 function LogFrailtyPreventedStats($powerModifiers, $totalPower, $totalDefense)
 {
-  global $CombatChain, $mainPlayer;
+  global $CombatChain, $defPlayer;
   if (PowerCantBeModified($CombatChain->AttackCard()->ID())) return;
   $frailtyPower = 0;
   $count = count($powerModifiers);
@@ -328,26 +348,28 @@ function LogFrailtyPreventedStats($powerModifiers, $totalPower, $totalDefense)
   }
   if ($frailtyPower <= 0) return;
   $prevented = max(0, $totalPower + $frailtyPower - $totalDefense) - max(0, $totalPower - $totalDefense);
-  LogDiseaseStats($mainPlayer, "frailty", "damage", $prevented);
+  LogCreatedCardStats($defPlayer, "frailty", "prevented", $prevented);
 }
 
-function GetDiseaseStats($player)
+function GetCreatedCardResults($player)
 {
-  global $p1DiseaseStats, $p2DiseaseStats;
-  $stats = $player == 1 ? $p1DiseaseStats : $p2DiseaseStats;
-  return is_array($stats) ? $stats : [];
-}
-
-function GetDiseasesApplied($player)
-{
-  $stats = GetDiseaseStats($player == 1 ? 2 : 1);
-  $created = $stats["created"] ?? [];
-  if (empty($created)) return [];
-  $applied = ["created" => $created];
-  foreach ($stats["damage"] ?? [] as $cardID => $amount) {
-    if (isset($created[$cardID])) $applied["damage"][$cardID] = $amount;
+  global $p1CreatedCardStats, $p2CreatedCardStats;
+  $stats = $player == 1 ? $p1CreatedCardStats : $p2CreatedCardStats;
+  if (!is_array($stats)) return [];
+  $results = [];
+  foreach ($stats as $cardID => $counts) {
+    if ($cardID === "created" || $cardID === "damage" || !is_array($counts)) continue;
+    $results[] = [
+      "cardId" => $cardID,
+      "cardName" => CardName($cardID),
+      "pitchValue" => PitchValue($cardID),
+      "created" => intval($counts["created"] ?? 0),
+      "damageDealt" => intval($counts["damage"] ?? 0),
+      "lifeLost" => intval($counts["lifeLost"] ?? 0),
+      "damagePrevented" => intval($counts["prevented"] ?? 0),
+    ];
   }
-  return $applied;
+  return $results;
 }
 
 function LogCombatResolutionStats($damageThreatened, $damageBlocked)

@@ -56,6 +56,7 @@ function PlayAlly($cardID, $player, $subCards = "-", $number = 1, $isToken = fal
     $index += $allyPieces;
   }
   if ($isToken) {
+    LogCreatedCardStats($playerSource, $cardID, "created", $number);
     $ClassState = new ClassState($playerSource);
     $ClassState->SetCreatedCardsThisTurn($ClassState->CreatedCardsThisTurn() + $number);
   }

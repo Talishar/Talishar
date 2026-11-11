@@ -155,7 +155,7 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     if ($effectAgent != $player)
       CheckInfectContracts($effectAgent, $cardID, $number);
   }
-  if ($number > 0 && $effectAgent != $player && SubtypeContains($cardID, "Disease")) LogDiseaseStats($player, $cardID, "created", $number);
+  if ($number > 0 && $isToken) LogCreatedCardStats($effectAgent, $cardID, "created", $number);
   if ($holoCounters > 0) IncrementClassState($player, $CS_HoloAurasEntered, $number);
   if ($isToken) {
     if (DelimStringContains(CardSubType($cardID), "Affliction")) IncrementClassState($otherPlayer, $CS_NumAuras, $number);
@@ -1368,6 +1368,8 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
       $preventedDamage = $damage;
       break;
     }
+    $auraID = $auras[$i];
+    $preventedBefore = $preventedDamage;
     $card = GetClass($auras[$i], $player);
     if ($card != "-") $preventedDamage += $card->PermanentDamagePrevention($damage, $type, $source, $i);
     switch ($auras[$i]) {
@@ -1391,6 +1393,7 @@ function AuraTakeDamageAbilities($player, $damage, $type, $source)
       default:
         break;
     }
+    if ($preventedDamage > $preventedBefore) LogTokenPreventedStats($player, $auraID, min($preventedDamage, $damage) - $preventedBefore);
   }
   if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player) != "") {
     $preventedDamage -= 1;

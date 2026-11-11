@@ -864,7 +864,7 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
   }
   if ($playerSource != $player) LogDamageStats($player, $damageThreatened, $damage);
   else LogLifeLossStats($player, $damage); //Self inflicting damage e.g. Flick Knives, Hexagore, etc.
-  if ($source == "bloodrot_pox") LogDiseaseStats($player, $source, "damage", $damage);
+  if ($damage > 0 && $source != "NA" && TypeContains($source, "T")) LogCreatedCardStats(3 - $player, $source, "damage", $damage);
   if ($type == "ARCANE" && $player != $playerSource) IncrementClassState($playerSource, $CS_ArcaneDamageDealtToOpponent, $damage);
   //I believe IncrementClassState resets every turn and is used to activate effects that check if arcane was dealt that turn so I added line below
   if ($type == "ARCANE" && $player != $playerSource) LogArcaneDamageStats($player, $damage);

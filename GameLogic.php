@@ -1688,8 +1688,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "SPELLVOIDCHOICES":
       $damage = $parameter;
       if ($lastResult != "PASS") {
+        $preventerID = PreventionCardID($player, $lastResult);
         $prevented = ArcaneDamagePrevented($player, $lastResult);
-        if($prevented > 0) LogDamagePreventedStats($player, min($damage, $prevented));
+        if($prevented > 0) {
+          LogDamagePreventedStats($player, min($damage, $prevented));
+          LogTokenPreventedStats($player, $preventerID, min($damage, $prevented));
+        }
         $damage -= $prevented;
         if ($damage < 0) $damage = 0;
         if ($damage > 0) CheckSpellvoid($player, $parameter);
@@ -3117,6 +3121,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $mzIndex = explode("-", $lastResult, 2);
       $params = explode("-", $parameter);
       $originDamage = intval($params[0]);
+      $preventerID = PreventionCardID($player, $lastResult);
       switch ($mzIndex[0]) {
         case "MYAURAS":
           $damage = AuraTakeDamageAbility($player, intval($mzIndex[1]), $params[0], $params[1], $params[2]);
@@ -3144,7 +3149,10 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $dqVars[0] = $damage;
       $dqState[6] = $damage;
       if ($damage > 0) AddDamagePreventionSelection($player, $damage, $params[2], $params[1], $params[3]);
-      if ($damage < $originDamage) LogDamagePreventedStats($player, $originDamage - $damage);
+      if ($damage < $originDamage) {
+        LogDamagePreventedStats($player, $originDamage - $damage);
+        LogTokenPreventedStats($player, $preventerID, $originDamage - $damage);
+      }
       return $damage;
     case "EQUIPCARDINVENTORY":
       if (str_contains($parameter, "-")) {
