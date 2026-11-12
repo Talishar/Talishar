@@ -985,16 +985,8 @@ function ChaosTransform($characterID, $mainPlayer, $toAgent = false, $choice = -
   $char = &GetPlayerCharacter($mainPlayer);
   if ($characterID == "arakni_marionette" || $characterID == "arakni_web_of_deceit" || $toAgent) {
     if ($choice == -1) {
-      $roll = GetRandom(1, 6);
-      $transformTarget = match ($roll) {
-        1 => "arakni_black_widow",
-        2 => "arakni_funnel_web",
-        3 => "arakni_orb_weaver",
-        4 => "arakni_redback",
-        5 => "arakni_tarantula",
-        6 => "arakni_trap_door",
-        default => $characterID,
-      };
+      $agents = CardsWithTrait("Agent of Chaos");
+      $transformTarget = count($agents) > 0 ? $agents[GetRandom(1, count($agents)) - 1] : $characterID;
     }
     else $transformTarget = $choice;
     WriteLog(CardLink($characterID, $characterID) . " becomes " . CardLink($transformTarget, $transformTarget));

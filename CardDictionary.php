@@ -375,6 +375,26 @@ function CardSubType($cardID, $uniqueID = -1)
   };
 }
 
+// CR 2.13: comma delimited, e.g. "Agent of Chaos"
+function CardTraits($cardID)
+{
+  $cardID = BlindCard($cardID, true);
+  if (!$cardID) return "";
+  return GeneratedCardTraits($cardID);
+}
+
+function TraitContains($cardID, $trait)
+{
+  return DelimStringContains(CardTraits($cardID), $trait);
+}
+
+// CR 2.13.4: every card with the trait, in a fixed order
+function CardsWithTrait($trait)
+{
+  $cardList = GeneratedTraitCards($trait);
+  return $cardList == "" ? [] : explode(",", $cardList);
+}
+
 function CharacterHealth($cardID)
 {
   $cardID = BlindCard($cardID, true);

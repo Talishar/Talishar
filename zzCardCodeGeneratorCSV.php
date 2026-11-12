@@ -143,6 +143,17 @@
   $generatedFunctions[] = GenerateFunction($cardArray, "SetIDtoCardID", "SIDtoCID", "");
   $generatedFunctions[] = GenerateFunction($cardArray, "GoAgain", "goAgain", "false");
 
+  $traitList = ["Agent of Chaos"];
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardTraits", "traits", "");
+
+  $traitCardsFunction = GenerateTraitCardsFunction($cardArray);
+  if (!isset($existingFunctions["TraitCards"])) $existingFunctions["TraitCards"] = $traitCardsFunction;
+  foreach ($traitCardsFunction["entries"] as $trait => $cardList) {
+    $existingList = trim($existingFunctions["TraitCards"]["entries"][$trait] ?? "", "\"");
+    $cardIDs = array_merge(explode(",", $existingList), explode(",", trim($cardList, "\"")));
+    $existingFunctions["TraitCards"]["entries"][$trait] = "\"" . implode(",", SortedCardList($cardIDs)) . "\"";
+  }
+
   // Generate keyword functions
   $keywordList = [
     "Ambush", "Amp", "Arcane Barrier", "Arcane Shelter", "Awaken", "Battleworn",
@@ -477,6 +488,32 @@
     return GeneratedFunction("CardTokens", $entries, "\"\"", "\"\"");
   }
 
+  function CardTraitsFromData($card)
+  {
+    global $traitList;
+    return array_values(array_intersect($traitList, $card->traits ?? []));
+  }
+
+  function GenerateTraitCardsFunction(&$cardArray)
+  {
+    echo "<BR>TraitCards<BR>";
+    $traitCards = [];
+    foreach ($cardArray as $card) {
+      $cardID = GetCardIdentifier($card->name, $card->pitch);
+      foreach (CardTraitsFromData($card) as $trait) $traitCards[$trait][] = $cardID;
+    }
+    $entries = [];
+    foreach ($traitCards as $trait => $cardIDs) $entries[$trait] = "\"" . implode(",", SortedCardList($cardIDs)) . "\"";
+    return GeneratedFunction("TraitCards", $entries, "\"\"", null);
+  }
+
+  function SortedCardList($cardIDs)
+  {
+    $cardIDs = array_values(array_unique(array_filter($cardIDs, fn($cardID) => $cardID != "")));
+    sort($cardIDs);
+    return $cardIDs;
+  }
+
   // $entries maps each card (or set ID) to the PHP literal it returns; $intReturn is what it returns for an int card ID
   function GeneratedFunction($name, $entries, $default, $intReturn)
   {
@@ -668,6 +705,9 @@
           if (isset($cardArray[$i]->functional_text)) {
             if (str_contains($cardArray[$i]->functional_text, "Go again")) $data = "true";
           }
+          break;
+        case "traits":
+          $data = implode(",", CardTraitsFromData($cardArray[$i]));
           break;
         default:
           break;
@@ -984,6 +1024,7 @@
       "health" => $row[$face . "true_life"],
       "intelligence" => $row[$face . "true_intellect"],
       "types" => ParseTypes($row, $face),
+      "traits" => array_values(array_filter(array_map("trim", explode(",", $row[$face . "true_traitbox"] ?? "")))),
       "card_keywords" => ParseKeywords($text),
       "functional_text" => $functionalText,
       "functional_text_plain" => $functionalTextPlain,

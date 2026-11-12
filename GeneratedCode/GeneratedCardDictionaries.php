@@ -16,6 +16,8 @@ include_once __DIR__ . "/GeneratedFunctions/GeneratedCardTalent.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedSetID.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedSetIDtoCardID.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedGoAgain.php";
+include_once __DIR__ . "/GeneratedFunctions/GeneratedCardTraits.php";
+include_once __DIR__ . "/GeneratedFunctions/GeneratedTraitCards.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedHasAmbush.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedHasAmp.php";
 include_once __DIR__ . "/GeneratedFunctions/GeneratedAmpAmount.php";

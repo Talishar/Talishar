@@ -53,6 +53,10 @@
   $generatedFunctions[] = GenerateFunction($cardArray, "SetIDtoCardID", "SIDtoCID", "");
   $generatedFunctions[] = GenerateFunction($cardArray, "GoAgain", "goAgain", "false");
 
+  $traitList = ["Agent of Chaos"];
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardTraits", "traits", "");
+  $generatedFunctions[] = GenerateTraitCardsFunction($cardArray);
+
   // Generate keyword functions
   $keywordList = [
     "Ambush", "Amp", "Arcane Barrier", "Arcane Shelter", "Awaken", "Battleworn",
@@ -383,6 +387,32 @@
     return GeneratedFunction("CardTokens", $entries, "\"\"", "\"\"");
   }
 
+  function CardTraitsFromData($card)
+  {
+    global $traitList;
+    return array_values(array_intersect($traitList, $card->traits ?? []));
+  }
+
+  function GenerateTraitCardsFunction(&$cardArray)
+  {
+    echo "<BR>TraitCards<BR>";
+    $traitCards = [];
+    foreach ($cardArray as $card) {
+      $cardID = GetCardIdentifier($card->name, $card->pitch);
+      foreach (CardTraitsFromData($card) as $trait) $traitCards[$trait][] = $cardID;
+    }
+    $entries = [];
+    foreach ($traitCards as $trait => $cardIDs) $entries[$trait] = "\"" . implode(",", SortedCardList($cardIDs)) . "\"";
+    return GeneratedFunction("TraitCards", $entries, "\"\"", null);
+  }
+
+  function SortedCardList($cardIDs)
+  {
+    $cardIDs = array_values(array_unique(array_filter($cardIDs, fn($cardID) => $cardID != "")));
+    sort($cardIDs);
+    return $cardIDs;
+  }
+
   // $entries maps each card (or set ID) to the PHP literal it returns; $intReturn is what it returns for an int card ID
   function GeneratedFunction($name, $entries, $default, $intReturn)
   {
@@ -574,6 +604,9 @@
           if (isset($cardArray[$i]->functional_text)) {
             if (str_contains($cardArray[$i]->functional_text, "Go again")) $data = "true";
           }
+          break;
+        case "traits":
+          $data = implode(",", CardTraitsFromData($cardArray[$i]));
           break;
         default:
           break;
