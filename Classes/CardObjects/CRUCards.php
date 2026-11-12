@@ -319,7 +319,7 @@ class cindering_foresight extends BaseCard {
 		return "";
   }
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 	}
 
@@ -1852,7 +1852,7 @@ class rousing_aether extends BaseCard {
 		return "";
   }
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 	}
 

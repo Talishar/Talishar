@@ -670,7 +670,7 @@ class chane_base extends BaseCard {
     return true;
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);
@@ -721,7 +721,7 @@ class chane extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
   }
 }
@@ -764,7 +764,7 @@ class chane_bound_by_shadow extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
   }
 }

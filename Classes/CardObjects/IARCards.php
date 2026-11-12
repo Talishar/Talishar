@@ -2265,13 +2265,11 @@ class battle_clearing_bellow_blue extends Card {
     return "";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
-    global $Stack;
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
+    global $CombatChain;
     $Effect = new CurrentEffect($effectIndex);
-    $TopLayer = $Stack->TopLayer($cardID);
-    if (LayerStepBasePower() >= 6) {
-      $uid = IsActivated($cardID, $from) ? $TopLayer->UniqueID() : $TopLayer->LayerUniqueID();
-      $Effect->ApplyToUniqueID($uid);
+    if ((IsLayerStep() && LayerStepBasePower() >= 6) || ($CombatChain->HasCurrentLink() && LinkBasePower() >= 6)) {
+      $Effect->ApplyToUniqueID($uniqueID);
     }
   }
 
@@ -2279,19 +2277,12 @@ class battle_clearing_bellow_blue extends Card {
     return true;
   }
 
-  function IsLayerContinuousBuff() {
-    return true;
-  }
-
   function EffectPowerModifier($param, $attached = false) {
-    return $attached ? 6 : 0;
+    return 6;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    if ($CombatChain->HasCurrentLink())
-      return LinkBasePower(true) >= 6;
-    return false;
+    return true;
   }
 }
 

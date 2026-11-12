@@ -571,7 +571,7 @@ class conduit_of_frostburn extends Card {
     return "";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
   }
 

@@ -1971,7 +1971,7 @@ class cogwerx_gyrostriders extends Card {
     return "I";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     global $Stack;
     if (TypeContains($cardID, "AA") && $from == "ARS") {
       $Effect = new CurrentEffect($effectIndex);

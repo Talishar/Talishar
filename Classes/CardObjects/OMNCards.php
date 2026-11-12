@@ -7836,7 +7836,7 @@ class chromatic_refinement extends BaseCard {
     return 0;
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     global $Stack;
     $color = PitchValue($this->cardID);
     $Effect = new CurrentEffect($effectIndex);
@@ -7881,7 +7881,7 @@ class chromatic_refinement_red extends Card {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 
@@ -7913,7 +7913,7 @@ class chromatic_refinement_yellow extends Card {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 
@@ -7945,7 +7945,7 @@ class chromatic_refinement_blue extends Card {
     return $this->baseCard->CurrentEffectCostModifier($cardID, $index);
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
   }
 

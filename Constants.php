@@ -681,6 +681,7 @@ function AttackReplaced($cardID, $player, $from)
   }
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->AttackIsBlockedEffect(CombatChainPieces());
+  AssignEffectToCard($cardID, $mainPlayer, $from, true);
 }
 
 function ResetChainLinkState()

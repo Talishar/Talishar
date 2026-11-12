@@ -2652,7 +2652,7 @@ class fasting_carcass_red extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 1);
   }
 
@@ -2679,7 +2679,7 @@ class fasting_carcass_yellow extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
   
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 2);
   }
 
@@ -2706,7 +2706,7 @@ class fasting_carcass_blue extends Card {
     return $this->baseCard->CurrentEffectGrantsGoAgain();
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, 3);
   }
 

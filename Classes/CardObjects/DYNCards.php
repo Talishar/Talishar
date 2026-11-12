@@ -244,7 +244,7 @@ class blessing_of_aether extends BaseCard {
 		return true;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		if (ActionsThatDoArcaneDamage($cardID, $this->controller) || ActionsThatDoXArcaneDamage($cardID))
 			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 		elseif (!IsActivated($cardID, $from)) {
@@ -3123,7 +3123,7 @@ class surgent_aethertide extends Card {
 		return true;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		global $CS_ArcaneCardsPlayed;
 		if (GetClassState($this->controller, $CS_ArcaneCardsPlayed) == 0)
 			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
@@ -3179,7 +3179,7 @@ class tempest_aurora extends BaseCard {
 		return 1;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		$costVal = ByColor($this->cardID, 2, 1, 0);
 		if (CardCost($cardID) <= $costVal)
 			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);

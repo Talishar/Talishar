@@ -72,7 +72,7 @@ class arc_lightning_yellow extends Card {
     return $param == "GOAGAIN";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);

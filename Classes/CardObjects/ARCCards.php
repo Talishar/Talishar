@@ -10,7 +10,7 @@ class absorb_in_aether extends BaseCard {
 		return 2;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 	}
 }
@@ -73,7 +73,7 @@ class aether_flare extends BaseCard {
 		return true;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 	}
 }
@@ -671,7 +671,7 @@ class crucible_of_aetherweave extends Card {
 		return 1;
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
   }
 
@@ -2507,7 +2507,7 @@ class stir_the_aetherwinds extends BaseCard {
 		return "";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) {
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
     $TopLayer = $Stack->TopLayer($cardID);
@@ -2826,7 +2826,7 @@ class tome_of_aetherwind_red extends Card {
 		AddDecisionQueue("SHOWMODES", $this->controller, $this->cardID, 1);
 	}
 
-	function AssignEffectToCard($cardID, $effectIndex, $from) {
+	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
 		AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
   }
 }

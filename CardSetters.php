@@ -615,16 +615,23 @@ function EffectArcaneBonus($source, $effectInd)
   return 0;
 }
 
-function AssignEffectToCard($cardID, $player, $from) {
-  global $CurrentTurnEffects;
+function AssignEffectToCard($cardID, $player, $from, $switch=false) {
+  global $CurrentTurnEffects, $Stack, $CombatChain;
   $numEffects = $CurrentTurnEffects->NumEffects();
+  $uniqueID = "-";
+  if ($switch)
+    $uniqueID = $CombatChain->AttackCard()->UniqueID();
+  else {
+    $TopLayer = $Stack->TopLayer($cardID);
+    $uniqueID = IsActivated($cardID, $from) ? $TopLayer->UniqueID() : $TopLayer->LayerUniqueID();
+  }
   for ($i = $numEffects - 1; $i >= 0; --$i) {
     $Effect = $CurrentTurnEffects->Effect($i, true);
     if ($Effect->PlayerID() != $player) continue;
     $appliesToUniqueID = $Effect->AppliestoUniqueID();
     if ($appliesToUniqueID != -1 && $appliesToUniqueID != "MISSED") continue;
     $card = GetClass($Effect->EffectID(), $player);
-    if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from);
+    if ($card != "-") $card->AssignEffectToCard($cardID, $Effect->Index(), $from, $uniqueID);
   }
 }
 

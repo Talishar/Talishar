@@ -977,7 +977,7 @@ class Card {
     return "";
   }
 
-  function AssignEffectToCard($cardID, $effectIndex, $from) { //used to apply effects to the next card "played" not resolved
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) { //used to apply effects to the next card "played" not resolved
     if (isset($this->baseCard) && method_exists($this->baseCard, "AssignEffectToCard"))
       return $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
     return;
