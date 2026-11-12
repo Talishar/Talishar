@@ -4713,6 +4713,7 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
   global $SET_PassDRStep, $CS_NumBlueDefended, $CS_AdditionalCosts, $CombatChain, $CS_NumTimesAttacked, $CS_NumTimesHeroAttacked;
   global $currentTurnEffects, $CCS_AttackTarget, $CCS_AttackTargetUID;
   global $landmarks, $CS_WeaponsAttackedWith, $Stack, $AttackQueue, $CombatChain, $CCS_IsBoosted;
+  global $EffectContextUID;
   if ($player == "") $player = $currentPlayer;
   $cardType = CardType($cardID);
   if (isset($layers[0]) && $layers[0] == "CLOSINGCHAIN") {
@@ -4948,8 +4949,9 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
     }
     else {
       // keep the attack targets (and any resolution ability targets) with the queued attack
-      $queueParameter = "$from|$resourcesPaid|$layerIndex|$uniqueID";
-      AddAttackQueue($cardID, $currentPlayer, $layerTarget, $queueParameter, $uniqueID, additionalCosts:$additionalCosts);
+      
+      $queueParameter = "$from|$resourcesPaid|$layerIndex|$EffectContextUID";
+      AddAttackQueue($cardID, $currentPlayer, $layerTarget, $queueParameter, $EffectContextUID, additionalCosts:$additionalCosts);
       if (count($layers) == 0 && !$CombatChain->HasCurrentLink())
         Await($mainPlayer, "CheckAttackQueue");
       ProcessDecisionQueue();

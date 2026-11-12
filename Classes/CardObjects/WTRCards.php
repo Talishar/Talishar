@@ -1726,10 +1726,14 @@ class nimblism extends BaseCard {
     return "";
   }
 
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    global $CombatChain;
-    $attackID = $CombatChain->AttackCard()->ID();
-    return CardCost($attackID) <= 1 && TypeContains($attackID, "AA");
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
+    $Effect = new CurrentEffect($effectIndex);
+    if (CardCost($cardID) <= 1 && TypeContains($cardID, "AA"))
+      $Effect->ApplyToUniqueID($uniqueID);
+  }
+
+  function EffectNeedsAttaching() {
+    return true;
   }
 }
 
