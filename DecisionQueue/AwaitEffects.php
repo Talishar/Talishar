@@ -336,8 +336,8 @@ function PlayItemAwait($player) {
   $number = $dqVars["number"] ?? 1;
   $isToken = $dqVars["isToken"] ?? false;
   $from = $dqVars["from"] ?? "-";
-  $effectController = $dqVars["effectController"] ?? "-";
-  $effectSource = $dqVars["effectSource"] ?? "-";
+  $effectController = $dqVars["effectController"] ?? "";
+  $effectSource = $dqVars["effectSource"] ?? "";
   $mainPhase = $dqVars["mainPhase"] ?? true;
   $effectAgent = $dqVars["effectAgent"] ?? "";
   PutItemIntoPlayForPlayer($cardID, $player, $steamCounterModifier, $number, $effectController, $isToken, $mainPhase, $from, $effectAgent, $effectSource);

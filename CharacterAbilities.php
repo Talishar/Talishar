@@ -247,8 +247,6 @@ function MainCharacterBeginEndPhaseAbilities()
       default:
         break;
     }
-    //untap
-    Tap("MYCHAR-$i", $mainPlayer, 0, endStepUntap:true);
   }
 
   $defCharacter = &GetPlayerCharacter($defPlayer);

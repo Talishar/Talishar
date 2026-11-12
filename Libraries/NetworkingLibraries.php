@@ -2420,21 +2420,48 @@ function FinishTurnPass()
 
 function PassTurn()
 {
-  global $playerID, $currentPlayer, $turn, $mainPlayer, $mainPlayerGamestateStillBuilt;
+  global $currentPlayer, $turn, $mainPlayer, $defPlayer, $mainPlayerGamestateStillBuilt;
   if (!$mainPlayerGamestateStillBuilt) {
     BuildMainPlayerGameState();
   }
-  $MainHand = GetHand($mainPlayer);
-  $otherPlayer = OtherPlayer($playerID);
-  if (EndTurnPitchHandling($playerID) && EndTurnPitchHandling($otherPlayer)) {
-    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer) && $turn[0] != "ARS") {
+  if ($turn[0] != "ARS" && $turn[0] != "PDECK") {
+    //4.4.3a All allies' life totals are reset
+    AllyBeginEndTurnEffects();
+    //4.4.3b The turn-player may put a card from their hand face-down into an empty arsenal zone they own
+    $MainHand = GetHand($mainPlayer);
+    if (count($MainHand) > 0 && !ArsenalFull($mainPlayer)) {
       $currentPlayer = $mainPlayer;
       $turn[0] = "ARS";
       $turn[2] = "-";
-    } else {
-      ResolveDeferredLeyLines($mainPlayer);
-      FinalizeTurn();
+      return;
     }
+  }
+  //4.4.3c Each player puts all cards in their pitch zone on the bottom of their deck in any order
+  if (EndTurnPitchHandling($mainPlayer) && EndTurnPitchHandling($defPlayer)) {
+    ResolveDeferredLeyLines($mainPlayer);
+    FinalizeTurn();
+  }
+}
+
+//4.4.3d The turn-player untaps all permanents they control
+function EndTurnUntap()
+{
+  global $mainPlayer;
+  $character = &GetPlayerCharacter($mainPlayer);
+  for ($i = count($character) - CharacterPieces(); $i >= 0; $i -= CharacterPieces()) {
+    Tap("MYCHAR-$i", $mainPlayer, 0, endStepUntap:true);
+  }
+  $items = &GetItems($mainPlayer);
+  for ($i = count($items) - ItemPieces(); $i >= 0; $i -= ItemPieces()) {
+    Tap("MYITEMS-$i", $mainPlayer, 0, endStepUntap:true);
+  }
+  $allies = &GetAllies($mainPlayer);
+  for ($i = count($allies) - AllyPieces(); $i >= 0; $i -= AllyPieces()) {
+    Tap("MYALLY-$i", $mainPlayer, 0, endStepUntap:true);
+  }
+  $auras = &GetAuras($mainPlayer);
+  for ($i = count($auras) - AuraPieces(); $i >= 0; $i -= AuraPieces()) {
+    if (($auras[$i + 12] ?? 0)) Tap("MYAURAS-$i", $mainPlayer, 0, true);
   }
 }
 
@@ -2454,12 +2481,8 @@ function FinalizeTurn()
   AllyEndTurnAbilities();
   MainCharacterEndTurnAbilities();
   ItemBeginEndTurnAbilities();
-  //4.4.3a Allies life totals are reset
-  AllyBeginEndTurnEffects();
-  //4.4.3b The turn player may put a card from their hand face down into an empty arsenal zone they own
   ArsenalEndTurn($mainPlayer);
   ArsenalEndTurn($defPlayer);
-  //4.4.3c Each player puts all cards in their pitch zone (if any) on the bottom of their deck in any order.The order cards are put on the bottom of the deck this way is hidden information
   //Reset characters/equipment
   $countMainChar = count($mainCharacter);
   $countDefChar = count($defCharacter);
@@ -2491,13 +2514,14 @@ function FinalizeTurn()
   for ($i = 0; $i < $countAuras; $i += $auraPieces) {
     $mainAuras[$i + 1] = 2;
   }
-  //4.4.3d All players lose all action points and resources.
+  EndTurnUntap();
+  //4.4.3e All players lose all action points and resources.
   $mainResources[0] = 0;
   $mainResources[1] = 0;
   $defResources[0] = 0;
   $defResources[1] = 0;
   $lastPlayed = [];
-  // 4.4.3e The turn player draws cards until the number of cards in their hand is equal to their hero's intellect
+  // 4.4.3f The turn player draws cards until the number of cards in their hand is equal to their hero's intellect
   if ($mainPlayer == $firstPlayer && $currentTurn == 0 || $extraTurn)//Defender draws up on turn 1
   {
     $toDraw = CharacterIntellect($defCharacter[0]) - count($defHand);
