@@ -2095,6 +2095,7 @@ function IsCombatEffectActive($cardID, $defendingCard = "", $SpectraTarget = fal
     if ($effectIndex != -1) {
       $Effect = new CurrentEffect($effectIndex);
       if ($card->EffectNeedsAttaching() && $Effect->AppliestoUniqueID() == -1) return false;
+      elseif ($card->EffectNeedsAttaching()) return true;
     }
     return $card->CombatEffectActive($parameter, $defendingCard, $flicked);
   }

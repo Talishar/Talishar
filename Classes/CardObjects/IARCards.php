@@ -2280,10 +2280,6 @@ class battle_clearing_bellow_blue extends Card {
   function EffectPowerModifier($param, $attached = false) {
     return 6;
   }
-
-  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-    return true;
-  }
 }
 
 class bone_barrier_blue extends Card {
