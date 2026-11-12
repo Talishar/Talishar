@@ -2268,10 +2268,10 @@ class battle_clearing_bellow_blue extends Card {
   function AssignEffectToCard($cardID, $effectIndex, $from) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
-    $TopLayer = $Stack->TopLayer($cardID);
-    if (TypeContains($TopLayer->ID(), "AA") && (LayerStepBasePower() >= 6))
+    if (!IsLayerStep() || $Stack->BottomLayer()->ID() != $cardID) return;
+    if (LayerStepBasePower() >= 6)
       $Effect->ApplyToUniqueID("ATTACK");
-    elseif (TypeContains($TopLayer->ID(), "AA")) // make sure it does not apply to an attack it "missed" but still let it apply in the future
+    else // make sure it does not apply to an attack it "missed" but still let it apply in the future
       $Effect->ApplyToUniqueID("MISSED");
   }
 
