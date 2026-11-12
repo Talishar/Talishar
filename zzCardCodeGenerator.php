@@ -56,6 +56,7 @@
   $traitList = ["Agent of Chaos"];
   $generatedFunctions[] = GenerateFunction($cardArray, "CardTraits", "traits", "");
   $generatedFunctions[] = GenerateTraitCardsFunction($cardArray);
+  $generatedFunctions[] = GenerateFunction($cardArray, "CardHeroMetatype", "heroMetatype", "");
 
   // Generate keyword functions
   $keywordList = [
@@ -608,6 +609,9 @@
         case "traits":
           $data = implode(",", CardTraitsFromData($cardArray[$i]));
           break;
+        case "heroMetatype":
+          $data = implode(",", array_filter($cardArray[$i]->types, "IsHero"));
+          break;
         default:
           break;
       }
@@ -681,7 +685,7 @@
       case "Generic": case "Warrior": case "Ninja": case "Brute": case "Guardian":
       case "Wizard": case "Mechanologist": case "Ranger": case "Runeblade":
       case "Illusionist": case "Assassin": case "Necromancer": case "Pirate": 
-      case "Shapeshifter": case "Merchant": case "Arbiter": case "Bard": case "Thief":
+      case "Shapeshifter": case "Merchant": case "Adjudicator": case "Bard": case "Thief":
         return true;
       default: return false;
     }

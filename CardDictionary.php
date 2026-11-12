@@ -395,6 +395,14 @@ function CardsWithTrait($trait)
   return $cardList == "" ? [] : explode(",", $cardList);
 }
 
+// CR 2.6.6: the hero moniker(s) a card is restricted to, e.g. "Puffin"
+function CardHeroMetatype($cardID)
+{
+  $cardID = BlindCard($cardID, true);
+  if (!$cardID) return "";
+  return GeneratedCardHeroMetatype($cardID);
+}
+
 function CharacterHealth($cardID)
 {
   $cardID = BlindCard($cardID, true);

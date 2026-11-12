@@ -821,6 +821,8 @@ function TruncateHeroName($cardID) {
 // basic checking of card class and talent legality
 function isCardLegalinHero($cardID, $hero, $format) {
   if (str_contains($format, "open")) return true;
+  $heroMetatype = CardHeroMetatype($cardID);
+  if ($heroMetatype != "" && !DelimStringContains(strtolower($heroMetatype), Moniker($hero))) return false;
   if (CardClass($cardID) == "GENERIC") return true;
   if ($hero == "shiyana_diamond_gemini" && HasSpecialization($cardID)) return true;
   if ($hero == "emperor_dracai_of_aesir" && PitchValue($cardID) > 1) return false; //missing burn bare for now
