@@ -7938,7 +7938,7 @@ class chromatic_refinement_blue extends Card {
   }
 
   function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
-    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from);
+    $this->baseCard->AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID);
   }
 }
 

@@ -1687,7 +1687,7 @@ class virulent_cascade extends BaseCard {
 
   function ProcessAttackTrigger($target, $uniqueID) {
     global $OBKDiseases;
-    $ind = GetRandom(0,3);
+    $ind = GetRandom(0, count($OBKDiseases) - 1);
     WriteLog(CardLink($this->cardID) . " creates a $OBKDiseases[$ind]!");
     PlayAura($OBKDiseases[$ind], $this->controller, effectController:$this->controller, effectSource:$this->controller);
     return "";

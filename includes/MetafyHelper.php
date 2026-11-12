@@ -672,6 +672,29 @@ if (!function_exists('MetafyQuickSupporterCheck')) {
     if (!empty($auth['last_sync']) && (time() - $auth['last_sync']) < $throttleSeconds) return false;
 
     $subscription = MetafyCheckSubscription($auth, $conn, METAFY_TALISHAR_COMMUNITY_ID);
+    $db = MetafyLiveConnection($conn);
+    try {
+      return MetafyApplySupporterCheck($db, $auth, $subscription);
+    } finally {
+      if ($db && $db !== $conn) mysqli_close($db);
+    }
+  }
+}
+
+if (!function_exists('MetafyLiveConnection')) {
+  function MetafyLiveConnection($conn)
+  {
+    try {
+      if ($conn && @mysqli_query($conn, 'SELECT 1')) return $conn;
+    } catch (mysqli_sql_exception $e) {
+    }
+    return GetDBConnection();
+  }
+}
+
+if (!function_exists('MetafyApplySupporterCheck')) {
+  function MetafyApplySupporterCheck($conn, &$auth, $subscription)
+  {
     if (!$subscription['ok']) {
       // A failed call says nothing about the subscription, so stored data stands. Still
       // record the attempt: without it a broken token retries on every single page load.
