@@ -2027,6 +2027,10 @@ class cogwerx_gyrostriders extends Card {
     SetClassState($this->controller, $CS_AdditionalCosts, $mode);
   }
 
+  function DefaultActiveState() {
+    return 1;
+  }
+
   function SpecialName() {
     return "Cogwerx Gyrostriders";
   }
