@@ -838,10 +838,8 @@ function FinalizeDamage($player, $damage, $damageThreatened, $type, $source, $pl
     }
     $classState[$CS_DamageTaken] += $damage;
     if($type == "ARCANE") $dqVars["ARCANEDEALT"] = $damage;
-    if (!IsAllyAttacking()) {
-      if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
-    }
-    else {
+    if ($playerSource == $otherPlayer) IncrementClassState($otherPlayer, $CS_DamageDealtToOpponent, $damage);
+    if (IsAllyAttacking()) {
       $allyInd = SearchAlliesForUniqueID($combatChain[8], $otherPlayer);
       $allies = &GetAllies($otherPlayer);
       if($allyInd != -1) $allies[$allyInd + 10] += $damage;
