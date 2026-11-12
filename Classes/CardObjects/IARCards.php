@@ -2268,11 +2268,15 @@ class battle_clearing_bellow_blue extends Card {
   function AssignEffectToCard($cardID, $effectIndex, $from) {
     global $Stack;
     $Effect = new CurrentEffect($effectIndex);
-    if (!IsLayerStep() || $Stack->BottomLayer()->ID() != $cardID) return;
-    if (LayerStepBasePower() >= 6)
-      $Effect->ApplyToUniqueID("ATTACK");
-    else // make sure it does not apply to an attack it "missed" but still let it apply in the future
-      $Effect->ApplyToUniqueID("MISSED");
+    $TopLayer = $Stack->TopLayer($cardID);
+    if (LayerStepBasePower() >= 6) {
+      $uid = IsActivated($cardID, $from) ? $TopLayer->UniqueID() : $TopLayer->LayerUniqueID();
+      $Effect->ApplyToUniqueID($uid);
+    }
+  }
+
+  function EffectNeedsAttaching() {
+    return true;
   }
 
   function IsLayerContinuousBuff() {
