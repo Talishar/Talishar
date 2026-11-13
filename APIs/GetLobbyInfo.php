@@ -33,7 +33,7 @@ if($playerID != 1 && $playerID != 2) {
   exit;
 }
 
-if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
+if (!IsGameNameValid($gameName) || !file_exists("../Games/" . $gameName . "/GameFile.txt")) {
   echo (json_encode(new stdClass()));
   exit;
 }
@@ -41,6 +41,14 @@ if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
 ob_start();
 include "./APIParseGamefile.php";
 ob_end_clean();
+
+include_once "../Libraries/ValidationLibraries.php";
+if (!validateGameAuthKey($playerID, $authKey ?? null, $p1Key, $p2Key)) {
+  http_response_code(403);
+  $response->error = "Authentication failed";
+  echo json_encode($response);
+  exit;
+}
 
 $yourName = ($playerID == 1 ? $p1DisplayName : $p2DisplayName);
 $theirName = ($playerID == 1 ? $p2DisplayName : $p1DisplayName);

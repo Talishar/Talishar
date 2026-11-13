@@ -46,7 +46,27 @@ include "./GameTerms.php";
 include "./HostFiles/Redirector.php";
 include_once "./includes/dbh.inc.php";
 include_once "./includes/functions.inc.php";
+include_once "./Libraries/ValidationLibraries.php";
 ob_end_clean();
+
+$requestedPopup = explode("-", $popupType)[0];
+$publicAfterGameOver = $requestedPopup === "myStatsPopup" && ($turn[0] ?? "") === "OVER";
+if (($playerID == 1 || $playerID == 2) && !$publicAfterGameOver) {
+  if ($authKey === "" && isset($_COOKIE["lastAuthKey"])) $authKey = $_COOKIE["lastAuthKey"];
+  if (!validateGameAuthKey($playerID, $authKey, $p1Key, $p2Key)) {
+    SetHeaders();
+    http_response_code(403);
+    echo json_encode(["error" => "Invalid Authkey"]);
+    exit;
+  }
+}
+$spectatorBlockedPopups = ["myDeckPopup" => true, "myStatsPopup" => true];
+if ($playerID == 3 && !$publicAfterGameOver && isset($spectatorBlockedPopups[$requestedPopup])) {
+  SetHeaders();
+  http_response_code(403);
+  echo json_encode(["error" => "Not available to spectators"]);
+  exit;
+}
 
 if ($playerID == 3) {
   include_once "./AccountFiles/AccountSessionAPI.php";
