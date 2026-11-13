@@ -1445,14 +1445,27 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
 
 }
 // Set "forCost" to false when a multizone pitch selector is specifically required.
-function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true)
+function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true, $remaining=-1)
 {
   if ($forCost) { // used to check if the process should be automated
     $indices = [];
     $Hand = GetHand($player);
+    $total = 0;
+    $minPitch = PHP_INT_MAX;
     for ($i = 0; $i < count($Hand); $i += HandPieces()) {
-      if (PitchValue($Hand[$i]) > 0)
+      $pitch = intval(PitchValue($Hand[$i]));
+      if ($pitch > 0) {
         $indices[] = $i;
+        $total += $pitch;
+        $minPitch = min($minPitch, $pitch);
+      }
+    }
+    if (count($indices) > 1) {
+      global $CS_NumAddedToSoul;
+      $wholeHandForced = $remaining > 0 && $total >= $remaining && $total - $minPitch < $remaining
+        && SearchItemForIndex("talisman_of_recompense_yellow", $player) == -1
+        && !(GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol"));
+      if ($wholeHandForced) $indices = [$indices[0]];
     }
   }
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);

@@ -135,7 +135,7 @@ function PayResourcesFromPool($player, $parameter, $lastResult, $dqCommand)
     }
     PrependDecisionQueue($dqCommand, $player, $parameter, 1);
     PrependDecisionQueue("SUBPITCHVALUE", $player, $lastResult, 1);
-    PitchCard($player, skipGain: true);
+    PitchCard($player, skipGain: true, remaining: $lastResult);
   }
 }
 function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
