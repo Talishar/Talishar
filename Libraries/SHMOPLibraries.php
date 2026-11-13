@@ -28,7 +28,7 @@ if (!defined('LOBBY_DISCONNECT_TIMEOUT_MS')) define('LOBBY_DISCONNECT_TIMEOUT_MS
 
 function WriteCache($name, $data)
 {
-  if ($name == 0 || isset($GLOBALS["hitPreview"])) return;
+  if ($name == 0) return;
   $serData = serialize(trim($data));
   // 0666: segments must stay writable even if first created by a root CLI
   // script — 0644 left Apache unable to update the cache (game stuck forever).
@@ -44,7 +44,7 @@ function WriteCache($name, $data)
 
 function WriteGamestateCache($name, $data)
 {
-  if ($name == 0 || isset($GLOBALS["hitPreview"])) return;
+  if ($name == 0) return;
   $serData = serialize(trim($data));
   $needed = strlen($serData) + 16; // payload + seqlock header
   $key = GamestateID($name);
