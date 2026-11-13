@@ -13,7 +13,6 @@ $logWriteBuffer = [];
 
 function LogBufferAppend($filename, $line, $requireExists)
 {
-  if (isset($GLOBALS["hitPreview"])) return;
   global $logWriteBuffer;
   if (!isset($GLOBALS['_logMemoryReserve'])) {
     $GLOBALS['_logMemoryReserve'] = str_repeat('x', 524288);

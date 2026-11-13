@@ -2,7 +2,6 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
-include_once __DIR__ . "/Libraries/HitPreview.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = NULL;
@@ -37,24 +36,6 @@ function GetChainCardSubcards($controller, ...$uniqueIDs) {
     if ($subcards !== NULL) return $subcards;
   }
   return NULL;
-}
-
-function LoadPlayerUids($gameName)
-{
-  global $p1uid, $p2uid;
-  if (!empty($p1uid) && !empty($p2uid)) return;
-  $gameFilePath = "./Games/" . $gameName . "/GameFile.txt";
-  $gameFileHead = @file_get_contents($gameFilePath, false, null, 0, 8192);
-  $gameFileLines = false;
-  if ($gameFileHead !== false) {
-    $headLines = explode("\n", $gameFileHead, 12);
-    if (count($headLines) >= 12 || strlen($gameFileHead) < 8192) $gameFileLines = $headLines;
-  }
-  if ($gameFileLines === false) $gameFileLines = @file($gameFilePath, FILE_IGNORE_NEW_LINES);
-  if ($gameFileLines !== false && count($gameFileLines) >= 11) {
-    if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
-    if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
-  }
 }
 
 function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [], $includeInitialLoad = true, $inactive = false, $cacheSnapshot = null, $includeChatLog = true) {
@@ -121,11 +102,24 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     // Historical stat blobs are not part of the live state response.
     $parseGamestateHistoricalStats = false;
     include_once "ParseGamestate.php";
-  } else if (!isset($GLOBALS["hitPreview"])) {
+  } else {
     ParseGamestate(false);
   }
 
-  LoadPlayerUids($gameName);
+  if (empty($p1uid) || empty($p2uid)) {
+    $gameFilePath = "./Games/" . $gameName . "/GameFile.txt";
+    $gameFileHead = @file_get_contents($gameFilePath, false, null, 0, 8192);
+    $gameFileLines = false;
+    if ($gameFileHead !== false) {
+      $headLines = explode("\n", $gameFileHead, 12);
+      if (count($headLines) >= 12 || strlen($gameFileHead) < 8192) $gameFileLines = $headLines;
+    }
+    if ($gameFileLines === false) $gameFileLines = @file($gameFilePath, FILE_IGNORE_NEW_LINES);
+    if ($gameFileLines !== false && count($gameFileLines) >= 11) {
+      if (empty($p1uid)) $p1uid = trim($gameFileLines[9]);
+      if (empty($p2uid)) $p2uid = trim($gameFileLines[10]);
+    }
+  }
 
   // Auth validation
   $targetAuth = $playerID == 1 ? $p1Key : $p2Key;
@@ -175,7 +169,6 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   }
 
   $response->lastUpdate = $cacheVal;
-  $response->hitPreviewOpen = !$isReplay && HitPreviewOpen();
 
   // Spectator count and names
   $spectatorData = function_exists('GetActiveSpectators') ? GetActiveSpectators($gameName) : ['count' => 0, 'names' => []];

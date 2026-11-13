@@ -162,7 +162,7 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
   if ($from == "DECK" && SearchCurrentTurnEffects("syncopated_heart_pump", $otherPlayer))
     AddLayer("TRIGGER", $otherPlayer, "syncopated_heart_pump");
   $banisher = $banisher == "-" ? $mainPlayer : $banisher;
-  if ($banishedBy != "" && $banisher != $player) CheckContracts($banisher, $cardID, isset($GLOBALS["hitPreview"]) && ($from == "DECK" || $from == "HAND" || str_starts_with($cardID, "hpvhidden")));
+  if ($banishedBy != "" && $banisher != $player) CheckContracts($banisher, $cardID);
   $rv = BanishByEffect($cardID, $player, $banishedBy, $rv);
   return $rv;
 }

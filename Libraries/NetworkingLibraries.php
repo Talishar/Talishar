@@ -1607,7 +1607,7 @@ function ReorderTriggerEntries($triggerOrder, $submittedCardIDs)
 function RecordPassAsReplayCommand($player, $command)
 {
   global $gameName;
-  if (IsReplay() || isset($GLOBALS["hitPreview"])) return;
+  if (IsReplay()) return;
   $filename = "./Games/$gameName/commandfile.txt";
   $contents = @file_get_contents($filename);
   if (!is_string($contents)) $contents = "";

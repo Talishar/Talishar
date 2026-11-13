@@ -667,7 +667,7 @@ function CheckHitContract($contractType, $otherPlayer)
   }
 }
 
-function CheckContracts($banishedBy, $cardBanished, $hidden = false)
+function CheckContracts($banishedBy, $cardBanished)
 {
   global $CombatChain, $chainLinks;
   $chainLinks = $chainLinks ?? [];
@@ -682,8 +682,7 @@ function CheckContracts($banishedBy, $cardBanished, $hidden = false)
         $chosenName = explode("|", $buff, 2)[1] ?? "-";
     }
     $contractType = ContractType($chainCard->ID(), $chosenName, $banishedBy);
-    if($contractType != "" && $hidden && explode("-", $contractType, 2)[0] != "BANISHINFECTED") $GLOBALS["hitPreview"][] = $banishedBy . " " . $chainCard->ID();
-    else if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
+    if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainCard->ID());
   }
   $chainLinksCount = count($chainLinks);
   $chainLinksPieces = ChainLinksPieces();
@@ -705,8 +704,7 @@ function CheckContracts($banishedBy, $cardBanished, $hidden = false)
           $chosenName = explode("|", $buff, 2)[1] ?? "-";
       }
       $contractType = ContractType($chainLinks[$i][$j], $chosenName, $banishedBy);
-      if($contractType != "" && $hidden && explode("-", $contractType, 2)[0] != "BANISHINFECTED") $GLOBALS["hitPreview"][] = $banishedBy . " " . $chainLinks[$i][$j];
-      else if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
+      if($contractType != "" && CheckContract($contractType, $cardBanished, $banishedBy)) ContractCompleted($banishedBy, $chainLinks[$i][$j]);
     }
   }
 }

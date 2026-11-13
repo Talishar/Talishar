@@ -291,7 +291,6 @@ function UpdateMainPlayerGameStateInner()
 
 function SaveGamestateSnapshot($destination)
 {
-  if (isset($GLOBALS["hitPreview"])) return true;
   global $filepath, $lastWrittenGamestate;
   if (isset($lastWrittenGamestate)) {
     return file_put_contents($destination, $lastWrittenGamestate) !== false;
@@ -301,7 +300,6 @@ function SaveGamestateSnapshot($destination)
 
 function WriteGamestateFileAtomic($filename, $content)
 {
-  if (isset($GLOBALS["hitPreview"])) throw new RuntimeException("hitPreview");
   $lockHandler = fopen(dirname($filename) . "/gamestate.lock", "c");
   if ($lockHandler === false || !flock($lockHandler, LOCK_EX)) {
     if ($lockHandler !== false) fclose($lockHandler);
@@ -326,7 +324,6 @@ function WriteGamestateFileAtomic($filename, $content)
 
 function MakeGamestateBackup($filename = "gamestateBackup.txt")
 {
-  if (isset($GLOBALS["hitPreview"])) return;
   global $filepath, $lastWrittenGamestate;
   if(!isset($lastWrittenGamestate) && !file_exists($filepath . "gamestate.txt")) WriteLog("Cannot copy gamestate file; it does not exist.");
 
@@ -357,7 +354,6 @@ function MakeGamestateBackup($filename = "gamestateBackup.txt")
 
 function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
 {
-  if (isset($GLOBALS["hitPreview"])) throw new RuntimeException("hitPreview");
   global $gameName, $skipWriteGamestate, $filepath, $p1Settings, $p2Settings, $CS_NumUndoesThisTurn, $CS_PendingNAACard;
   
   // Handle special backups (like preBlockBackup.txt, beginTurnGamestate.txt, lastTurnGamestate.txt)
@@ -438,7 +434,6 @@ function MakeStartChainLinkBackup()
 
 function MakeStartTurnBackup()
 {
-  if (isset($GLOBALS["hitPreview"])) return;
   global $mainPlayer, $currentTurn, $filepath;
   $lastTurnFN = $filepath . "lastTurnGamestate.txt";
   $thisTurnFN = $filepath . "beginTurnGamestate.txt";
