@@ -824,10 +824,15 @@ function EVOPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       if (IsRoyal($currentPlayer)) Draw($currentPlayer, num:2);
       else Draw($currentPlayer);
       PrependDecisionQueue("OP", $currentPlayer, "BANISHHAND", 1);
-      if (SearchCount(SearchHand($currentPlayer, pitch: 1)) >= 2) {
+      $redIndices = SearchHand($currentPlayer, pitch: 1);
+      if (SearchCount($redIndices) >= 2) {
+        $redIndices = array_map("intval", explode(",", $redIndices));
+        sort($redIndices);
+        $forced = count($redIndices) == 2 && !PitchOrderMatters($currentPlayer)
+          && !HandCardPitchRestricted($currentPlayer, $redIndices[0]) && !HandCardPitchRestricted($currentPlayer, $redIndices[1]);
         PrependDecisionQueue("ELSE", $currentPlayer, "-");
-        PitchCard($currentPlayer, "MYHAND:pitch=1");
-        PitchCard($currentPlayer, "MYHAND:pitch=1");
+        PitchCard($currentPlayer, "MYHAND:pitch=1", forcedIndex: $forced ? $redIndices[0] : -1);
+        PitchCard($currentPlayer, "MYHAND:pitch=1", forcedIndex: $forced ? $redIndices[1] : -1);
         PrependDecisionQueue("NOPASS", $currentPlayer, "-");
         PrependDecisionQueue("YESNO", $currentPlayer, "if you want to pitch 2 red cards");
       }

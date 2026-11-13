@@ -1444,28 +1444,52 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
   }
 
 }
+
+function HandCardPitchRestricted($player, $index)
+{
+  global $playerID;
+  $Hand = GetHand($player);
+  if (!isset($Hand[$index])) return true;
+  $viewerID = $playerID;
+  $playerID = $player;
+  $restrictedBy = "";
+  $restricted = IsPitchRestricted($Hand[$index], $restrictedBy, "HAND", $index, phase: "CHOOSEHANDCANCEL");
+  $playerID = $viewerID;
+  return $restricted;
+}
+
+function PitchOrderMatters($player)
+{
+  global $CS_NumAddedToSoul;
+  return SearchItemForIndex("talisman_of_recompense_yellow", $player) > -1
+    || (GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol"));
+}
+
 // Set "forCost" to false when a multizone pitch selector is specifically required.
-function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true, $remaining=-1)
+// $forcedIndex: a hand index the caller knows is the only legal pick when this pitch resolves.
+function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAND:realPitch=3&MYHAND:realPitch=4", $skipGain=false, $forCost=true, $remaining=-1, $forcedIndex=-1)
 {
   if ($forCost) { // used to check if the process should be automated
     $indices = [];
     $Hand = GetHand($player);
     $total = 0;
     $minPitch = PHP_INT_MAX;
+    $anyRestricted = false;
     for ($i = 0; $i < count($Hand); $i += HandPieces()) {
       $pitch = intval(PitchValue($Hand[$i]));
       if ($pitch > 0) {
         $indices[] = $i;
         $total += $pitch;
         $minPitch = min($minPitch, $pitch);
+        if (HandCardPitchRestricted($player, $i)) $anyRestricted = true;
       }
     }
-    if (count($indices) > 1) {
-      global $CS_NumAddedToSoul;
-      $wholeHandForced = $remaining > 0 && $total >= $remaining && $total - $minPitch < $remaining
-        && SearchItemForIndex("talisman_of_recompense_yellow", $player) == -1
-        && !(GetClassState($player, $CS_NumAddedToSoul) > 0 && SearchCharacterActive($player, "vestige_of_sol"));
-      if ($wholeHandForced) $indices = [$indices[0]];
+    $autoIndex = -1;
+    if ($forcedIndex >= 0) $autoIndex = $forcedIndex;
+    elseif (!$anyRestricted) {
+      if (count($indices) == 1) $autoIndex = $indices[0];
+      elseif (count($indices) > 1 && $remaining > 0 && $total >= $remaining && $total - $minPitch < $remaining && !PitchOrderMatters($player))
+        $autoIndex = $indices[0];
     }
   }
   if(!$skipGain) PrependDecisionQueue("GAINPITCHVALUE", $player, "-", 1);
@@ -1473,8 +1497,8 @@ function PitchCard($player, $search="MYHAND:realPitch=1&MYHAND:realPitch=2&MYHAN
   PrependDecisionQueue("ADDMYPITCH", $player, "-", 1);
   if ($forCost) {
     PrependDecisionQueue("REMOVEMYHAND", $player, "-", 1);
-    if (count($indices) == 1 && AutoPitchForcedSetting($player))
-      PrependDecisionQueue("PASSPARAMETER", $player, $indices[0], 1);
+    if ($autoIndex >= 0 && AutoPitchForcedSetting($player))
+      PrependDecisionQueue("PASSPARAMETER", $player, $autoIndex, 1);
     else
       PrependDecisionQueue("CHOOSEHANDCANCEL", $player, "<-", 1);
   }
