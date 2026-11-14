@@ -184,6 +184,16 @@ function GetCachePiece($name, $piece)
   return $cacheArray[$piece];
 }
 
+function KickedPlayerToken($userName)
+{
+  return hash("crc32b", strval($userName));
+}
+
+function WasKickedFromLobby($gameName, $userName)
+{
+  return strval($userName) !== "" && GetCachePiece($gameName, 18) === KickedPlayerToken($userName);
+}
+
 function ReadCacheArray($name)
 {
   $cacheVal = ReadCache($name);

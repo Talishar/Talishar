@@ -214,13 +214,10 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
  }
 
  // Block a recently kicked player from immediately rejoining
- if ($playerID == 2) {
-   $kickedUsername = strval(GetCachePiece($gameName, 18));
-   if ($kickedUsername !== "" && $kickedUsername === $joinerName) {
-     $response->error = "You were kicked from this lobby.";
-     echo json_encode($response);
-     exit;
-   }
+ if ($playerID == 2 && WasKickedFromLobby($gameName, $joinerName)) {
+   $response->error = "You were kicked from this lobby.";
+   echo json_encode($response);
+   exit;
  }
 
  if ($matchup == "" && !$forceBaseDeckRefresh && !$changeDeck && $playerID == 2 && $gameStatus >= $MGS_Player2Joined) {
@@ -384,6 +381,9 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    $bannedCard = "";
    $restrictedCard = "";
    $isDeckLegal = "";
+   $bannedCardList = [];
+   $restrictedCardList = [];
+   $extraCopyCardList = [];
    $character = "";
    $head = "";
    $chest = "";
@@ -433,14 +433,17 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        $cardName = CardName($id);
        $pitchVal = PitchValue($id);
        $cardLabel = $pitchVal > 0 ? $cardName . " (" . $pitchVal . ")" : $cardName;
+       $cardEntry = ["id" => $id, "name" => $cardName, "pitch" => $pitchVal];
 
        if (IsCardBanned($id, $format, $character) && $format != "draft") {
          if ($bannedCard != "") $bannedCard .= ", ";
          $bannedCard .= $cardLabel;
+         $bannedCardList[$id] = $cardEntry;
        }
        if (!isCardLegalinHero($id, $character, $format)) {
          if ($bannedCard != "") $bannedCard .= ", ";
          $bannedCard .= $cardLabel;
+         $bannedCardList[$id] = $cardEntry;
        }
 
        // Track the count of each card ID
@@ -451,6 +454,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
        if (isCardRestricted($cardName, $format, $cardNameCounts[$cardName])) {
          if ($restrictedCard != "") $restrictedCard .= ", ";
          $restrictedCard .= $cardLabel;
+         $restrictedCardList[$id] = $cardEntry;
        }
 
        if ($character != "brevant_civic_protector" && $id != "chivalry_blue") { //Exclude Brevant and Chivalry
@@ -458,21 +462,25 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
          if (($format == "clash" || $format == "sage" || $format == "compsage" || $format == "futuresage") && $cardCounts[$id] > 2 && !hasUnlimited($id)) {
            if ($isDeckLegal != "") $isDeckLegal .= ", ";
            $isDeckLegal .= $cardLabel;
+           $extraCopyCardList[$id] = $cardEntry;
          }
          // Deck Check for singleton blitz
          elseif ($format == "blitz" && !hasUnlimited($id) && $cardCounts[$id] > 1) {
            if ($isDeckLegal != "") $isDeckLegal .= ", ";
            $isDeckLegal .= $cardLabel;
+           $extraCopyCardList[$id] = $cardEntry;
          }
        }
        // Deck Check to make sure players don't run more than 3 copies of cards in Classic Constructed formats
        if (($format == "cc" || $format == "compcc" || $format == "llcc" || $format == "compllcc" || $format == "futurecc" || $format == "futurell" || $format == "gage") && $cardCounts[$id] > 3 && !hasUnlimited($id)) {
          if ($isDeckLegal != "") $isDeckLegal .= ", ";
          $isDeckLegal .= $cardLabel;
+         $extraCopyCardList[$id] = $cardEntry;
        }
        if ($format != "draft" && $format != "open" && hasLegendary($id) && $cardCounts[$id] > 1) {
          if ($isDeckLegal != "") $isDeckLegal .= ", ";
          $isDeckLegal .= $cardLabel;
+         $extraCopyCardList[$id] = $cardEntry;
        }
      }
      $deckLoaded = true;
@@ -484,20 +492,8 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
 
-   if ($isDeckLegal != "") {
-     $response->error = "⚠️ The deck isn't legal because it contains extra copies of the following cards: " . $isDeckLegal . ".";
-     echo json_encode($response);
-     exit;
-   }
-
-   if ($unsupportedCards != "") {
-     $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
-     echo json_encode($response);
-     exit;
-   }
-
    if (SubtypeContains($character, "Young") && ($format == "cc" || $format == "compcc" || $format == "futurecc" || $format == "gage")) {
-     $response->error = "⚠️ Young heroes are not legal in Classic Constructed: Young - " . CardName($character) . ".";
+     $response->error = "⚠️ Young heroes are not legal in " . FormatDisplayName($format) . ": Young - " . CardName($character) . ".";
      echo json_encode($response);
      exit;
     }
@@ -508,14 +504,29 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
       exit;
     }
 
+   if ($isDeckLegal != "") {
+     $response->error = "⚠️ The deck isn't legal because it contains extra copies of the following cards: " . $isDeckLegal . ".";
+     $response->errorCards = array_values($extraCopyCardList);
+     echo json_encode($response);
+     exit;
+   }
+
+   if ($unsupportedCards != "") {
+     $response->error = "⚠️ The following cards are not yet supported: " . $unsupportedCards . ".";
+     echo json_encode($response);
+     exit;
+   }
+
     if ($bannedCard != "") {
       $response->error = "⚠️ The following cards are not legal in " . FormatDisplayName($format) . ": " . $bannedCard . ".";
+      $response->errorCards = array_values($bannedCardList);
       echo json_encode($response);
       exit;
     }
 
     if ($restrictedCard != "") {
       $response->error = "⚠️ The following cards are restricted to up to 1 copy in " . FormatDisplayName($format) . ": " . $restrictedCard . ".";
+      $response->errorCards = array_values($restrictedCardList);
       echo json_encode($response);
       exit;
    }

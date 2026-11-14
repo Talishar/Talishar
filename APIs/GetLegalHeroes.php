@@ -25,9 +25,14 @@ $formats = [
   'brawl', 'precon', 'compllcc', 'sage', 'compsage', 'futuresage',
   'open', 'gage'
 ];
+// ?by=setId lists set IDs (as stored for favorite decks and lobby heroes) instead of names.
+$bySetId = ($_GET['by'] ?? '') === 'setId';
 $heroesByFormat = [];
 foreach ($formats as $format) {
-  $heroesByFormat[$format] = array_values(array_unique(array_column(GetLegalHeroes($format), 'name')));
+  $heroes = GetLegalHeroes($format);
+  $heroesByFormat[$format] = $bySetId
+    ? array_values(array_unique(array_map(fn($hero) => SetID($hero['heroId']), $heroes)))
+    : array_values(array_unique(array_column($heroes, 'name')));
 }
 
 echo json_encode($heroesByFormat);

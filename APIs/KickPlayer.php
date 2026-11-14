@@ -80,7 +80,7 @@ SetCachePieces($gameName, [
   5 => "-1",
   11 => 0,
   17 => "kicked",
-  18 => $kickedName,
+  18 => KickedPlayerToken($kickedName),
 ]);
 
 $p2Data = [];

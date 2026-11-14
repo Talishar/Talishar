@@ -20,6 +20,7 @@ include_once '../Libraries/BlockedUserLibraries.php';
 include_once '../Libraries/FriendLibraries.php';
 include_once '../Libraries/FeaturedGameLibraries.php';
 include_once '../Libraries/GameListScan.php';
+include_once '../Libraries/GameListViewer.php';
 
 $path = "../Games";
 
@@ -34,7 +35,6 @@ if ($useGameCacheSentinels && (!GameCacheSentinelsAvailable() || !class_exists('
 
 session_start();
 SetHeaders();
-$conn = null;
 
 if(!IsUserLoggedIn()) {
   if(isset($_COOKIE["rememberMeToken"])) {
@@ -47,10 +47,7 @@ $response->openGames = [];
 $canSeeQueue = IsUserLoggedIn();
 $response->canSeeQueue = $canSeeQueue;
 
-$isShadowBanned = false;
-if(isset($_SESSION["isBanned"])) $isShadowBanned = (intval($_SESSION["isBanned"]) == 1 ? true : false);
-else if(IsUserLoggedIn()) $isShadowBanned = IsBannedPlayer(LoggedInUserName());
-if(!$isShadowBanned) $isShadowBanned = IsIPBanned();
+$isShadowBanned = GameListViewerIsShadowBanned();
 
 // If player is actually banned, return empty game list
 if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {
@@ -58,76 +55,11 @@ if(IsUserLoggedIn() && IsBannedPlayer(LoggedInUserName())) {
   exit;
 }
 
-// Get banned players list for filtering
-$bannedPlayers = GetBannedPlayers();
-
-// Get blocked users list for filtering
-$blockedUserNames = [];
-$friendUserNames = [];
-$hiddenByFriendNames = [];
-$friendUserSet = []; 
-$blockedUserSet = []; 
-$hiddenByFriendSet = [];
-if(IsUserLoggedIn()) {
-  $userId = LoggedInUser();
-  $now = time();
-  $cacheTTL = 300; // 5 minutes
-  $refreshBlockedUsers = !isset($_SESSION['_blockedCache']) || ($now - ($_SESSION['_blockedCacheAt'] ?? 0)) > $cacheTTL;
-  $refreshFriends = !isset($_SESSION['_friendNamesCache']) || ($now - ($_SESSION['_friendNamesCacheAt'] ?? 0)) > $cacheTTL;
-  if ($refreshBlockedUsers || $refreshFriends) {
-    $conn = GetDBConnection(DBL_GET_GAME_LIST);
-  }
-
-  // Blocked users — refresh at most every five minutes per session.
-  if ($refreshBlockedUsers) {
-    if ($conn) {
-      $query = "SELECT u.usersUid FROM blocked_users b
-                JOIN users u ON b.blockedUserId = u.usersId WHERE b.userId = ?
-                UNION
-                SELECT u.usersUid FROM blocked_users b
-                JOIN users u ON b.userId = u.usersId WHERE b.blockedUserId = ?";
-      try {
-        $stmt = $conn->prepare($query);
-        if ($stmt) {
-          $stmt->bind_param("ii", $userId, $userId);
-          $stmt->execute();
-          $result = $stmt->get_result();
-          while ($row = $result->fetch_assoc()) {
-            $blockedUserNames[] = $row['usersUid'];
-          }
-          $stmt->close();
-        }
-      } catch (\Exception $e) {
-        error_log("GetGameList: blocked users query failed: " . $e->getMessage());
-      }
-    }
-    $_SESSION['_blockedCache'] = $blockedUserNames;
-    $_SESSION['_blockedCacheAt'] = $now;
-  } else {
-    $blockedUserNames = $_SESSION['_blockedCache'];
-  }
-
-  // Friends list — refresh at most every five minutes per session.
-  if ($refreshFriends) {
-    $friends = GetUserFriends($userId);
-    $friendUserNames = array_column($friends, 'username');
-    $hiddenByFriendNames = GetFriendsHidingGamesFromFriends($friends);
-    $_SESSION['_friendNamesCache'] = $friendUserNames;
-    $_SESSION['_friendHiddenGamesCache'] = $hiddenByFriendNames;
-    $_SESSION['_friendNamesCacheAt'] = $now;
-  } else {
-    $friendUserNames = $_SESSION['_friendNamesCache'];
-    $hiddenByFriendNames = $_SESSION['_friendHiddenGamesCache'] ?? [];
-  }
-
-  $blockedUserSet = array_flip($blockedUserNames);
-  $friendUserSet = array_flip($friendUserNames);
-  $hiddenByFriendSet = array_flip($hiddenByFriendNames);
-}
-if ($conn) {
-  mysqli_close($conn);
-  $conn = null;
-}
+$viewer = LoadGameListViewer($isShadowBanned);
+$bannedPlayers = $viewer['bannedPlayers'];
+$blockedUserSet = $viewer['blocked'];
+$friendUserSet = $viewer['friends'];
+$hiddenByFriendSet = $viewer['hiddenByFriend'];
 // Release the session file lock before scanning games.
 session_write_close();
 
@@ -189,10 +121,7 @@ if ($scan !== null) {
   }
 
   foreach ($scan['open'] as [$gameToken, $visibility, $p1uid, $hasHero, $p1Hero, $openFormat, $formatName, $description, $creatorName]) {
-    if ($visibility == "2" && !($canSeeQueue && isset($friendUserSet[$p1uid]))) continue;
-    if (isset($bannedPlayers[strtolower($p1uid)])) continue;
-    if (isset($blockedUserSet[$p1uid])) continue;
-    if (isset($hiddenByFriendSet[$p1uid])) continue;
+    if (!OpenGameVisibleToViewer($viewer, $p1uid, $visibility, $openFormat)) continue;
 
     $openGame = new stdClass();
     if ($hasHero) $openGame->p1Hero = $p1Hero;
@@ -202,11 +131,7 @@ if ($scan !== null) {
     $openGame->gameName = $gameToken;
     $openGame->gameCreator = $creatorName;
     $openGame->visibility = $visibility;
-    if ($isShadowBanned) {
-      if ($openFormat == "shadowblitz" || $openFormat == "shadowcc") $response->openGames[] = $openGame;
-    } else {
-      if ($openFormat != "shadowblitz" && $openFormat != "shadowcc") $response->openGames[] = $openGame;
-    }
+    $response->openGames[] = $openGame;
   }
   $response->gameInProgressCount = $scan['inProgressCount'];
 

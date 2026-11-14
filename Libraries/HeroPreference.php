@@ -18,9 +18,9 @@ function HeroNameKey($name) {
   return preg_replace('/[^\p{L}\p{N}]+/u', '', strtr($name, $letters)) ?? '';
 }
 
-function CheckHeroPreference($character, $gameDescription) {
-  $knownClasses = ['assassin', 'brute', 'guardian', 'illusionist', 'mechanologist',
-                   'necromancer', 'ninja', 'pirate', 'ranger', 'runeblade', 'warrior', 'wizard'];
+function ParseHeroPreference($gameDescription) {
+  $knownClasses = ['assassin', 'brute', 'guardian', 'illusionist', 'mechanologist', 'merchant',
+                   'necromancer', 'ninja', 'pirate', 'ranger', 'runeblade', 'thief', 'warrior', 'wizard'];
 
   $preferMode = null;
   $namesPart = null;
@@ -49,21 +49,34 @@ function CheckHeroPreference($character, $gameDescription) {
     $candidates[] = $tokens[$i] . ' ' . $tokens[$i + 1];
   }
 
-  $isClassBased = !empty(array_intersect($tokens, $knownClasses));
+  return [
+    'mode' => $preferMode,
+    'classBased' => !empty(array_intersect($tokens, $knownClasses)),
+    'candidates' => $candidates,
+  ];
+}
 
-  if ($isClassBased) {
-    $heroClasses = explode(',', strtolower(CardClass($character)));
-    $matched = !empty(array_intersect($heroClasses, $candidates));
-  } else {
-    $matched = in_array(HeroNameKey(CardName($character)), array_map('HeroNameKey', $candidates), true);
+function HeroPreferenceMatches($preference, $heroName, $heroClass) {
+  if ($preference['classBased']) {
+    $heroClasses = explode(',', strtolower($heroClass));
+    return !empty(array_intersect($heroClasses, $preference['candidates']));
   }
+  return in_array(HeroNameKey($heroName), array_map('HeroNameKey', $preference['candidates']), true);
+}
 
-  if ($preferMode === 'include' && !$matched) {
+function HeroPreferenceAllows($preference, $heroName, $heroClass) {
+  if ($preference === null) return true;
+  $matched = HeroPreferenceMatches($preference, $heroName, $heroClass);
+  return $preference['mode'] === 'include' ? $matched : !$matched;
+}
+
+function CheckHeroPreference($character, $gameDescription) {
+  $preference = ParseHeroPreference($gameDescription);
+  if ($preference === null) return null;
+  if (HeroPreferenceAllows($preference, CardName($character), CardClass($character))) return null;
+
+  if ($preference['mode'] === 'include') {
     return "⚠️ This lobby is looking to play against specific heroes. Your hero does not match the lobby's preferences.";
   }
-  if ($preferMode === 'exclude' && $matched) {
-    return "⚠️ This lobby has specified they are not interested in playing against your hero.";
-  }
-
-  return null;
+  return "⚠️ This lobby has specified they are not interested in playing against your hero.";
 }
