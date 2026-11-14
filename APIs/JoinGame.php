@@ -187,23 +187,12 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
    exit;
  }
 
- // Check if the joiner has blocked the game creator
- if (IsUserLoggedIn() && $playerID != 3) {
-   $joinerId = LoggedInUser();
-   $creatorName = $p1uid;
-   $creatorUser = FindUserByUsername($creatorName);
-
-   if ($creatorUser) {
-     $creatorId = $creatorUser['usersId'];
-
-     // Check if joiner has blocked the creator - if so, they can't join
-     if (IsUserBlocked($joinerId, $creatorId)) {
-       $response->error = "Unable to join this game.";
-       WriteGameFile();
-       echo json_encode($response);
-       exit;
-     }
-   }
+ // Refuse the join if either player has blocked the other
+ if ($playerID == 2 && !$forceBaseDeckRefresh && !$changeDeck && IsUserLoggedIn() && IsBlockedEitherWay(LoggedInUser(), $p1id)) {
+   $response->error = "Unable to join this game.";
+   WriteGameFile();
+   echo json_encode($response);
+   exit;
  }
 
  if ($playerID == 2 && !$forceBaseDeckRefresh && !$changeDeck && !str_starts_with($format ?? "", "shadow") && IsIPBanned()) {

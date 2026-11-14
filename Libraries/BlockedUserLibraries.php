@@ -83,6 +83,26 @@ function IsUserBlocked($userId, $blockedUserId) {
   return $isBlocked;
 }
 
+function IsBlockedEitherWay($userId, $otherUserId) {
+  if (!is_numeric($userId) || !is_numeric($otherUserId)) return false;
+  $connection = GetDBConnection(DBL_IS_BLOCKED_EITHER_WAY);
+  if (!$connection) return false;
+  $isBlocked = false;
+  try {
+    $stmt = $connection->prepare("SELECT 1 FROM blocked_users WHERE (userId = ? AND blockedUserId = ?) OR (userId = ? AND blockedUserId = ?) LIMIT 1");
+    if ($stmt) {
+      $stmt->bind_param("iiii", $userId, $otherUserId, $otherUserId, $userId);
+      $stmt->execute();
+      $isBlocked = $stmt->get_result()->num_rows > 0;
+      $stmt->close();
+    }
+  } catch (\Exception $e) {
+    error_log("IsBlockedEitherWay failed: " . $e->getMessage());
+  }
+  mysqli_close($connection);
+  return $isBlocked;
+}
+
 include_once __DIR__ . "/ModerationLibraries.php";
 
 const BLOCK_NOTE_MAX_LENGTH = 300;
