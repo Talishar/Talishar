@@ -15,6 +15,9 @@ if (!function_exists('GetCardEffectLabel')) {
       case "beseech_the_demigon_yellow":
       case "beseech_the_demigon_blue":
       case "painful_passage_red-buff":
+      case "blessing_of_qi_red":
+      case "blessing_of_qi_yellow":
+      case "blessing_of_qi_blue":
         return "Power +" . EffectPowerModifier($effectName);
       case "tear_through_the_portal_red":
       case "tear_through_the_portal_yellow":
