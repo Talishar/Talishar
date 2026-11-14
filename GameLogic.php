@@ -1184,9 +1184,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           if (CardName($card) != "") $deck->AddBottom($card);
           else WriteLog("There was an error adding a card to your deck, please submit a bug report", highlight: true);
         }
+        AddEvent("ADDBOTDECK", $player);
+        WriteLog("⤵️ A card was put on the bottom of the deck.");
       }
-      AddEvent("ADDBOTDECK", $player);
-      WriteLog("⤵️ A card was put on the bottom of the deck.");
       return $lastResult;
     case "MULTIADDTOPDECK":
       $deck = new Deck($player);
