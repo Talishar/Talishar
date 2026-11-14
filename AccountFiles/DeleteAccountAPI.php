@@ -5,6 +5,7 @@ include_once "./AccountSessionAPI.php";
 include_once "../includes/dbh.inc.php";
 include_once '../includes/functions.inc.php';
 include_once '../includes/ModeratorList.inc.php';
+include_once '../Libraries/MatchHistory.php';
 
 SetHeaders();
 
@@ -56,7 +57,7 @@ try {
   }
   
   // Get the usersId for the username to delete
-  $userIdSql = "SELECT usersId, isBanned FROM users WHERE usersUid = ?";
+  $userIdSql = "SELECT usersId, usersUid, isBanned FROM users WHERE usersUid = ?";
   $userIdStmt = mysqli_stmt_init($conn);
 
   if (!mysqli_stmt_prepare($userIdStmt, $userIdSql)) {
@@ -73,6 +74,7 @@ try {
   $result_ids = mysqli_stmt_get_result($userIdStmt);
   if ($row = mysqli_fetch_assoc($result_ids)) {
     $userIDToDelete = $row['usersId'];
+    $storedUserName = $row['usersUid'];
     $userIsBanned = intval($row['isBanned']) == 1;
   }
   mysqli_stmt_close($userIdStmt);
@@ -153,6 +155,7 @@ try {
   // Commit transaction
   mysqli_commit($conn);
   mysqli_close($conn);
+  DeleteMatchHistory($storedUserName);
   
   // Only clear the session if it's self-deletion
   if (!$isModDeletion) {

@@ -1272,6 +1272,12 @@ function PlayerWon($playerID, $conceded = false, $lethal = false)
   }
   if ($holdResult) return;
   try {
+    include_once __DIR__ . "/Libraries/MatchHistory.php";
+    RecordMatchHistory();
+  } catch (Throwable $e) {
+    error_log("PlayerWon: RecordMatchHistory threw: " . $e->getMessage());
+  }
+  try {
     logCompletedGameStats($conceded);
   } catch (Exception $e) {
     error_log("PlayerWon: logCompletedGameStats threw: " . $e->getMessage());
