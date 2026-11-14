@@ -72,7 +72,9 @@ function JSONRenderedCard(
   $holoCounters = NULL,
   $slot = NULL,
   $hasBoundAura = NULL,
-  $goAgain = NULL
+  $goAgain = NULL,
+  $blockValue = NULL,
+  $powerValue = NULL
 ) {
   if ($cardNumber === null) $cardNumber = ""; elseif (str_contains($cardNumber, "BLIND")) $cardNumber = substr($cardNumber, 0, -6);
   global $playerID, $CS_NumLightningPlayed, $isReplay;
@@ -393,6 +395,8 @@ function JSONRenderedCard(
   if($slot !== NULL) $card->slot = $slot;
   if($hasBoundAura !== NULL) $card->hasBoundAura = $hasBoundAura;
   if($goAgain !== NULL) $card->goAgain = $goAgain;
+  if($blockValue !== NULL) $card->blockValue = $blockValue;
+  if($powerValue !== NULL) $card->powerValue = $powerValue;
   return $card;
 }
 
@@ -407,6 +411,20 @@ function ItemDisplayState($cardID, $itemLabel)
   else if ($cardID == "null_time_zone_blue") $state["label"] = GamestateUnsanitize($itemLabel);
   if ($state["label"] == "" && DelimStringContains($itemLabel, "Temporary", true)) $state["label"] = "Stolen";
   return $state;
+}
+
+function CharacterPrintedValues($cardID, $player)
+{
+  if ($cardID == "arcanite_fortress" || $cardID == "base_of_the_mountain") return [NULL, NULL];
+  if (TypeContains($cardID, "W", $player)) {
+    $power = PowerValue($cardID, $player, "CHAR", base: true, attacking: true);
+    return [NULL, is_numeric($power) && $power > 0 ? intval($power) : NULL];
+  }
+  if (TypeContains($cardID, "E", $player)) {
+    $block = BlockValue($cardID, $player, "CHAR");
+    return [is_numeric($block) && $block >= 0 ? intval($block) : NULL, NULL];
+  }
+  return [NULL, NULL];
 }
 
 function CreateButtonAPI($playerID, $caption, $mode, $input, $size = null, $image = null, $tooltip = null, $fullRefresh = false, $fullReload = false, $prompt = null)
