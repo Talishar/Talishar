@@ -14,6 +14,9 @@ include_once "../Libraries/FormatCodes.php";
 include_once "../includes/MatchupHelpers.php";
 include_once "../includes/MetafyHelper.php";
 include_once "../Assets/MetafyDictionary.php";
+include_once "../Assets/patreon-php-master/src/PatreonDictionary.php";
+include_once "../Libraries/CosmeticsLibrary.php";
+include_once "../Libraries/DeckbuilderAltArts.php";
 
 include_once "../Classes/Card.php";
 // we only need to include unreleased sets, these includes can be removed whenever a set releases
@@ -233,6 +236,7 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      $p1DeckLink = $decklink;
    else if ($playerID == 2)
      $p2DeckLink = $decklink;
+   $deckAltArts = [];
    $curl = curl_init();
    $isFaBDB = str_contains($decklink, "fabdb");
    $isFaBMeta = str_contains($decklink, "fabmeta");
@@ -351,6 +355,12 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      exit;
    }
    $deckName = $deckObj->{'name'};
+   if (str_contains($decklink, "fabrary")) {
+     $deckPins = GetDeckbuilderPins($deckObj);
+     if (count($deckPins) > 0) {
+       $deckAltArts = GetEntitledDeckbuilderAltArts($deckPins, GetUserAltArtEntitlements($_SESSION["useruid"] ?? ""));
+     }
+   }
    if (isset($deckObj->{'matchups'})) {
      $matchups = $deckObj->{'matchups'};
      // Transform matchups to standardize turn order preferences
@@ -485,6 +495,11 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
      echo json_encode($response);
      exit;
    }
+
+   if ($playerID == 1)
+     $p1DeckAltArts = $deckAltArts;
+   else if ($playerID == 2)
+     $p2DeckAltArts = $deckAltArts;
 
    if (SubtypeContains($character, "Young") && ($format == "cc" || $format == "compcc" || $format == "futurecc" || $format == "gage")) {
      $response->error = "⚠️ Young heroes are not legal in " . FormatDisplayName($format) . ": Young - " . CardName($character) . ".";

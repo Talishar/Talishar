@@ -37,6 +37,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     [$p1StartingEquipment, $p2StartingEquipment] = [$p2StartingEquipment, $p1StartingEquipment];
     [$p1MetafyTiers, $p2MetafyTiers] = [$p2MetafyTiers, $p1MetafyTiers];
     [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
+    [$p1DeckAltArts, $p2DeckAltArts] = [$p2DeckAltArts, $p1DeckAltArts];
   }
 
   FinalizeGameResultInGame(true);

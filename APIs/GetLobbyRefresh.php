@@ -231,6 +231,7 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
     $p2uid = "";
     $p2DisplayName = "";
     $p2id = "";
+    $p2DeckAltArts = [];
     $p2SideboardSubmitted = "0";
     $p1SideboardSubmitted = "0";
     $p1EquipmentSubmitted = "0";
@@ -240,6 +241,7 @@ if ($kickPlayerTwo && $gameStatus < $MGS_GameStarted) {
     $p1uid = "-";
     $p1DisplayName = "";
     $p1id = "";
+    $p1DeckAltArts = [];
     $p1SideboardSubmitted = "0";
     $p2SideboardSubmitted = "0";
     $p1EquipmentSubmitted = "0";
