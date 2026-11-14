@@ -1,8 +1,8 @@
 <?php
 
 // Who is looking at the game list, and which lobbies they are allowed to see.
-// Shared by APIs/GetGameListV2.php and APIs/GetMatchmakingStatus.php so the
-// open game list and the matchmaking queue always agree.
+// Shared by APIs/GetGameListV2.php and APIs/GetFindMatchStatus.php so the
+// open game list and Find match always agree.
 // Needs an open session (session_start) and the account/friend/block libraries.
 
 function GameListViewerIsShadowBanned()
@@ -97,6 +97,6 @@ function OpenGameVisibleToViewer($viewer, $p1uid, $visibility, $openFormat)
   if (isset($viewer['bannedPlayers'][strtolower($p1uid)])) return false;
   if (isset($viewer['blocked'][$p1uid])) return false;
   if (isset($viewer['hiddenByFriend'][$p1uid])) return false;
-  $isShadowLobby = $openFormat == "shadowblitz" || $openFormat == "shadowcc";
+  $isShadowLobby = str_starts_with((string)$openFormat, "shadow");
   return $viewer['isShadowBanned'] ? $isShadowLobby : !$isShadowLobby;
 }

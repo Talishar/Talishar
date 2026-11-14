@@ -1,18 +1,18 @@
 <?php
 
-// Matchmaking queue helpers. Waiting players are the open public lobbies from
+// Find match helpers. Waiting players are the open public lobbies from
 // GameListScan.php; these helpers decide which of them a player can be matched
 // into and, when none fit, why.
 // Needs CardDictionary.php, LegalHeroesHelper.php and HeroPreference.php.
 
 // Lobby heroes are hidden in these formats, so a joiner's own hero filter is ignored there.
-function MatchmakingIsCompetitiveFormat($format)
+function FindMatchIsCompetitiveFormat($format)
 {
   return in_array($format, ['compcc', 'compblitz', 'compllcc', 'compsage', 'shadowcompcc', 'shadowcompllcc', 'shadowcompsage'], true);
 }
 
 // Mirrors the shadow ban format swap in APIs/CreateGame.php.
-function MatchmakingShadowFormat($format)
+function FindMatchShadowFormat($format)
 {
   if (in_array($format, ['cc', 'futurecc', 'llcc', 'openformatllcc', 'openformatsage'], true)) return 'shadowcc';
   if ($format == 'compcc') return 'shadowcompcc';
@@ -24,7 +24,7 @@ function MatchmakingShadowFormat($format)
 }
 
 // Shadow banned players must never see a shadow format name.
-function MatchmakingUnshadowFormat($format)
+function FindMatchUnshadowFormat($format)
 {
   $shadowFormats = [
     'shadowcc' => 'cc', 'shadowcompcc' => 'compcc', 'shadowcompllcc' => 'compllcc',
@@ -35,9 +35,9 @@ function MatchmakingUnshadowFormat($format)
 
 // The GetLegalHeroes() format to check a hero against, or null when the lobby
 // format does not restrict heroes that way (limited, precon).
-function MatchmakingLegalityFormat($format)
+function FindMatchLegalityFormat($format)
 {
-  $format = MatchmakingUnshadowFormat($format);
+  $format = FindMatchUnshadowFormat($format);
   $checked = [
     'cc', 'compcc', 'futurecc', 'llcc', 'compllcc', 'futurell',
     'blitz', 'compblitz', 'openformatblitz', 'commoner', 'clash',
@@ -46,7 +46,7 @@ function MatchmakingLegalityFormat($format)
   return in_array($format, $checked, true) ? $format : null;
 }
 
-function MatchmakingHeroLegal($heroSetId, $legalityFormat)
+function FindMatchHeroLegal($heroSetId, $legalityFormat)
 {
   static $legalByFormat = [];
   if (!isset($legalByFormat[$legalityFormat])) {
@@ -57,7 +57,7 @@ function MatchmakingHeroLegal($heroSetId, $legalityFormat)
 }
 
 // Accepts a set ID (as stored for favorite decks and lobby heroes) or a card ID.
-function MatchmakingHeroCardId($hero)
+function FindMatchHeroCardId($hero)
 {
   $hero = trim((string)$hero);
   if ($hero === '') return '';
@@ -66,7 +66,7 @@ function MatchmakingHeroCardId($hero)
   return DelimStringContains(CardType($cardID), "C") ? $cardID : '';
 }
 
-function MatchmakingHeroShortName($cardID)
+function FindMatchHeroShortName($cardID)
 {
   $name = html_entity_decode(CardName($cardID), ENT_QUOTES, 'UTF-8');
   $comma = strpos($name, ',');
@@ -74,7 +74,7 @@ function MatchmakingHeroShortName($cardID)
 }
 
 // The learning descriptions the lobby list asks for confirmation before joining.
-function MatchmakingIsLearningLobby($description)
+function FindMatchIsLearningLobby($description)
 {
   $description = html_entity_decode((string)$description, ENT_QUOTES, 'UTF-8');
   return in_array($description, [
@@ -86,41 +86,62 @@ function MatchmakingIsLearningLobby($description)
 }
 
 // One reason per lobby for the summary counts, most important first.
-const MATCHMAKING_REASON_ORDER = ['own', 'kicked', 'heroIllegal', 'theyRejectHero', 'youRejectHero', 'learning'];
+const FIND_MATCH_REASON_ORDER = ['own', 'kicked', 'heroIllegal', 'theyRejectHero', 'youRejectHero', 'learning'];
 
 // Every reason the joiner cannot be matched into one open lobby. An empty list
 // means the lobby fits. $joiner: userName, heroCardId, preference (ParseHeroPreference result or null).
-function MatchmakingLobbyBlockers($joiner, $lobby)
+function FindMatchLobbyBlockers($joiner, $lobby)
 {
   $codes = [];
   if ($joiner['userName'] !== '' && $lobby['p1uid'] === $joiner['userName']) $codes[] = 'own';
-  if ($joiner['userName'] !== '' && WasKickedFromLobby($lobby['gameName'], $joiner['userName'])) $codes[] = 'kicked';
+  if ($joiner['userName'] !== '' && $lobby['gameName'] !== '' && WasKickedFromLobby($lobby['gameName'], $joiner['userName'])) $codes[] = 'kicked';
 
   $heroCardId = $joiner['heroCardId'];
   if ($heroCardId !== '') {
-    $legalityFormat = MatchmakingLegalityFormat($lobby['format']);
-    if ($legalityFormat !== null && !MatchmakingHeroLegal(SetID($heroCardId), $legalityFormat)) $codes[] = 'heroIllegal';
+    $legalityFormat = FindMatchLegalityFormat($lobby['format']);
+    if ($legalityFormat !== null && !FindMatchHeroLegal(SetID($heroCardId), $legalityFormat)) $codes[] = 'heroIllegal';
     // JoinGame.php only enforces the lobby's hero preference in public lobbies.
     if ($lobby['visibility'] == "1" && !HeroPreferenceAllows(ParseHeroPreference($lobby['description']), CardName($heroCardId), CardClass($heroCardId))) {
       $codes[] = 'theyRejectHero';
     }
   }
 
-  if ($joiner['preference'] !== null && !MatchmakingIsCompetitiveFormat($lobby['format']) && $lobby['hero'] !== '') {
-    $lobbyHeroCardId = MatchmakingHeroCardId($lobby['hero']);
+  if ($joiner['preference'] !== null && !FindMatchIsCompetitiveFormat($lobby['format']) && $lobby['hero'] !== '') {
+    $lobbyHeroCardId = FindMatchHeroCardId($lobby['hero']);
     if ($lobbyHeroCardId !== '' && !HeroPreferenceAllows($joiner['preference'], CardName($lobbyHeroCardId), CardClass($lobbyHeroCardId))) {
       $codes[] = 'youRejectHero';
     }
   }
 
-  if (MatchmakingIsLearningLobby($lobby['description'])) $codes[] = 'learning';
+  if (FindMatchIsLearningLobby($lobby['description'])) $codes[] = 'learning';
   return $codes;
 }
 
-function MatchmakingPrimaryReason($codes)
+function FindMatchPrimaryReason($codes)
 {
-  foreach (MATCHMAKING_REASON_ORDER as $code) {
+  foreach (FIND_MATCH_REASON_ORDER as $code) {
     if (in_array($code, $codes, true)) return $code;
   }
   return null;
+}
+
+// Open lobbies in $matchFormat the joiner fits into, oldest first.
+function FindMatchFitsInFormat($scan, $viewer, $joiner, $matchFormat)
+{
+  $fits = [];
+  foreach (($scan['open'] ?? []) as [$gameToken, $visibility, $p1uid, $hasHero, $p1Hero, $openFormat, $formatName, $description, $creatorName]) {
+    if ($openFormat !== $matchFormat) continue;
+    if (!OpenGameVisibleToViewer($viewer, $p1uid, $visibility, $openFormat)) continue;
+    $codes = FindMatchLobbyBlockers($joiner, [
+      'gameName' => $gameToken,
+      'p1uid' => $p1uid,
+      'visibility' => $visibility,
+      'format' => $openFormat,
+      'hero' => $hasHero ? $p1Hero : '',
+      'description' => $description,
+    ]);
+    if (count($codes) === 0) $fits[] = intval($gameToken);
+  }
+  sort($fits);
+  return $fits;
 }

@@ -1,6 +1,6 @@
 <?php
 
-// Matchmaking queue status: who is waiting in a format, who fits the player's
+// Find match status: who is waiting in a format, who fits the player's
 // deck and hero filter, and why the others don't. The client joins one of
 // `matches` with its own deck, or hosts a public lobby when there are none.
 //
@@ -26,7 +26,7 @@ include_once '../Libraries/GameListViewer.php';
 include_once '../CardDictionary.php';
 include_once '../Libraries/LegalHeroesHelper.php';
 include_once '../Libraries/HeroPreference.php';
-include_once '../Libraries/MatchmakingLibraries.php';
+include_once '../Libraries/FindMatchLibraries.php';
 
 SetHeaders();
 header('Content-Type: application/json; charset=utf-8');
@@ -61,7 +61,7 @@ $viewer = LoadGameListViewer($isShadowBanned);
 $userName = (string)($_SESSION["useruid"] ?? "");
 session_write_close();
 
-$heroCardId = MatchmakingHeroCardId($requestedHero);
+$heroCardId = FindMatchHeroCardId($requestedHero);
 $preference = ParseHeroPreference($requestedPreference);
 $joiner = ['userName' => $userName, 'heroCardId' => $heroCardId, 'preference' => $preference];
 
@@ -69,18 +69,18 @@ $response->heroKnown = $heroCardId !== '';
 if ($heroCardId !== '') {
   $response->hero = SetID($heroCardId);
   $response->heroName = html_entity_decode(CardName($heroCardId), ENT_QUOTES, 'UTF-8');
-  $response->heroShortName = MatchmakingHeroShortName($heroCardId);
+  $response->heroShortName = FindMatchHeroShortName($heroCardId);
 }
 $response->hasPreference = $preference !== null;
 
-$matchFormat = $isShadowBanned ? MatchmakingShadowFormat($requestedFormat) : $requestedFormat;
+$matchFormat = $isShadowBanned ? FindMatchShadowFormat($requestedFormat) : $requestedFormat;
 $summary = null;
 if ($requestedFormat !== '') {
   $summary = new stdClass();
   $summary->format = $requestedFormat;
-  $summary->competitive = MatchmakingIsCompetitiveFormat($requestedFormat);
-  $legalityFormat = MatchmakingLegalityFormat($requestedFormat);
-  $summary->heroLegal = ($heroCardId === '' || $legalityFormat === null) ? null : MatchmakingHeroLegal(SetID($heroCardId), $legalityFormat);
+  $summary->competitive = FindMatchIsCompetitiveFormat($requestedFormat);
+  $legalityFormat = FindMatchLegalityFormat($requestedFormat);
+  $summary->heroLegal = ($heroCardId === '' || $legalityFormat === null) ? null : FindMatchHeroLegal(SetID($heroCardId), $legalityFormat);
   $summary->waiting = 0;
   $summary->matches = [];
   $summary->reasons = new stdClass();
@@ -92,7 +92,7 @@ $scan = GetGameListScan($path, $currentTime, $useGameCacheSentinels);
 foreach (($scan['open'] ?? []) as [$gameToken, $visibility, $p1uid, $hasHero, $p1Hero, $openFormat, $formatName, $description, $creatorName]) {
   if (!OpenGameVisibleToViewer($viewer, $p1uid, $visibility, $openFormat)) continue;
 
-  $codes = MatchmakingLobbyBlockers($joiner, [
+  $codes = FindMatchLobbyBlockers($joiner, [
     'gameName' => $gameToken,
     'p1uid' => $p1uid,
     'visibility' => $visibility,
@@ -104,12 +104,12 @@ foreach (($scan['open'] ?? []) as [$gameToken, $visibility, $p1uid, $hasHero, $p
 
   if ($summary === null) continue;
   if ($openFormat !== $matchFormat) {
-    $shownFormat = MatchmakingUnshadowFormat($openFormat);
+    $shownFormat = FindMatchUnshadowFormat($openFormat);
     $summary->otherFormats->{$shownFormat} = ($summary->otherFormats->{$shownFormat} ?? 0) + 1;
     continue;
   }
   ++$summary->waiting;
-  $reason = MatchmakingPrimaryReason($codes);
+  $reason = FindMatchPrimaryReason($codes);
   if ($reason === null) $summary->matches[] = intval($gameToken);
   else $summary->reasons->{$reason} = ($summary->reasons->{$reason} ?? 0) + 1;
 }

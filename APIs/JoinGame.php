@@ -145,6 +145,11 @@ if ($favoriteDeckLink != "0" && $decklink == "") $decklink = $favoriteDeckLink;
 
 include "../HostFiles/Redirector.php";
 include "../CardDictionary.php";
+if (!file_exists("../Games/" . $gameName . "/GameFile.txt")) {
+  $response->error = "This lobby no longer exists.";
+  echo json_encode($response);
+  exit;
+}
 include "./APIParseGamefile.php";
 include "../MenuFiles/WriteGamefile.php";
 
@@ -760,6 +765,11 @@ if (isset($_SESSION["userid"])) LogIPHistory($_SESSION["userid"]);
   if ($playerID == 2) $cachePieces[18] = "";
   SetCachePieces($gameName, $cachePieces);
   GamestateUpdated($gameName);
+  if ($playerID == 1 && ($findMatchTicket ?? "") !== "") {
+    include_once __DIR__ . "/../Libraries/CacheLibraries.php";
+    include_once __DIR__ . "/../Libraries/FindMatchQueue.php";
+    FindMatchQueueAttachGame($findMatchTicket, $p1uid, $gameName);
+  }
 
   //$authKey = ($playerID == 1 ? $p1Key : $p2Key);
   //$_SESSION["authKey"] = $authKey;
