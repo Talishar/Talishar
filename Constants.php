@@ -902,6 +902,10 @@ $livingLegends = ["chane_bound_by_shadow", "bravo_star_of_the_show", "aurora_sho
 
 $benched = ["briar", "oldhim", "oscilio", "chane"];
 
+// Set codes whose cards are only legal in spoiler-friendly formats (future formats, precon, open).
+// "" covers cards that don't have a set id yet. Remove a set here when it releases.
+$unreleasedSets = ["OBK", "AMG", "MPB", ""];
+
 // Cards that can be discarded or used as attack
 const WINDUP_STYLE_CARDS = [
   "mighty_windup_red", "mighty_windup_yellow", "mighty_windup_blue",
