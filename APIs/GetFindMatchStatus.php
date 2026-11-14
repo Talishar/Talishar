@@ -104,6 +104,7 @@ foreach (($scan['open'] ?? []) as [$gameToken, $visibility, $p1uid, $hasHero, $p
 
   if ($summary === null) continue;
   if ($openFormat !== $matchFormat) {
+    if (in_array('own', $codes, true)) continue;
     $shownFormat = FindMatchUnshadowFormat($openFormat);
     $summary->otherFormats->{$shownFormat} = ($summary->otherFormats->{$shownFormat} ?? 0) + 1;
     continue;

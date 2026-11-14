@@ -61,9 +61,10 @@ include_once "../Libraries/ValidationLibraries.php";
 
 session_start();
 
+$requestAuthKey = isset($requestData["authKey"]) ? (string)$requestData["authKey"] : null;
 if ($playerID == 1 && isset($_SESSION["p1AuthKey"])) $authKey = $_SESSION["p1AuthKey"];
 else if ($playerID == 2 && isset($_SESSION["p2AuthKey"])) $authKey = $_SESSION["p2AuthKey"];
-else if (isset($requestData["authKey"])) $authKey = $requestData["authKey"];
+else if ($requestAuthKey !== null) $authKey = $requestAuthKey;
 $lastAuthKey = $_SESSION["lastAuthKey"] ?? null;
 $spectatorLoggedIn = $playerID !== 3 || (IsUserLoggedIn() && !empty(LoggedInUserName()));
 
@@ -101,7 +102,13 @@ if ($isLobbyPlayer) {
   fclose($authFile);
 
   if (!validateGameAuthKey($playerID, $authKey ?? null, $p1AuthKey, $p2AuthKey)) {
-    SendLobbyRefreshError(403, "Authentication failed");
+    if ($requestAuthKey === null || $requestAuthKey === ($authKey ?? null) || !validateGameAuthKey($playerID, $requestAuthKey, $p1AuthKey, $p2AuthKey)) {
+      SendLobbyRefreshError(403, "Authentication failed");
+    }
+    $authKey = $requestAuthKey;
+    session_start();
+    $_SESSION["p" . $playerID . "AuthKey"] = $authKey;
+    session_write_close();
   }
 }
 

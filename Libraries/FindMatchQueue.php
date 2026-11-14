@@ -73,19 +73,26 @@ function FindMatchHostAsLobby($host)
 
 // One Find match step: ['action' => 'join', 'games' => [...]], ['action' => 'wait', 'retryMs' => n]
 // or ['action' => 'host', 'ticket' => t]. $fits lists the fitting lobbies from the game list scan, oldest first;
-// $exclude lists lobbies this search already failed to join.
-function FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude = [])
+// $exclude lists lobbies this search already failed to join; $hostOf maps lobby => host user name.
+// A player can search several formats at once, so each host has at most one lobby handed out at a time.
+function FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude = [], $hostOf = [])
 {
-  $step = WithFindMatchQueue(function (&$queue) use ($viewer, $joiner, $matchFormat, $fits, $exclude) {
+  $step = WithFindMatchQueue(function (&$queue) use ($viewer, $joiner, $matchFormat, $fits, $exclude, $hostOf) {
     $now = round(microtime(true) * 1000);
     $userName = $joiner['userName'];
     foreach ($queue['hosts'] as $ticket => $host) {
-      if ($host['user'] === $userName) unset($queue['hosts'][$ticket]);
+      if ($host['user'] === $userName && $host['format'] === $matchFormat) unset($queue['hosts'][$ticket]);
     }
 
-    $claimedByOthers = function ($gameName) use (&$queue, $userName) {
+    $busyHosts = [];
+    foreach ($queue['claims'] as $claim) {
+      if ($claim['user'] !== $userName && ($claim['host'] ?? '') !== '') $busyHosts[$claim['host']] = true;
+    }
+    $claimedByOthers = function ($gameName) use (&$queue, $userName, $hostOf, $busyHosts) {
       $claim = $queue['claims'][(string)$gameName] ?? null;
-      return $claim !== null && $claim['user'] !== $userName;
+      if ($claim !== null) return $claim['user'] !== $userName;
+      $host = $hostOf[intval($gameName)] ?? '';
+      return $host !== '' && isset($busyHosts[$host]);
     };
 
     $games = [];
@@ -98,6 +105,7 @@ function FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude = []
         $mustWait = true;
         continue;
       }
+      $hostOf[intval($host['gameName'])] = $host['user'];
       if (in_array(intval($host['gameName']), $exclude, true) || $claimedByOthers($host['gameName'])) continue;
       $games[] = intval($host['gameName']);
     }
@@ -108,7 +116,7 @@ function FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude = []
     if (count($games) > 0) {
       sort($games);
       $games = array_slice($games, 0, 3);
-      $queue['claims'][(string)$games[0]] = ['user' => $userName, 'until' => $now + FIND_MATCH_CLAIM_MS];
+      $queue['claims'][(string)$games[0]] = ['user' => $userName, 'host' => (string)($hostOf[$games[0]] ?? ''), 'until' => $now + FIND_MATCH_CLAIM_MS];
       return ['action' => 'join', 'games' => $games];
     }
     if ($mustWait) return ['action' => 'wait', 'retryMs' => FIND_MATCH_WAIT_RETRY_MS];

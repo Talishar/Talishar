@@ -1380,18 +1380,17 @@ class hope_merchants_hood extends Card {
     AddDecisionQueue("MULTICHOOSEHAND", $this->controller, "<-", 1);
     AddDecisionQueue("MULTIREMOVEHAND", $this->controller, "-", 1);
     AddDecisionQueue("MULTIADDDECK", $this->controller, "-", 1);
-    Await($this->controller, $this->cardID, lastResultName:"search", final:true);
-    AddDecisionQueue("ELSE", $this->controller, "-");
-    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
+    Await($this->controller, $this->cardID, lastResultName:"search", subsequent:0, final:true);
     return "";
   }
 
   function SpecificLogic() {
     global $dqVars;
-    $search = $dqVars["search"];
-    $count = SearchCount($search);
-    if ($count == 0) return;
-    Draw($this->controller, num: $count);
+    $search = $dqVars["search"] ?? "PASS";
+    $count = ($search == "PASS" || $search == "" || $search == "-") ? 0 : SearchCount($search);
+    $deck = new Deck($this->controller);
+    $deck->Shuffle("-");
+    if ($count > 0) Draw($this->controller, num: $count);
     WriteLog(CardLink("hope_merchants_hood", "hope_merchants_hood") . " shuffled and drew " . $count . " cards");
   }
 

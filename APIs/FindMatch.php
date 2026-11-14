@@ -93,5 +93,8 @@ $useGameCacheSentinels = GameCacheSentinelsAvailable() && class_exists('APCUIter
 $scan = GetGameListScan("../Games", round(microtime(true) * 1000), $useGameCacheSentinels);
 $fits = array_values(array_diff(FindMatchFitsInFormat($scan ?? [], $viewer, $joiner, $matchFormat), $exclude));
 
-foreach (FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude) as $key => $value) $response->{$key} = $value;
+$hostOf = [];
+foreach (($scan['open'] ?? []) as $open) $hostOf[intval($open[0])] = (string)$open[2];
+
+foreach (FindMatchQueueStep($viewer, $joiner, $matchFormat, $fits, $exclude, $hostOf) as $key => $value) $response->{$key} = $value;
 echo json_encode($response);
