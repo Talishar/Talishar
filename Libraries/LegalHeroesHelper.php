@@ -171,7 +171,7 @@ $ALL_HEROES_OF_RATHE = [
 // TODO: refactor isBannedInFormat() out of JoinGame.php into a Libraries/
 // file so this can call it directly and we can drop the duplication.
 function isHeroBannedInFormat($heroId, $format) {
-  global $livingLegends;
+  global $livingLegends, $unreleasedSets;
 
   $allowsSpoilers = in_array($format, ['futurecc', 'futurell', 'futuresage', 'precon', 'open'], true);
 
@@ -189,8 +189,9 @@ function isHeroBannedInFormat($heroId, $format) {
     return true;
   }
 
+  // Unreleased sets (Constants.php $unreleasedSets), shared with isSpecialUsePromo() in JoinGame.php
   if (!$allowsSpoilers && function_exists('CardSet')
-      && in_array(CardSet($heroId), ['MPA', 'AMO', 'OBK', 'AMG', ''], true)) {
+      && in_array(CardSet($heroId), $unreleasedSets ?? [], true)) {
     return true;
   }
 
