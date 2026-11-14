@@ -4,6 +4,7 @@ include_once __DIR__ . '/SHMOPLibraries.php';
 include_once __DIR__ . '/CacheLibraries.php';
 include_once __DIR__ . '/GameHealthLog.php';
 include_once __DIR__ . '/RecentGameLibraries.php';
+include_once __DIR__ . '/GameResultReporting.php';
 
 const GAME_LIST_SCAN_KEY = 'game_list_scan_v2';
 const GAME_LIST_SCAN_TTL_MS = 2000;
@@ -56,6 +57,7 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          FinalizePendingGameResult($dirPath, true);
           StashRecentGameBeforeDelete($dirPath);
           FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
@@ -71,6 +73,7 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
       // Single shared-memory read; all pieces available as 0-indexed array (piece N = index N-1)
       $cacheArr = $useSentinels ? $sentinelCacheArr : ReadCacheArray($gameToken);
       $lastGamestateUpdate = ($cacheArr !== null) ? intval($cacheArr[5] ?? 0) : 0;
+      if (($cacheArr[13] ?? "") == "99") FinalizePendingGameResult($folder);
       if ($currentTime - $lastGamestateUpdate < 30000) {
         $visibility = $cacheArr[8] ?? "";  // piece 9
         $scan['inProgressCount'] += 1;
@@ -112,6 +115,7 @@ function ScanGameList($path, $currentTime, $useSentinels = false)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          FinalizePendingGameResult($folder, true);
           StashRecentGameBeforeDelete($folder);
           FlushGameHealthLog($gameToken);
           deleteDirectory($folder);

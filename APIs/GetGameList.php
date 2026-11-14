@@ -15,6 +15,7 @@ include_once '../Libraries/FriendLibraries.php';
 include_once '../Libraries/FeaturedGameLibraries.php';
 include_once '../Libraries/GameHealthLog.php';
 include_once '../Libraries/RecentGameLibraries.php';
+include_once '../Libraries/GameResultReporting.php';
 
 $path = "../Games";
 
@@ -246,6 +247,7 @@ function ScanGameList($path, $currentTime)
         $lastModified = filemtime($dirPath);
         $ageInSeconds = time() - $lastModified;
         if($ageInSeconds > 18000) {
+          FinalizePendingGameResult($dirPath, true);
           StashRecentGameBeforeDelete($dirPath);
           FlushGameHealthLog($gameToken);
           if (deleteDirectory($dirPath)) {
@@ -261,6 +263,7 @@ function ScanGameList($path, $currentTime)
       // Single shared-memory read; all pieces available as 0-indexed array (piece N = index N-1)
       $cacheArr = ReadCacheArray($gameToken);
       $lastGamestateUpdate = ($cacheArr !== null) ? intval($cacheArr[5] ?? 0) : 0;
+      if (($cacheArr[13] ?? "") == "99") FinalizePendingGameResult($folder);
       if ($currentTime - $lastGamestateUpdate < 30000) {
         $visibility = $cacheArr[8] ?? "";  // piece 9
         $scan['inProgressCount'] += 1;
@@ -301,6 +304,7 @@ function ScanGameList($path, $currentTime)
       else if ($currentTime - $lastGamestateUpdate > GAME_DELETE_TIMEOUT_MS)
       {
         if ($autoDeleteGames) {
+          FinalizePendingGameResult($folder, true);
           StashRecentGameBeforeDelete($folder);
           FlushGameHealthLog($gameToken);
           deleteDirectory($folder);

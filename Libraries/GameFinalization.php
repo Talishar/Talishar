@@ -39,6 +39,7 @@ if ($inGameStatus == $GameStatus_Rematch || $inGameStatus == $GameStatus_SwapRem
     [$p1MetafyCommunities, $p2MetafyCommunities] = [$p2MetafyCommunities, $p1MetafyCommunities];
   }
 
+  FinalizeGameResultInGame(true);
   $gameGUID = ResetGameGUIDForRematch(); // Required for distinct hero mastery awards.
   touch(RematchLobbyMarkerPath($gameName));
   $p2IsAILocal = $p2IsAI == "1";
@@ -120,12 +121,15 @@ if (!IsReplay() && isset($replayCommandCountBefore)) {
   }
 }
 
-if (!IsReplay() && $inGameStatus == $GameStatus_Over) {
-  try {
-    include_once "Libraries/RecentGameLibraries.php";
-    StashRecentGame($filepath);
-  } catch (Throwable $e) {
-    error_log("StashRecentGame failed: " . $e->getMessage());
+if (!IsReplay() && $inGameStatus == $GameStatus_Over && !$skipWriteGamestate) {
+  include_once "Libraries/GameResultReporting.php";
+  if (ReadPendingGameResult($filepath) === null) {
+    try {
+      include_once "Libraries/RecentGameLibraries.php";
+      StashRecentGame($filepath);
+    } catch (Throwable $e) {
+      error_log("StashRecentGame failed: " . $e->getMessage());
+    }
   }
 }
 

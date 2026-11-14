@@ -1222,12 +1222,13 @@ function IsGameOver()
   return $inGameStatus == $GameStatus_Over;
 }
 
-function PlayerWon($playerID, $conceded = false)
+function PlayerWon($playerID, $conceded = false, $lethal = false)
 {
   //NOTE: These globals might appear to be unused. It's because they're written by ParseGamefile.
   global $winner, $turn, $gameName, $p1id, $p2id, $p1uid, $p2uid, $p1IsChallengeActive, $p2IsChallengeActive, $currentTurn;
   global $p1DeckLink, $p2DeckLink, $inGameStatus, $GameStatus_Over, $firstPlayer, $p1deckbuilderID, $p2deckbuilderID, $CS_SkipAllRunechants, $gameGUID;
   if (IsGameOver()) return;
+  $holdResult = $lethal && !IsReplay();
   include_once __DIR__ . "/MenuFiles/ParseGamefile.php";
   SetClassState(1, $CS_SkipAllRunechants, 0);
   SetClassState(2, $CS_SkipAllRunechants, 0);
@@ -1241,11 +1242,26 @@ function PlayerWon($playerID, $conceded = false)
     WriteLog("The game is a draw! no match stats reported");
   }
   else WriteLog("Player " . $winner . " won! 🎉");
-  try {
-    include_once __DIR__ . "/Libraries/GameHealthLog.php";
-    FlushGameHealthLog($gameName);
-  } catch (Throwable $e) {
-    error_log("PlayerWon: FlushGameHealthLog threw: " . $e->getMessage());
+  include_once __DIR__ . "/Libraries/GameResultReporting.php";
+  include_once __DIR__ . "/includes/functions.inc.php";
+  $gameDirectory = PendingResultDirectory($gameName);
+  FinalizePendingGameResult($gameDirectory, true);
+  if ($holdResult) {
+    $result = null;
+    try {
+      $result = CompletedGameResult($conceded);
+    } catch (Throwable $e) {
+      error_log("PlayerWon: CompletedGameResult threw: " . $e->getMessage());
+    }
+    StartPendingGameResult($gameDirectory, $result);
+  }
+  else {
+    try {
+      include_once __DIR__ . "/Libraries/GameHealthLog.php";
+      FlushGameHealthLog($gameName);
+    } catch (Throwable $e) {
+      error_log("PlayerWon: FlushGameHealthLog threw: " . $e->getMessage());
+    }
   }
   if (isPlayerAI(2)) return;
   try {
@@ -1254,6 +1270,7 @@ function PlayerWon($playerID, $conceded = false)
   } catch (Throwable $e) {
     error_log("PlayerWon: AwardHeroMastery threw: " . $e->getMessage());
   }
+  if ($holdResult) return;
   try {
     logCompletedGameStats($conceded);
   } catch (Exception $e) {

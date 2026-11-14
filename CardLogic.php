@@ -518,11 +518,11 @@ function ContinueDecisionQueue($lastResult = "")
     $p1Health = GetHealth(1);
     $p2Health = GetHealth(2);
     if ($p1Health <= 0 && $p2Health > 0)
-      PlayerWon(2);
+      PlayerWon(2, lethal: true);
     elseif ($p2Health <= 0 && $p1Health > 0)
-      PlayerWon(1);
+      PlayerWon(1, lethal: true);
     elseif ($p2Health <= 0 && $p1Health <= 0)
-      PlayerWon(0);
+      PlayerWon(0, lethal: true);
     if (IsGameOver()) return; // Prevent multiple winner logs
     $preLayers = GetPreLayers();
     if ($dqCount == 0 && count($preLayers) > 0) {

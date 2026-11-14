@@ -636,6 +636,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       )) {
         break;
       }
+      if (IsGameOver()) {
+        RequestTakeback($playerID, "action");
+        break;
+      }
       $undoSteps = UndoStepsBack();
       if ($undoSteps == 0) {
         break;
@@ -690,6 +694,10 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         break;
       }
       if (!in_array($buttonInput, ["beginTurnGamestate.txt", "startChainLinkGamestate.txt", "lastTurnGamestate.txt"], true)) break;
+      if (IsGameOver()) {
+        RequestTakeback($playerID, array_search($buttonInput, TakebackScopeFiles(), true));
+        break;
+      }
       $undoCacheArr = ReadCacheArray($gameName);
       $format = $undoCacheArr[12] ?? "";
       $char = &GetPlayerCharacter($otherPlayer);
@@ -1091,6 +1099,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
+      FinalizeGameResultInGame(true);
       $otherPlayer = OtherPlayer($playerID);
       $char = &GetPlayerCharacter($otherPlayer);
       if (!IsPlayerAI($otherPlayer)) {
@@ -1108,7 +1117,9 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if ($isSimulation)
         return;
       if ($playerID != "3") {
+        $resultSent = IsGameOver() && FinalizeGameResultInGame(true);
         WriteLog("Player $playerID has left the game.");
+        if ($resultSent) GamestateUpdated($gameName);
       }
       exit;
     case 100002: //Concede
@@ -1132,6 +1143,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
+      FinalizeGameResultInGame(true);
       $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID sent a rematch invitation.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
@@ -1147,6 +1159,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         return;
       if ($turn[0] != "OVER")
         break;
+      FinalizeGameResultInGame(true);
       $otherPlayer = OtherPlayer($playerID);
       WriteLog("Player $playerID offered to swap heroes and rematch.", highlight: true, highlightColor: "darkblue");
       if (IsPlayerAI($otherPlayer)) {
@@ -1322,6 +1335,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       }
       break;
     case 100016://Confirm Undo
+      if (IsGameOver()) break;
       $undoSteps = UndoStepsBack();
       if ($undoSteps > 0 && RevertGamestate(stepsBack: $undoSteps)) LogGameHealthUndo($otherPlayer, 100016);
       WriteLog("Player " . $playerID . " allowed undoing the last action");
@@ -1336,11 +1350,13 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       ConsumeUndoRequestEvents();
       break;
     case 100018://Confirm this turn undo
+      if (IsGameOver()) break;
       if (RevertGamestate("beginTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the turn");
       ConsumeUndoRequestEvents();
       break;
     case 100019://Confirm last turn undo
+      if (IsGameOver()) break;
       if (RevertGamestate("lastTurnGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the last turn");
       ConsumeUndoRequestEvents();
@@ -1354,9 +1370,22 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       WriteLog("🔇 Player " . $playerID . " turned chat off");
       break;
     case 100022:// Confirm chain link undo
+      if (IsGameOver()) break;
       if (RevertGamestate("startChainLinkGamestate.txt")) LogGameHealthUndo($otherPlayer, 10003);
       WriteLog("Player " . $playerID . " reverted to the start of the chain link");
       ConsumeUndoRequestEvents();
+      break;
+    case 100031: //Accept a takeback request after the game ended
+      if ($isSimulation) return;
+      if (IsGameOver()) AnswerTakeback($playerID, true);
+      break;
+    case 100032: //Decline a takeback request after the game ended
+      if ($isSimulation) return;
+      if (IsGameOver()) AnswerTakeback($playerID, false);
+      break;
+    case 100033: //Send the held game result once its takeback window has closed
+      if ($isSimulation) return;
+      if (IsGameOver()) FinalizeGameResultInGame(false);
       break;
     case "OPT": // Should only show up in replays
       $deck = new Deck($playerID);
@@ -1505,7 +1534,7 @@ function IsModeAsync($mode)
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
   100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
   100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true,
-  100027 => true, 100028 => true, 100029 => true, 100030 => true
+  100027 => true, 100028 => true, 100029 => true, 100030 => true, 100031 => true, 100032 => true, 100033 => true
   ];
   return isset($asyncModes[$mode]);
 }
@@ -5071,6 +5100,101 @@ function ConsumeUndoRequestEvents()
     }
   }
   $events = $filtered;
+}
+
+function TakebackScopeFiles()
+{
+  return [
+    "action" => "",
+    "chainlink" => "startChainLinkGamestate.txt",
+    "turn" => "beginTurnGamestate.txt",
+    "lastturn" => "lastTurnGamestate.txt",
+  ];
+}
+
+function TakebackScopeLabel($scope, $pastTense = false)
+{
+  $point = match ($scope) {
+    "chainlink" => "the start of the chain link",
+    "turn" => "the start of the turn",
+    "lastturn" => "the start of the previous turn",
+    default => "",
+  };
+  if ($point === "") return $pastTense ? "took back the last action" : "take back the last action";
+  return ($pastTense ? "went back to " : "go back to ") . $point;
+}
+
+function FinalizeGameResultInGame($force)
+{
+  global $gameName;
+  include_once __DIR__ . "/GameResultReporting.php";
+  $pending = FinalizePendingGameResult(PendingResultDirectory($gameName), $force);
+  if (is_array($pending["result"] ?? null)) WriteGameResultLog($pending["result"]);
+  return $pending !== null;
+}
+
+function RequestTakeback($playerID, $scope)
+{
+  global $gameName;
+  if (($playerID != 1 && $playerID != 2) || !is_string($scope) || !isset(TakebackScopeFiles()[$scope])) return;
+  include_once __DIR__ . "/GameResultReporting.php";
+  $directory = PendingResultDirectory($gameName);
+  $pending = ReadPendingGameResult($directory);
+  if ($pending === null) return;
+  $now = PendingResultNowMs();
+  if (IsPendingGameResultDue($pending, $now)) {
+    FinalizeGameResultInGame(false);
+    return;
+  }
+  $otherPlayer = OtherPlayer($playerID);
+  if (IsPlayerAI($otherPlayer) || AlwaysAllowUndo($otherPlayer)) {
+    PerformTakeback($playerID, $scope);
+    return;
+  }
+  if (OpenTakebackRequest($pending, $now) !== null) return;
+  if (intval($pending["declines"] ?? 0) >= TAKEBACK_DECLINE_LIMIT) return;
+  $pending["request"] = ["player" => intval($playerID), "scope" => $scope, "at" => $now];
+  if (!WritePendingGameResult($directory, $pending)) return;
+  LogGameHealthUndo($playerID, 10000, "request");
+  WriteLog("↩️ Player $playerID asked to " . TakebackScopeLabel($scope) . ". If Player $otherPlayer agrees, the game continues.");
+}
+
+function AnswerTakeback($playerID, $accept)
+{
+  global $gameName;
+  if ($playerID != 1 && $playerID != 2) return;
+  include_once __DIR__ . "/GameResultReporting.php";
+  $directory = PendingResultDirectory($gameName);
+  $pending = ReadPendingGameResult($directory);
+  if ($pending === null) return;
+  $request = OpenTakebackRequest($pending, PendingResultNowMs());
+  if ($request === null || intval($request["player"] ?? 0) != OtherPlayer($playerID)) return;
+  if ($accept && PerformTakeback(intval($request["player"]), (string)($request["scope"] ?? ""))) return;
+  $pending["request"] = null;
+  if (!$accept) $pending["declines"] = intval($pending["declines"] ?? 0) + 1;
+  WritePendingGameResult($directory, $pending);
+  if (!$accept) WriteLog("Player $playerID declined the takeback.");
+}
+
+function PerformTakeback($requester, $scope)
+{
+  global $gameName;
+  $file = TakebackScopeFiles()[$scope] ?? null;
+  if ($file === null) return false;
+  if ($file === "") {
+    $steps = UndoStepsBack();
+    $reverted = $steps > 0 && RevertGamestate(stepsBack: $steps);
+  }
+  else $reverted = RevertGamestate($file);
+  if (!$reverted) {
+    WriteLog("The takeback could not be applied, so the result stands.");
+    return false;
+  }
+  DiscardPendingGameResult(PendingResultDirectory($gameName));
+  SetCachePiece($gameName, 14, 5);//$MGS_GameStarted
+  LogGameHealthUndo($requester, $file === "" ? 100016 : 10003);
+  WriteLog("↩️ Player $requester " . TakebackScopeLabel($scope, true) . ". The game continues.", highlight: true);
+  return true;
 }
 
 function ReportBug()

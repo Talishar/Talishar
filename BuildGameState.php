@@ -1855,6 +1855,24 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $response->serverTime = intval(round(microtime(true) * 1000));
   }
 
+  if ($turnPhase == "OVER" && !$isReplay) {
+    include_once __DIR__ . "/Libraries/GameResultReporting.php";
+    $pendingResult = ReadPendingGameResult(PendingResultDirectory($gameName));
+    if ($pendingResult !== null) {
+      $now = PendingResultNowMs();
+      $takebackRequest = OpenTakebackRequest($pendingResult, $now);
+      $response->resultPending = [
+        "deadline" => intval($pendingResult["deadline"] ?? 0),
+        "requestedBy" => $takebackRequest !== null ? intval($takebackRequest["player"] ?? 0) : 0,
+        "requestScope" => $takebackRequest !== null ? (string)($takebackRequest["scope"] ?? "") : "",
+        "requestDeadline" => $takebackRequest !== null ? intval($takebackRequest["at"] ?? 0) + TAKEBACK_ANSWER_WINDOW_MS : 0,
+        "declines" => intval($pendingResult["declines"] ?? 0),
+        "declineLimit" => TAKEBACK_DECLINE_LIMIT,
+      ];
+      $response->serverTime = $now;
+    }
+  }
+
   return $response;
 }
 
