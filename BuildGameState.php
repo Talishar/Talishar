@@ -732,6 +732,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     if (($theirCharacter[$i + 12] ?? "-") == "UP" || $playerID == 3 && $isCasterMode || $isGameOver) {
       if(($theirCharacter[$i + 1] ?? 0) > 0) {
+      [$blockValue, $powerValue] = $i > 0 && $facing != "DOWN" ? CharacterPrintedValues($theirChar, $otherPlayer) : [NULL, NULL];
       $characterContents[] = JSONRenderedCard(
         $theirChar,
         borderColor: $border,
@@ -752,7 +753,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
         marked: ($theirCharacter[$i + 13] ?? 0) == 1,
         tapped: ($theirCharacter[$i + 14] ?? 0) == 1,
         slot: $theirCharacter[$i + 15] ?? "-",
-        uniqueID: $theirCharacter[$i + 11] ?? NULL
+        uniqueID: $theirCharacter[$i + 11] ?? NULL,
+        blockValue: $blockValue,
+        powerValue: $powerValue
         );
       }
     } else {
@@ -1012,6 +1015,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     }
     else{
       if(($myCharacter[$i + 1] ?? 0) > 0) {
+        [$blockValue, $powerValue] = $i > 0 && $facing != "DOWN" ? CharacterPrintedValues($myChar, $viewerSlotPlayerID) : [NULL, NULL];
         $myCharData[] = JSONRenderedCard(
           $myChar,
           $manualDynamoRefresh ? 40 : ($manualValdaToken ? 41 : ($currentPlayer == $playerID && $playable ? ($goldOrPitchChoice ? 16 : 3) : 0)),
@@ -1037,7 +1041,9 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           marked: ($myCharacter[$i + 13] ?? 0) == 1,
           tapped: ($myCharacter[$i + 14] ?? 0) == 1,
           slot: ($myCharacter[$i + 15] ?? "-"),
-          uniqueID: $myCharacter[$i + 11] ?? NULL);
+          uniqueID: $myCharacter[$i + 11] ?? NULL,
+          blockValue: $blockValue,
+          powerValue: $powerValue);
       }
     }
   }
