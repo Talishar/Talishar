@@ -1253,7 +1253,16 @@ function PlayerWon($playerID, $conceded = false, $lethal = false)
     } catch (Throwable $e) {
       error_log("PlayerWon: CompletedGameResult threw: " . $e->getMessage());
     }
-    StartPendingGameResult($gameDirectory, $result);
+    $matchHistory = [];
+    if (!isPlayerAI(2)) {
+      try {
+        include_once __DIR__ . "/Libraries/MatchHistory.php";
+        $matchHistory = MatchHistoryEntries();
+      } catch (Throwable $e) {
+        error_log("PlayerWon: MatchHistoryEntries threw: " . $e->getMessage());
+      }
+    }
+    StartPendingGameResult($gameDirectory, $result, $matchHistory);
   }
   else {
     try {

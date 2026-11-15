@@ -47,20 +47,34 @@ function AddMatchHistoryEntry(string $userId, array $entry): void
 
 function RecordMatchHistory(): void
 {
+  WriteMatchHistoryEntries(MatchHistoryEntries());
+}
+
+function WriteMatchHistoryEntries($entries): void
+{
+  if (!is_array($entries)) return;
+  foreach ($entries as $item) {
+    if (!is_array($item) || !is_array($item["entry"] ?? null) || !IsValidReplayUserId((string)($item["userId"] ?? ""))) continue;
+    AddMatchHistoryEntry((string)$item["userId"], $item["entry"]);
+  }
+}
+
+function MatchHistoryEntries(): array
+{
   global $winner, $currentTurn, $gameName, $CS_OriginalHero;
 
   $winningPlayer = intval($winner);
-  if ($winningPlayer !== 1 && $winningPlayer !== 2) return;
-  if (IsReplay()) return;
+  if ($winningPlayer !== 1 && $winningPlayer !== 2) return [];
+  if (IsReplay()) return [];
 
   $gameDirectory = __DIR__ . "/../Games/$gameName/";
-  if (file_exists($gameDirectory . "snapshotOwnerSeat.txt")) return;
+  if (file_exists($gameDirectory . "snapshotOwnerSeat.txt")) return [];
   $gameFileContent = @file_get_contents($gameDirectory . "GameFile.txt");
-  if (!is_string($gameFileContent)) return;
+  if (!is_string($gameFileContent)) return [];
   $gameFile = explode("\r\n", $gameFileContent);
   $userIds = array_map(fn($userId) => $userId === "-" ? "" : $userId, [1 => trim($gameFile[9] ?? ""), 2 => trim($gameFile[10] ?? "")]);
-  if ($userIds[1] !== "" && $userIds[1] === $userIds[2]) return;
-  if (!IsValidReplayUserId($userIds[1]) && !IsValidReplayUserId($userIds[2])) return;
+  if ($userIds[1] !== "" && $userIds[1] === $userIds[2]) return [];
+  if (!IsValidReplayUserId($userIds[1]) && !IsValidReplayUserId($userIds[2])) return [];
   $displayNames = [
     1 => trim($gameFile[42] ?? "") ?: $userIds[1],
     2 => trim($gameFile[43] ?? "") ?: $userIds[2],
@@ -74,10 +88,11 @@ function RecordMatchHistory(): void
   }
 
   $endedAt = time();
+  $entries = [];
   foreach ([1, 2] as $player) {
     if (!IsValidReplayUserId($userIds[$player])) continue;
     $opponent = $player === 1 ? 2 : 1;
-    AddMatchHistoryEntry($userIds[$player], [
+    $entries[] = ["userId" => $userIds[$player], "entry" => [
       "endedAt" => $endedAt,
       "gameGUID" => trim($gameFile[37] ?? ""),
       "format" => preg_replace('/^shadow/', '', trim($gameFile[3] ?? "")),
@@ -88,6 +103,7 @@ function RecordMatchHistory(): void
       "opponentName" => $displayNames[$opponent],
       "opponentHeroCardId" => $heroes[$opponent],
       "opponentHeroName" => $heroes[$opponent] === "" ? "" : (string)CardName($heroes[$opponent]),
-    ]);
+    ]];
   }
+  return $entries;
 }
