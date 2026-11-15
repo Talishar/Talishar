@@ -2,6 +2,7 @@
 include_once "Libraries/PlayerSettings.php";
 include_once "Libraries/SHMOPLibraries.php";
 include_once __DIR__ . "/includes/ModeratorList.inc.php";
+include_once __DIR__ . "/Libraries/DeckbuilderAltArts.php";
 function GetChainCardSubcards($controller, ...$uniqueIDs) {
   if ($controller != 1 && $controller != 2) return NULL;
   $Auras = NULL;
@@ -54,6 +55,7 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
   global $p1IsPatron, $p2IsPatron, $p1MetafyTiers, $p2MetafyTiers, $p1IsAI, $p2IsAI;
   global $gameGUID, $p1uid, $p2uid;
   global $p1MetafyCommunities, $p2MetafyCommunities;
+  global $p1DeckAltArts, $p2DeckAltArts;
   global $p1TotalTime, $p2TotalTime, $ChainLinks;
   global $p1id, $p2id, $p1DeckLink, $p2DeckLink;
   global $ChainLinks;
@@ -360,6 +362,12 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
           }
         }
       }
+
+      // FaBrary printing pins go last so they win over the arts above, card by card
+      $myDeckAltArts = $altArtsPlayerID == 1 ? ($p1DeckAltArts ?? []) : ($p2DeckAltArts ?? []);
+      $oppDeckAltArts = $altArtsOpponentID == 1 ? ($p1DeckAltArts ?? []) : ($p2DeckAltArts ?? []);
+      array_push($initialLoad->altArts, ...DeckbuilderAltArtEntries($myDeckAltArts));
+      array_push($initialLoad->opponentAltArts, ...DeckbuilderAltArtEntries($oppDeckAltArts));
     }
 
     $response->initialLoad = $initialLoad;

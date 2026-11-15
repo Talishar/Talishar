@@ -18,6 +18,7 @@
       global $p1DisplayName, $p2DisplayName;
       global $p1EquipmentSubmitted, $p2EquipmentSubmitted;
       global $openHands;
+      global $p1DeckAltArts, $p2DeckAltArts;
       // Build entire payload as one string, then write in a single call.
       // Reduces ~40 fwrite() PHP function calls + stream API dispatches to 1.
       $content = implode(" ", $p1Data) . "\r\n"
@@ -66,7 +67,9 @@
           . ($p2DisplayName ?? "")                   . "\r\n"
           . ($p1EquipmentSubmitted ?? "0")           . "\r\n"
           . ($p2EquipmentSubmitted ?? "0")           . "\r\n"
-          . ($openHands ?? "")                       . "\r\n";
+          . ($openHands ?? "")                       . "\r\n"
+          . json_encode((object)($p1DeckAltArts ?? [])) . "\r\n"
+          . json_encode((object)($p2DeckAltArts ?? [])) . "\r\n";
 
       rewind($gameFileHandler);
       fwrite($gameFileHandler, $content);

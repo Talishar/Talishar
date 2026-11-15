@@ -11,6 +11,7 @@ include_once "../Libraries/PlayerSettings.php";
 include_once "../Libraries/LegalHeroesHelper.php";
 include_once "../includes/dbh.inc.php";
 include_once "../Libraries/CosmeticsLibrary.php";
+include_once "../Libraries/DeckbuilderAltArts.php";
 include_once "../Assets/MetafyDictionary.php";
 
 // Set headers immediately after includes
@@ -255,6 +256,8 @@ if($handler) {
   $myUserId = $playerID == 1 ? ($p1id ?? '') : ($p2id ?? '');
   $myDeckLink = $playerID == 1 ? ($p1DeckLink ?? '') : ($p2DeckLink ?? '');
   $response->altArts = ApplyDeckAltArtOverride($response->altArts, $myUserId, $myDeckLink);
+  $myDeckAltArts = $playerID == 1 ? $p1DeckAltArts : $p2DeckAltArts;
+  foreach (DeckbuilderAltArtEntries($myDeckAltArts) as $entry) $response->altArts[] = (object)$entry;
 
   fclose($handler);
 }

@@ -74,6 +74,11 @@ $p2EquipmentSubmitted = trim(fgets($gameFileHandler) ?: '');
 if ($p1EquipmentSubmitted === '') $p1EquipmentSubmitted = ($p1SideboardSubmitted == "1" ? "1" : "0");
 if ($p2EquipmentSubmitted === '') $p2EquipmentSubmitted = ($p2SideboardSubmitted == "1" ? "1" : "0");
 $openHands = trim(fgets($gameFileHandler) ?: '');
+// FaBrary printing pins the player is entitled to, cardId => altPath (set at join)
+$p1DeckAltArts = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+$p2DeckAltArts = json_decode(trim(fgets($gameFileHandler) ?: ''), true);
+if (!is_array($p1DeckAltArts)) $p1DeckAltArts = [];
+if (!is_array($p2DeckAltArts)) $p2DeckAltArts = [];
 
 $MGS_Initial = 0;
 $MGS_Player2Joined = 1;
