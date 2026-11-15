@@ -107,6 +107,7 @@ foreach ($cardIds as $cardId) {
   if (!isset($altArtEntitlements[$cardId])) continue;
   $card = new stdClass();
   $card->cardId = $cardId;
+  $card->cardName = GeneratedCardName($cardId);
   $card->altArts = $altArtEntitlements[$cardId];
   // Base card-square images on the CDN are named by the card slug (the same
   // identifier the game engine renders in-game, e.g. "adaptive_alpha_mold"),
@@ -144,6 +145,7 @@ if (function_exists('GeneratedCardTokens')) {
     if (empty($altArtEntitlements[$tokenId])) continue;
     $token = new stdClass();
     $token->cardId = $tokenId;
+    $token->cardName = GeneratedCardName($tokenId);
     $token->altArts = $altArtEntitlements[$tokenId];
     $token->baseCardNumber = $tokenId;
     $token->selectedAltPath = $selectedAltArts[$tokenId] ?? null;
