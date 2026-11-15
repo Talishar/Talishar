@@ -466,6 +466,10 @@
         $tokens[$cardArray[$i]->name] = GetCardIdentifier($cardArray[$i]->name, $cardArray[$i]->pitch);
       }
     }
+    // Cards other cards create mid-game that aren't typed Token
+    foreach (["Corrupted Corpse", "Crouching Tiger", "Fang Strike", "Goldfin Harpoon", "Slither"] as $createdName) {
+      $tokens[$createdName] ??= GetCardIdentifier($createdName, 0);
+    }
 
     $associativeArray = [];
     for ($i = 0; $i < count($cardArray); ++$i) {
