@@ -45,13 +45,14 @@ function WritePendingGameResult(string $gameDirectory, array $pending): bool
   return false;
 }
 
-function StartPendingGameResult(string $gameDirectory, ?array $result): bool
+function StartPendingGameResult(string $gameDirectory, ?array $result, array $matchHistory = []): bool
 {
   return WritePendingGameResult($gameDirectory, [
     "deadline" => PendingResultNowMs() + PENDING_RESULT_WINDOW_MS,
     "result" => $result,
     "request" => null,
     "declines" => 0,
+    "matchHistory" => $matchHistory,
   ]);
 }
 
@@ -89,6 +90,14 @@ function FinalizePendingGameResult(string $gameDirectory, bool $force = false): 
 
   $result = $pending["result"] ?? null;
   if (is_array($result)) SendGameResultRequests($result["requests"] ?? []);
+  if (!empty($pending["matchHistory"])) {
+    try {
+      include_once __DIR__ . "/MatchHistory.php";
+      WriteMatchHistoryEntries($pending["matchHistory"]);
+    } catch (Throwable $e) {
+      error_log("FinalizePendingGameResult: WriteMatchHistoryEntries threw: " . $e->getMessage());
+    }
+  }
 
   $gameName = basename(rtrim($gameDirectory, "/\\"));
   try {
