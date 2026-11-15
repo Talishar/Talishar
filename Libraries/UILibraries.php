@@ -415,7 +415,7 @@ function ItemDisplayState($cardID, $itemLabel)
 
 function CharacterPrintedValues($cardID, $player)
 {
-  if ($cardID == "arcanite_fortress" || $cardID == "base_of_the_mountain") return [NULL, NULL];
+  if ($cardID == "arcanite_fortress" || $cardID == "base_of_the_mountain") return ["*", NULL];
   if (TypeContains($cardID, "W", $player)) {
     $power = PowerValue($cardID, $player, "CHAR", base: true, attacking: true);
     return [NULL, is_numeric($power) && $power > 0 ? intval($power) : NULL];
