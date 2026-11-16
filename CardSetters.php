@@ -760,7 +760,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
     $card = GetClass($cardID, $player);
     if ($card != "-") $card->BackAlleyTrigger();
   }
-  if ($uniqueID != "-" && $CurrentTurnEffects->FindSpecificEffect("under_the_trap_door_blue", $uniqueID)) {
+  if ($uniqueID != "-" && $CurrentTurnEffects->FindSpecificEffect("under_the_trap_door_blue", $uniqueID)->Index() != -1) {
     BanishCardForPlayer($cardID, $player, $from, banisher:$effectController, uniqueID:$uniqueID);
     return;
   }
