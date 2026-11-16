@@ -312,12 +312,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "diabolic_ultimatum_red":
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") {
-        MZChooseAndDestroy($otherPlayer, "MYALLY");
         MZChooseAndDestroy($currentPlayer, "MYALLY");
+        MZChooseAndDestroy($otherPlayer, "MYALLY");
       }
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") {
-        MZChooseAndDestroy($otherPlayer, "MYAURAS");
         MZChooseAndDestroy($currentPlayer, "MYAURAS");
+        MZChooseAndDestroy($otherPlayer, "MYAURAS");
       }
       return "";
     case "looming_doom_blue":
