@@ -2651,7 +2651,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
           $cards = explode(",", $deck->Top(amount: 3));
           $numRed = 0;
           foreach ($cards as $card) if (PitchValue($card) == 1) ++$numRed;
-          if ($numRed > 0) DealArcane($numRed * 2, 2, "ABILITY", $combatChain[0], false, $player);
+          if ($numRed > 0) DealArcane($numRed * 2, 3, "ABILITY", $combatChain[0], false, $player);
         }
         break;
       case "tomeltai":
