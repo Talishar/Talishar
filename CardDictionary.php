@@ -2703,6 +2703,8 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return $from == "PLAY" && count(GetHand($player)) > 0;
     case "amulet_of_ignition_yellow":
       return $from == "PLAY" && GetClassState($player, $CS_NumCardsPlayed) >= 1;
+    case "amulet_of_intervention_blue":
+      return $from == "PLAY" && !IsTargetedByLethalSource($player);
     case "helm_of_sharp_eye":
       return !IsWeaponGreaterThanTwiceBasePower();
     case "amulet_of_oblation_blue":

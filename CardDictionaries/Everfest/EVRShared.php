@@ -856,6 +856,25 @@ function HasPlayerEchoed($player) {
   return false;
 }
 
+  function IsTargetedByLethalSource($player)
+  {
+    global $CombatChain, $defPlayer, $layers;
+    $life = GetHealth($player);
+    if ($player == $defPlayer && $CombatChain->HasCurrentLink() && IsHeroAttackTarget()
+      && CachedTotalPower() - CachedTotalBlock() >= $life) return true;
+    $char = GetPlayerCharacter($player);
+    $heroUID = $char[11] ?? "-";
+    $layerPieces = LayerPieces();
+    $layersCount = count($layers);
+    for ($i = 0; $i < $layersCount; $i += $layerPieces) {
+      $prefix = $layers[$i + 1] == $player ? "MYCHAR-" : "THEIRCHAR-";
+      $targets = explode(",", $layers[$i + 3] ?? "-");
+      if (!in_array($prefix . "0", $targets) && !in_array($prefix . $heroUID, $targets)) continue;
+      if (ArcaneDamage($layers[$i]) >= $life) return true;
+    }
+    return false;
+  }
+
   function IsAmuletOfEchoesRestricted($from)
   {
     global $mainPlayer, $defPlayer;
