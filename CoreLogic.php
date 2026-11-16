@@ -4154,7 +4154,7 @@ function Draw($player, $mainPhase = true, $fromCardEffect = true, $effectSource 
     } 
     else {
       $hand[] = $cardID;
-      IncrementClassState($player, $CS_NumCardsDrawn, $num);
+      IncrementClassState($player, $CS_NumCardsDrawn);
     }
     // triggers for whenever you "draw a card"
     if ($mainPhase && $player == $mainPlayer && (SearchCharacterActive($player, "marlynn_treasure_hunter"))) AddLayer("TRIGGER", $player, "marlynn_treasure_hunter");

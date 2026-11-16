@@ -1043,8 +1043,9 @@ function ProcessSurge($cardID, $player, $target)
       $deck = &GetDeck($targetPlayer);
       foreach ($hand as $card) $deck[] = $card;
       $hand = [];
-      Draw($targetPlayer, effectSource: $cardID, num:$numToDraw);
-      AddDecisionQueue("SHUFFLEDECK", $targetPlayer, "-");
+      $Deck = new Deck($targetPlayer);
+      $Deck->Shuffle("-");
+      if ($numToDraw > 0) Draw($targetPlayer, effectSource: $cardID, num:$numToDraw);
       break;
     case "swell_tidings_red":
       PlayAura("ponder", $player);

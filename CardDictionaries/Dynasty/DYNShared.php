@@ -174,7 +174,14 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "rumble_grunting_red": case "rumble_grunting_yellow": case "rumble_grunting_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "buckle_blue": AddCurrentTurnEffect($cardID, $currentPlayer); return "";
     case "shield_bash_red": case "shield_bash_yellow": case "shield_bash_blue":
-      if(SearchCombatChainLink($currentPlayer, subtype:"Off-Hand", class:"GUARDIAN") != "") {
+      $offHandDefending = false;
+      for($i = 1; $i < $CombatChain->NumCardsActiveLink(); ++$i) {
+        $ChainCard = $CombatChain->Card($i, cardNumber:true);
+        if($ChainCard->PlayerID() != $currentPlayer) continue;
+        if(!SubtypeContains($ChainCard->ID(), "Off-Hand") || !ClassContains($ChainCard->ID(), "GUARDIAN", $currentPlayer)) continue;
+        if($ChainCard->TotalBlock() >= 1) $offHandDefending = true;
+      }
+      if($offHandDefending && !IsAllyAttacking()) {
         AddDecisionQueue("MULTIZONEINDICES", $otherPlayer, "MYHAND", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $otherPlayer, "<-", 1);
         AddDecisionQueue("MZDISCARD", $otherPlayer, "HAND,".$currentPlayer, 1);
@@ -312,12 +319,12 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       return "";
     case "diabolic_ultimatum_red":
       if(SearchCardList($additionalCosts, $currentPlayer, "AA") != "") {
-        MZChooseAndDestroy($otherPlayer, "MYALLY");
         MZChooseAndDestroy($currentPlayer, "MYALLY");
+        MZChooseAndDestroy($otherPlayer, "MYALLY");
       }
       if(SearchCardList($additionalCosts, $currentPlayer, "A") != "") {
-        MZChooseAndDestroy($otherPlayer, "MYAURAS");
         MZChooseAndDestroy($currentPlayer, "MYAURAS");
+        MZChooseAndDestroy($otherPlayer, "MYAURAS");
       }
       return "";
     case "looming_doom_blue":
@@ -453,7 +460,7 @@ function DYNHitEffect($cardID, $from, $attackID)
       if(IsHeroAttackTarget()) {
         $deck = new Deck($defPlayer);
         if($deck->Empty()) { WriteLog("The opponent deck is already... depleted."); break; }
-        if($deck->RemainingCards() < GetCombatChainState($CCS_DamageDealt)) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards());
+        if($deck->RemainingCards() < GetCombatChainState($CCS_DamageDealt)) $deck->BanishTop(banishedBy:$cardID, amount:$deck->RemainingCards(), banisher:$mainPlayer);
         else $deck->BanishTop(banishedBy:$cardID, amount:GetCombatChainState($CCS_DamageDealt), banisher:$mainPlayer);
       }
       break;

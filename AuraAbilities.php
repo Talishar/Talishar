@@ -723,7 +723,7 @@ function AuraStartTurnAbilities()
         for ($j = 0; $j < $amount; ++$j) {
           AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYDISCARD:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue&MYBANISH:cardID=hyper_driver_red;cardID=hyper_driver_yellow;cardID=hyper_driver_blue");
           AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose an item to put into play");
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+          AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
           AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
           AddDecisionQueue("MZOP", $mainPlayer, "GETCARDID", 1);
           AddDecisionQueue("PASSPARAMETER", $mainPlayer, "{0}", 1);
