@@ -423,7 +423,6 @@ function GetAllAltArtVariations(): array
     "rush_of_knowledge_blue=IAR252-T",
     "embrace_ursur_red=IAR129-T",
     "humble_red=OUT189-T",
-    "savor_bloodshed_red=HNT198-T",
     "starworld_warning_yellow=OMN188-T",
     "unbound_by_shadow_red=IAR178-T",
     "blessing_of_suraya_yellow=IAR258-T",
