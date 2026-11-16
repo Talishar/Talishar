@@ -1430,13 +1430,13 @@ function NumCardsDefended($linkNum=-1)
 
 function CombatChainPlayAbility($cardID)
 {
-  global $combatChain, $defPlayer;
+  global $combatChain, $defPlayer, $currentPlayer;
   $combatChainPieces = CombatChainPieces();
   $combatChainCount = count($combatChain);
   for ($i = 0; $i < $combatChainCount; $i += $combatChainPieces) {
     switch ($combatChain[$i]) {
       case "sigil_of_parapets_blue":
-        if (ClassContains($cardID, "WIZARD", $defPlayer)) {
+        if ($i > 0 && $combatChain[$i + 1] == $currentPlayer && ClassContains($cardID, "WIZARD", $currentPlayer)) {
           $combatChain[$i + 6] += 2;
           WriteLog(CardLink($combatChain[$i], $combatChain[$i]) . " gets +2 defense");
         }
