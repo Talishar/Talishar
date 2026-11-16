@@ -311,8 +311,8 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
   //checking for allies that can prevent damage
   switch ($cardID) {
     case "yendurai":
-      if ($allies[$index + 6] > 0) {
-        if ($damage > 0) --$allies[$index + 6];
+      if ($allies[$index + 6] > 0 && $damage - $preventedDamage > 0) {
+        --$allies[$index + 6];
         if ($canBePrevented) $preventedDamage += 3;
       }
       break;
