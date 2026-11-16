@@ -39,14 +39,12 @@
         AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, "CORONETPEAK", 1);
         return "";
       case "glacial_horns":
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRARS", 1);
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY");
-        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        if (ShouldAutotargetOpponent($currentPlayer)) AddDecisionQueue("PASSPARAMETER", $currentPlayer, "THEIRCHAR-0");
+        else {
+          AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero for " . CardLink($cardID));
+          AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "THEIRCHAR-0,MYCHAR-0");
+        }
+        AddDecisionQueue("SPECIFICCARD", $currentPlayer, "GLACIALHORNS", 1);
         return "";
       case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);

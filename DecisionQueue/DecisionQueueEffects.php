@@ -531,6 +531,17 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       WriteLog("⬇️ <b>$numCards cards</b> were put on the bottom of the deck.");
       Draw($player, effectSource: "surface_shaking_blue", num: $numCards);
       return "1";
+    case "GLACIALHORNS":
+      $prefix = str_starts_with($lastResult, "MY") ? "MY" : "THEIR";
+      PrependDecisionQueue("MZOP", $player, "FREEZE", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an ally to freeze", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, $prefix . "ALLY");
+      PrependDecisionQueue("MZOP", $player, "FREEZE", 1);
+      PrependDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);
+      PrependDecisionQueue("SETDQCONTEXT", $player, "Choose an arsenal card to freeze", 1);
+      PrependDecisionQueue("MULTIZONEINDICES", $player, $prefix . "ARS");
+      return $lastResult;
     case "ENCASEDAMAGE":
       $character = &GetPlayerCharacter($player);
       $character[8] = 1;//Freeze their character

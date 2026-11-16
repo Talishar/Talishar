@@ -143,43 +143,75 @@
 // }
 
 
-// class arctic_incarceration_red extends Card {
+class arctic_incarceration extends BaseCard {
+  function PlayAbility($target, $numFrostbites) {
+    $targetPlayer = str_starts_with($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
+    PlayAura("frostbite", $targetPlayer, $numFrostbites, effectController: $this->controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "arctic_incarceration_red";
-//     $this->controller = $controller;
-//     }
+  function PayAdditionalCosts() {
+    if (ShouldAutotargetOpponent($this->controller)) {
+      AddDecisionQueue("PASSPARAMETER", $this->controller, "THEIRCHAR-0");
+    }
+    else {
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a hero for " . CardLink($this->cardID));
+      AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "THEIRCHAR-0,MYCHAR-0");
+    }
+    AddDecisionQueue("SHOWSELECTEDTARGET", $this->controller, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $this->controller, $this->cardID, 1);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class arctic_incarceration_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "arctic_incarceration_red";
+    $this->controller = $controller;
+    $this->baseCard = new arctic_incarceration($this->cardID, $controller);
+  }
 
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 3);
+    return "";
+  }
 
-// class arctic_incarceration_yellow extends Card {
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "arctic_incarceration_yellow";
-//     $this->controller = $controller;
-//     }
+class arctic_incarceration_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "arctic_incarceration_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new arctic_incarceration($this->cardID, $controller);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 2);
+    return "";
+  }
 
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
 
-// class arctic_incarceration_blue extends Card {
+class arctic_incarceration_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "arctic_incarceration_blue";
+    $this->controller = $controller;
+    $this->baseCard = new arctic_incarceration($this->cardID, $controller);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "arctic_incarceration_blue";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $this->baseCard->PlayAbility($target, 1);
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PayAdditionalCosts($from, $index = '-') {
+    $this->baseCard->PayAdditionalCosts();
+  }
+}
 
 
 // class ash extends Card {
