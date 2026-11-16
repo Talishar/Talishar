@@ -6,13 +6,23 @@ include_once __DIR__ . '/Assets/AllAltArtVariations.php';
 
 // FAB Cube API endpoint for card data with all printing variations
 //$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/develop/json/english/card.json";
-$jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/usurp-the-shadow-throne/json/english/card.json";
+  $jsonUrl = "https://raw.githubusercontent.com/the-fab-cube/flesh-and-blood-cards/refs/heads/outbreak/json/english/card.json";
 
 $manualArtVariationOverrides = [
-    "sink_below_red" => [
+    "eradicate_yellow" => [
     ["artVariation" => "MV", 
-    "setID" => "WTR215", 
-    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/FAB515-CF.webp"],
+    "setID" => "DYN119", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/MPA155-MV.webp"],
+  ], 
+      "leave_no_witnesses_red" => [
+    ["artVariation" => "MV", 
+    "setID" => "DYN120", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/MPA156-MV.webp"],
+  ], 
+      "surgical_extraction_blue" => [
+    ["artVariation" => "MV", 
+    "setID" => "DYN122", 
+    "imageUrl" => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/normal/MPA157-MV.webp"],
   ], 
 ];
 
