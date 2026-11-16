@@ -1457,16 +1457,15 @@ class runebleed_robe extends Card {
   }
 
   function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
-    $Auras = new Auras($this->controller);
-    return $Auras->FindCardID("runechant")->Index() == -1;
+    return NumRunechants($this->controller) == 0;
   }
 
   function PayAdditionalCosts($from, $index = '-') {
     $CharacterCard = new CharacterCard($index, $this->controller);
     $CharacterCard->Destroy();
-    $Auras = new Auras($this->controller);
-    $Runechant = $Auras->FindCardID("runechant");
-    if ($Runechant != "") $Runechant->Destroy();
+    Await($this->controller, "RunechantIndices", "indices", subsequent:0);
+    Await($this->controller, "ChooseMultiZone", context:"Destroy a runechant you control");
+    Await($this->controller, "MZDestroy", final:true);
   }
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
