@@ -626,10 +626,11 @@ function CheckInfectContract($contractType, $aura) {
 
 function CheckHitContracts($mainPlayer, $otherPlayer)
 {
-  global $CombatChain, $chainLinks;
+  global $CombatChain, $chainLinks, $defPlayer;
   $numActiveLink = $CombatChain->NumCardsActiveLink();
   for($i = 0; $i < $numActiveLink; ++$i) {
     $chainCard = $CombatChain->Card($i, cardNumber:true);
+    if ($chainCard->PlayerID() == $defPlayer && !TypeContains($chainCard->ID(), "DR")) continue;
     $contractType = ContractType($chainCard->ID(), player:$mainPlayer);
     if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainCard->ID());
     if ($i == 0) {
@@ -645,6 +646,7 @@ function CheckHitContracts($mainPlayer, $otherPlayer)
     for($j = 0; $j < $linkCount; $j += $chainLinksPieces) {
       if($chainLinks[$i][$j+2] == 0) continue;
       $contractType = ContractType($chainLinks[$i][$j], player:$mainPlayer);
+      if ($chainLinks[$i][$j+1] == $defPlayer && !TypeContains($chainCard->ID(), "DR")) continue;
       if($contractType != "" && CheckHitContract($contractType, $otherPlayer)) ContractCompleted($mainPlayer, $chainLinks[$i][$j]);
       if ($j == 0) {
         $extraText = GetHorrorsBuff($i);
