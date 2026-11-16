@@ -130,7 +130,7 @@
         if(IsHeroAttackTarget() && RuptureActive()) DestroyArsenal($defPlayer, effectController:$mainPlayer);
         break;
       case "stoke_the_flames_red":
-        MZMoveCard($mainPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND");
+        MZMoveCard($mainPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", may:true);
         AddDecisionQueue("OP", $mainPlayer, "GIVEATTACKGOAGAIN", 1);
         break;
       case "erase_face_red":
