@@ -279,9 +279,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         return "";
       }
       return "";
-    case "blistering_assault_red": case "blistering_assault_yellow": case "blistering_assault_blue":
-      if(SearchPitchForColor($currentPlayer, 2) > 0) GiveAttackGoAgain();
-      return "";
     case "break_of_dawn_red": case "break_of_dawn_yellow": case "break_of_dawn_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
@@ -368,10 +365,6 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target hero");
       AddDecisionQueue("BUTTONINPUT", $currentPlayer, "Target_Opponent,Target_Yourself");
       AddDecisionQueue("PLAYERTARGETEDABILITY", $currentPlayer, $cardID, 1);
-      return "";
-    case "soul_cleaver_red": case "soul_cleaver_yellow": case "soul_cleaver_blue":
-      $theirSoul = &GetSoul($otherPlayer);
-      if(count($theirSoul) > 0) GiveAttackGoAgain();
       return "";
     case "anthem_of_spring_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);

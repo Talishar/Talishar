@@ -2561,6 +2561,14 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
     case "vigor_rush_yellow":
     case "vigor_rush_blue":
       return GetClassState($mainPlayer, $CS_NumNonAttackCards) > 0;
+    case "blistering_assault_red":
+    case "blistering_assault_yellow":
+    case "blistering_assault_blue":
+      return SearchPitchForColor($mainPlayer, 2) > 0;
+    case "soul_cleaver_red":
+    case "soul_cleaver_yellow":
+    case "soul_cleaver_blue":
+      return count(GetSoul($defPlayer)) > 0;
     case "mandible_claw":
     case "mandible_claw_r":
       return GetClassState($mainPlayer, $CS_Num6PowDisc) > 0;
