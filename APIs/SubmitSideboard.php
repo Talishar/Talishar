@@ -276,7 +276,7 @@ if($p1SideboardSubmitted == "1" && $p2SideboardSubmitted == "1" && $gameStatus <
   fwrite($handler, "\r\n"); //Chain Link Summaries
   fwrite($handler, $p1Key . "\r\n"); //Player 1 auth key
   fwrite($handler, $p2Key . "\r\n"); //Player 2 auth key
-  fwrite($handler, 0 . "\r\n"); //Permanent unique ID counter
+  fwrite($handler, ($permanentUniqueIDCounter ?? 0) . "\r\n"); //Permanent unique ID counter (initializePlayerState already used IDs for heroes/equipment)
   fwrite($handler, "0\r\n"); //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   fwrite($handler, "\r\n"); //Animations
   fwrite($handler, "0\r\n"); // Not Used - Current Player activity status -- 0 = active, 2 = inactive

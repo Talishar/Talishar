@@ -86,7 +86,7 @@ fwrite($memHandle,
   "\r\n" . //Chain Link Summaries
   $p1Key . "\r\n" . //Player 1 auth key
   $p2Key . "\r\n" . //Player 2 auth key
-  "0\r\n" . //Permanent unique ID counter
+  ($permanentUniqueIDCounter ?? 0) . "\r\n" . //Permanent unique ID counter (initializePlayerState already used IDs for heroes/equipment)
   "0\r\n" . //Game status -- 0 = START, 1 = PLAY, 2 = OVER
   "\r\n" . //Animations
   "0\r\n" . //Not Used - Current Player activity status -- 0 = active, 2 = inactive
