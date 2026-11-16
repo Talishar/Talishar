@@ -302,5 +302,12 @@ if ((int)$mode === 100023) {
   ]);
 }
 
+if ((int)$mode === 100014) {
+  echo json_encode($playerReportResult ?? [
+    "success" => false,
+    "message" => "Report could not be saved. Please contact a mod on Discord with this game number."
+  ]);
+}
+
 // Rematch handling, AI turns, clock accumulation, persistence and backups.
 include "Libraries/GameFinalization.php";

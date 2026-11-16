@@ -36,7 +36,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
   global $CS_SkipAllRunechants, $CS_RunechantPreventPlan, $dqVars, $numMode, $CS_NumUndoesThisTurn, $CurrentTurnEffects, $ChainLinks;
   global $p1MetafyTiers, $p2MetafyTiers;
   global $CS_OriginalHero, $CS_DrawOffered;
-  global $replaySaveResult, $snapshotSaveResult;
+  global $replaySaveResult, $snapshotSaveResult, $playerReportResult;
   global $isReplayAdvance, $replayUndoHasRecordedResponse;
   $otherPlayer = OtherPlayer($playerID);
   switch ($mode) {
@@ -1303,7 +1303,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
         $folderName = "./BugReports/" . $gameName . "-" . $reportCount;
       }
       if ($reportCount >= MAX_PLAYER_REPORTS) {
-        WriteLog("⚠️ Report file is full for this game. Please use discord for further reports.", highlight: true);
+        $playerReportResult = ["success" => false, "message" => "Report file is full for this game. Please use Discord for further reports."];
         break;
       }
       if (!is_dir($folderName)) mkdir($folderName, 0700, true);
@@ -1313,7 +1313,7 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       if (file_exists("./Games/$gameName/beginTurnGamestate.txt")) copy("./Games/$gameName/beginTurnGamestate.txt", $folderName . "/beginTurnGamestate.txt");
       if (file_exists("./Games/$gameName/lastTurnGamestate.txt")) copy("./Games/$gameName/lastTurnGamestate.txt", $folderName . "/lastTurnGamestate.txt");
       if (file_exists("./Games/$gameName/startChainLinkGamestate.txt")) copy("./Games/$gameName/startChainLinkGamestate.txt", $folderName . "/startChainLinkGamestate.txt");
-      WriteLog("🚨Thank you for reporting a player. The game log has been saved for the moderators (game $gameName). You can also contact a mod on Discord with this game number.", highlight: true);
+      $playerReportResult = ["success" => true, "message" => "Thank you for reporting a player. The game log has been saved for the moderators (game $gameName). You can also contact a mod on Discord if needed."];
       break;
     case 100015: //Request to enable chat
       include __DIR__ . "/../MenuFiles/ParseGamefile.php";
