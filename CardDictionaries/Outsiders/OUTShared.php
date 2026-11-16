@@ -77,11 +77,7 @@ function OUTAbilityCost($cardID)
     if ($cardID == "silken_gi" && $dashSuffix === "2") return -1;
     switch($cardID)
     {
-      case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return 3;
       case "prowl_red": case "prowl_yellow": case "prowl_blue": return 1;
-      case "razors_edge_red": return 3;
-      case "razors_edge_yellow": return 2;
-      case "razors_edge_blue": return 1;
       case "head_leads_the_tail_red": return 1;
       case "deadly_duo_red": case "deadly_duo_yellow": case "deadly_duo_blue": return 2;
       case "melting_point_red": return 4;
@@ -131,9 +127,7 @@ function OUTAbilityCost($cardID)
     }
     switch ($cardID)
     {
-      case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red": return true;
       case "prowl_red": case "prowl_yellow": case "prowl_blue": return HasStealth($attackID) && TypeContains($attackID, "AA");
-      case "razors_edge_red": case "razors_edge_yellow": case "razors_edge_blue": return true;
       case "mask_of_many_faces": return CardType($attackID) == "AA";
       case "head_leads_the_tail_red": return CardType($attackID) == "AA" && $commaSuffix !== '' && IsCurrentAttackName(GamestateUnsanitize($commaSuffix));
       case "be_like_water_red": case "be_like_water_yellow": case "be_like_water_blue": return true;
@@ -208,14 +202,8 @@ function OUTAbilityCost($cardID)
           if(IsHeroAttackTarget() && $combatChain[$i+1] == $defPlayer && $combatChain[$i+2] != "PLAY" && CardType($combatChain[$i]) != "C") PlayAura($CID_BloodRotPox, $defPlayer, effectController:$mainPlayer);
         }
         return "";
-      case "spike_with_bloodrot_red": case "spike_with_frailty_red": case "spike_with_inertia_red":
-        AddEffectToCurrentAttack($cardID);
-        return "";
       case "prowl_red": case "prowl_yellow": case "prowl_blue":
         AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
-        return "";
-      case "razors_edge_red": case "razors_edge_yellow": case "razors_edge_blue":
-        AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
       case "mask_of_many_faces":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");

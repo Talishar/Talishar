@@ -211,9 +211,6 @@ function StealAura($srcPlayer, $index, $destPlayer, $from, $mod=0, $realSteal=tr
 function CreatesAuraForOpponent($cardID)
 {
   return match($cardID) {
-    "spike_with_bloodrot_red" => true,
-    "spike_with_frailty_red" => true,
-    "spike_with_inertia_red" => true,
     "infect_red" => true,
     "infect_yellow" => true,
     "infect_blue" => true,
