@@ -603,28 +603,25 @@
         AddCurrentTurnEffectFromCombat($cardID, $mainPlayer);
         break;
       case "battering_bolt_red":
-        if(IsHeroAttackTarget() && CanRevealCards($mainPlayer))
+        if(IsHeroAttackTarget())
         {
-          $hand = &GetHand($defPlayer);
-          $cardsArr = [];
-          $numDiscarded = 0;
+          $hand = GetHand($defPlayer);
           $handPieces = HandPieces();
+          if(count($hand) > 0 && CanRevealCards($defPlayer)) RevealCards(implode(",", $hand), $defPlayer);
+          $numDiscarded = 0;
           for($i=count($hand)-$handPieces; $i>=0; $i-=$handPieces)
           {
-            $id = $hand[$i];
-            $cardType = CardType($id);
+            $cardType = CardType($hand[$i]);
             if(!DelimStringContains($cardType, "A") && $cardType != "AA")
             {
-              AddGraveyard($id, $defPlayer, "HAND");
-              unset($hand[$i]);
+              DiscardCard($defPlayer, $i, $cardID, $mainPlayer);
               ++$numDiscarded;
             }
-            $cardsArr[] = $id;
           }
-          LoseHealth($numDiscarded, $defPlayer);
-          RevealCards(implode(",", $cardsArr), $defPlayer);//CanReveal checked earlier
-          if($numDiscarded > 0)WriteLog(CardLink("battering_bolt_red", "battering_bolt_red") . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
-          $hand = array_values($hand);
+          if($numDiscarded > 0) {
+            LoseHealth($numDiscarded, $defPlayer);
+            WriteLog(CardLink($cardID, $cardID) . " discarded " . $numDiscarded . " and caused the defending player to lose that much life.");
+          }
         }
         break;
       case "fatigue_shot_red": case "fatigue_shot_yellow": case "fatigue_shot_blue":
