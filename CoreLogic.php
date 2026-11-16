@@ -2494,10 +2494,8 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
   //Grant go Again
   $auras = &GetAuras($mainPlayer);
   $Auras = new Auras($mainPlayer);
-  if (ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) {
-    if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0) return true;
-    if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality")) return true;
-  }
+  if (SearchCharacterForCard($mainPlayer, "luminaris") && SearchPitchForColor($mainPlayer, 2) > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) return true;
+  if ($isAura && SearchCharacterForCard($mainPlayer, "iris_of_reality") && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) return true;
   if (!$isPreview && $isAura && SearchCharacterForCard($mainPlayer, "cosmo_scroll_of_ancestral_tapestry")) {
     // $cosmoIndex = GetCombatChainState($CCS_WeaponIndex) + 3;
     $attack = $CombatChain->AttackCard();
@@ -2510,7 +2508,7 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
     return true;
   }
 
-  if ($attackType == "AA" && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && SearchAuras("ode_to_wrath_yellow", $mainPlayer)) return true;
+  if ($attackType == "AA" && SearchAuras("ode_to_wrath_yellow", $mainPlayer) && ClassContains($attackID, "ILLUSIONIST", $mainPlayer)) return true;
   if (DelimStringContains($attackSubtype, "Dragon") && GetClassState($mainPlayer, $CS_NumRedPlayed) > 0 && (SearchCharacterActive($mainPlayer, "dromai_ash_artist") || SearchCharacterActive($mainPlayer, "dromai") || SearchCurrentTurnEffectsAny(["dromai_ash_artist-SHIYANA", "dromai-SHIYANA"], $mainPlayer))) return true;
   if (SearchItemsForCard("mhz_script_yellow", $mainPlayer) != "" && $attackType == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer)) return true;
   if (SearchCurrentTurnEffectsForCycle("engaged_swiftblade_red", "engaged_swiftblade_yellow", "engaged_swiftblade_blue", $mainPlayer) && ClassContains($attackID, "WARRIOR", $mainPlayer) && NumAttacksBlocking() > 0) return true;
@@ -2518,7 +2516,7 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
   if (SearchCurrentTurnEffects("first_tenet_of_chi_wind_blue", $mainPlayer) && PitchValue($attackID) == 3 && $from != "PLAY") return true;
   if (SearchCurrentTurnEffects("spreading_mist_blue-GOAGAIN", $mainPlayer) && $from != "PLAY") return true;
 
-  if (IsWeaponGreaterThanTwiceBasePower() && SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponAttack()) return true;
+  if (SearchAuras("sharpened_senses_yellow", $mainPlayer) && IsWeaponGreaterThanTwiceBasePower() && IsWeaponAttack()) return true;
   if (SearchCurrentTurnEffects("goldkiss_rum", $mainPlayer)) return true;
   //the last action in numActions is going to be the current chain link
   //so we want the second to last to be current funnel, and 3rd to last to be lightning

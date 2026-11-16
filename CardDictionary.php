@@ -852,10 +852,10 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   $lyathShoes = false;
   static $skipLyathFroms = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
   if (!isset($skipLyathFroms[$from])) {
-    $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
+    $lyathActive = !$blocking && (SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
       || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
-      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, GetPlayerCharacter($player)[0]));
+      || (SearchCurrentTurnEffects("lyath_goldmane-SHIYANA", $player) && SearchCharacterActive($player, GetPlayerCharacter($player)[0])));
     $lyathShoes = SearchCurrentTurnEffects("walk_in_my_shoes_yellow", $player) && TypeContains($cardID, "AA");
   }
   $block = -2;
@@ -971,7 +971,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   $lyathActive = false;
   $lyathShoes = false;
   static $skipLyathFromsPow = ["HAND"=>true,"DECK"=>true,"ARS"=>true,"DISCARD"=>true,"BANISH"=>true,"PITCH"=>true,"GY"=>true];
-  if (!isset($skipLyathFromsPow[$from])) {
+  if (!$attacking && !isset($skipLyathFromsPow[$from])) {
     $lyathActive = SearchCharacterActive($player, "lyath_goldmane_vile_savant")
       || SearchCharacterActive($player, "lyath_goldmane")
       || SearchCurrentTurnEffects("lyath_goldmane_vile_savant-SHIYANA", $player)
@@ -1000,7 +1000,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
   }
   $cardID = BlindCard($cardID, true);
   $basePower = -1;
-  if (ClassContains($cardID, "ILLUSIONIST", $player) && DelimStringContains($subtype, "Aura") && ($from == "CC" || $from == "PLAY" || $from == "LAYER")) {
+  if (DelimStringContains($subtype, "Aura") && ($from == "CC" || $from == "PLAY" || $from == "LAYER") && ClassContains($cardID, "ILLUSIONIST", $player)) {
     if (SearchCharacterForCard($mainPlayer, "luminaris")) $basePower = 1;
     if (SearchCharacterForCard($mainPlayer, "iris_of_reality")) $basePower = 4;
     if (SearchCharacterForCard($mainPlayer, "reality_refractor")) $basePower = 5;
