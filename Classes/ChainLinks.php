@@ -282,7 +282,7 @@ class LinkCard {
 			}
 		}
 		else {
-			AddGraveyard($this->OriginalCardID(), $this->PlayerID(), "CC", $agent);
+			AddGraveyard($this->OriginalCardID(), $this->PlayerID(), "CC", $agent, uniqueID:$this->UniqueID());
 			$this->Remove();
 		}
 	}

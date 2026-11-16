@@ -294,7 +294,7 @@ class ChainCard {
         if ($banish)
           BanishCardForPlayer($targetCard, $this->PlayerID(), "COMBATCHAINLINK", banisher:$agent);
         else
-          AddGraveyard($targetCard, $this->PlayerID(), "COMBATCHAINLINK", $agent);
+          AddGraveyard($targetCard, $this->PlayerID(), "COMBATCHAINLINK", $agent, uniqueID:$this->UniqueID());
         $this->Remove();
       }
     }

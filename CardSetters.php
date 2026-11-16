@@ -754,11 +754,15 @@ function AddCharacterEffect($player, $index, $effect)
 function AddGraveyard($cardID, $player, $from, $effectController = "", $cardController = "", $additionalCosts = "-", $uniqueID = "-")
 {
   global $mainPlayer, $mainPlayerGamestateStillBuilt, $CS_NumAllyPutInGraveyard;
-  global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard;
+  global $myDiscard, $theirDiscard, $mainDiscard, $defDiscard, $CurrentTurnEffects;
   global $myStateBuiltFor, $CS_CardsEnteredGY, $EffectContext, $CS_NumInstantsPutInGrave, $Stack;
   if (str_contains($from, "DECK") && (TypeContains($EffectContext, "A", $player) || TypeContains($EffectContext, "AA", $player) || TypeContains($EffectContext, "E", $player))) {
     $card = GetClass($cardID, $player);
     if ($card != "-") $card->BackAlleyTrigger();
+  }
+  if ($uniqueID != "-" && $CurrentTurnEffects->FindSpecificEffect("under_the_trap_door_blue", $uniqueID)) {
+    BanishCardForPlayer($cardID, $player, $from, banisher:$effectController, uniqueID:$uniqueID);
+    return;
   }
   $char = GetPlayerCharacter($player);
   $hero = $char[0];
