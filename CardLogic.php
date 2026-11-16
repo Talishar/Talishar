@@ -2706,6 +2706,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
       case "reincarnate_yellow":
       case "reincarnate_blue":
         $index = SearchGetLastIndex(SearchMultizone($player, "MYDISCARD:cardID=" . $parameter));
+        if ($index === "") break;
         RemoveGraveyard($player, $index);
         $deck = new Deck($player);
         $deck->AddBottom($parameter, "GY");
