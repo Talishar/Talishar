@@ -171,6 +171,7 @@
       case "smashing_good_time_red-1": case "smashing_good_time_yellow-1": case "smashing_good_time_blue-1": return CardType($attackID) == "AA";
       case "smashing_good_time_red-2": case "smashing_good_time_yellow-2": case "smashing_good_time_blue-2": return CardType($attackID) == "AA";
       case "potion_of_ironhide_blue": return true;
+      case "amulet_of_assertiveness_yellow": return true;
       case "firebreathing_red-BUFF": return true;
       default: return false;
     }
@@ -483,11 +484,7 @@
         AddDecisionQueue("SPECIFICCARD", $currentPlayer, "EVENBIGGERTHANTHAT-".$cardID);
         return "";
       case "amulet_of_assertiveness_yellow":
-        if($from == "PLAY") {
-          $deck = new Deck($currentPlayer);
-          if($deck->Empty()) return "Deck is empty";
-          $deck->BanishTop(CardType($deck->Top()) == "AA" ? "TT" : "-");
-        }
+        if($from == "PLAY") AddCurrentTurnEffect($cardID, $currentPlayer, $from);
         return "";
       case "amulet_of_echoes_blue":
         if($from == "PLAY") {

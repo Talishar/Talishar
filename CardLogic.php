@@ -1498,6 +1498,7 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "runic_reaping_blue-HIT":
     case "melting_point_red":
     case "concealed_blade_blue":
+    case "amulet_of_assertiveness_yellow":
     case "toxic_tips":
     case "spirit_of_war_red":
     case "light_the_way_red":

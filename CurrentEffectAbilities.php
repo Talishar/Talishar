@@ -309,6 +309,10 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       WriteLog(CardLink($cardID, $cardID) . " lets you sink a card");
       BottomDeck($mainPlayer, true, shouldDraw: true);
       break;
+    case "amulet_of_assertiveness_yellow":
+      $deck = new Deck($mainPlayer);
+      if (!$deck->Empty()) $deck->BanishTop(CardType($deck->Top()) == "AA" ? "TT" : "-");
+      break;
     case "concealed_blade_blue":
       $weaponsArr = [];
       $char = &GetPlayerCharacter($mainPlayer);
