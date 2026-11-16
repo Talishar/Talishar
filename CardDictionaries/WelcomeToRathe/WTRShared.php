@@ -704,6 +704,13 @@ function AddEffectToAttack($player, $effectID, $target, $attach=false) {
       $attackCard->AddBuff($effectID);
     }
   }
+  elseif ($zone == "COMBATCHAINATTACKS") {
+    $linkNum = explode("-", $target)[1] ?? -1;
+    if ($linkNum != -1) {
+      $attackCard = $ChainLinks->GetLink($linkNum)->AttackCard();
+      $attackCard->AddBuff($effectID);
+    }
+  }
   elseif ($zone == "ATTACKQUEUE") {
     $ind = intval(explode("-", $target)[1] ?? 0);
     $QueueCard = new AttackLayer($ind);
