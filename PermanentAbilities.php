@@ -133,30 +133,26 @@ function PermanentTakeDamageAbilities($player, $index, $damage, $preventable, $t
   $permanents = &GetPermanents($player);
   //CR 2.1 6.4.10f If an effect states that a prevention effect can not prevent the damage of an event, the prevention effect still applies to the event but its prevention amount is not reduced. Any additional modifications to the event by the prevention effect still occur.
   $preventedDamage = 0;
-  $countPermanents = count($permanents);
-  $permanentPieces = PermanentPieces();
-  if ($damage > 0) {
-    for ($i = $countPermanents - $permanentPieces; $i >= 0; $i -= $permanentPieces) {
-      $remove = false;
-      switch ($permanents[$i]) {
-        case "UPR439":
-          if ($preventable) $preventedDamage += 4;
-          $remove = true;
-          break;
-        case "UPR440":
-          if ($preventable) $preventedDamage += 3;
-          $remove = true;
-          break;
-        case "UPR441":
-          if ($preventable) $preventedDamage += 2;
-          $remove = true;
-          break;
-        default:
-          break;
-      }
-      if ($remove) {
-        DestroyPermanent($player, $i);
-      }
+  if ($damage > 0 && isset($permanents[$index])) {
+    $remove = false;
+    switch ($permanents[$index]) {
+      case "UPR439":
+        if ($preventable) $preventedDamage += 4;
+        $remove = true;
+        break;
+      case "UPR440":
+        if ($preventable) $preventedDamage += 3;
+        $remove = true;
+        break;
+      case "UPR441":
+        if ($preventable) $preventedDamage += 2;
+        $remove = true;
+        break;
+      default:
+        break;
+    }
+    if ($remove) {
+      DestroyPermanent($player, $index);
     }
   }
   if ($preventedDamage > 0 && SearchCurrentTurnEffects("vambrace_of_determination", $player, remove:true)) {
