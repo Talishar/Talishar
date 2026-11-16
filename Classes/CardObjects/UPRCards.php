@@ -1424,20 +1424,20 @@ class ice_eternal_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     global $CS_LastDynCost;
-    $otherPlayer = ($this->controller == 1 ? 2 : 1);
+    $targetPlayer = str_starts_with($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     $numFrostBite = intval(GetClassState($this->controller, $CS_LastDynCost))/2;
-    PlayAura("frostbite", $otherPlayer, $numFrostBite, effectController: $this->controller);
+    PlayAura("frostbite", $targetPlayer, $numFrostBite, effectController: $this->controller);
     Await($this->controller, $this->cardID, target:$target, additionalCosts:$additionalCosts, final:true, subsequent:0);
     return "";
   }
 
   function SpecificLogic() {
     global $dqVars;
-    $otherPlayer = ($this->controller == 1 ? 2 : 1);
     $target = $dqVars["target"];
+    $targetPlayer = str_starts_with($target, "MY") ? $this->controller : ($this->controller == 1 ? 2 : 1);
     $additionalCosts = $dqVars["additionalCosts"];
-    $amountArcane = SearchCount(SearchAurasForCard("frostbite", $otherPlayer));
-    $amountArcane += SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite"));
+    $amountArcane = SearchCount(SearchAurasForCard("frostbite", $targetPlayer));
+    $amountArcane += SearchCount(SearchCharacterForCardMulti($targetPlayer, "frostbite"));
     if(DelimStringContains($additionalCosts, "ICE")) DealArcane($amountArcane, 0, "PLAYCARD", $this->cardID, false, $this->controller, resolvedTarget: $target);
   }
 

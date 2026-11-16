@@ -49,10 +49,6 @@
       case "isenhowl_weathervane_red": case "isenhowl_weathervane_yellow": case "isenhowl_weathervane_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);
         return "";
-      case "arctic_incarceration_red": case "arctic_incarceration_yellow": case "arctic_incarceration_blue":
-        $numFrostbites = ByColor($cardID, 3, 2, 1);
-        PlayAura("frostbite", OtherPlayer($currentPlayer), $numFrostbites, effectController: $currentPlayer);
-        return "";
       case "cold_snap_red": case "cold_snap_yellow": case "cold_snap_blue":
         $cost = ByColor($cardID, 3, 2, 1);
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose if you want to pay $cost to prevent an arsenal or ally from being frozen");

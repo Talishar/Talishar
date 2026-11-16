@@ -14,7 +14,7 @@
       case "freezing_point_red":
         if(DelimStringContains($additionalCosts, "ICE")) {
           $otherPlayer = (OtherPlayer($currentPlayer));
-          $damage = 5 + CountAura("frostbite", $otherPlayer) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
+          $damage = 5 + CountAura("frostbite", $otherPlayer) + SearchCount(SearchCharacterForCardMulti($otherPlayer, "frostbite")) + SearchCount(SearchAura($otherPlayer, "", "Affliction", -1, -1, "", "ICE")) + FrozenCount($otherPlayer);
         }
         else $damage = 5;
         DealArcane($damage, 0, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);

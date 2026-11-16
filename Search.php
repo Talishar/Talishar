@@ -1964,12 +1964,6 @@ function FrozenCount($player)
   for ($i = 0; $i < $countAllies; $i += $allyPieces)
     if ($allies[$i + 3] == "1")
       ++$numFrozen;
-  $arsenal = &GetArsenal($player);
-  $countArsenal = count($arsenal);
-  $arsenalPieces = ArsenalPieces();
-  for ($i = 0; $i < $countArsenal; $i += $arsenalPieces)
-    if ($arsenal[$i + 4] == "1")
-      ++$numFrozen;
   return $numFrozen;
 }
 
