@@ -951,7 +951,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "amnesia_red"=>true,
     "humble_red"=>true,"humble_yellow"=>true,"humble_blue"=>true,
     "cut_down_to_size_red"=>true,"cut_down_to_size_yellow"=>true,"cut_down_to_size_blue"=>true,
-    "destructive_deliberation_red"=>true,"destructive_deliberation_yellow"=>true,"destructive_deliberation_blue"=>true,
     "lay_to_rest_red"=>true,"lay_to_rest_yellow"=>true,"lay_to_rest_blue"=>true,
     "flail_of_agony"=>true,
     "hungering_demigon_red"=>true,"hungering_demigon_yellow"=>true,"hungering_demigon_blue"=>true,
@@ -1018,6 +1017,7 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "nix_the_nimble_red"=>true,"nix_the_nimble_yellow"=>true,"nix_the_nimble_blue"=>true,
     "sack_the_shifty_red"=>true,"sack_the_shifty_yellow"=>true,"sack_the_shifty_blue"=>true,
     "slay_the_scholars_red"=>true,"slay_the_scholars_yellow"=>true,"slay_the_scholars_blue"=>true,
+    "destructive_deliberation_red"=>true,"destructive_deliberation_yellow"=>true,"destructive_deliberation_blue"=>true,
   ];
   if (isset($heroHitCards[$cardID])) {
     if (IsHeroAttackTarget()) {
