@@ -143,8 +143,11 @@ function StashRecentGame(string $gameDirectory): ?string
   $temporaryPath = $packPath . ".tmp";
   $handle = @gzopen($temporaryPath, "wb6");
   if ($handle === false) return null;
+  $previousTimeLimit = ini_get('max_execution_time');
+  @set_time_limit(0);
   $written = WriteRecentGamePack($handle, $summary, $sources);
   $closed = gzclose($handle);
+  if ($previousTimeLimit !== false) @set_time_limit((int)$previousTimeLimit);
   if (!$written || !$closed || !@rename($temporaryPath, $packPath)) {
     @unlink($temporaryPath);
     return null;

@@ -573,7 +573,8 @@ function ProcessInput($playerID, $mode, $buttonInput, $cardID, $chkCount, $chkIn
       break;
     case 102: //Toggle equipment Active
       $index = $buttonInput;
-      $charCard = new CharacterCard($index, $playerID);
+      if (!is_numeric($index)) break;
+      $charCard = new CharacterCard((int)$index, $playerID);
       $charCard->ToggleGem();
       if ($charCard->IsActive() == 1) ClearGemSnooze($playerID, $charCard->UniqueID());
       break;
