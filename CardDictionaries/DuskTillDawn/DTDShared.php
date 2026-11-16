@@ -377,18 +377,20 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
     case "northern_winds_blue":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRCHAR:type=E", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRITEMS", 1);
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRALLY");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose which card you want to freeze", 1);
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+      $freezeSteps = [
+        ["THEIRCHAR:type=E", "an equipment your opponent controls"],
+        ["THEIRITEMS", "an item your opponent controls"],
+        ["THEIRALLY", "an ally your opponent controls"],
+        ["MYCHAR:type=E", "an equipment you control"],
+        ["MYITEMS", "an item you control"],
+        ["MYALLY", "an ally you control"],
+      ];
+      foreach ($freezeSteps as [$search, $label]) {
+        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, $search);
+        AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose $label to freeze, or pass", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+      }
       return "";
     case "call_down_the_lightning_yellow":
       AddCurrentTurnEffect($cardID, $currentPlayer);
