@@ -3343,6 +3343,13 @@ function GetLayerTarget($cardID, $from)
       AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
       AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
       break;
+    case "lost_in_thought_red":
+      if (ShouldAutotargetOpponent($currentPlayer)) break;
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a hero to look at their hand");
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "THEIRCHAR-0,MYCHAR-0");
+      AddDecisionQueue("SHOWSELECTEDTARGET", $currentPlayer, "-", 1);
+      AddDecisionQueue("SETLAYERTARGET", $currentPlayer, $cardID, 1);
+      break;
     case "pass_over_blue":
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRDISCARD");
       AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose target card");
