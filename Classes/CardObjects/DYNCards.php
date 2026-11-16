@@ -699,23 +699,26 @@ class construct_nitro_mechanoid_yellow extends Card {
     $Mechanoid = $Items->Card($mechanoidIndex, true);
     //Congrats, you have met the requirement to summon the mech! Let's remove the old stuff
     $Character = new PlayerCharacter($this->controller);
-    $addedWeapon = false;
+    $takenSlots = [];
     for ($i = $Character->NumCards() - 1; $i >= 0; $i -= 1) {
       $CharCard = $Character->Card($i, true);
-      if (TypeContains($CharCard->CardID(), "W")) {
-        if ($addedWeapon) continue;
-        else $addedWeapon = true;
-      }
+      if ($CharCard->Status() == 0) continue;
+      if (!ClassContains($CharCard->CardID(), "MECHANOLOGIST", $this->controller)) continue;
       $charCardType = CardType($CharCard->CardID());
-      if($charCardType != "C" && $charCardType != "Companion") {
-        $Mechanoid->AddSubcard($CharCard->CardID());
-        $characterSubCards = $CharCard->Subcards();
-        if ($characterSubCards != "-") {
-          foreach (explode(",", $characterSubCards) as $subcard) 
-            $Mechanoid->AddSubcard($subcard);
-        }
-        $CharCard->Destroy(true);
+      if ($charCardType == "W") $slot = "Weapon";
+      else {
+        $slot = $CharCard->Slot();
+        if (!in_array($slot, ["Head", "Chest", "Arms", "Legs"])) continue;
       }
+      if (isset($takenSlots[$slot])) continue;
+      $takenSlots[$slot] = true;
+      $Mechanoid->AddSubcard($CharCard->CardID());
+      $characterSubCards = $CharCard->Subcards();
+      if ($characterSubCards != "-") {
+        foreach (explode(",", $characterSubCards) as $subcard)
+          $Mechanoid->AddSubcard($subcard);
+      }
+      $CharCard->Destroy(true);
     }
 
     $hyperDrivers = SearchMultizone($this->controller, "MYITEMS:isSameName=hyper_driver_red");
