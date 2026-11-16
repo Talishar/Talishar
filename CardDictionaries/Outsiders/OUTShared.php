@@ -440,6 +440,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "infectious_host_red": case "infectious_host_yellow": case "infectious_host_blue":
+        if(!IsHeroAttackTarget()) return "";
         if(SearchAuras($CID_Frailty, $currentPlayer)) PlayAura($CID_Frailty, $defPlayer, effectController: $currentPlayer);
         if(SearchAuras($CID_BloodRotPox, $currentPlayer)) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $currentPlayer);
         if(SearchAuras($CID_Inertia, $currentPlayer)) PlayAura($CID_Inertia, $defPlayer, effectController: $currentPlayer);
