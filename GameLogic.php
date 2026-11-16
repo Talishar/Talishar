@@ -362,7 +362,12 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = SearchDeck($player, "", "Aura", $subparam);
           break;
         case "CROWNOFREFLECTION":
-          $rv = SearchHand($player, "", "Aura", -1, -1, "ILLUSIONIST");
+          if (!is_string($lastResult) || $lastResult == "" || $lastResult == "-") {
+            $rv = "";
+            break;
+          }
+          $destroyedCost = TypeContains($lastResult, "T") ? 0 : max(0, intval(CardCost($lastResult)));
+          $rv = SearchHand($player, "", "Aura", $destroyedCost, -1, "ILLUSIONIST");
           break;
         case "LIFEOFPARTY":
           $rv = LifeOfThePartyIndices();
