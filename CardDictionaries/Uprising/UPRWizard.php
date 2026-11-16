@@ -93,7 +93,7 @@
       case "dampen_red": case "dampen_yellow": case "dampen_blue":
         $damage = ByColor($cardID, 4, 3, 2);
         DealArcane($damage, 2, "PLAYCARD", $cardID, false, $currentPlayer, resolvedTarget: $target);
-        AddDecisionQueue("SETCLASSSTATE", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
+        AddDecisionQueue("INCREMENTCLASSSTATEBY", $currentPlayer, $CS_ArcaneDamagePrevention, 1);
         return "";
       case "aether_dart_red": case "aether_dart_yellow": case "aether_dart_blue":
         $damage = ByColor($cardID, 3, 2, 1);
