@@ -180,7 +180,7 @@
   {
     global $currentPlayer, $CombatChain, $CS_PlayIndex, $combatChainState, $CCS_NumBoosted;
     global $CS_HighestRoll, $CS_NumNonAttackCards, $CS_NumAttackCards, $mainPlayer, $CCS_RequiredEquipmentBlock;
-    global $layers;
+    global $layers, $CS_LastDynCost;
     $otherPlayer = (OtherPlayer($currentPlayer));
     $rv = "";
     switch($cardID)
@@ -218,7 +218,8 @@
         if(GetDieRoll($currentPlayer) >= $target) AddCurrentTurnEffect($cardID, $currentPlayer);
         return $rv;
       case "imposing_visage_blue":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . ($resourcesPaid-CardCost($cardID)), 1);
+        $imposingX = max(0, intval(GetClassState($currentPlayer, $CS_LastDynCost)) - CardCost($cardID));
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "DECKAURAMAXCOST," . $imposingX, 1);
         AddDecisionQueue("MAYCHOOSEDECK", $currentPlayer, "<-", 1);
         AddDecisionQueue("PUTPLAY", $currentPlayer, "-", 1);
         AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
