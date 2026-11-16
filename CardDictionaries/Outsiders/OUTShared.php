@@ -234,7 +234,7 @@ function OUTAbilityCost($cardID)
       case "visit_the_floating_dojo_blue":
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:isSameName=surging_strike_red");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Surging Strike from your graveyard");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
@@ -243,7 +243,7 @@ function OUTAbilityCost($cardID)
         AddDecisionQueue("ADDTOPORBOT", $currentPlayer, "-", 1);
         AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYDISCARD:comboOnly=true");
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Combo card from your graveyard");
-        AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
         AddDecisionQueue("WRITELOGCARDLINK", $currentPlayer, "<-", 1);
         AddDecisionQueue("SETDQVAR", $currentPlayer, "0", 1);
