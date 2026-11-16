@@ -3488,7 +3488,7 @@ function GetDamagePreventionIndices($player, $type, $damage, $preventable=true, 
   $cteCount = count($currentTurnEffects);
   $ctePieces = CurrentTurnEffectsPieces();
   for ($i = 0; $i < $cteCount; $i += $ctePieces) {
-    if ($currentTurnEffects[$i + 1] == $player && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source, $preventable) > 0) {
+    if (($currentTurnEffects[$i + 1] == $player || IsBreakOfDawn($currentTurnEffects[$i])) && CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, $type, $source, $preventable) > 0) {
       $indexParts[] = $i;
     }
   }
@@ -4047,15 +4047,18 @@ function UnityEffect($cardID)
   switch ($cardID) {
     case "united_we_stand_yellow"://United We Stand
       $char = &GetPlayerCharacter($defPlayer);
-      if ($char[0] == "ser_boltyn_breaker_of_dawn" || $char[0] == "boltyn") PlayAura("courage", $defPlayer);
-      else if ($char[0] == "bravo_showstopper" || $char[0] == "bravo") PlayAura("seismic_surge", $defPlayer);
-      else if ($char[0] == "briar_warden_of_thorns" || $char[0] == "briar") PlayAura("embodiment_of_earth", $defPlayer);
-      else if ($char[0] == "briar_warden_of_thorns" || $char[0] == "briar") PlayAura("embodiment_of_earth", $defPlayer);
-      else if ($char[0] == "dorinthea_ironsong" || $char[0] == "dorinthea") PlayAura("courage", $defPlayer);
-      else if ($char[0] == "lexi_livewire" || $char[0] == "lexi") PlayAura("embodiment_of_lightning", $defPlayer);
-      else if ($char[0] == "oldhim_grandfather_of_eternity" || $char[0] == "oldhim") PlayAura("spellbane_aegis", $defPlayer);
-      else if ($char[0] == "prism_sculptor_of_arc_light" || $char[0] == "prism" || $char[0] == "prism_awakener_of_sol" || $char[0] == "prism_advent_of_thrones") PlayAura("spectral_shield", $defPlayer);
-      else if ($char[0] == "shiyana_diamond_gemini") PlayAura("eloquence", $defPlayer);
+      $unityHeroes = [
+        "courage" => ["ser_boltyn_breaker_of_dawn", "boltyn", "dorinthea_ironsong", "dorinthea", "dorinthea_quicksilver_prodigy"],
+        "seismic_surge" => ["bravo_showstopper", "bravo", "bravo_star_of_the_show", "bravo_flattering_showman"],
+        "embodiment_of_earth" => ["briar_warden_of_thorns", "briar"],
+        "embodiment_of_lightning" => ["lexi_livewire", "lexi"],
+        "spellbane_aegis" => ["oldhim_grandfather_of_eternity", "oldhim"],
+        "spectral_shield" => ["prism_sculptor_of_arc_light", "prism", "prism_awakener_of_sol", "prism_advent_of_thrones"],
+        "eloquence" => ["shiyana_diamond_gemini"],
+      ];
+      foreach ($unityHeroes as $token => $heroes) {
+        if (in_array($char[0], $heroes)) PlayAura($token, $defPlayer);
+      }
       break;
     case "anthem_of_spring_blue"://Anthem of Spring
       PlayAura("embodiment_of_earth", $defPlayer);
