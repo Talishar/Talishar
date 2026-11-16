@@ -3183,8 +3183,10 @@ class tempest_aurora extends BaseCard {
 	}
 
 	function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
+		global $CS_LastDynCost;
 		$costVal = ByColor($this->cardID, 2, 1, 0);
-		if (CardCost($cardID) <= $costVal)
+		$cost = DynamicCost($cardID) != "" ? intval(GetClassState($this->controller, $CS_LastDynCost)) : CardCost($cardID);
+		if ($cost <= $costVal)
 			AssignEffectToArcaneCard($effectIndex, $cardID, $this->controller, $from);
 	}
 }
