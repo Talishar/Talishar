@@ -662,6 +662,20 @@ function CallDownLightning()
     AddDecisionQueue("MZDAMAGE", $mainPlayer, "1,ATTACKHIT," . $CombatChain->CurrentAttack());
   }
 }
+function IsBreakOfDawn($effectID)
+{
+  return $effectID == "break_of_dawn_red" || $effectID == "break_of_dawn_yellow" || $effectID == "break_of_dawn_blue";
+}
+
+function BreakOfDawnAmount($effectID)
+{
+  return match ($effectID) {
+    "break_of_dawn_red" => 4,
+    "break_of_dawn_yellow" => 3,
+    default => 2,
+  };
+}
+
 function IfChargedYellow($player, $cardID) {
   Charge();
   AddDecisionQueue("ALLCARDCOLORORPASS", $player, "2", 1);

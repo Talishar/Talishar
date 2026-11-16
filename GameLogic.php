@@ -1647,7 +1647,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $preventable = CanDamageBePrevented($player, $damage, $type, $source);
       $playerSource = $parameters[3] ?? $player; //!! Important for end games stats
       if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
-        return DamageAlly($targetPlayer, $target[1], $damage, $type);
+        return DamageAlly($targetPlayer, $target[1], $damage, $type, source: $source);
       } else {
         PrependDecisionQueue("TAKEDAMAGE", $targetPlayer, "$damage-$source-$type-$playerSource");
         $sourceHero = new CharacterCard(0, $playerSource);
@@ -1749,7 +1749,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         }
         if ($target[0] == "THEIRALLY" || $target[0] == "MYALLY") {
           $allies = &GetAllies($targetPlayer);
-          $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE");
+          $damage = AllyDamagePrevention($targetPlayer, $target[1], $damage, "ARCANE", $sourceID);
           $allyHealthBefore = isset($allies[$target[1] + 2]) ? max(0, intval($allies[$target[1] + 2])) : 0;
           $allies[$target[1] + 2] -= $damage;
           $dqVars[0] = $damage;

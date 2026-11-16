@@ -816,7 +816,7 @@ function GetDamagePrevention($player, $damage)
   $countEffects = count($currentTurnEffects);
   $currentTurnEffectsPieces = CurrentTurnEffectPieces();  
   for($i = 0; $i < $countEffects; $i += $currentTurnEffectsPieces) {
-    if($currentTurnEffects[$i + 1] == $player) {
+    if($currentTurnEffects[$i + 1] == $player || IsBreakOfDawn($currentTurnEffects[$i])) {
       $preventionLeft += CurrentTurnEffectDamagePreventionAmount($player, $i, $damage, "COMBAT", $combatChain[0]);
     }
   }

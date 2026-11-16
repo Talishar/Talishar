@@ -292,6 +292,11 @@ function AllyDamagePrevention($player, $index, $damage, $type = "", $source = "-
         if ($canBePrevented) $preventedDamage += 1;
         RemoveCurrentTurnEffect($i);
       }
+    } elseif (IsBreakOfDawn($effectID)) {
+      if ($damage > 0 && $source != "-" && TalentContains(ExtractCardID($source), "SHADOW", 3 - $player)) {
+        if ($canBePrevented) $preventedDamage += BreakOfDawnAmount($effectID);
+        RemoveCurrentTurnEffect($i);
+      }
     } elseif ($effectID == "light_up_the_leaves_red" && $source == $currentTurnEffects[$i + 2]) {
       if ($canBePrevented && $type == "ARCANE") {
         $sourceDamage = $damage;
@@ -656,14 +661,14 @@ function StealAlly($srcPlayer, $index, $destPlayer, $from, $mod=0, $tapState=0)
   $srcAlly = array_values($srcAlly);
 }
 
-function DamageAlly($targetPlayer, $targetInd, $damage, $type, $countAsDamageDealtBy = 0) {
+function DamageAlly($targetPlayer, $targetInd, $damage, $type, $countAsDamageDealtBy = 0, $source = "-") {
   $allies = &GetAllies($targetPlayer);
   if ($allies[$targetInd + 6] > 0) {
     $damage -= 3;
     if ($damage < 0) $damage = 0;
     --$allies[$targetInd + 6];
   }
-  $damage = AllyDamagePrevention($targetPlayer, $targetInd, $damage, $type);
+  $damage = AllyDamagePrevention($targetPlayer, $targetInd, $damage, $type, $source);
   $healthBefore = max(0, intval($allies[$targetInd + 2]));
   $allies[$targetInd + 2] -= $damage;
   if ($damage > 0) {
