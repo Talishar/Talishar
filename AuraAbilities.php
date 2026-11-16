@@ -1145,18 +1145,7 @@ function AuraBeginEndPhaseAbilities()
     $remove = 0;
     switch ($auras[$i]) {
       case "burn_them_all_red":
-        $toBanish = ++$auras[$i + 2];
-        $discardReds = SearchCount(SearchDiscard($mainPlayer, pitch: 1));
-        if ($toBanish <= $discardReds) {
-          for ($j = $toBanish; $j > 0; --$j) {
-            MZMoveCard($mainPlayer, "MYDISCARD:pitch=1", "MYBANISH,GY,-", may: true, isSubsequent: $j < $toBanish);
-          }
-          AddDecisionQueue("ELSE", $mainPlayer, "-");
-          AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $i, 1);
-          AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
-        } else {
-          DestroyAura($mainPlayer, $i);
-        }
+        ChannelPitchColor($auras[$i + 6], 1, "raze");
         break;
       case "channel_the_bleak_expanse_blue":
         ChannelTalent($auras[$i+6], "ICE");
@@ -1204,7 +1193,7 @@ function ChannelTalent($uniqueID, $talent)
 
 // Similar to ChannelTalent but for Parched Terrain
 // From Discard -> Banish
-function ChannelPitchColor($uniqueID, $pitch)
+function ChannelPitchColor($uniqueID, $pitch, $counterName = "sand")
 {
   global $mainPlayer;
   $auras = &GetAuras($mainPlayer);
@@ -1222,14 +1211,14 @@ function ChannelPitchColor($uniqueID, $pitch)
   if ($toBottom <= $numPitch) {
     $article = str_contains('aeiou', strtolower($colorToBanish[0])) ? 'an' : 'a';
     for ($j = $toBottom; $j > 0; --$j) {
-      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " sand counter" . ($toBottom > 1 ? "s" : "");
+      $context = "Choose " . $article . " {{element|" . ucfirst(strtolower($colorToBanish)) . "|" . GetElementColorCode($colorToBanish) . "}} card" . ($toBottom > 1 ? "s" : "") . " for your " . CardLink($auras[$index], $auras[$index]) . " with " . $toBottom . " " . $counterName . " counter" . ($toBottom > 1 ? "s" : "");
       MZMoveCard($mainPlayer, "MYDISCARD:pitch=" . $pitch, "MYBANISH", $j == $toBottom, isSubsequent: $j < $toBottom, DQContext: $context);
     }
     AddDecisionQueue("ELSE", $mainPlayer, "-");
     AddDecisionQueue("PASSPARAMETER", $mainPlayer, "MYAURAS-" . $index, 1);
     AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);
   } else {
-    WriteLog("Not enough <b>" . $colorToBanish . "</b> cards in graveyard to satisfy " . CardLink("parched_terrain_red", "parched_terrain_red") . ". Aura destroyed.");
+    WriteLog("Not enough <b>" . $colorToBanish . "</b> cards in graveyard to satisfy " . CardLink($auras[$index], $auras[$index]) . ". Aura destroyed.");
     DestroyAuraUniqueID($mainPlayer, $uniqueID);
   }
 }
