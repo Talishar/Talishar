@@ -970,6 +970,19 @@ function CheckSpellvoid($player, $damage, $source = "-")
 }
 
 
+function ConduitOfFrostburnApplies($player)
+{
+  global $currentTurnEffects, $CS_ResolvingLayerUniqueID;
+  $uniqueID = GetClassState($player, $CS_ResolvingLayerUniqueID);
+  if ($uniqueID == "-" || $uniqueID == "" || $uniqueID == -1) return false;
+  $pieces = CurrentTurnEffectsPieces();
+  $count = count($currentTurnEffects);
+  for ($i = 0; $i < $count; $i += $pieces) {
+    if ($currentTurnEffects[$i] == "conduit_of_frostburn" && $currentTurnEffects[$i + 1] == $player && $currentTurnEffects[$i + 2] == $uniqueID) return true;
+  }
+  return false;
+}
+
 function ArcaneHitEffect($player, $source, $target, $damage)
 {
   global $CS_ArcaneDamageDealt;
@@ -1007,7 +1020,7 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     default:
       break;
   }
-  if ($damage > 0 && CardType(ExtractCardID($source)) != "W" && SearchCurrentTurnEffects("conduit_of_frostburn", $player, true)) {
+  if ($damage > 0 && MZIsPlayer($target) && ConduitOfFrostburnApplies($player)) {
     AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
   }
   $auras = &GetAuras($player);

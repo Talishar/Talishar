@@ -1617,7 +1617,24 @@ function CharacterAttackDestroyedAbilities($attackID)
         }
         break;
       case "silent_stilettos":
-        AddLayer("TRIGGER", $mainPlayer, $character[$i]);
+        if (CardType($attackID) == "AA") AddLayer("TRIGGER", $mainPlayer, $character[$i]);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function CharacterAttackingAllyDiesAbilities($player)
+{
+  $character = &GetPlayerCharacter($player);
+  $charCount = count($character);
+  $characterPieces = CharacterPieces();
+  for ($i = 0; $i < $charCount; $i += $characterPieces) {
+    if ($character[$i + 1] == 0) continue;
+    switch ($character[$i]) {
+      case "silent_stilettos":
+        AddLayer("TRIGGER", $player, $character[$i]);
         break;
       default:
         break;

@@ -94,7 +94,9 @@ function DestroyAlly($player, $index, $skipDestroy = false, $fromCombat = false,
   if (!$skipDestroy) AllyDestroyedAbility($player, $index);
   $cardID = $allies[$index];
   RemoveAllyEffects($player, $cardID, $uniqueID);
-  if (IsSpecificAllyAttacking($player, $index) && IsPreDamageStep() && !$skipClose) {
+  $isAttacking = IsSpecificAllyAttacking($player, $index);
+  if ($isAttacking && !$skipDestroy && !$toBanished) CharacterAttackingAllyDiesAbilities($player);
+  if ($isAttacking && IsPreDamageStep() && !$skipClose) {
     CloseCombatChain();
   }
   $owner = $allies[$index+14] == "Temporary" ? $otherPlayer : $player;
