@@ -1781,8 +1781,7 @@ function IsPlayable($cardID, $phase, $from, $index = -1, &$restriction = null, $
   if ($from == "DECK" && ($character[5] == 0 || $character[1] < 2 || $character[0] != "dash_io" && $character[0] != "dash_database" || CardCost($cardID, $from) > 1 || !SubtypeContains($cardID, "Item", $player) || !ClassContains($cardID, "MECHANOLOGIST", $player))) return false;
   if (TypeContains($cardID, "E", $player) && isset($character[$index + 12]) && $character[$index + 12] == "DOWN" && HasCloaked($cardID, $player) == "UP") return false;
   if ($phase == "B") {
-    $CharacterCard = new CharacterCard($index, $player);
-    if (TypeContains($cardID, "E", $player) && $from == "CHAR" && $CharacterCard->OnChain() == 1) return false;
+    if ($from == "CHAR" && TypeContains($cardID, "E", $player) && (new CharacterCard($index, $player))->OnChain() == 1) return false;
     if (IsBlockRestricted($cardID, $restriction, $player)) return false;
   }
   if ($phase != "B" && $from == "CHAR" && isset($character[$index + 1]) && $character[$index + 1] != "2") return false;
@@ -2007,10 +2006,12 @@ function IsBlockRestricted($cardID, &$restriction = null, $player = "", $from = 
     }
   };
   //modal cards dominate and overpower restriction
-  if ($from == "HAND" && IsDominateActive() && NumDefendedFromHand() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") return true;
-  if (IsOverpowerActive() && NumActionsBlocking() >= 1 && GetAbilityTypes($cardID, from:"HAND") != "") {
-    $extendedType = CardTypeExtended($cardID);
-    if ($extendedType == "A" || $extendedType == "AA") return true;
+  if (GetAbilityTypes($cardID, from:"HAND") != "") {
+    if ($from == "HAND" && IsDominateActive() && NumDefendedFromHand() >= 1) return true;
+    if (IsOverpowerActive() && NumActionsBlocking() >= 1) {
+      $extendedType = CardTypeExtended($cardID);
+      if ($extendedType == "A" || $extendedType == "AA") return true;
+    }
   }
   if (SearchCurrentTurnEffects("confidence", $mainPlayer) && IsCombatEffectActive("confidence")) {
     if (NumNonBlocksDefending() >= 2 && !TypeContains($cardID, "B")) return true;
