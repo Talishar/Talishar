@@ -443,13 +443,16 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       AddDecisionQueue("PASSPARAMETER", $currentPlayer, "{1}", 1);
       return "";
     case "lost_in_thought_red"://Lost in Thought
-      LookAtHand($otherPlayer);
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "THEIRHAND:type=AA");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      $targetsSelf = str_starts_with($target, "MY");
+      $targetPlayer = $targetsSelf ? $currentPlayer : $otherPlayer;
+      if (!$targetsSelf) LookAtHand($otherPlayer);
+      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, ($targetsSelf ? "MYHAND" : "THEIRHAND") . ":type=AA");
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack action card to put on the bottom of the deck", 1);
+      AddDecisionQueue($targetsSelf ? "MAYCHOOSEMULTIZONE" : "CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
-      AddDecisionQueue("ADDBOTDECK", $otherPlayer, "-", 1);
-      AddDecisionQueue("PASSPARAMETER", $otherPlayer, "ponder", 1);
-      AddDecisionQueue("PUTPLAY", $otherPlayer, "-", 1);
+      AddDecisionQueue("ADDBOTDECK", $targetPlayer, "-", 1);
+      AddDecisionQueue("PASSPARAMETER", $targetPlayer, "ponder", 1);
+      AddDecisionQueue("PUTPLAY", $targetPlayer, "-", 1);
       return "";
     case "hold_the_line_blue":
       if(GetClassState($otherPlayer, $CS_NumCardsDrawn) >= 2)
