@@ -253,7 +253,7 @@
         $deck->BanishTop("TCC");
         return "";
       case "shatter_yellow":
-        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPON");
+        AddDecisionQueue("FINDINDICES", $currentPlayer, "WEAPONHANDS,2H");
         AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("ADDMZBUFF", $currentPlayer, "shatter_yellow", 1);
         return "";

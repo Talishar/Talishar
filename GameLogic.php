@@ -325,6 +325,9 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
         case "WEAPON":
           $rv = WeaponIndices($player, $player, $subparam);
           break;
+        case "WEAPONHANDS":
+          $rv = WeaponIndicesByHands($player, $subparam);
+          break;
         case "herald_of_rebirth_red":
         case "herald_of_rebirth_yellow":
         case "herald_of_rebirth_blue":

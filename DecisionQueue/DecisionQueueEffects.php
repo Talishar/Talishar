@@ -279,19 +279,19 @@ function ModalAbilities($player, $card, $lastResult, $index=-1)
         switch($choices[$i])
         {
           case "Buff_Weapon":
-            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("FINDINDICES", $player, "WEAPONHANDS,1H");
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give +1", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("ADDMZBUFF", $player, "blood_on_her_hands_yellow-1", 1);
             break;
           case "Go_Again":
-            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("FINDINDICES", $player, "WEAPONHANDS,1H");
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give go again", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("ADDMZBUFF", $player, "blood_on_her_hands_yellow-2", 1);
             break;
           case "Attack_Twice":
-            AddDecisionQueue("FINDINDICES", $player, "WEAPON");
+            AddDecisionQueue("FINDINDICES", $player, "WEAPONHANDS,1H");
             AddDecisionQueue("SETDQCONTEXT", $player, "Choose a weapon to give a second attack", 1);
             AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
             AddDecisionQueue("ADDMZUSESBLOODONHERHANDS", $player, "1", 1);

@@ -81,6 +81,17 @@ function WeaponIndices($chooser, $player, $subtype = "")
   return implode(",", $weaponsList);
 }
 
+function WeaponIndicesByHands($player, $hands)
+{
+  $filtered = [];
+  foreach (explode(",", WeaponIndices($player, $player)) as $mzIndex) {
+    if ($mzIndex == "") continue;
+    $isOneHanded = Is1H(GetMZCard($player, $mzIndex));
+    if (($hands == "1H") == (bool)$isOneHanded) $filtered[] = $mzIndex;
+  }
+  return implode(",", $filtered);
+}
+
 function ApplyEffectToEachWeapon($effectID)
 {
   global $currentPlayer;
