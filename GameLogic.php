@@ -2843,19 +2843,23 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
-      $otherPlayer = 3 - $player;
-      switch ($params[0]) {
-        case "THEIRALLY":
-          $allies = &GetAllies($otherPlayer);
-          WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen ally");
-          if ($allies[$params[1] + 8] == "1") {
-            DestroyAlly($otherPlayer, $params[1], uniqueID: $allies[$params[1] + 5]);
-          }
-          break;
-        default:
-          DestroyFrozenArsenal($otherPlayer);
-          WriteLog(CardLink($params[2], $params[2]) . " destroyed your frozen arsenal card");
-          break;
+      $succumbID = array_pop($params);
+      $targetZone = $params[0] ?? "";
+      $targetRef = $params[1] ?? "";
+      $targetPlayer = str_starts_with($targetZone, "MY") ? $player : 3 - $player;
+      if (str_contains($targetZone, "ALLY")) {
+        $allyIndex = is_numeric($targetRef) ? intval($targetRef) : SearchAlliesForUniqueID($targetRef, $targetPlayer);
+        $allies = &GetAllies($targetPlayer);
+        if ($allyIndex != -1 && isset($allies[$allyIndex]) && $allies[$allyIndex + 3] == "1") {
+          WriteLog(CardLink($succumbID, $succumbID) . " destroyed " . CardLink($allies[$allyIndex], $allies[$allyIndex]));
+          DestroyAlly($targetPlayer, $allyIndex, uniqueID: $allies[$allyIndex + 5]);
+        }
+      }
+      elseif (str_contains($targetZone, "CHAR")) {
+        if (SearchArsenal($targetPlayer, frozenOnly:true) != "") {
+          DestroyFrozenArsenal($targetPlayer);
+          WriteLog(CardLink($succumbID, $succumbID) . " destroyed a frozen arsenal card");
+        }
       }
       return $lastResult;
     case "STARTGAME":
