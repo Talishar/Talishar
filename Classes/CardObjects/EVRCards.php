@@ -2372,7 +2372,6 @@ class talisman_of_featherfoot_yellow extends Card {
 
     $Attack = $CombatChain->AttackCard();
     if ($Attack->UniqueID() != $objectUID || $Attack->PlayerID() != $this->controller) return;
-    if (!TypeContains($Attack->ID(), "AA", $this->controller)) return;
 
     AddLayer("TRIGGER", $this->controller, $this->cardID, $objectUID, "PROPERTYMODIFIER", $uniqueID);
   }
