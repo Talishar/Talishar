@@ -2900,14 +2900,14 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         break;
       case "pendulum_trap_yellow":
         $deck = new Deck($mainPlayer);
-        $rv = "put  ";
-        for ($i = 0; $i < 2; ++$i) {
+        $milled = [];
+        for ($i = 0; $i < 2 && !$deck->Empty(); ++$i) {
           $cardRemoved = $deck->Top(remove: true);
           AddGraveyard($cardRemoved, $mainPlayer, "DECK");
-          if ($i == 0) $rv .= Cardlink($cardRemoved, $cardRemoved);
-          else $rv .= " and " . Cardlink($cardRemoved, $cardRemoved) . " into the graveyard";
+          $milled[] = Cardlink($cardRemoved, $cardRemoved);
         }
-        WriteLog($rv);
+        if (count($milled) > 0) WriteLog("put " . implode(" and ", $milled) . " into the graveyard");
+        else WriteLog("No card from the deck could be put into the graveyard.");
         break;
       case "virulent_touch_red":
       case "virulent_touch_yellow":
