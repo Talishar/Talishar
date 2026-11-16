@@ -4167,7 +4167,6 @@ function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
     case "bonds_of_ancestry_red":
     case "bonds_of_ancestry_yellow":
     case "bonds_of_ancestry_blue":
-      GiveAttackGoAgain();
       AddDecisionQueue("MULTIZONEINDICES", $player, "MYDISCARD:comboOnly=true");
       AddDecisionQueue("SETDQCONTEXT", $player, "Choose a card with Combo to banish from your graveyard");
       AddDecisionQueue("MAYCHOOSEMULTIZONE", $player, "<-", 1);

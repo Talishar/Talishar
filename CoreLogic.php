@@ -2608,6 +2608,9 @@ function DoesAttackHaveGoAgain($attackIDOverride = "", $fromOverride = "")
     case "seek_vengeance_red":
     case "seek_vengeance_blue":
     case "vengeance_never_rests_blue":
+    case "bonds_of_ancestry_red":
+    case "bonds_of_ancestry_yellow":
+    case "bonds_of_ancestry_blue":
       return ComboActive($attackID);
     case "meat_and_greet_red":
     case "meat_and_greet_yellow":
