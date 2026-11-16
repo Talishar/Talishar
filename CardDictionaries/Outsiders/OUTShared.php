@@ -360,7 +360,7 @@ function OUTAbilityCost($cardID)
         return "";
       case "mask_of_malicious_manifestations":
         $cardRemoved = Belch();
-        AddPlayerHand($cardRemoved, $currentPlayer, "DECK");
+        if ($cardRemoved != "") AddPlayerHand($cardRemoved, $currentPlayer, "DECK");
         return "";
       case "toxic_tips":
         AddCurrentTurnEffect($cardID, $currentPlayer);
