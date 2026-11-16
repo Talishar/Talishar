@@ -1584,9 +1584,6 @@ function AddEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-"
     case "toxicity_red":
     case "toxicity_yellow":
     case "toxicity_blue":
-    case "spike_with_bloodrot_red":
-    case "spike_with_frailty_red":
-    case "spike_with_inertia_red":
     case "mask_of_perdition":
       if (IsHeroAttackTarget() || $target == $defPlayer) { 
         if (!$check) AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);

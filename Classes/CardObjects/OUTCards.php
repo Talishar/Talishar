@@ -1890,44 +1890,72 @@ class premeditate_red extends Card {
 //   }
 // }
 
+class razors_edge extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (HasStealth($obj->ID()))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
+  }
 
-// class razors_edge_red extends Card {
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $targets = [];
+    foreach ($attacks as $attack) {
+      $obj = MZIndexToObject($this->controller, $attack);
+      if (HasStealth($obj->ID()))
+        $targets[] = $attack;
+    }
+    return implode(",", $targets);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "razors_edge_red";
-//     $this->controller = $controller;
-//     }
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = $this->GetTargets();
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = $this->GetTargets();
+    return $targets == "";
+  }
 
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-// class razors_edge_yellow extends Card {
+  function EffectPowerModifier($param, $attached = false) {
+    return ByColor($this->cardID, 3, 2, 1);;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "razors_edge_yellow";
-//     $this->controller = $controller;
-//     }
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+}
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class razors_edge_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "razors_edge_red";
+    $this->controller = $controller;
+    $this->baseCard = new razors_edge($this->cardID, $this->controller);
+  }
+}
 
+class razors_edge_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "razors_edge_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new razors_edge($this->cardID, $this->controller);
+  }
+}
 
-// class razors_edge_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "razors_edge_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class razors_edge_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "razors_edge_blue";
+    $this->controller = $controller;
+    $this->baseCard = new razors_edge($this->cardID, $this->controller);
+  }
+}
 
 
 // class recoil_red extends Card {
@@ -2358,44 +2386,84 @@ class premeditate_red extends Card {
 //   }
 // }
 
+class spike_with extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    $obj = MZIndexToObject($this->controller, $target);
+    if (HasStealth($obj->ID()))
+      AddEffectToAttack($this->controller, $this->cardID, $target, true);
+    return "";
+  }
 
-// class spike_with_bloodrot_red extends Card {
+  private
+  function GetTargets() {
+    $attacks = TargetAttack($this->controller);
+    $targets = [];
+    foreach ($attacks as $attack) {
+      $obj = MZIndexToObject($this->controller, $attack);
+      if (HasStealth($obj->ID()))
+        $targets[] = $attack;
+    }
+    return implode(",", $targets);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "spike_with_bloodrot_red";
-//     $this->controller = $controller;
-//     }
+  function PayAdditionalCosts($from, $index = '-') {
+    $targets = $this->GetTargets();
+    SetTargetsChoices($this->controller, $this->cardID, $targets);
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function IsPlayRestricted(&$restriction, $from = '', $index = -1, $resolutionCheck = false) {
+    $targets = $this->GetTargets();
+    return $targets == "";
+  }
+
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 3;
+  }
+
+  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+  }
+
+  function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
+    global $defPlayer, $CombatChain;
+    $disease = match($this->cardID) {
+      "spike_with_bloodrot_red" => "bloodrot_pox",
+      "spike_with_frailty_red" => "frailty",
+      "spike_with_inertia_red" => "inertia"
+    };
+    PlayAura($disease, $defPlayer, effectController:$this->controller, effectSource:$CombatChain->AttackCard()->ID(), effectAgent:$this->controller);
+  }
+}
+
+class spike_with_bloodrot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spike_with_bloodrot_red";
+    $this->controller = $controller;
+    $this->baseCard = new spike_with($this->cardID, $this->controller);
+  }
+}
 
 
-// class spike_with_frailty_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "spike_with_frailty_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class spike_with_frailty_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spike_with_frailty_red";
+    $this->controller = $controller;
+    $this->baseCard = new spike_with($this->cardID, $this->controller);
+  }
+}
 
 
-// class spike_with_inertia_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "spike_with_inertia_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class spike_with_inertia_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "spike_with_inertia_red";
+    $this->controller = $controller;
+    $this->baseCard = new spike_with($this->cardID, $this->controller);
+  }
+}
 
 
 // class spinning_wheel_kick_red extends Card {

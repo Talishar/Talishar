@@ -2782,13 +2782,6 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
     case "uzuri_switchblade":
     case "uzuri":
       return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || count(GetHand($player)) == 0;
-    case "spike_with_bloodrot_red":
-    case "spike_with_frailty_red":
-    case "spike_with_inertia_red":
-    case "razors_edge_red":
-    case "razors_edge_yellow":
-    case "razors_edge_blue":
-      return !$CombatChain->HasCurrentLink() || !HasStealth($attackID) || CardType($attackID) != "AA";
     case "silverwind_shuriken_blue":
       return $from == "PLAY" ? !$CombatChain->HasCurrentLink() || !HasCombo($attackID) : false;
     case "concealed_blade_blue":
