@@ -2404,9 +2404,9 @@ class red_hot_red extends Card {
           AddDecisionQueue("PASSPARAMETER", $this->controller, $mzTarget);
           AddDecisionQueue("MZDAMAGE", $this->controller, "$numRed,DAMAGE,$this->cardID", 1);
         }
-        AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
       }
     }
+    AddDecisionQueue("SHUFFLEDECK", $this->controller, "-");
   }
 }
 
