@@ -473,8 +473,9 @@ $classStateDefaults = [
   "GraveyardGemsOff" => "-",                  // unique IDs of this player's graveyard cards whose gem is switched off
   "ClubDamage" => 0,
   "ArcaneCardsPlayed" => 0,                   // used for surgent aethertide
+  "CodexArsenal" => "-",                      // unique IDs of this player's arsenal cards an opponent's codex put there
 ];
-$persistentClassStates = ["ArsenalFacing", "OriginalHero", "GraveyardGemsOff"];
+$persistentClassStates = ["ArsenalFacing", "OriginalHero", "GraveyardGemsOff", "CodexArsenal"];
 $classStateNames = array_keys($classStateDefaults);
 foreach ($classStateDefaults as $classStateName => $classStateDefault) ${"CS_" . $classStateName} = $classStateName;
 unset($classStateName, $classStateDefault);

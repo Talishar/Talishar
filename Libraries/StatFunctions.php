@@ -234,6 +234,30 @@ function LogBanishDisruptionStats($owner, $cardID, $source, $banish, $index)
   LogDisruptionStats($owner, $cardID, $source);
 }
 
+// Codex of Frailty and Inertia make the opponent discard (already counted) and hand them an arsenal card in its place.
+function MarkCodexArsenal($player, $uniqueID)
+{
+  global $EffectContext, $dqState, $CS_CodexArsenal;
+  static $codexes = ["codex_of_frailty_yellow" => true, "codex_of_inertia_yellow" => true];
+  if (!isset($codexes[$EffectContext ?? "-"]) || intval($dqState[10] ?? 0) != 3 - intval($player)) return;
+  $arsenal = GetArsenal($player);
+  $kept = [];
+  foreach (explode(",", GetClassState($player, $CS_CodexArsenal)) as $marked) {
+    for ($i = 5, $count = count($arsenal); $i < $count; $i += ArsenalPieces()) {
+      if ($arsenal[$i] == $marked && $marked != $uniqueID) { $kept[] = $marked; break; }
+    }
+  }
+  $kept[] = $uniqueID;
+  SetClassState($player, $CS_CodexArsenal, implode(",", $kept));
+}
+
+function LogArsenalDisruptionStats($owner, $cardID, $uniqueID, $source = "")
+{
+  global $CS_CodexArsenal;
+  if ($uniqueID != "-" && in_array($uniqueID, explode(",", GetClassState($owner, $CS_CodexArsenal)), true)) return;
+  LogDisruptionStats($owner, $cardID, $source);
+}
+
 function GetCardsDisrupted($player)
 {
   global $p1CardsDisrupted, $p2CardsDisrupted;

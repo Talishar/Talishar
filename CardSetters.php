@@ -380,6 +380,7 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
   $arsenal[] = "0";
   $arsenal[] = GetUniqueId($cardID, $player);
   $arsenal[] = $powerCounters;
+  MarkCodexArsenal($player, $arsenal[count($arsenal) - 2]);
 
   $otherPlayer = 3 - $player;
   $effectType = CardType($EffectContext);
@@ -503,7 +504,7 @@ function DestroyArsenal($player, $index = -1, $effectController = "", $allArsena
   for ($i = count($arsenal) - $arsenalPieces; $i >= 0; $i -= $arsenalPieces) {
     if ($index > -1 && $index != $i) continue;
     $cardIDArr[] = $arsenal[$i];
-    LogDisruptionStats($player, $arsenal[$i], $effectController);
+    LogArsenalDisruptionStats($player, $arsenal[$i], $arsenal[$i + 5] ?? "-", $effectController);
     WriteLog(CardLink($arsenal[$i], $arsenal[$i]) . " was destroyed from the arsenal");
     AddGraveyard($arsenal[$i], $player, "ARS", $effectController);
     RemoveArsenal($player, $i);

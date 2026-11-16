@@ -118,6 +118,7 @@ class ArsenalCard {
 		$slotIndex = intdiv($this->index, ArsenalPieces());
 		$cardID = $this->CardID();
 		AddEvent("ARSENALDESTROY", $this->controller . ":" . $cardID . ":" . $slotIndex);
+		LogArsenalDisruptionStats($this->controller, $cardID, $this->UniqueID(), $effectController);
 		WriteLog(CardLink($cardID) . " was destroyed from the arsenal");
 		AddGraveyard($cardID, $this->controller, "ARS", $effectController);
 		$this->Remove();
