@@ -407,7 +407,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         {
           $card = $cards[$i];
           WriteLog(CardLink($card, $card) . " chosen randomly");
-          if(ModifiedPowerValue($card, $currentPlayer, "GY", source:$cardID) >= 6) {
+          if(CardType($card) == "AA" && ModifiedPowerValue($card, $currentPlayer, "GY", source:$cardID) >= 6) {
             ++$num6plus;
             $deck->AddBottom($card, "GY");
           }
