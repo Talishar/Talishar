@@ -142,9 +142,17 @@ class barbed_castaway extends Card {
   }
 
   function SpecificLogic() {
-    SetArsenalFacing("UP", $this->controller);
     $arsenal = &GetArsenal($this->controller);
-    $arsenal[count($arsenal)-ArsenalPieces()+3] += 1;
+    $indices = [];
+    for ($i = 0; $i < count($arsenal); $i += ArsenalPieces()) {
+      if ($arsenal[$i + 1] == "DOWN" && CardSubType($arsenal[$i]) == "Arrow") $indices[] = $i;
+    }
+    if (count($indices) == 0) return;
+    PrependDecisionQueue("ADDAIMCOUNTER", $this->controller, "-", 1);
+    PrependDecisionQueue("TURNARSENALFACEUP", $this->controller, "-", 1);
+    PrependDecisionQueue("CHOOSEARSENAL", $this->controller, "<-", 1);
+    PrependDecisionQueue("SETDQCONTEXT", $this->controller, "Choose an arrow to turn face up and give an aim counter", 1);
+    PrependDecisionQueue("PASSPARAMETER", $this->controller, implode(",", $indices));
   }
 
   function GetAbilityTypes($index = -1, $from = '-') {

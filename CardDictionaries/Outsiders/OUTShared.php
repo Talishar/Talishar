@@ -624,8 +624,11 @@ function OUTAbilityCost($cardID)
         }
         break;
       case "wreck_havoc_red": case "wreck_havoc_yellow": case "wreck_havoc_blue":
-        SetArsenalFacing("UP", $defPlayer);
-        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=DR");
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:faceDown=true");
+        AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a card in their arsenal to turn face up, or pass", 1);
+        AddDecisionQueue("MAYCHOOSEMULTIZONE", $mainPlayer, "<-", 1);
+        AddDecisionQueue("TURNARSENALFACEUP", $mainPlayer, "-", 1);
+        AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRARS:type=DR;faceUp=true");
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose which card you want to destroy", 1);
         AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
         AddDecisionQueue("MZDESTROY", $mainPlayer, "-", 1);

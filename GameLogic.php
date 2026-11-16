@@ -809,10 +809,19 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
       $character[$lastResult + 12] = "UP";
       return $lastResult;
     case "TURNARSENALFACEUP":
-      $arsenal = &GetArsenal($player);
-      $arsenal[$parameter + 1] = "UP";
-      ArsenalTurnFaceUpAbility($arsenal[$parameter], $player);
-      return $parameter;
+      $index = $parameter == "-" ? $lastResult : $parameter;
+      $arsenalPlayer = $player;
+      if (str_contains($index, "-")) {
+        $mz = explode("-", $index);
+        if ($mz[0] == "THEIRARS") $arsenalPlayer = OtherPlayer($player);
+        $index = $mz[1];
+      }
+      $arsenal = &GetArsenal($arsenalPlayer);
+      if (!isset($arsenal[$index + 1]) || $arsenal[$index + 1] != "DOWN") return $parameter == "-" ? $lastResult : $parameter;
+      $arsenal[$index + 1] = "UP";
+      AddEvent("TURNARSENALFACEUP", $arsenalPlayer . ":" . $arsenal[$index]);
+      ArsenalTurnFaceUpAbility($arsenal[$index], $arsenalPlayer);
+      return $parameter == "-" ? $lastResult : $parameter;
     case "REMOVEARSENAL":
       $index = $lastResult;
       $arsenal = &GetArsenal($player);
