@@ -63,14 +63,14 @@ function BottomDeck($player = "", $mayAbility = false, $shouldDraw = false)
   AddDecisionQueue("WRITELOG", $player, "Player $player did not sink a card", 1);
 }
 
-function BottomDeckMultizone($player, $zone1, $zone2="-", $isMandatory = false, $context = "Choose a card to sink (or Pass)")
+function BottomDeckMultizone($player, $zone1, $zone2="-", $isMandatory = false, $context = "Choose a card to sink (or Pass)", $logParam = "-")
 {
   $search = $zone2 != "-" ? "$zone1&$zone2" : $zone1;
   AddDecisionQueue("MULTIZONEINDICES", $player, $search, 1);
   AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
   AddDecisionQueue($isMandatory ? "CHOOSEMULTIZONE" : "MAYCHOOSEMULTIZONE", $player, "<-", 1);
   AddDecisionQueue("MZREMOVE", $player, "-", 1);
-  AddDecisionQueue("ADDBOTDECK", $player, "-", 1);
+  AddDecisionQueue("ADDBOTDECK", $player, $logParam, 1);
 }
 
 function AddCurrentTurnEffectNextAttack($cardID, $player, $from = "", $uniqueID = -1)
@@ -3083,9 +3083,9 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         WriteLog("Processing the end of turn effect of " . CardLink("inertia", "inertia") . ".");
         $numToBottom = count(GetArsenal($player)) + count(GetHand($player));
         for ($i = 0; $i < $numToBottom; $i++) {
-          BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck");
+          BottomDeckMultizone($player, "MYHAND", "MYARS", true, "Choose a card from your hand or arsenal to add on the bottom of your deck", "Skip");
         }
-        AddDecisionQueue("WRITELOG", $player, "⬇️ The cards and arsenal of Player " . $player . " was put on the bottom of their deck.");
+        if ($numToBottom > 0) AddDecisionQueue("WRITELOG", $player, "⬇️ The hand and arsenal of Player " . $player . " ($numToBottom " . ($numToBottom == 1 ? "card" : "cards") . ") were put on the bottom of their deck.");
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "eloquence":

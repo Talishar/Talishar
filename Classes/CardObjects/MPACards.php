@@ -838,9 +838,11 @@ class sickening_exhaustion_blue extends Card {
     global $defPlayer;
     if (IsInfected($defPlayer)) {
       $Arsenal = new Arsenal($defPlayer);
-      for ($i = 0; $i < $Arsenal->NumCards(); $i++) {
-        BottomDeckMultizone($defPlayer, "MYARS", "-", true, "Choose a card from your arsenal to add on the bottom of your deck");
+      $numToBottom = $Arsenal->NumCards();
+      for ($i = 0; $i < $numToBottom; $i++) {
+        BottomDeckMultizone($defPlayer, "MYARS", "-", true, "Choose a card from your arsenal to add on the bottom of your deck", "Skip");
       }
+      if ($numToBottom > 0) AddDecisionQueue("WRITELOG", $defPlayer, "⤵️ $numToBottom " . ($numToBottom == 1 ? "card was" : "cards were") . " put on the bottom of the deck.");
     }
     return "";
   }
