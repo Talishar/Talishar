@@ -83,7 +83,7 @@ if($uid == "starmorgs") exit;
 $shownName = $uid;
 if ($sessionUserUid !== null && $sessionDisplayName !== "") $shownName = $sessionDisplayName;
 else if ($sessionUserUid === null && ($playerID === 1 || $playerID === 2)) $shownName = $playerID == 1 ? $p1DisplayName : $p2DisplayName;
-$displayName = ($shownName != "-" && $shownName != "" ? substr($shownName, 0, 20) : "Player " . $playerID);
+$displayName = ($shownName != "-" && $shownName != "" ? mb_substr($shownName, 0, 20, 'UTF-8') : "Player " . $playerID);
 
 $chatText = "";
 $isGameDeleteKeepalive = false;

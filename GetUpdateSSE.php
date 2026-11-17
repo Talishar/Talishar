@@ -141,7 +141,7 @@ if (is_string($initialState)) {
   flush();
   exit;
 }
-echo ("data: " . WithChatLog(json_encode($initialState)) . "\n\n");
+echo ("data: " . WithChatLog(json_encode($initialState, JSON_INVALID_UTF8_SUBSTITUTE)) . "\n\n");
 ob_flush();
 flush();
 unset($initialState);
@@ -238,7 +238,7 @@ while (true) {
       }
 
       $encodeStartedAt = microtime(true);
-      $gameStatePayload = json_encode($gameState);
+      $gameStatePayload = json_encode($gameState, JSON_INVALID_UTF8_SUBSTITUTE);
       RecordPerformanceMetric('encode-game-state', (microtime(true) - $encodeStartedAt) * 1000, [
         'playerID' => (int)$playerID,
       ]);
@@ -322,11 +322,11 @@ function WithChatLog($payload)
       "seq" => $sentLogSeq + 1,
       "drop" => $skip > 0 ? substr_count(LogForViewer(substr($sentLogRaw, 0, $skip), $logViewerID), "<br>") : 0,
       "append" => LogForViewer(substr($raw, $kept), $logViewerID),
-    ]);
+    ], JSON_INVALID_UTF8_SUBSTITUTE);
     if ($part !== false) $part = '"chatLogDelta":' . $part;
   }
   if ($part === false) {
-    $fullLog = json_encode(LogForViewer($raw, $logViewerID));
+    $fullLog = json_encode(LogForViewer($raw, $logViewerID), JSON_INVALID_UTF8_SUBSTITUTE);
     if ($fullLog === false) return false;
     $part = '"chatLog":' . $fullLog . ($logDelta ? ',"chatLogSeq":' . ($sentLogSeq + 1) : '');
   }

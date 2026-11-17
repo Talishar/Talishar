@@ -453,6 +453,6 @@ if ($lastUpdate != 0 && $cacheVal < $lastUpdate) {
     $response->opponentIsTyping = false;
   }
 
-  echo json_encode($response);
+  echo json_encode($response, JSON_INVALID_UTF8_SUBSTITUTE);
   exit;
 }

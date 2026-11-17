@@ -94,7 +94,7 @@ $p2EquipmentSubmitted = "0";
 
 WriteGameFile();
 
-WriteLog("🚫 " . substr($kickedName, 0, 20) . " was kicked from the lobby.", path: "../");
+WriteLog("🚫 " . mb_substr($kickedName, 0, 20, 'UTF-8') . " was kicked from the lobby.", path: "../");
 
 GamestateUpdated($gameName);
 
