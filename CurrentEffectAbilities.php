@@ -165,8 +165,11 @@ function EffectHitEffect($cardID, $from, $source = "-", $effectSource  = "-", $t
       SearchCurrentTurnEffects($cardID, $mainPlayer, true);
       break;
     case "shock_charmers":
-      if (IsHeroAttackTarget()) DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
-      return 1;
+      if (IsHeroAttackTarget()) {
+        DamageTrigger($defPlayer, 1, "ATTACKHIT", $cardID, $mainPlayer);
+        return 1;
+      }
+      break;
     case "electrify_red":
     case "electrify_yellow":
     case "electrify_blue":
