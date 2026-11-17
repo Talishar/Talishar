@@ -3113,7 +3113,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
             RemoveCurrentTurnEffect($warcryIndex);
           }
         }
-        CheckHitContracts($mainPlayer, $defPlayer);
+        CheckHitContracts($mainPlayer, $targetPlayer);
       }
       //handling flick knives and mark
       if (CheckMarked($defPlayer) && $targetPlayer == $defPlayer) {
