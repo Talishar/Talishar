@@ -9,7 +9,12 @@
     {
       case "lexi_livewire": case "lexi":
         if(DelimStringContains($additionalCosts, "LIGHTNING")) { $rv .= "The next attack gains go again."; AddCurrentTurnEffect($cardID."-1", $currentPlayer); }
-        if(DelimStringContains($additionalCosts, "ICE")) { if($rv != "") $rv .= " "; $rv .= "The opponent gets a Frostbite."; PlayAura("frostbite", $otherPlayer, effectController: $currentPlayer); }
+        if(DelimStringContains($additionalCosts, "ICE")) {
+          $frostbitePlayer = str_contains($target, "MY") ? $currentPlayer : $otherPlayer;
+          if($rv != "") $rv .= " ";
+          $rv .= $frostbitePlayer == $currentPlayer ? "Lexi gets a Frostbite." : "The opponent gets a Frostbite.";
+          PlayAura("frostbite", $frostbitePlayer, effectController: $currentPlayer);
+        }
         return $rv;
       case "shiver":
         LoadArrow($currentPlayer);
