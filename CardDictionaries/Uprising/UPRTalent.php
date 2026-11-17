@@ -208,17 +208,23 @@
   }
 
   function ThawIndices($player) {
-    $iceAfflictions = SearchMultiZoneFormat(SearchAura($player, "", "Affliction", -1, -1, "", "ICE"), "MYAURAS");
-    $frostbites = SearchMultiZoneFormat(SearchAurasForCard("frostbite", $player), "MYAURAS");
-    $search = CombineSearches($iceAfflictions, $frostbites);
-    $equipmentSlotFrostbites = SearchMultiZoneFormat(SearchCharacterForCards("frostbite", $player), "MYCHAR");
-    $search = CombineSearches($search, $equipmentSlotFrostbites);
-    $myFrozenArsenal = SearchMultiZoneFormat(SearchArsenal($player, frozenOnly:true), "MYARS");
-    $search = CombineSearches($search, $myFrozenArsenal);
-    $myFrozenAllies = SearchMultiZoneFormat(SearchAllies($player, frozenOnly:true), "MYALLY");
-    $search = CombineSearches($search, $myFrozenAllies);
-    $myFrozenCharacter = SearchMultiZoneFormat(SearchCharacter($player, frozenOnly:true), "MYCHAR");
-    $search = CombineSearches($search, $myFrozenCharacter);
-    return $search;
+    $search = "";
+    foreach ([[$player, "MY"], [3 - $player, "THEIR"]] as [$searchPlayer, $prefix]) {
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchAura($searchPlayer, "", "Affliction", -1, -1, "", "ICE"), $prefix . "AURAS"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchAurasForCard("frostbite", $searchPlayer), $prefix . "AURAS"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchCharacterForCards("frostbite", $searchPlayer), $prefix . "CHAR"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchArsenal($searchPlayer, frozenOnly:true), $prefix . "ARS"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchAllies($searchPlayer, frozenOnly:true), $prefix . "ALLY"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchCharacter($searchPlayer, frozenOnly:true), $prefix . "CHAR"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchItems($searchPlayer, frozenOnly:true), $prefix . "ITEMS"));
+      $search = CombineSearches($search, SearchMultiZoneFormat(SearchAura($searchPlayer, frozenOnly:true), $prefix . "AURAS"));
+    }
+    if ($search == "") return "";
+    return implode(",", array_unique(explode(",", $search)));
+  }
+
+  function IsThawDestroyTarget($cardID, $player) {
+    if ($cardID == "frostbite") return true;
+    return SubtypeContains($cardID, "Affliction", $player) && TalentContains($cardID, "ICE", $player);
   }
 

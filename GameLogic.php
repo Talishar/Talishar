@@ -2837,9 +2837,14 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
     case "AFTERTHAW":
       $otherPlayer = 3 - $player;
       $params = explode("-", $lastResult);
-      if ($params[0] == "MYAURAS") DestroyAura($player, $params[1]);
-      else if($params[0] == "MYCHAR") DestroyAura($player, $params[1], "", "EQUIP");
-      else UnfreezeMZ($player, $params[0], $params[1]);
+      $targetPlayer = str_starts_with($params[0], "THEIR") ? $otherPlayer : $player;
+      $targetZone = &GetMZZone($targetPlayer, $params[0]);
+      $targetCardID = $targetZone[$params[1]] ?? "-";
+      $isAuraZone = $params[0] == "MYAURAS" || $params[0] == "THEIRAURAS";
+      $isCharZone = $params[0] == "MYCHAR" || $params[0] == "THEIRCHAR";
+      if ($isAuraZone && IsThawDestroyTarget($targetCardID, $targetPlayer)) DestroyAura($targetPlayer, $params[1]);
+      else if ($isCharZone && $targetCardID == "frostbite") DestroyAura($targetPlayer, $params[1], "", "EQUIP");
+      else UnfreezeMZ($targetPlayer, $params[0], $params[1]);
       return "";
     case "SUCCUMBTOWINTER":
       $params = explode("-", $lastResult);
