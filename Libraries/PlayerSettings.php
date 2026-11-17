@@ -75,6 +75,7 @@ $SET_DisableSpacePass = 61;
 $SET_DisableMiddleClickPass = 62;
 $SET_HideLogNoise = 63;
 $SET_FannedHandTipSeen = 64;
+$SET_DisableEffectPopups = 65;
 
 function SettingsPieces()
 {
@@ -92,14 +93,14 @@ function IsUnsetAwareSetting($setting)
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise;
+    global $SET_HideLogNoise, $SET_DisableEffectPopups;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
       $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
-      $SET_HideLogNoise,
+      $SET_HideLogNoise, $SET_DisableEffectPopups,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -741,6 +742,7 @@ function SettingsIdMap()
     "DisableMiddleClickPass" => 62,
     "HideLogNoise" => 63,
     "FannedHandTipSeen" => 64,
+    "DisableEffectPopups" => 65,
   ];
   return $settingsToId;
 }
@@ -803,7 +805,7 @@ function SaveSettingInDatabase($setting)
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise, $SET_FannedHandTipSeen;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -817,7 +819,7 @@ function SaveSettingInDatabase($setting)
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
       $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
-      $SET_HideLogNoise, $SET_FannedHandTipSeen,
+      $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups,
     ], true);
   }
   return isset($persistable[$setting]);
