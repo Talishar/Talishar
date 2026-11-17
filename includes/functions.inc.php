@@ -1058,6 +1058,7 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
 	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
+	global $CS_OriginalHero;
 	if($DeckLink != "") {
 		$DeckLink = explode("/", $DeckLink);
 		$DeckLink = $DeckLink[count($DeckLink) - 1];
@@ -1090,7 +1091,9 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	// Add opponent's hero if provided
 	if($opposingHero != "") {
 		$deck["opponentHero"] = $opposingHero;
-		$deck["opponentStartingLife"] = CharacterHealth($opposingHero);
+		$opposingOriginalHero = GetClassState($player == 1 ? 2 : 1, $CS_OriginalHero);
+		if (!is_string($opposingOriginalHero) || $opposingOriginalHero == "" || $opposingOriginalHero == "-") $opposingOriginalHero = $opposingHero;
+		$deck["opponentStartingLife"] = CharacterHealth($opposingOriginalHero);
 	}
 
 	$deck["cardResults"] = BuildDeckCardEntries($deckAfterSB);
