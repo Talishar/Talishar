@@ -441,8 +441,9 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
       $targetPlayer = $targetsSelf ? $currentPlayer : $otherPlayer;
       if (!$targetsSelf) LookAtHand($otherPlayer);
       AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, ($targetsSelf ? "MYHAND" : "THEIRHAND") . ":type=AA");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack action card to put on the bottom of the deck", 1);
-      AddDecisionQueue($targetsSelf ? "MAYCHOOSEMULTIZONE" : "CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose an attack action card to reveal and put on the bottom of the deck", 1);
+      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
+      AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);
       AddDecisionQueue("MZREMOVE", $currentPlayer, "-", 1);
       AddDecisionQueue("ADDBOTDECK", $targetPlayer, "-", 1);
       AddDecisionQueue("PASSPARAMETER", $targetPlayer, "ponder", 1);
