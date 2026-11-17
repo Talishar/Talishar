@@ -179,6 +179,21 @@ function PlayAura($cardID, $player, $number = 1, $isToken = false, $rogueHeronSp
     $card->Binding($auraIndex);
     $card->EntersArenaAbility($auraIndex);
   }
+  for ($i = 0; $i < $number; ++$i) {
+    switch ($cardID) {
+      case "ironsong_pride_red":
+        AddDecisionQueue("MULTIZONEINDICES", $player, "MYCHAR:type=W;subtype=Sword");
+        AddDecisionQueue("SETDQCONTEXT", $player, "Choose a Sword to gain a +1 counter", 1);
+        AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+        AddDecisionQueue("ADDPOWERCOUNTERS", $player, "1", 1);
+        break;
+      case "runeblood_barrier_yellow":
+        PlayAura("runechant", $player, 4);
+        break;
+      default:
+        break;
+    }
+  }
   if ($isToken)
     IncrementClassState($effectController, $CS_CreatedCardsThisTurn, $number);
 }

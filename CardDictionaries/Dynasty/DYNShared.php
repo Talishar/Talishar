@@ -221,12 +221,6 @@ function DYNPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
     case "cleave_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";
-    case "ironsong_pride_red":
-      AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYCHAR:type=W;subtype=Sword");
-      AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a Sword to gain a +1 counter");
-      AddDecisionQueue("CHOOSEMULTIZONE", $currentPlayer, "<-", 1);
-      AddDecisionQueue("ADDPOWERCOUNTERS", $currentPlayer, "1", 1);
-      return "";
     case "precision_press_red": case "precision_press_yellow": case "precision_press_blue":
       AddCurrentTurnEffect($cardID, $currentPlayer);
       return "";

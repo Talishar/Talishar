@@ -359,9 +359,6 @@ function CRUPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         return "";
       }
       return "";
-    case "runeblood_barrier_yellow":
-      PlayAura("runechant", $currentPlayer, 4);
-      return "";
     case "mauvrion_skies_red": case "mauvrion_skies_yellow": case "mauvrion_skies_blue":
       if ($CombatChain->HasCurrentLink() || IsLayerStep()) AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
       else AddCurrentTurnEffect($cardID, $currentPlayer);
