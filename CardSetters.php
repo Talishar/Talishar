@@ -205,19 +205,13 @@ function BanishByEffect($cardID, $player, $banisher, &$rv) {
       }
     }
     if (str_starts_with($banishedBy, 'bonds_of_memory_') && $banishCount / $banishPieces >= 2) {
-      $count = $banishCount - $banishPieces;
-      $seenNames = [];
-      $hasDuplicate = false;
       $sourceKey = "Source-" . $banishedBy;
-      for ($i = $count; $i >= 0; $i--) {
-        if ($banish[$i + 1] == $sourceKey) {
-          $name = CardName($banish[$i]);
-          if (isset($seenNames[$name])) { $hasDuplicate = true; break; }
-          $seenNames[$name] = true;
+      $cardName = CardName($cardID);
+      for ($i = $banishCount - 2 * $banishPieces; $i >= 0; $i -= $banishPieces) {
+        if ($banish[$i + 1] == $sourceKey && CardName($banish[$i]) == $cardName) {
+          GainHealth(1, $otherPlayer);
+          break;
         }
-      }
-      if ($hasDuplicate) {
-        GainHealth(1, $otherPlayer);
       }
     }
     if (str_starts_with($banishedBy, 'desires_of_flesh_') && TypeContains($cardID, "AA", $player)) {
