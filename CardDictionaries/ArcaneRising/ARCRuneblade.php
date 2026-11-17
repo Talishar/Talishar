@@ -47,8 +47,10 @@
         AddCurrentTurnEffect($cardID, $currentPlayer);
         PlayAura("runechant", $currentPlayer);
         return "";
-      case "drawn_to_the_dark_dimension_red": case "drawn_to_the_dark_dimension_yellow": case "drawn_to_the_dark_dimension_blue": Draw($currentPlayer); return "";
-      case "spellblade_strike_red": case "spellblade_strike_yellow": case "spellblade_strike_blue": PlayAura("runechant", $currentPlayer); return "";
+      case "drawn_to_the_dark_dimension_red": case "drawn_to_the_dark_dimension_yellow": case "drawn_to_the_dark_dimension_blue":
+      case "spellblade_strike_red": case "spellblade_strike_yellow": case "spellblade_strike_blue":
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
+        return "";
       case "read_the_runes_red": PlayAura("runechant", $currentPlayer, 3); return "";
       case "read_the_runes_yellow": PlayAura("runechant", $currentPlayer, 2); return "";
       case "read_the_runes_blue": PlayAura("runechant", $currentPlayer); return "";

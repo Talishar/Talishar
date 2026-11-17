@@ -203,11 +203,7 @@ function ROSPlayAbility($cardID, $from, $resourcesPaid, $target = "-", $addition
       AddCurrentTurnEffect($cardID."-2", $currentPlayer);
       return "";
     case "current_funnel_blue":
-      $actionsPlayed = explode(",", GetClassState($currentPlayer, $CS_ActionsPlayed) ?? "");
-      $numActions = count($actionsPlayed);
-      if (count($actionsPlayed) > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $currentPlayer)) {
-        AddCurrentTurnEffect($cardID, $currentPlayer);
-      }
+      AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
       return "";
     case "eclectic_magnetism_red":
       AddCurrentTurnEffect($cardID, $currentPlayer);

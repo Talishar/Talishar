@@ -14,12 +14,7 @@
         }
         return "";
       case "shadow_of_blasmophet_red":
-        Draw($currentPlayer);
-        $card = DiscardRandom();
-        if(ModifiedPowerValue($card, $currentPlayer, "HAND", source:$cardID) >= 6) {
-          MZMoveCard($currentPlayer, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-,$cardID,$currentPlayer", may:true);
-          AddDecisionQueue("SHUFFLEDECK", $currentPlayer, "-");
-        }
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "unworldly_bellow_red": case "unworldly_bellow_yellow": case "unworldly_bellow_blue":
         AddCurrentTurnEffect($cardID, $currentPlayer);

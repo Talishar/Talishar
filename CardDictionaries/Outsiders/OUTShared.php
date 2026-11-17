@@ -203,7 +203,7 @@ function OUTAbilityCost($cardID)
         }
         return "";
       case "prowl_red": case "prowl_yellow": case "prowl_blue":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "mask_of_many_faces":
         AddDecisionQueue("INPUTCARDNAME", $currentPlayer, "-");

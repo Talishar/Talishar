@@ -4126,10 +4126,60 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
 
 function ProcessAttackTrigger($cardID, $player, $target="-", $uniqueID = -1)
 {
-  global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed, $CS_DamageDealt, $CS_ArcaneDamageDealt;
+  global $mainPlayer, $defPlayer, $combatChain, $CS_SeismicSurgesCreated, $CS_NumSeismicSurgeDestroyed, $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_ActionsPlayed;
   $card = GetClass($cardID, $mainPlayer);
   if ($card != "-") $card->ProcessAttackTrigger($target, $uniqueID);
+  $otherPlayer = $player == 1 ? 2 : 1;
   switch($cardID) {
+    case "drawn_to_the_dark_dimension_red": case "drawn_to_the_dark_dimension_yellow": case "drawn_to_the_dark_dimension_blue":
+      Draw($player);
+      break;
+    case "spellblade_strike_red": case "spellblade_strike_yellow": case "spellblade_strike_blue":
+      PlayAura("runechant", $player);
+      break;
+    case "shadow_of_blasmophet_red":
+      Draw($player);
+      $discarded = DiscardRandom($player);
+      if (ModifiedPowerValue($discarded, $player, "HAND", source:$cardID) >= 6) {
+        MZMoveCard($player, "MYDECK:bloodDebtOnly=true", "MYBANISH,DECK,-,$cardID,$player", may:true);
+        AddDecisionQueue("SHUFFLEDECK", $player, "-");
+      }
+      break;
+    case "frontline_scout_red": case "frontline_scout_yellow": case "frontline_scout_blue":
+      AddDecisionQueue("FINDINDICES", $otherPlayer, "HAND");
+      AddDecisionQueue("REVEALHANDCARDS", $otherPlayer, "-", 1);
+      break;
+    case "scour_the_battlescape_red": case "scour_the_battlescape_yellow": case "scour_the_battlescape_blue":
+      BottomDeck($player, true, shouldDraw:true);
+      break;
+    case "prowl_red": case "prowl_yellow": case "prowl_blue":
+    case "brand_with_cinderclaw_red": case "brand_with_cinderclaw_yellow": case "brand_with_cinderclaw_blue":
+      AddCurrentTurnEffectFromCombat($cardID, $player);
+      break;
+    case "current_funnel_blue":
+      $actionsPlayed = explode(",", GetClassState($player, $CS_ActionsPlayed) ?? "");
+      $numActions = count($actionsPlayed);
+      if ($numActions > 1 && TalentContains($actionsPlayed[$numActions-2], "LIGHTNING", $player)) {
+        AddCurrentTurnEffect($cardID, $player);
+      }
+      break;
+    case "frost_lock_blue":
+      if ($target == "FUSED") AddCurrentTurnEffect($cardID . "-2", $player);
+      else AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
+      break;
+    case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue":
+      AddCurrentTurnEffect($cardID, $otherPlayer);
+      break;
+    case "snap_shot_red": case "snap_shot_yellow": case "snap_shot_blue":
+      SearchCharacterAddUses($player, 1, "W", "Bow");
+      SearchCharacterAddEffect($player, "INSTANT", "W", "Bow");
+      break;
+    case "blizzard_bolt_red": case "blizzard_bolt_yellow": case "blizzard_bolt_blue":
+    case "buzz_bolt_red": case "buzz_bolt_yellow": case "buzz_bolt_blue":
+    case "chilling_icevein_red": case "chilling_icevein_yellow": case "chilling_icevein_blue":
+    case "frazzle_red": case "frazzle_yellow": case "frazzle_blue":
+      AddCurrentTurnEffect($cardID, $player);
+      break;
     case "deny_redemption_red":
       //only this ping is unpreventable
       AddCurrentTurnEffect("$cardID-PREVENTION", $player);

@@ -4274,8 +4274,16 @@ function PayAdditionalCosts($cardID, $from, $index="-")
     case "belittle_yellow":
     case "belittle_blue":
       if (CanRevealCards($currentPlayer)) {
+        $hand = GetHand($currentPlayer);
+        $handCount = count($hand);
+        $revealable = [];
+        for ($i = 0; $i < $handCount; $i += HandPieces()) {
+          $handCard = $hand[$i];
+          if (!TypeContains($handCard, "AA") && GeneratedPowerValue($handCard) <= 0) continue;
+          if (PowerValue($handCard, $currentPlayer, "HAND", base: true) <= 3) $revealable[] = "MYHAND-$i";
+        }
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose a card to reveal for Belittle");
-        AddDecisionQueue("MULTIZONEINDICES", $currentPlayer, "MYHAND:type=AA;maxAttack=3");
+        AddDecisionQueue("PASSPARAMETER", $currentPlayer, count($revealable) > 0 ? implode(",", $revealable) : "PASS");
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "GETCARDID", 1);
         AddDecisionQueue("REVEALCARDS", $currentPlayer, "-", 1);

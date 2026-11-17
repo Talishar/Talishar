@@ -17,7 +17,7 @@
         MZMoveCard($currentPlayer, "MYDISCARD:isSameName=phoenix_flame_red", "MYHAND", may:true);
         return "";
       case "brand_with_cinderclaw_red": case "brand_with_cinderclaw_yellow": case "brand_with_cinderclaw_blue":
-        AddCurrentTurnEffectFromCombat($cardID, $currentPlayer);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "tide_flippers":
         GiveAttackGoAgain();

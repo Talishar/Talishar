@@ -29,7 +29,7 @@
         AddDecisionQueue("MODAL", $currentPlayer, "VOLTAIRE", 1);
         return "";
       case "frost_lock_blue":
-        AddCurrentTurnEffect($cardID . "-1", $otherPlayer);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         return "";
       case "ice_storm_red":
         AddCurrentTurnEffect($cardID . "-1", $currentPlayer);
@@ -154,18 +154,17 @@
         }
         break;
       case "strength_of_sequoia_red": case "strength_of_sequoia_yellow": case "strength_of_sequoia_blue": PlayAura("seismic_surge", $player); break;
-      case "frost_lock_blue": AddCurrentTurnEffect($cardID . "-2", $player); break;
-      case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue": AddCurrentTurnEffect($cardID, $otherPlayer); break;
+      case "frost_lock_blue":
+      case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue":
       case "snap_shot_red": case "snap_shot_yellow": case "snap_shot_blue":
-        SearchCharacterAddUses($player, 1, "W", "Bow");
-        SearchCharacterAddEffect($player, "INSTANT", "W", "Bow");
+      case "blizzard_bolt_red": case "blizzard_bolt_yellow": case "blizzard_bolt_blue":
+      case "buzz_bolt_red": case "buzz_bolt_yellow": case "buzz_bolt_blue":
+      case "chilling_icevein_red": case "chilling_icevein_yellow": case "chilling_icevein_blue":
+      case "frazzle_red": case "frazzle_yellow": case "frazzle_blue":
+        AddLayer("TRIGGER", $player, $cardID, "FUSED", "ATTACKTRIGGER");
         break;
-      case "blizzard_bolt_red": case "blizzard_bolt_yellow": case "blizzard_bolt_blue": AddCurrentTurnEffect($cardID, $player); break;
-      case "buzz_bolt_red": case "buzz_bolt_yellow": case "buzz_bolt_blue": AddCurrentTurnEffect($cardID, $player); break;
-      case "chilling_icevein_red": case "chilling_icevein_yellow": case "chilling_icevein_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "dazzling_crescendo_red": case "dazzling_crescendo_yellow": case "dazzling_crescendo_blue": GiveAttackGoAgain(); break;
       case "flake_out_red": case "flake_out_yellow": case "flake_out_blue": AddCurrentTurnEffect($cardID, $player); break;
-      case "frazzle_red": case "frazzle_yellow": case "frazzle_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "flicker_wisp_yellow": AddCurrentTurnEffect($cardID, $player); break;
       case "force_of_nature_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "rites_of_lightning_red": case "rites_of_lightning_yellow": case "rites_of_lightning_blue": DealArcane(1, 0, "PLAYCARD", $cardID); break;

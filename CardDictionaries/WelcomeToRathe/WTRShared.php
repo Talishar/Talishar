@@ -380,7 +380,7 @@
         PlayAura("quicken", $currentPlayer);
         return "";
       case "scour_the_battlescape_red": case "scour_the_battlescape_yellow": case "scour_the_battlescape_blue":
-        BottomDeck($currentPlayer, true, shouldDraw:true);
+        AddLayer("TRIGGER", $currentPlayer, $cardID, "-", "ATTACKTRIGGER");
         if($from == "ARS") { GiveAttackGoAgain(); $rv = "Gains go again"; }
         return $rv;
       case "pummel_red": case "pummel_yellow": case "pummel_blue":
