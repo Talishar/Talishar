@@ -3159,6 +3159,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if ($playType == "AA") IncrementClassState($currentPlayer, $CS_NumAttacks);
     MainCharacterPlayCardAbilities($cardID, $from);
     AuraPlayAbilities($cardID, $from);
+    if ($playType == "AA" && CardType($cardID) == "AA") ArsenalPlayAttackTriggers();
     CardPlayTrigger($cardID, $from);
     if (!$isStaticType) {
       CurrentEffectPlayAbility($cardID, $from);

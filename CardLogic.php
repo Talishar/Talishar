@@ -2931,6 +2931,10 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         AddDecisionQueue("PASSPARAMETER", $player, 1, 1);
         AddDecisionQueue("COMBATCHAINCHARACTERDEFENSEMODIFIER", $player, $target, 1);
         break;
+      case "lady_barthimont":
+        $index = SearchArsenalForUniqueID($uniqueID, $player);
+        if ($index != -1 && GetArsenal($player)[$index + 1] == "UP") LadyBarthimontAbility($player, $index);
+        break;
       case "give_and_take_red":
         MZMoveCard($mainPlayer, "MYDISCARD:type=A;maxCost=" . CachedTotalPower()-1 . "&MYDISCARD:type=AA;maxCost=" . CachedTotalPower()-1, "MYTOPDECK", may: true);
         break;

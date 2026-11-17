@@ -578,9 +578,6 @@ function ArsenalAttackAbilities()
   $arsenalPieces = ArsenalPieces();
   for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
     switch ($arsenal[$i]) {
-      case "lady_barthimont":
-        if (CardType($attackID) == "AA" && $arsenal[$i + 1] == "UP") LadyBarthimontAbility($mainPlayer, $i);
-        break;
       case "chief_rukutan":
         if (CardType($attackID) == "AA" && ModifiedPowerValue($attackID, $mainPlayer, "CC", source: $arsenal[$i]) >= 6 && $arsenal[$i + 1] == "UP") ChiefRukutanAbility($mainPlayer, $i);
         break;
@@ -638,6 +635,23 @@ function ArsenalHitEffects($check = false): bool
     }
   }
   return false;
+}
+
+function ArsenalPlayAttackTriggers()
+{
+  global $currentPlayer;
+  $arsenal = GetArsenal($currentPlayer);
+  $arsenalCount = count($arsenal);
+  $arsenalPieces = ArsenalPieces();
+  for ($i = 0; $i < $arsenalCount; $i += $arsenalPieces) {
+    switch ($arsenal[$i]) {
+      case "lady_barthimont":
+        if ($arsenal[$i + 1] == "UP") AddLayer("TRIGGER", $currentPlayer, $arsenal[$i], uniqueID: $arsenal[$i + 5]);
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 function ArsenalPlayCardAbilities($cardID)
