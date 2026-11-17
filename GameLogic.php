@@ -307,7 +307,7 @@ function DecisionQueueStaticEffect($phase, $player, $parameter, $lastResult)
           $rv = RemoveDuplicateCards($player, $index, GetBanish($player));
           break;
         case "MULTITRAPSBANISH":
-          $rv = SearchDiscard($player, subtype: "Trap");
+          $rv = SearchDiscard($player, subtype: "Trap", minCost: 0);
           break;
         case "MULTITRAPSHAND":
           $rv = SearchDeck($player, subtype: "Trap");
