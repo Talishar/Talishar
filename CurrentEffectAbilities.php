@@ -2728,7 +2728,7 @@ function CurrentEffectBlockModifiers($cardID, $from, $index=-1, $player="-") {
           if (TypeContains($blockCardID, "A") || TypeContains($blockCardID, "AA")) $blockModifier += 1;
           break;
         case "amulet_of_earth_blue":
-          $blockModifier += 1;
+          $blockModifier += TypeContains($cardID, "AA", $defPlayer) ? 1 : 0;
           break;
         case "rampart_of_the_rams_head":
         case "heavy_industry_surveillance":
