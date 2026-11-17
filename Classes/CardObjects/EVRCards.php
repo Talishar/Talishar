@@ -611,16 +611,59 @@ class fractal_replication_red extends Card {
 		$this->controller = $controller;
 	}
 
-	function AbilitiesToAdd() {
-		global $CurrentTurnEffects;
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilityIDs = array_slice(explode(",", $Effect->EffectID()), 1);
-		return implode(",", $addedAbilityIDs);
+	function AttackAbilityIDs() {
+		global $currentTurnEffects;
+		$count = count($currentTurnEffects);
+		$pieces = CurrentTurnEffectPieces();
+		for ($i = 0; $i < $count; $i += $pieces) {
+			if (str_starts_with($currentTurnEffects[$i], "$this->cardID,"))
+				return array_values(array_filter(array_slice(explode(",", $currentTurnEffects[$i]), 1)));
+		}
+		return [];
 	}
 
-  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-    	global $ChainLinks, $CombatChain;
-		$addedAbilities = [];
+	function DefendAbilityIDs($uniqueID = "") {
+		global $currentTurnEffects;
+		$count = count($currentTurnEffects);
+		$pieces = CurrentTurnEffectPieces();
+		for ($i = $count - $pieces; $i >= 0; $i -= $pieces) {
+			if (!str_starts_with($currentTurnEffects[$i], "$this->cardID-DEFEND,")) continue;
+			if ($currentTurnEffects[$i + 1] != $this->controller) continue;
+			$parts = explode(",", $currentTurnEffects[$i]);
+			if ($uniqueID != "" && ($parts[1] ?? "") != $uniqueID) continue;
+			return array_values(array_filter(array_slice($parts, 2)));
+		}
+		return [];
+	}
+
+	function HasDefendSnapshot($uniqueID) {
+		global $currentTurnEffects;
+		$count = count($currentTurnEffects);
+		$pieces = CurrentTurnEffectPieces();
+		for ($i = 0; $i < $count; $i += $pieces) {
+			if (str_starts_with($currentTurnEffects[$i], "$this->cardID-DEFEND,$uniqueID,")) return true;
+		}
+		return false;
+	}
+
+	function GainDefendAbilities($uniqueID) {
+		if ($this->HasDefendSnapshot($uniqueID)) return;
+		$abilities = implode(",", $this->ChainIllusionistAttackActions());
+		AddCurrentTurnEffect("$this->cardID-DEFEND,$uniqueID,$abilities", $this->controller);
+	}
+
+	function GainedAbilityIDs() {
+		global $mainPlayer;
+		return $this->controller == $mainPlayer ? $this->AttackAbilityIDs() : $this->DefendAbilityIDs();
+	}
+
+	function AbilitiesToAdd() {
+		return implode(",", $this->AttackAbilityIDs());
+	}
+
+	function ChainIllusionistAttackActions() {
+		global $ChainLinks, $CombatChain;
+		$cardIDs = [];
 		$chainLinkCount = $ChainLinks->NumLinks();
 		for ($i = 0; $i < $chainLinkCount; ++$i) {
 			$Link = $ChainLinks->GetLink($i);
@@ -634,9 +677,55 @@ class fractal_replication_red extends Card {
 				if (!$LinkCard->StillOnChain()) continue;
 				if (!TypeContains($cardID, "AA", $linkCardPlayer)) continue;
 				if ($cardID == $this->cardID) continue;
-				$addedAbilities[] = $cardID;
+				$cardIDs[] = $cardID;
 			}
 		}
+		if ($CombatChain->HasCurrentLink()) {
+			$activeLinkCardCount = $CombatChain->NumCardsActiveLink();
+			for ($j = 0; $j < $activeLinkCardCount; ++$j) {
+				$LinkCard = $CombatChain->Card($j, true);
+				$cardID = $LinkCard->ID();
+				if ($cardID == $this->cardID) continue;
+				$linkCardPlayer = $LinkCard->PlayerID();
+				if (!ClassContains($cardID, "ILLUSIONIST", $linkCardPlayer)) continue;
+				if (!TypeContains($cardID, "AA", $linkCardPlayer)) continue;
+				$cardIDs[] = $cardID;
+			}
+		}
+		return $cardIDs;
+	}
+
+	function HasMirage() {
+		foreach ($this->DefendAbilityIDs() as $cardID) {
+			if (HasMirage($cardID)) return true;
+		}
+		return false;
+	}
+
+	function BlockCardDestroyed() {
+		foreach ($this->DefendAbilityIDs() as $cardID) {
+			$card = GetClass($cardID, $this->controller);
+			if ($card != "-") $card->BlockCardDestroyed();
+		}
+	}
+
+	function CombatChainCloseAbility($chainLink) {
+		foreach ($this->GainedAbilityIDs() as $cardID) {
+			$card = GetClass($cardID, $this->controller);
+			if ($card != "-") $card->CombatChainCloseAbility($chainLink);
+		}
+	}
+
+	function LeavesCombatChainAbility() {
+		foreach ($this->GainedAbilityIDs() as $cardID) {
+			$card = GetClass($cardID, $this->controller);
+			if ($card != "-") $card->LeavesCombatChainAbility();
+		}
+	}
+
+  	function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    	global $CombatChain;
+		$addedAbilities = $this->ChainIllusionistAttackActions();
 		$addedAbilitiesStr = implode(",", $addedAbilities);
 		AddCurrentTurnEffect("$this->cardID,$addedAbilitiesStr", $this->controller, "", $CombatChain->AttackCard()->UniqueID());
 
@@ -647,38 +736,26 @@ class fractal_replication_red extends Card {
   	}
 
 	function DoesAttackHaveGoAgain() {
-		global $CurrentTurnEffects;
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilities = explode(",", $Effect->EffectID());
-		$addedAbilitiesCount = count($addedAbilities);
-		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
-			if (HasGoAgain($addedAbilities[$i])) return true;
+		foreach ($this->AttackAbilityIDs() as $cardID) {
+			if (HasGoAgain($cardID)) return true;
 		}
 		return false;
 	}
 
 	function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
-		return true;
+		return !str_starts_with($parameter, "DEFEND");
 	}
 
 	function HasPhantasm() {
-		global $CurrentTurnEffects;
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilities = explode(",", $Effect->EffectID());
-		$addedAbilitiesCount = count($addedAbilities);
-		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
-			if (HasPhantasm($addedAbilities[$i])) return true;
+		foreach ($this->AttackAbilityIDs() as $cardID) {
+			if (HasPhantasm($cardID)) return true;
 		}
 		return false;
 	}
 
 	function HasDominate() {
-		global $CurrentTurnEffects;
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilities = explode(",", $Effect->EffectID());
-		$addedAbilitiesCount = count($addedAbilities);
-		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
-			if (HasDominate($addedAbilities[$i])) return true;
+		foreach ($this->AttackAbilityIDs() as $cardID) {
+			if (HasDominate($cardID)) return true;
 		}
 		return false;
 	}
@@ -744,12 +821,8 @@ class fractal_replication_red extends Card {
 	}
 
 	function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
-		global $CurrentTurnEffects;
-		$Effect = $CurrentTurnEffects->FindPartialEffect($this->cardID);
-		$addedAbilities = explode(",", $Effect->EffectID());
-		$addedAbilitiesCount = count($addedAbilities);
-		for ($i = 1; $i < $addedAbilitiesCount; ++$i) {
-			$availableOnhit = AddOnHitTrigger($addedAbilities[$i], $uniqueID, $source, $targetPlayer, $check);
+		foreach ($this->AttackAbilityIDs() as $abilityID) {
+			$availableOnhit = AddOnHitTrigger($abilityID, $uniqueID, $source, $targetPlayer, $check);
 			if ($check && $availableOnhit) return true;
 		}
 		return false;

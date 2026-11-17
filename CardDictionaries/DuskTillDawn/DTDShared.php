@@ -558,7 +558,10 @@ function IsMirageActive($index)
 {
   global $CombatChain;
   if(!$CombatChain->HasCurrentLink()) return false;
-  return HasMirage($CombatChain->Card($index)->ID());
+  $ChainCard = $CombatChain->Card($index);
+  $card = GetClass($ChainCard->ID(), $ChainCard->PlayerID());
+  if ($card != "-") return $card->HasMirage();
+  return HasMirage($ChainCard->ID());
 }
 
 function HasMirage($cardID)

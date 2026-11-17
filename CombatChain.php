@@ -825,6 +825,10 @@ function OnBlockResolveEffects($cardID = "")
     $auraPowerModifier = AurasAttackYouControlModifiers($combatChain[$i], $defPlayer);
     if ($auraPowerModifier != 0) CombatChainPowerModifier($i, $auraPowerModifier);
     else ProcessPhantasmOnBlock($i);
+    if ($combatChain[$i] == "fractal_replication_red" && $combatChain[$i + 1] == $defPlayer) {
+      $FractalCard = GetClass("fractal_replication_red", $defPlayer);
+      if ($FractalCard != "-") $FractalCard->GainDefendAbilities((new ChainCard($i))->UniqueID());
+    }
     ProcessMirageOnBlock($i);
     ProcessFragmentOnBlock($i);
   }
