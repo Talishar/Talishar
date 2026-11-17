@@ -573,3 +573,11 @@ function RemoveFromHandAwait($player) {
     }
   }
 }
+
+function MZGainControlAwait($player) {
+  global $dqVars;
+  $target = $dqVars["MZIndex"] ?? "-";
+  $temporary = $dqVars["temporary"] ?? 0;
+  if ($target != "-")
+    MZGainControl($player, $target, $temporary);
+}

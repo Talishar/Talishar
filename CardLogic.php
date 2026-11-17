@@ -1003,7 +1003,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
     "pilfer_the_wreck_red"=>true,"pilfer_the_wreck_yellow"=>true,"pilfer_the_wreck_blue"=>true,
     "crash_down_the_gates_red"=>true,"crash_down_the_gates_yellow"=>true,"crash_down_the_gates_blue"=>true,
     "undercover_acquisition_red"=>true,"jack_be_nimble_red"=>true,"jack_be_quick_red"=>true,
-    "money_or_your_life_red"=>true,"money_or_your_life_yellow"=>true,"money_or_your_life_blue"=>true,
     "bam_bam_yellow"=>true,
     "wreck_havoc_red"=>true,"wreck_havoc_yellow"=>true,"wreck_havoc_blue"=>true,
     "send_packing_yellow"=>true,"stab_wound_blue"=>true,"old_leather_and_vim_red"=>true,

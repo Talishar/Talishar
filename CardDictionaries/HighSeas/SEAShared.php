@@ -1103,13 +1103,6 @@ function SEAHitEffect($cardID): void
       AddDecisionQueue("MZTAP", $mainPlayer, "0", 1);
       AddDecisionQueue("MZOP", $mainPlayer, "GAINCONTROL,Temporary", 1);
       break;
-    case "money_or_your_life_red":
-    case "money_or_your_life_yellow":
-    case "money_or_your_life_blue":
-      $hero = GetPlayerCharacter($mainPlayer);
-      $repeat = ClassContains($hero[0], "THIEF", $mainPlayer) ? 2 : 1;
-      AddDecisionQueue("SPECIFICCARD", $mainPlayer, "MONEYORYOURLIFE-$cardID-$repeat", 1);
-      break;
     case "blow_for_a_blow_red":
       AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "MYCHAR:type=C&THEIRCHAR:type=C&MYALLY&THEIRALLY", 1);
       AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a target to deal 1 damage");

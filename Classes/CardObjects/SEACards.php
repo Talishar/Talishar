@@ -1821,44 +1821,76 @@ class midas_touch_yellow extends Card {
   }
 }
 
+class money_or_your_life extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class money_or_your_life_red extends Card {
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    return HeroHitTrigger($this->controller, $this->cardID, $check);
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "money_or_your_life_red";
-//     $this->controller = $controller;
-//     }
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    $hero = new CharacterCard(0, $this->controller);
+    $repeat = ClassContains($hero->CardID(), "THIEF", $this->controller) ? 2 : 1;
+    for ($i = 0; $i < $repeat; ++$i) {
+      Await($this->controller, $this->cardID, mode:"GetButtons", subsequent:$i > 0, final:$i==$repeat - 1);
+    }
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function SpecificLogic() {
+    global $defPlayer, $dqVars;
+    $mode = $dqVars["mode"] ?? "Process";
+    if ($mode == "GetButtons") {
+      if (CountItem("gold", $defPlayer, NotTokens:false) > 0) {
+        Await($this->controller, $this->cardID, prepend:true);
+        $context = "Choose if you want to give " . CardLink($this->cardID);
+        Await($defPlayer, "ButtonInput", buttons:"Gold,Life", mode:"Process", context:$context, prepend:true);
+      }
+      else
+        Await($this->controller, $this->cardID, mode:"Process", buttonChoice:"Life", prepend:true);
+    }
+    else {
+      $choice = $dqVars["buttonChoice"] ?? "-";
+      switch ($choice) {
+        case "Life":
+          DamageTrigger($defPlayer, 2, "DAMAGE", $this->cardID, $this->controller);
+          break;
+        case "Gold":
+          Await($this->controller, "MZGainControl", prepend:true);
+          Await($defPlayer, "ChooseMultiZone", context:"Give a gold to your opponent", prepend:true);
+          Await($defPlayer, "MultiZoneIndices", search:"MYITEMS:type=T;cardID=gold", prepend:true);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
 
+class money_or_your_life_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "money_or_your_life_red";
+    $this->controller = $controller;
+    $this->baseCard = new money_or_your_life($this->cardID, $this->controller);
+  }
+}
 
-// class money_or_your_life_yellow extends Card {
+class money_or_your_life_yellow extends Card {
+  function __construct($controller) {
+    $this->cardID = "money_or_your_life_yellow";
+    $this->controller = $controller;
+    $this->baseCard = new money_or_your_life($this->cardID, $this->controller);
+  }
+}
 
-//   function __construct($controller) {
-//     $this->cardID = "money_or_your_life_yellow";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
-// class money_or_your_life_blue extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "money_or_your_life_blue";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+class money_or_your_life_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "money_or_your_life_blue";
+    $this->controller = $controller;
+    $this->baseCard = new money_or_your_life($this->cardID, $this->controller);
+  }
+}
 
 
 // class monkey_powder_red extends Card {
