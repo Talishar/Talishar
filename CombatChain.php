@@ -869,7 +869,7 @@ function OnBlockResolveEffects($cardID = "")
       case "give_and_take_red":
         $NumActionsBlocking = NumActionsBlocking();
         for ($i = 0; $i < $NumActionsBlocking; ++$i) {
-          AddLayer("TRIGGER", $defPlayer, $combatChain[0]);
+          AddLayer("TRIGGER", $mainPlayer, $combatChain[0]);
         }
         break;
       case "decimator_great_axe":
