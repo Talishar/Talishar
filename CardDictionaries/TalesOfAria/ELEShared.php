@@ -194,6 +194,16 @@
     }
   }
 
+  function ELEChooseHeroTarget($player, $cardID, $context)
+  {
+    if (ShouldAutotargetOpponent($player)) return;
+    AddDecisionQueue("MULTIZONEINDICES", $player, "THEIRCHAR:type=C&MYCHAR:type=C");
+    AddDecisionQueue("SETDQCONTEXT", $player, $context, 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $player, "<-", 1);
+    AddDecisionQueue("SHOWSELECTEDTARGET", $player, "-", 1);
+    AddDecisionQueue("SETLAYERTARGET", $player, $cardID, 1);
+  }
+
   function PlayerHasFused($player)
   {
     global $CS_NumFusedEarth, $CS_NumFusedIce, $CS_NumFusedLightning;

@@ -140,7 +140,14 @@
       case "glacial_footsteps_red": case "glacial_footsteps_yellow": case "glacial_footsteps_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "mulch_red": case "mulch_yellow": case "mulch_blue": AddCurrentTurnEffect($cardID, $player); break;
       case "snow_under_red": case "snow_under_yellow": case "snow_under_blue": AddCurrentTurnEffect($cardID, $player); break;
-      case "emerging_avalanche_red": case "emerging_avalanche_yellow": case "emerging_avalanche_blue": PlayAura("frostbite", $otherPlayer, effectController: $player); break;
+      case "emerging_avalanche_red": case "emerging_avalanche_yellow": case "emerging_avalanche_blue":
+        if (ShouldAutotargetOpponent($player)) PlayAura("frostbite", $otherPlayer, effectController: $player);
+        else {
+          AddDecisionQueue("SETDQCONTEXT", $player, "Choose a hero to get a Frostbite");
+          AddDecisionQueue("BUTTONINPUT", $player, "Target_Opponent,Target_Yourself");
+          AddDecisionQueue("PLAYERTARGETEDABILITY", $player, "FROSTBITE", 1);
+        }
+        break;
       case "strength_of_sequoia_red": case "strength_of_sequoia_yellow": case "strength_of_sequoia_blue": PlayAura("seismic_surge", $player); break;
       case "frost_lock_blue": AddCurrentTurnEffect($cardID . "-2", $player); break;
       case "cold_wave_red": case "cold_wave_yellow": case "cold_wave_blue": AddCurrentTurnEffect($cardID, $otherPlayer); break;

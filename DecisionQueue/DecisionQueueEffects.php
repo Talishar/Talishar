@@ -402,6 +402,9 @@ function PlayerTargetedAbility($player, $card, $lastResult)
     case "WINTERSBITE":
       AddDecisionQueue("DQPAYORDISCARD", $target, $params[1]);
       return "";
+    case "FROSTBITE":
+      PlayAura("frostbite", $target, effectController: $player);
+      return "";
     case "IMPERIALWARHORN":
       if($lastResult == "Target_Opponent" || $lastResult == "Target_Both_Heroes")
       {

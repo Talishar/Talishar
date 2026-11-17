@@ -103,7 +103,7 @@
         AddCurrentTurnEffect($cardID, $otherPlayer);
         return "";
       case "coat_of_frost":
-        PlayAura("frostbite", $otherPlayer, effectController: $currentPlayer);
+        PlayAura("frostbite", str_contains($target, "MY") ? $currentPlayer : $otherPlayer, effectController: $currentPlayer);
         return "";
       case "blizzard_blue":
         AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose_to_pay_2_or_you_lose_and_can't_gain_go_again");
@@ -135,7 +135,7 @@
         }
         return "";
       case "amulet_of_ice_blue":
-        if($from == "PLAY") PayOrDiscard($otherPlayer, 2);
+        if($from == "PLAY") PayOrDiscard(str_contains($target, "MY") ? $currentPlayer : $otherPlayer, 2);
         return "";
       case "shock_charmers":
         AddCurrentTurnEffect($cardID, $currentPlayer);

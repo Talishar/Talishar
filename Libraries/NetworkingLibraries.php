@@ -4318,7 +4318,14 @@ function PayAdditionalCosts($cardID, $from, $index="-")
         $cardFlipped = $ArsenalCard->CardID();
         AddAdditionalCost($currentPlayer, TalentOverride($cardFlipped, $currentPlayer));
         WriteLog(CardLink($cardID, $cardID) . " turns " . CardLink($cardFlipped, $cardFlipped) . " face up.");
+        if (DelimStringContains(TalentOverride($cardFlipped, $currentPlayer), "ICE")) ELEChooseHeroTarget($currentPlayer, $cardID, "Choose a hero to get a Frostbite");
       }
+      break;
+    case "coat_of_frost":
+      ELEChooseHeroTarget($currentPlayer, $cardID, "Choose a hero to get a Frostbite");
+      break;
+    case "amulet_of_ice_blue":
+      if ($from == "PLAY") ELEChooseHeroTarget($currentPlayer, $cardID, "Choose a hero to discard unless they pay 2");
       break;
     case "crown_of_seeds":
       FaceDownArsenalBotDeck($currentPlayer);
