@@ -4075,7 +4075,9 @@ function UnityEffect($cardID)
       PlayAura("embodiment_of_earth", $defPlayer);
       break;
     case "northern_winds_blue"://Northern Winds
-      PlayAura("spellbane_aegis", $defPlayer);
+      AddDecisionQueue("SETDQCONTEXT", $defPlayer, "Choose which heroes create a " . CardLink("spellbane_aegis") . " under their control");
+      AddDecisionQueue("BUTTONINPUT", $defPlayer, "Yourself,Opponent,Both,Neither");
+      Await($defPlayer, "NorthernWindsUnity", final:true);
       break;
     case "call_down_the_lightning_yellow":
       PlayAura("embodiment_of_lightning", $defPlayer);

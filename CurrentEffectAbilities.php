@@ -2054,6 +2054,11 @@ function CurrentEffectEndTurnAbilities()
           AddNextTurnEffect($currentTurnEffects[$i], $defPlayer);
         }
         break;
+      case "northern_winds_blue":
+        if ($currentTurnEffects[$i + 1] == $mainPlayer) AddNextTurnEffect($currentTurnEffects[$i], $currentTurnEffects[$i + 1], $currentTurnEffects[$i + 2]);
+        else MZFreeze(CleanTargetToIndex($currentTurnEffects[$i + 1], $currentTurnEffects[$i + 2]), $currentTurnEffects[$i + 1], 0);
+        $remove = true;
+        break;
       case "GEMSNOOZE":
         $snoozePlayer = $currentTurnEffects[$i + 1];
         $index = SearchCharacterForUniqueID($currentTurnEffects[$i + 2], $snoozePlayer);

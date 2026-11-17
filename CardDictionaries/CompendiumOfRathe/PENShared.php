@@ -85,6 +85,9 @@ function SuperFrozen($player, $MZIndex) {
         $mzUID = CleanTarget($player, $MZIndex);
         if ($mzUID == (explode(",", $Effect->AppliestoUniqueID(), 2)[0] ?? "-")) return true;
         break;
+      case "northern_winds_blue":
+        if (CleanTarget($player, $MZIndex) == $Effect->AppliestoUniqueID()) return true;
+        break;
       case "crown_of_frozen_thoughts":
         if ($MZIndex == "MYCHAR-0")
           return true;

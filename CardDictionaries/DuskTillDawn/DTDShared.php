@@ -383,6 +383,7 @@ function DTDPlayAbility($cardID, $from, $resourcesPaid, $target, $additionalCost
         AddDecisionQueue("SETDQCONTEXT", $currentPlayer, "Choose $label to freeze, or pass", 1);
         AddDecisionQueue("MAYCHOOSEMULTIZONE", $currentPlayer, "<-", 1);
         AddDecisionQueue("MZOP", $currentPlayer, "FREEZE", 1);
+        if (str_starts_with($search, "MY")) Await($currentPlayer, "NorthernWindsKeepFrozen");
       }
       return "";
     case "call_down_the_lightning_yellow":
@@ -674,6 +675,21 @@ function BreakOfDawnAmount($effectID)
     "break_of_dawn_yellow" => 3,
     default => 2,
   };
+}
+
+function NorthernWindsKeepFrozenAwait($player) {
+  global $dqVars;
+  $mzIndex = $dqVars["LASTRESULT"] ?? "-";
+  if ($mzIndex == "-" || $mzIndex == "PASS" || $mzIndex == "") return "PASS";
+  AddCurrentTurnEffect("northern_winds_blue", $player, "-", CleanTarget($player, $mzIndex));
+  return $mzIndex;
+}
+
+function NorthernWindsUnityAwait($player) {
+  global $dqVars;
+  $choice = $dqVars["LASTRESULT"] ?? "Neither";
+  if ($choice == "Yourself" || $choice == "Both") PlayAura("spellbane_aegis", $player);
+  if ($choice == "Opponent" || $choice == "Both") PlayAura("spellbane_aegis", 3 - $player);
 }
 
 function IfChargedYellow($player, $cardID) {
