@@ -110,13 +110,18 @@ function DrawAndPutBack($player, $cardID, $bottom=false) {
   $topCard = $Deck->Top();
   Draw($player, effectSource:$cardID);
   $hand = GetHand($player);
-  Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
-  Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from hand back on top");
-  Await($player, "MZRemove", "cardID");
-  if (!$bottom)
-    Await($player, "AddTopDeck", final:true);
-  else
+  if (!$bottom) {
+      Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+      Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from your hand back on the top of your deck");
+      Await($player, "MZRemove", "cardID");
+      Await($player, "AddTopDeck", final:true);
+    }
+  else {
+    Await($player, "MultiZoneIndices", "indices", search:"MYHAND", subsequent:0);
+    Await($player, "ChooseMultiZone", "MZIndex", context:"Put a card from your hand on the bottom of your deck");
+    Await($player, "MZRemove", "cardID");
     Await($player, "AddBotDeck", final:true);
+  }
   $unique = [];
   for ($i = 0; $i < count($hand); $i += HandPieces()) {
     if (!in_array($hand[$i], $unique))
