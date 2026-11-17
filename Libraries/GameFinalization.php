@@ -99,6 +99,8 @@ if (!IsGameOver()) {
   $lastUpdateTime = $now;
 }
 
+if (!empty($gamestateReverted)) KeepScabskinSpentAfterUndo();
+
 if (!$skipWriteGamestate) {
   if (!IsModeAsync($mode)) {
     $currentTime = round(microtime(true) * 1000);

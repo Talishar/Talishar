@@ -565,7 +565,7 @@ function ContinueDecisionQueue($lastResult = "")
         ContinueDecisionQueue("");
       } else {
         if (RequiresDieRoll($layers[0], explode("|", $layers[2], 2)[0], $layers[1])) {
-          RollDie($layers[1]);
+          RollDie($layers[1], forcedRoll: $layers[0] == "scabskin_leathers" ? RecordedScabskinRoll($layers[1]) : 0);
           ContinueDecisionQueue("");
           return;
         }

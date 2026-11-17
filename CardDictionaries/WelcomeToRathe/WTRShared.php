@@ -162,6 +162,7 @@
       case "blessing_of_deliverance_red": case "blessing_of_deliverance_yellow": case "blessing_of_deliverance_blue": if(SearchCount(SearchPitch($currentPlayer, minCost:3)) > 0) Draw($currentPlayer); return "";
       case "scabskin_leathers":
         $roll = GetDieRoll($currentPlayer);
+        RecordScabskinRoll($currentPlayer, $roll);
         GainActionPoints(intval($roll/2), $currentPlayer);
         return "Rolled $roll and gained " . intval($roll/2) . " action points";
       case "alpha_rampage_red":

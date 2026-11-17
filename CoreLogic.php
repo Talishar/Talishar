@@ -1874,9 +1874,16 @@ function GetIndices($count, $add = 0, $pieces = 1, $zone="")
   return implode(",", $indices);
 }
 
-function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false)
+function RollDie($player, $fromDQ = false, $subsequent = false, $reroll = false, $forcedRoll = 0)
 {
   global $CS_DieRoll;
+  if ($forcedRoll > 0) {
+    WriteLog("🎲<b>" . $forcedRoll . "</b> was rolled.");
+    AddEvent("ROLL", $forcedRoll);
+    SetClassState($player, $CS_DieRoll, $forcedRoll);
+    AfterDieRoll($player);
+    return;
+  }
   $otherPlayer = 3 - $player;
   $numRolls = 1 + CountCurrentTurnEffects("ready_to_roll_blue", $player);
   $highRoll = 0;

@@ -368,6 +368,7 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
     $skipWriteGamestate = true;
     WriteGamestateCache($gameName, $gamestate);
     $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
+    $GLOBALS['gamestateReverted'] = true;
     return true;
   }
 
@@ -403,7 +404,8 @@ function RevertGamestate($filename = "gamestateBackup.txt", $stepsBack = 1)
   $skipWriteGamestate = true;
   WriteGamestateCache($gameName, $gamestate);
   $GLOBALS['lastWrittenGamestate'] = $gamestate; // keep in-memory mirror of gamestate.txt current
-  
+  $GLOBALS['gamestateReverted'] = true;
+
   // Shift backups: Remove the reverted backups and shift remaining ones
   // If we reverted 2 steps, backups 0 and 1 are gone, backup 2 becomes 0, backup 3 becomes 1, etc.
   for ($i = 0; $i < MAX_UNDO_BACKUPS; $i++) {
@@ -488,6 +490,54 @@ function UndoStepsBack()
   return file_exists($filepath . "gamestateBackup_1.txt") ? 2 : 0;
 }
 
+function ScabskinRollFile()
+{
+  global $filepath;
+  return $filepath . "scabskinRoll.txt";
+}
+
+function RecordScabskinRoll($player, $roll)
+{
+  global $currentTurn;
+  if (IsReplay()) return;
+  file_put_contents(ScabskinRollFile(), "$currentTurn $player $roll");
+}
+
+function ReadScabskinRoll()
+{
+  $record = explode(" ", trim((string)@file_get_contents(ScabskinRollFile())));
+  return count($record) == 3 ? $record : null;
+}
+
+function RecordedScabskinRoll($player)
+{
+  global $currentTurn;
+  if (IsReplay()) return 0;
+  $record = ReadScabskinRoll();
+  if ($record === null || $record[0] != $currentTurn || $record[1] != $player) return 0;
+  return intval($record[2]);
+}
+
+function KeepScabskinSpentAfterUndo()
+{
+  global $currentTurn, $skipWriteGamestate, $mainPlayer, $actionPoints;
+  if (IsReplay()) return;
+  $record = ReadScabskinRoll();
+  if ($record === null) return;
+  ParseGamestate();
+  if ($record[0] != $currentTurn) return;
+  $player = intval($record[1]);
+  $index = FindCharacterIndex($player, "scabskin_leathers");
+  if ($index == -1) return;
+  $character = &GetPlayerCharacter($player);
+  if ($character[$index + 1] != 2) return;
+  $character[$index + 1] = 1;
+  $character[$index + 5] = 0;
+  if ($mainPlayer == $player) $actionPoints = max(0, intval($actionPoints) - 1 + intval(intval($record[2]) / 2));
+  $skipWriteGamestate = false;
+  WriteLog(CardLink("scabskin_leathers") . " stays used after the undo");
+}
+
 function ResetUndoBackupsForRematch()
 {
   global $filepath;
@@ -499,4 +549,5 @@ function ResetUndoBackupsForRematch()
       unlink($backupFile);
     }
   }
+  @unlink(ScabskinRollFile());
 }
