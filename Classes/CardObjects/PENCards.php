@@ -6172,7 +6172,10 @@ class snarky_prick_red extends Card {
     $Deck = new Deck($defPlayer);
     $topDeck = $Deck->Top();
     if (ColorContains($topDeck, 1, $defPlayer)) {
-      $this->SpecificLogic();
+      AddDecisionQueue("SETDQCONTEXT", $this->controller, "The top of their deck is " . CardLink($topDeck, $topDeck) . ". Do you want to destroy it?");
+      AddDecisionQueue("YESNO", $this->controller, "if you want to destroy " . CardLink($topDeck, $topDeck));
+      AddDecisionQueue("NOPASS", $this->controller, "-", 1);
+      AddDecisionQueue("AWAIT", $this->controller, $this->cardID, 1);
     }
     else {
       AddDecisionQueue("WRITELOG", $defPlayer, "Shows opponent's top deck", 1);
