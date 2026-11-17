@@ -91,7 +91,7 @@
         break;
       case "endless_arrow_red":
         SetCombatChainState($CCS_GoesWhereAfterLinkResolves, "-");
-        AddPlayerHand($cardID, $mainPlayer, "CC");
+        AddPlayerHand($cardID, str_starts_with($from, "THEIR") ? $defPlayer : $mainPlayer, "CC");
         break;
       case "hamstring_shot_red": case "hamstring_shot_yellow": case "hamstring_shot_blue":
         if(IsHeroAttackTarget()) AddNextTurnEffect($cardID, $defPlayer);
