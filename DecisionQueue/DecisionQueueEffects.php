@@ -495,7 +495,7 @@ function SpecificCardLogic($player, $card, $lastResult, $initiator)
       AddDecisionQueue("NOTEQUALPASS", $defPlayer, "PASS");
       AddDecisionQueue("PASSPARAMETER", $player, "2-" . $combatChain[0] . "-TRIGGER-" . $player, 1);
       AddDecisionQueue("DEALDAMAGE", $defPlayer, "MYCHAR-0", 1);
-      if ($repeat > 1) AddDecisionQueue("SPECIFICCARD", $player, "MONEYORYOURLIFE-$cardID-" . ($repeat - 1), 1);
+      if ($repeat > 1) AddDecisionQueue("SPECIFICCARD", $player, "MONEYORYOURLIFE-$cardID-" . ($repeat - 1));
       return "";
     case "RIGHTEOUSCLEANSING":
       $numBanished = SearchCount($lastResult);
