@@ -1393,7 +1393,7 @@ class autumns_curse extends Card {
 
   function PermanentGetHitEffect($index, $damageSource, $targetPlayer, $flicked, $check) {
     global $mainPlayer;
-    if (str_contains(NameOverride($damageSource, $mainPlayer), "Vengeance")) {
+    if (CardNameContains($damageSource, "Vengeance", $mainPlayer, true)) {
       if (!$check)
         AddLayer("TRIGGER", $this->controller, $this->cardID, "-", "ONHITEFFECT");
       return true;
