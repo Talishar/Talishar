@@ -2035,81 +2035,85 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
         }
       }
     }
-    if (!HitEffectsArePrevented($cardID)) {
-      $count = count($combatChain);
-      $pieces = CombatChainPieces();
-      $crushActive = $damageDone >= 4 && IsHeroAttackTarget();
-      $towerActive = CachedTotalPower() >= 13;
-      for ($i = 0; $i < $count; $i += $pieces) {
-        if ($combatChain[$i + 1] == $mainPlayer) {
-          $EffectContext = $combatChain[$i];
-          AddOnHitTrigger($combatChain[$i], $combatChain[$i + 8]);
-          if ($crushActive)
-            AddCrushEffectTrigger($combatChain[$i]);
-          if ($towerActive)
-            AddTowerEffectTrigger($combatChain[$i]);
-        }
-      }
 
-      if (IsHeroAttackTarget()) {
-        $otherPlayer = (OtherPlayer($mainPlayer));
-        CheckHitContracts($mainPlayer, $otherPlayer);
-      }
-
-      $count = count($currentTurnEffects);
-      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-        if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-        if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
-          AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
-        }
-      }
-
-      if ($damageTarget == "HERO") {
-        $DefChar = new PlayerCharacter($defPlayer);
-        $numCards = $DefChar->NumCards();
-        for ($i = 0; $i < $numCards; ++$i) {
-          $CharCard = $DefChar->Card($i, true);
-          AddCharacterGetHitTrigger($CharCard->CardID(), "CURRENTATTACK");
-        }
-      }
-      
-      $currentTurnEffects = array_values($currentTurnEffects);
-      $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
-      MainCharacterHitTrigger($cardID, $targetPlayer);
-      MainCharacterHitEffects();
-      ArsenalHitEffects();
-      AuraHitEffects($cardID);
-      ItemHitTrigger($cardID);
-      CombatChainHitEffects($combatChain[0], $damageTarget);
-
-
-      $hitEffectsPrevented = GetCombatChainState($CCS_ChainLinkHitEffectsPrevented);
-      foreach (explode(",", $combatChain[10]) as $effect) {
-        if (!$hitEffectsPrevented && IsCombatEffectActive($effect)) {
-          AddEffectHitTrigger($effect, source: $combatChain[0], target: $damageTarget); // Effects that do gives their effect to the attack
-        }
-      }
-
-      $count = count($currentTurnEffects);
-      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
-        if (!$hitEffectsPrevented && $currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)) {
-          AddCardEffectHitTrigger($currentTurnEffects[$i], effectInd:$i); // Effects that do not gives it's effect to the attack
-        }
-      }
-
-      for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) { //"late" effects, effects that by default will  be on top
-        if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
-        if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
-          AddLateEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
-        }
-      }
-      
-      for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
-        $Landmark = $Landmarks->Card($i, true);
-        $card = GetClass($Landmark->CardID(), 0);
-        if ($card != "-") $card->PermanentHitEffect($Landmark->Index(), $cardID, $targetPlayer, false, false);
+    $count = count($combatChain);
+    $pieces = CombatChainPieces();
+    $crushActive = $damageDone >= 4 && IsHeroAttackTarget();
+    $towerActive = CachedTotalPower() >= 13;
+    for ($i = 0; $i < $count; $i += $pieces) {
+      if ($combatChain[$i + 1] == $mainPlayer) {
+        $EffectContext = $combatChain[$i];
+        AddOnHitTrigger($combatChain[$i], $combatChain[$i + 8]);
+        if ($crushActive)
+          AddCrushEffectTrigger($combatChain[$i]);
+        if ($towerActive)
+          AddTowerEffectTrigger($combatChain[$i]);
       }
     }
+
+    if (IsHeroAttackTarget()) {
+      $otherPlayer = (OtherPlayer($mainPlayer));
+      CheckHitContracts($mainPlayer, $otherPlayer);
+    }
+
+    $count = count($currentTurnEffects);
+    for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+      if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+      if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
+        AddEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget); // Effects that gives effect to the attack
+      }
+    }
+
+    if ($damageTarget == "HERO") {
+      $DefChar = new PlayerCharacter($defPlayer);
+      $numCards = $DefChar->NumCards();
+      for ($i = 0; $i < $numCards; ++$i) {
+        $CharCard = $DefChar->Card($i, true);
+        AddCharacterGetHitTrigger($CharCard->CardID(), "CURRENTATTACK");
+      }
+    }
+    
+    $currentTurnEffects = array_values($currentTurnEffects);
+    $targetPlayer = $damageTarget == "HERO" ? $defPlayer : -1;
+    MainCharacterHitTrigger($cardID, $targetPlayer);
+    MainCharacterHitEffects();
+    ArsenalHitEffects();
+    AuraHitEffects($cardID);
+    ItemHitTrigger($cardID);
+    CombatChainHitEffects($combatChain[0], $damageTarget);
+
+
+    $hitEffectsPrevented = GetCombatChainState($CCS_ChainLinkHitEffectsPrevented);
+    foreach (explode(",", $combatChain[10]) as $effect) {
+      if (!$hitEffectsPrevented && IsCombatEffectActive($effect)) {
+        AddEffectHitTrigger($effect, source: $combatChain[0], target: $damageTarget); // Effects that do gives their effect to the attack
+      }
+    }
+
+    $count = count($currentTurnEffects);
+    for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) {
+      $remove = false;
+      $Effect = new CurrentEffect($i);
+      if ($currentTurnEffects[$i + 1] == $mainPlayer && IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i)) {
+        $remove = AddCardEffectHitTrigger($currentTurnEffects[$i], effectInd:$i); // Effects that do not gives it's effect to the attack
+      }
+      if ($remove)
+        $Effect->Remove();
+    }
+
+    for ($i = $count - $currentTurnEffectsPieces; $i >= 0; $i -= $currentTurnEffectsPieces) { //"late" effects, effects that by default will  be on top
+      if ($currentTurnEffects[$i + 1] != $mainPlayer) continue;
+      if (IsCombatEffectActive($currentTurnEffects[$i], effectIndex:$i) && !IsCombatEffectLimited($i)) {
+        AddLateEffectHitTrigger($currentTurnEffects[$i], source: $combatChain[0], target: $damageTarget);
+      }
+    }
+    
+    for ($i = 0; $i < $Landmarks->NumLandmarks(); ++$i) {
+      $Landmark = $Landmarks->Card($i, true);
+      $card = GetClass($Landmark->CardID(), 0);
+      if ($card != "-") $card->PermanentHitEffect($Landmark->Index(), $cardID, $targetPlayer, false, false);
+    }
+    
     
     if (IsHeroAttackTarget()) {
       $otherPlayer = (OtherPlayer($mainPlayer));

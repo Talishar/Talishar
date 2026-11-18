@@ -1071,7 +1071,9 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
     if ($effectPlayer != $playerSource) {
       continue;
     }
-    if ($isCombat && HitEffectsArePrevented($source)) continue;
+    if ($isCombat && HitEffectsArePrevented($source)) {
+      continue;
+    }
     $effectID = $currentTurnEffects[$i];
     if ($source == $attackCardID && !IsCombatEffectActive($effectID, effectIndex:$i)) continue;
     $remove = 0;
@@ -1086,7 +1088,7 @@ function CurrentEffectDamageEffects($target, $source, $type, $damage, $playerSou
       case "chilling_icevein_yellow":
       case "chilling_icevein_blue":
         if (IsHeroAttackTarget() && CardType($source) == "AA")
-          AddLayer("TRIGGER", $otherPlayer, $effectID, $target);
+          AddLayer("TRIGGER", $otherPlayer, $effectID, $target, "DAMAGEEFFECT");
         break;
       case "blossoming_spellblade_red":
         if ($source == "blossoming_spellblade_red" && (IsHeroAttackTarget() || $type != "COMBAT"))
