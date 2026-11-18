@@ -651,17 +651,72 @@ class breaking_scales extends Card {
 // }
 
 
-// class crazy_brew_blue extends Card {
+class crazy_brew_blue extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "crazy_brew_blue";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "crazy_brew_blue";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function AbilityType($index = -1, $from = '-') {
+    return "A";
+  }
+
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    if($from == "PLAY") {
+      // $roll = GetDieRoll($this->controller);
+      $roll = 6;
+      $rv = "Crazy Brew rolled " . $roll;
+      if($roll <= 2) {
+        PlayerLoseHealth(2, $this->controller, true);
+        AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+        $rv .= " and lost you 2 life.";
+      }
+      else if($roll <= 4) {
+        GainHealth(2, $this->controller);
+        AddCurrentTurnEffect("$this->cardID-GOAGAIN", $this->controller);
+      } else {
+        $resources = &GetResources($this->controller);
+        AddCurrentTurnEffect($this->cardID, $this->controller);
+        GainResources(2, $this->controller);
+        GainActionPoints(2, $this->controller);
+        $rv .= " and gained 2 action points, resources, and power.";
+      }
+    }
+    return "";
+  }
+
+  function AssignEffectToCard($cardID, $effectIndex, $from, $uniqueID) {
+    $Effect = new CurrentEffect($effectIndex);
+    if (IsLayerStep())
+      $Effect->ApplyToUniqueID($uniqueID);
+  }
+
+  function EffectNeedsAttaching() {
+    return true;
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return $param != "GOAGAIN" ? 2 : 0;
+  }
+
+  function HasGoAgain($from) {
+    return false;
+  }
+
+  function PayAdditionalCosts($from, $index = '-') {
+    $ItemCard = new ItemCard($index, $this->controller);
+    $ItemCard->Destroy();
+  }
+
+  function CurrentEffectGrantsNAAGoAgain($cardID, $from, $uniqueID, $parameter, &$remove) {
+    if ($parameter == "GOAGAIN") {
+      $remove = true;
+      return true;
+    }
+    return false;
+  }
+}
 
 
 // class crippling_crush_red extends Card {

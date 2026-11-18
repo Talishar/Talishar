@@ -114,7 +114,6 @@ function PayItemAbilityAdditionalCosts($cardID, $from)
   $items = &GetItems($currentPlayer);
   $otherPlayer = 3 - $currentPlayer;
   switch ($cardID) {
-    case "crazy_brew_blue":
     case "energy_potion_blue":
     case "potion_of_strength_blue":
     case "timesnap_potion_blue":

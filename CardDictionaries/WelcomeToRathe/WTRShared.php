@@ -28,7 +28,6 @@
       case "heartened_cross_strap": return "A";
       case "snapdragon_scalers": return "AR";
       case "goliath_gauntlet": return "A";
-      case "crazy_brew_blue": return "A";
       case "energy_potion_blue": 
         if($from == "PLAY") return "I";
         else return "A";
@@ -88,7 +87,6 @@
       case "goliath_gauntlet": return 2;
       case "enlightened_strike_red": return 2;
       case "last_ditch_effort_blue": return 4;
-      case "crazy_brew_blue": return 2;
       case "potion_of_strength_blue": return 2;
       case "nimble_strike_red": case "nimble_strike_yellow": case "nimble_strike_blue": return 1;
       case "wounded_bull_red": case "wounded_bull_yellow": case "wounded_bull_blue": return 1;
@@ -138,7 +136,6 @@
       case "snapdragon_scalers": return true;
       case "enlightened_strike_red": return true;
       case "last_ditch_effort_blue": return true;
-      case "crazy_brew_blue": return true;
       case "potion_of_strength_blue": return true;
       case "nimble_strike_red": case "nimble_strike_yellow": case "nimble_strike_blue": return true;
       case "regurgitating_slog_red": case "regurgitating_slog_yellow": case "regurgitating_slog_blue": return true;
@@ -332,27 +329,6 @@
           GiveAttackGoAgain();
           AddCurrentTurnEffect($cardID, $currentPlayer);
           $rv = "Gains go again and +4";
-        }
-        return $rv;
-      case "crazy_brew_blue":
-        if($from == "PLAY") {
-          $roll = GetDieRoll($currentPlayer);
-          $rv = "Crazy Brew rolled " . $roll;
-          if($roll <= 2) {
-            PlayerLoseHealth(2, $currentPlayer, true);
-            GainActionPoints(1, $currentPlayer);
-            $rv .= " and lost you 2 life.";
-          }
-          else if($roll <= 4) {
-            GainHealth(2, $currentPlayer);
-            GainActionPoints(1, $currentPlayer);
-          } else {
-            $resources = &GetResources($currentPlayer);
-            AddCurrentTurnEffect($cardID, $currentPlayer);
-            GainResources(2, $currentPlayer);
-            GainActionPoints(2, $currentPlayer);
-            $rv .= " and gained 2 action points, resources, and power.";
-          }
         }
         return $rv;
       case "remembrance_yellow":
