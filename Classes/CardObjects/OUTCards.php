@@ -2238,7 +2238,7 @@ class shake_down_red extends Card {
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $defPlayer;
     AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
-    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue,Purple", 1);
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue", 1);
     AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
     AddDecisionQueue("WRITELOG", $this->controller, "Main player chose: {0}", 1);
     AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
