@@ -1904,7 +1904,7 @@ class razors_edge extends BaseCard {
     $targets = [];
     foreach ($attacks as $attack) {
       $obj = MZIndexToObject($this->controller, $attack);
-      if (HasStealth($obj->ID()))
+      if (HasStealth($obj->ID()) && TypeContains($obj->ID, "AA"))
         $targets[] = $attack;
     }
     return implode(",", $targets);
@@ -2400,7 +2400,7 @@ class spike_with extends BaseCard {
     $targets = [];
     foreach ($attacks as $attack) {
       $obj = MZIndexToObject($this->controller, $attack);
-      if (HasStealth($obj->ID()))
+      if (HasStealth($obj->ID()) && TypeContains($obj->ID, "AA"))
         $targets[] = $attack;
     }
     return implode(",", $targets);
