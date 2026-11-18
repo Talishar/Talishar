@@ -1856,7 +1856,7 @@ function NuuStaticAbility($banishedBy)
   $attackCard = $prevLink->AttackCard()->ID();
   for ($i = 1; $i < $prevLink->NumCards(); ++$i) {
     $LinkCard = $prevLink->GetLinkCard($i, true);
-    if ($defPlayer == $LinkCard->PlayerID()) {
+    if ($defPlayer == $LinkCard->PlayerID() && TypeContains($LinkCard->ID(), "A") || TypeContains($LinkCard->ID(), "AA")) {
       $LinkCard->Destroy($mainPlayer, true, $attackCard);
     }
   }
