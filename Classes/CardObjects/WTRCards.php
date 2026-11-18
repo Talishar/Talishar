@@ -664,8 +664,7 @@ class crazy_brew_blue extends Card {
 
   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
     if($from == "PLAY") {
-      // $roll = GetDieRoll($this->controller);
-      $roll = 6;
+      $roll = GetDieRoll($this->controller);
       $rv = "Crazy Brew rolled " . $roll;
       if($roll <= 2) {
         PlayerLoseHealth(2, $this->controller, true);
