@@ -1851,28 +1851,13 @@ function BeginChainLinkResolution()
 
 function NuuStaticAbility($banishedBy)
 {
-  global $mainPlayer, $defPlayer, $chainLinks;
-  $prevLink = $chainLinks[count($chainLinks) - 1];
-  $prevLinkCount = count($prevLink);
-  $chainLinksPieces = ChainLinksPieces();
-  if ($prevLinkCount > 0) {
-    $CLIndex = count($chainLinks) - 1;
-    for ($i = 0; $i < $prevLinkCount; $i += $chainLinksPieces) {
-      if ($defPlayer == $prevLink[$i + 1]) {
-        $originalID = GetCardIDBeforeTransform($prevLink[$i]);
-        $cardType = CardType($prevLink[$i]);
-        if ($cardType === "E" && CardType($originalID) === "A" && $prevLink[$i] !== "teklovossen_the_mechropotentb" && $prevLink[$i] !== "nitro_mechanoidb") {
-          WriteLog(CardLink($prevLink[$i], $prevLink[$i]) . " was banished.");
-          BanishCardForPlayer($originalID, $defPlayer, "CC", "Source-" . $banishedBy, $mainPlayer);
-          $index = FindCharacterIndex($defPlayer, $prevLink[$i]);
-          DestroyCharacter($defPlayer, $index, wasBanished: true);
-        }
-        if (DelimStringContains($cardType, "A") || $cardType === "AA") {
-          WriteLog(CardLink($prevLink[$i], $prevLink[$i]) . " was banished.");
-          BanishCardForPlayer($prevLink[$i], $defPlayer, "CC", "Source-" . $banishedBy, $banishedBy);
-          $chainLinks[$CLIndex][$i + 2] = 0;
-        }
-      }
+  global $mainPlayer, $defPlayer, $ChainLinks;
+  $prevLink = $ChainLinks->LastLink();
+  $attackCard = $prevLink->AttackCard()->ID();
+  for ($i = 1; $i < $prevLink->NumCards(); ++$i) {
+    $LinkCard = $prevLink->GetLinkCard($i, true);
+    if ($defPlayer == $LinkCard->PlayerID()) {
+      $LinkCard->Destroy($mainPlayer, true, $attackCard);
     }
   }
 }

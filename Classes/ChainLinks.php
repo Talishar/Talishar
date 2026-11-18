@@ -264,25 +264,33 @@ class LinkCard {
 		$this->Remove();
 	}
 
-	function Destroy($agent = "-") {
+	function Destroy($agent = "-", $banish = false, $effectSource="-") {
 		global $currentPlayer;
 		if ($agent == "-") $agent = $currentPlayer;
 		if ($this->ID() == "-" || !$this->StillOnChain()) return;
 		LogDisruptionStats($this->PlayerID(), $this->ID(), $agent);
+		$card = GetClass($this->ID(), $this->PlayerID());
+		if ($card != "-") $card->LeavesCombatChainAbility();
 		if (TypeContains($this->ID(), "E")) {
 			if (SubtypeContains($this->ID(), "Item")) {
 				$uid = $this->OriginUniqueID();
 				$Items = new Items($this->PlayerID());
 				$TargetItem = $Items->FindCardUID($uid);
-				$TargetItem->Destroy();
+				if ($banish)
+					$TargetItem->Banish();
+				else
+					$TargetItem->Destroy();
 			}
 			else {
 				$index = FindCharacterIndex($this->PlayerID(), $this->ID());
-				DestroyCharacter($this->PlayerID(), $index, animateDestroy: $agent != $this->PlayerID());
+				DestroyCharacter($this->PlayerID(), $index, animateDestroy: $agent != $this->PlayerID(), wasBanished: $banish);
 			}
 		}
 		else {
-			AddGraveyard($this->OriginalCardID(), $this->PlayerID(), "CC", $agent, uniqueID:$this->UniqueID());
+			if ($banish)
+				BanishCardForPlayer($this->ID(), $this->PlayerID(), "CC", "Source-$effectSource", $effectSource, banisher:$agent);
+			else
+				AddGraveyard($this->OriginalCardID(), $this->PlayerID(), "CC", $agent, uniqueID:$this->UniqueID());
 			$this->Remove();
 		}
 	}
