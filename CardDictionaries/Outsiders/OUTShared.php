@@ -485,21 +485,6 @@ function OUTAbilityCost($cardID)
           if($deckCard != "") BanishCardForPlayer($deckCard, $defPlayer, "DECK", "NTFromOtherPlayer", $attackCard, $mainPlayer);
         }
         break;
-      case "shake_down_red":
-        if(NumAttackReactionsPlayed() > 0 && IsHeroAttackTarget())
-        {
-          AddDecisionQueue("SETDQCONTEXT", $mainPlayer, "Choose a color", 1);
-          AddDecisionQueue("BUTTONINPUT", $mainPlayer, "Red,Yellow,Blue", 1);
-          AddDecisionQueue("SETDQVAR", $mainPlayer, "0", 1);
-          AddDecisionQueue("WRITELOG", $mainPlayer, "Main player chose: {0}", 1);
-          AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
-          AddDecisionQueue("REVEALHANDCARDS", $defPlayer, "-", 1);
-          AddDecisionQueue("MULTIZONEINDICES", $mainPlayer, "THEIRHAND:pitch={0}", 1);
-          AddDecisionQueue("CHOOSEMULTIZONE", $mainPlayer, "<-", 1);
-          AddDecisionQueue("MZBANISH", $mainPlayer, "HAND,-," . $mainPlayer, 1);
-          AddDecisionQueue("MZREMOVE", $mainPlayer, "-", 1);
-        }
-        break;
       case "infect_red": case "infect_yellow": case "infect_blue":
         if(IsHeroAttackTarget()) PlayAura($CID_BloodRotPox, $defPlayer, effectController: $mainPlayer);
         break;

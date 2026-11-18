@@ -1053,12 +1053,6 @@ function AddOnHitTrigger($cardID, $uniqueID = -1, $source = "-", $targetPlayer =
         return true;
       }
       break;
-    case "shake_down_red":
-      if(NumAttackReactionsPlayed() > 0 && IsHeroAttackTarget()) {
-        if (!$check) AddLayer("TRIGGER", $mainPlayer, $cardID, $cardID, "ONHITEFFECT");
-        return true;
-      }
-      break;
     case "annihilator_engine_red":
     case "terminator_tank_red":
     case "war_machine_red":

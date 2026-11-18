@@ -2218,17 +2218,37 @@ class razors_edge_blue extends Card {
 // }
 
 
-// class shake_down_red extends Card {
+class shake_down_red extends Card {
 
-//   function __construct($controller) {
-//     $this->cardID = "shake_down_red";
-//     $this->controller = $controller;
-//     }
+  function __construct($controller) {
+    $this->cardID = "shake_down_red";
+    $this->controller = $controller;
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
+
+  function AddOnHitTrigger($uniqueID, $source, $targetPlayer, $check) {
+    if (NumAttackReactionsPlayed() > 0)
+      return HeroHitTrigger($this->controller, $this->cardID, $check);
+    return false;
+  }
+
+  function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
+    global $defPlayer;
+    AddDecisionQueue("SETDQCONTEXT", $this->controller, "Choose a color", 1);
+    AddDecisionQueue("BUTTONINPUT", $this->controller, "Red,Yellow,Blue,Purple", 1);
+    AddDecisionQueue("SETDQVAR", $this->controller, "0", 1);
+    AddDecisionQueue("WRITELOG", $this->controller, "Main player chose: {0}", 1);
+    AddDecisionQueue("FINDINDICES", $defPlayer, "HAND");
+    AddDecisionQueue("REVEALHANDCARDS", $defPlayer, "-", 1);
+    AddDecisionQueue("MULTIZONEINDICES", $this->controller, "THEIRHAND:pitch={0}", 1);
+    AddDecisionQueue("CHOOSEMULTIZONE", $this->controller, "<-", 1);
+    AddDecisionQueue("MZBANISH", $this->controller, "HAND,-,$this->controller", 1);
+    AddDecisionQueue("MZREMOVE", $this->controller, "-", 1);
+  }
+}
 
 
 // class short_and_sharp_red extends Card {

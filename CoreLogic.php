@@ -2310,19 +2310,10 @@ function ClassContains($cardID, $class, $player)
 
 function ColorContains($cardID, $color, $player)
 {
-  switch ($color) {
-    case "Red":
-      $pitchValue = 1;
-      break;
-    case "Yellow":
-      $pitchValue = 2;
-      break;
-    case "Blue":
-      $pitchValue = 3;
-      break;
-    default:
-      $pitchValue = $color;
-  }
+  $pitchValue = match($color) {
+    "Red" => 1, "Yellow" => 2, "Blue" => 3, "Purple" => 4,
+    default => $color,
+  };
   $cardColor = ColorOverride($cardID, $player);
   return DelimStringContains($cardColor, $pitchValue);
 }
