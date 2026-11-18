@@ -527,9 +527,9 @@ class Card {
     return false;
   }
 
-  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode, &$remove) {
     if (isset($this->baseCard) && method_exists($this->baseCard, "AddCardEffectHitTrigger"))
-      return $this->baseCard->AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode);
+      return $this->baseCard->AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode, $remove);
     return;
   }
 

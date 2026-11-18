@@ -587,7 +587,7 @@ class tailored_targeting_red extends Card {
     return true;
   }
 
-  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode, &$remove) {
     if ($targetPlayer == $this->controller) return false;
     return HeroHitTrigger($this->controller, $this->cardID, false, true, $targetPlayer);
   }

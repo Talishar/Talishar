@@ -356,7 +356,7 @@ function AddLayer($cardID, $player, $parameter, $target = "-", $additionalCosts 
   static $skipOrderingIDs = ["seismic_surge" => true];
   $skipOrdering = isset($skipOrderingIDs[$parameter]) || $skipOrdering;
   $hitEffects = ["ONHITEFFECT"=>true, "EFFECTHITEFFECT"=>true, "CRUSHEFFECT"=>true, "TOWEREFFECT"=>true];
-  if ($hitEffects[$additionalCosts] && HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return count($layers);
+  if (($hitEffects[$additionalCosts] ?? false) && HitEffectsArePrevented($CombatChain->AttackCard()->ID())) return count($layers);
   if (($additionalCosts == "ONHITEFFECT" || $additionalCosts == "ATTACKTRIGGER") && $uniqueID == "-") $uniqueID = $CombatChain->AttackCard()->UniqueID();
   if ($cardID == "TRIGGER" && !$skipOrdering) { // put triggers into "pre-layers" where they can be ordered
     array_unshift($layers, "PRETRIGGER", $player, $parameter, $target, $additionalCosts, $uniqueID, $layerUID);
@@ -1337,7 +1337,8 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", 
   $parameter = $effectParts[0];
   $mode = $effectParts[1] ?? "-";
   $card = GetClass($parameter, $mainPlayer);
-  if ($card != "-") return $card->AddCardEffectHitTrigger($source, $targetPlayer, $mode);
+  $remove = false;
+  if ($card != "-") $card->AddCardEffectHitTrigger($source, $targetPlayer, $mode, $remove);
   switch ($effects[0]) {
     case "spoils_of_war_red-2":
     case "eclipse_existence_blue":
@@ -1366,8 +1367,9 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", 
     case "imperial_seal_of_command_red-HIT":
       if (IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
+        $remove = true;
       }
-      return true;
+      break;
     case "burn_up__shock_red":
       if (IsHeroAttackTarget()) {
         $uid = "-";
@@ -1376,7 +1378,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", 
           $uid = $Effect->AppliestoUniqueID();
         }
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $uid);
-        return true;
+        $remove = true;
       }
       break;
     case "mask_of_shifting_perspectives":
@@ -1389,7 +1391,7 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", 
     case "plunder_run_blue-1":
       if (TypeContains($source, "AA")) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return ture;
+        $remove = true;
       }
       break;
     case "force_of_nature_blue-HIT":
@@ -1399,19 +1401,19 @@ function AddCardEffectHitTrigger($cardID, $sourceID = "-", $targetPlayer = "-", 
       $attackID = $CombatChain->AttackCard()->ID();
       if (CardType($attackID) == "AA" && ClassContains($attackID, "RUNEBLADE", $mainPlayer) && IsHeroAttackTarget()) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return true;
+        $remove = true;
       }
       break;
     case "savor_bloodshed_red-HIT":
       if((IsHeroAttackTarget() || $targetPlayer == $defPlayer) && CheckMarked($defPlayer)) {
         AddLayer("TRIGGER", $mainPlayer, $parameter, $cardID, "EFFECTHITEFFECT", $source);
-        return true;
+        $remove = true;
       }
       break;
     default:
       break;
   }
-  return false;
+  return $remove;
 }
 
 function AddLateEffectHitTrigger($cardID, $source="-", $fromCombat=true, $target="-") {

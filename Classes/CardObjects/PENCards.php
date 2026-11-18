@@ -4721,8 +4721,10 @@ class bad_breath extends BaseCard {
     Intimidate();
   }
 
-  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode, &$remove) {
     AddLayer("TRIGGER", $this->controller, $this->cardID, $this->cardID, "EFFECTHITEFFECT");
+    $remove = true;
+    return true;
   }
 
   function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
@@ -4732,7 +4734,6 @@ class bad_breath extends BaseCard {
   function IsCombatEffectPersistent($mode) {
     return true;
   }
-
 }
 
 class bad_breath_red extends Card {
@@ -4757,10 +4758,6 @@ class bad_breath_red extends Card {
 
   function IsCombatEffectPersistent($mode) {
     return true;
-  }
-
-  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
   }
 }
 
@@ -4787,10 +4784,6 @@ class bad_breath_yellow extends Card {
   function IsCombatEffectPersistent($mode) {
     return true;
   }
-
-  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
-  }
 }
 
 class bad_breath_blue extends Card {
@@ -4815,10 +4808,6 @@ class bad_breath_blue extends Card {
 
   function IsCombatEffectPersistent($mode) {
     return true;
-  }
-
-  function AddCardEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-') {
-    $this->baseCard->AddCardEffectHitTrigger($source, $fromCombat, $target, $parameter);
   }
 }
 

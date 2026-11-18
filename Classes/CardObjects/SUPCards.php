@@ -3967,7 +3967,7 @@ class time_flies_when_youre_having_fun_red extends Card {
     return $mode == "ONHIT";
   }
 
-  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode) {
+  function AddCardEffectHitTrigger($sourceID, $targetPlayer, $mode, &$remove) {
     global $defPlayer;
     if((IsHeroAttackTarget() || $targetPlayer == $defPlayer) && $mode == "ONHIT" && TypeContains($sourceID, "AA")) {
       AddLayer("TRIGGER", $this->controller, $this->cardID, "$this->cardID-$mode", "EFFECTHITEFFECT", $sourceID);
