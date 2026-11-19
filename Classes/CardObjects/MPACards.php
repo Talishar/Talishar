@@ -28,12 +28,13 @@ class mortimer_base extends BaseCard {
   }
 
   function GetAbilityNames($from, $index) {
+    global $mainPlayer;
     $names = ["-", "-"];
     //can it instant?
     $instantRestricted = InstantRestricted($this->cardID, $from, $index);
     if (!$instantRestricted) $names[0] = "Instant";
     $silverCount = CountItemByName("Silver", $this->controller);
-    if ($silverCount > 1 && count($this->GetTargets()) > 0 && IsReactionPhase())
+    if ($silverCount > 1 && count($this->GetTargets()) > 0 && IsReactionPhase() && $this->controller == $mainPlayer)
       $names[1] = "Attack Reaction";
     if ($names[1] == "-") return $names[0];
     return implode(",", $names);
