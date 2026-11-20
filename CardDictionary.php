@@ -3147,7 +3147,7 @@ function IsPlayRestricted($cardID, &$restriction, $from = "", $index = -1, $play
       return false;
     case "nip_at_the_heels_blue":
       if (!$CombatChain->HasCurrentLink()) return true;
-      if (PowerValue($attackID, $mainPlayer, "CC") > 3) return true;
+      if (PowerValue($attackID, $mainPlayer, "CC", base:true) > 3) return true;
       return false;
     case "war_cry_of_bellona_yellow":
       if ($from == "HAND") return false;
