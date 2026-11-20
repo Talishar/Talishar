@@ -171,6 +171,7 @@ class remember_the_mists_blue extends Card {
 
   function HitEffect($cardID, $from = '-', $uniqueID = -1, $target = '-') {
     global $mainPlayer;
+    LookAtHand(OtherPlayer($mainPlayer));
     MZMoveCard($mainPlayer, "THEIRHAND", "THEIRBANISH,HAND,NT,$cardID,$mainPlayer");
   }
 }
