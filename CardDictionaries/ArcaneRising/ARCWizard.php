@@ -196,7 +196,7 @@ function SetArcaneTarget($player, $source, $targetType = 0, $isPassable = 0, $ma
 //4: My Hero only (For afflictions)
 function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $fromQueue = false, $player = 0, $mayAbility = false, $limitDuplicates = false, $skipHitEffect = false, $resolvedTarget = "-", $nbArcaneInstance = 1, $isPassable = 0, $meldState = "-", $useUIDs = false)
 {
-  global $currentPlayer, $CS_ArcaneTargetsSelected;
+  global $currentPlayer, $CS_ArcaneTargetsSelected, $CS_ResolvingLayerUniqueID;
   if ($player == 0) $player = $currentPlayer;
   $otherPlayer = 3 - $player;
   $skipHitEffect = false; //we should *never* skip hit effects
@@ -211,7 +211,10 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         PrependDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected); //If already selected for arcane multiselect (e.g. Singe/Azvolai)
         PrependDecisionQueue("PASSPARAMETER", $player, "-");
       }
-      if (!$skipHitEffect) PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+      if (!$skipHitEffect) {
+        Await($player, "ArcaneHitEffect", source:$source, uid:GetClassState($player, $CS_ResolvingLayerUniqueID), prepend:true);
+        // PrependDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+      }
       PrependDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
       if ($resolvedTarget != "") {
         PrependDecisionQueue("PASSPARAMETER", $player, $resolvedTarget);
@@ -246,7 +249,10 @@ function DealArcane($damage, $target = 0, $type = "PLAYCARD", $source = "NA", $f
         AddDecisionQueue("SETDQVAR", $player, "0", 1);
       }
       AddDecisionQueue("DEALARCANE", $player, $damage . "-" . $source . "-" . $type, 1);
-      if (!$skipHitEffect) AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+      if (!$skipHitEffect) {
+        // AddDecisionQueue("ARCANEHITEFFECT", $player, $source, 1);
+        Await($player, "ArcaneHitEffect", source:$source, uid:GetClassState($player, $CS_ResolvingLayerUniqueID));
+      }
       if (!$limitDuplicates) {
         AddDecisionQueue("PASSPARAMETER", $player, "-");
         AddDecisionQueue("SETCLASSSTATE", $player, $CS_ArcaneTargetsSelected);
@@ -983,9 +989,9 @@ function ConduitOfFrostburnApplies($player)
   return false;
 }
 
-function ArcaneHitEffect($player, $source, $target, $damage)
+function ArcaneHitEffect($player, $source, $target, $damage, $uid="-")
 {
-  global $CS_ArcaneDamageDealt;
+  global $CS_ArcaneDamageDealt, $CurrentTurnEffects;
   $cardID = explode("|", $source, 2)[0] ?? $source;
   $card = GetClass($cardID, $player);
   if ($card != "-") $card->ArcaneHitEffect($source, $target, $damage);
@@ -1020,8 +1026,10 @@ function ArcaneHitEffect($player, $source, $target, $damage)
     default:
       break;
   }
-  if ($damage > 0 && MZIsPlayer($target) && ConduitOfFrostburnApplies($player)) {
-    AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
+  $Conduit = $CurrentTurnEffects->FindSpecificEffect("conduit_of_frostburn", $uid);
+  if ($damage > 0 && MZIsPlayer($target) && $Conduit->Index() != -1) {
+    AddLayer("TRIGGER", $player, "conduit_of_frostburn", $target);
+    // AddDecisionQueue("OP", MZPlayerID($player, $target), "DESTROYFROZENARSENAL");
   }
   $auras = &GetAuras($player);
   $aurasCount = count($auras);

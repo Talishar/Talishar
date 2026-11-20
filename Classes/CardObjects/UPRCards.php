@@ -619,6 +619,11 @@ class conduit_of_frostburn extends Card {
   function DefaultActiveState() {
     return 1;
   }
+
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    $targetPlayer = str_contains($target, "THEIR") ? OtherPlayer($this->controller) : $this->controller;
+    DestroyFrozenArsenal($targetPlayer);
+  }
 }
 
 

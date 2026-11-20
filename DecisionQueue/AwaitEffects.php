@@ -581,3 +581,11 @@ function MZGainControlAwait($player) {
   if ($target != "-")
     MZGainControl($player, $target, $temporary);
 }
+
+function ArcaneHitEffectAwait($player) {
+  global $dqVars, $dqState, $CS_ArcaneDamageDealt;
+  $parameter = $dqVars["source"] ?? "-";
+  if ($dqVars[0] > 0) ArcaneHitEffect($player, $parameter, $dqState[7], $dqVars[0], $dqVars["uid"] ?? "-"); //player, source, target, damage
+  if ($dqVars[0] > 0) IncrementClassState($player, $CS_ArcaneDamageDealt, $dqVars[0]);
+  return $dqVars["LASTRESULT"];
+}
