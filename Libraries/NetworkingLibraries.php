@@ -1994,6 +1994,7 @@ function ResolveCombatDamage($damageDone, $damageTarget = "HERO")
       SetClassState($mainPlayer, $CS_PowDamageDealt, GetClassState($mainPlayer, $CS_PowDamageDealt) + $damageDone);
   }
   if ($wasHit) {
+    $EffectContext = $CombatChain->AttackCard()->ID();
     LogPlayCardStats($mainPlayer, $cardID, "CC", "HIT");
     IncrementCombatChainState($CCS_DamageDealt, $damageDone);
     IncrementClassState($mainPlayer, $CS_HitCounter);
