@@ -67,7 +67,7 @@ class zuul extends Card {
   }
 
   function SpecialName() {
-    return "Zuul Clubcaste";
+    return "Zuul";
   }
 
   function SpecialSubType() {
@@ -159,11 +159,15 @@ class babaza extends Card {
   }
 
   function SpecialName() {
-    return "Babaza Bloodbeat Heartfather";
+    return "Babaza";
   }
 
   function SpecialHealth() {
     return 20;
+  }
+
+  function SpecialSubType() {
+    return "Young";
   }
 }
 
