@@ -27,6 +27,10 @@ $prodServerPassword = "op://$APP_ENV/Production Server/password";
 $metafyClientID = "op://$APP_ENV/Metafy/username";
 $metafyClientSecret = "op://$APP_ENV/Metafy/credential";
 
+// Google OAuth (login/signup). Redirect URI: https://talishar.net/auth/google-signup
+$googleClientID = "op://$APP_ENV/Google/username";
+$googleClientSecret = "op://$APP_ENV/Google/credential";
+
 // FaB Bazaar
 $FaBBazaarKey = "op://$APP_ENV/FaBBazaar/credential";
 $FaBBazaarSalt = "op://$APP_ENV/FaBBazaarSalt/credential";
