@@ -2441,17 +2441,19 @@ class spike_with extends BaseCard {
   }
 
   function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
+    global $EffectContext;
+    return HeroHitTrigger($this->controller, $this->cardID, $check, true, target:$target, sourceUID:$EffectContext);
   }
 
   function EffectHitEffect($from, $source = '-', $effectSource = '-', $param = '-', $mode = '-', $target = '-') {
-    global $defPlayer, $CombatChain;
+    global $defPlayer;
     $disease = match($this->cardID) {
       "spike_with_bloodrot_red" => "bloodrot_pox",
       "spike_with_frailty_red" => "frailty",
       "spike_with_inertia_red" => "inertia"
     };
-    PlayAura($disease, $defPlayer, effectController:$this->controller, effectSource:$CombatChain->AttackCard()->ID(), effectAgent:$this->controller);
+    $target = $target == "HERO" ? $defPlayer : $target;
+    PlayAura($disease, $target, effectController:$this->controller, effectSource:$source, effectAgent:$this->controller);
   }
 }
 

@@ -849,17 +849,17 @@ function CardPlayTrigger($cardID, $from)
 }
 
 // for cards that trigger when hitting anything
-function AnyHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
+function AnyHitTrigger($player, $cardID, $check, $effect=false, $target="-", $sourceUID="-") {
   $additional = $effect ? "EFFECTHITEFFECT" : "ONHITEFFECT";
   $target = $target == "-" ? $cardID : $target;
-  if (!$check) AddLayer("TRIGGER", $player, $cardID, $target, $additional);
+  if (!$check) AddLayer("TRIGGER", $player, $cardID, $target, $additional, $sourceUID);
   return true;
 }
 
 // for cards that trigger when hitting a hero
-function HeroHitTrigger($player, $cardID, $check, $effect=false, $target="-") {
+function HeroHitTrigger($player, $cardID, $check, $effect=false, $target="-", $sourceUID="-") {
   if (IsHeroAttackTarget() || is_numeric($target))
-    return AnyHitTrigger($player, $cardID, $check, $effect, $target);
+    return AnyHitTrigger($player, $cardID, $check, $effect, $target, $sourceUID);
   return false;
 }
 
