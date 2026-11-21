@@ -1927,10 +1927,6 @@ class razors_edge extends BaseCard {
   function EffectPowerModifier($param, $attached = false) {
     return ByColor($this->cardID, 3, 2, 1);;
   }
-
-  function AddEffectHitTrigger($source = '-', $fromCombat = true, $target = '-', $parameter = '-', $check = false) {
-    return HeroHitTrigger($this->controller, $this->cardID, $check, true);
-  }
 }
 
 class razors_edge_red extends Card {
