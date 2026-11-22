@@ -176,6 +176,7 @@ class ChainLink {
 class LinkCard {
 	private $link = [];
 	private $index;
+	private $linkNum;
 
 	// Constructor
 	function __construct($linkNum, $index) {
@@ -185,6 +186,7 @@ class LinkCard {
 		else
 			$this->link = [];
 		$this->index = $index;
+		$this->linkNum = $linkNum;
 	}
 
 	function Index() {
@@ -213,6 +215,19 @@ class LinkCard {
 
 	function PowerModifier() {
 		return $this->link[$this->index+4] ?? 0;
+	}
+
+	function TotalPower() {
+		$powerModifiers = [];
+		$player = $this->PlayerID();
+		$cardID = $this->ID();
+		$power = PowerValue($cardID, $player, "CC");
+		if(PowerCantBeModified($cardID)) return $power;
+		$powerValue = ModifiedPowerValue($cardID, $player, "CC", $cardID, $this->index);
+		$powerValue += AuraPowerModifiers("$this->index-$this->linkNum", $powerModifiers);
+		$powerValue += ItemsPowerModifiers($cardID, $player, "CC");
+		$powerValue += $this->PowerModifier();//Combat chain power modifier
+		return $powerValue;
 	}
 
 	function DefenseModifier() {

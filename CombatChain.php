@@ -1618,7 +1618,7 @@ function ClearCombatChainAwait($player) {
         $origLinkID = $aGoodCleanFight ? BlindCard($chainLinks[$i][$j+7], true, true) : $chainLinks[$i][$j+7];
         $uniqueID = $chainLinks[$i][$j + 8];
         $goesWhere = GoesWhereAfterResolving($origLinkID, "CHAINCLOSING", $chainLinks[$i][$j + 1], $chainLinks[$i][$j + 3], $chainLinks[$i][$j + 2], "-", $uniqueID);
-        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING", effectController:$chainLinks[$i][$j + 1] ?? "-");
+        ResolveGoesWhere($goesWhere, $origLinkID, $chainLinks[$i][$j + 1], "CHAINCLOSING", effectController:$chainLinks[$i][$j + 1] ?? "-", uniqueID:$uniqueID);
       }
     }
   }

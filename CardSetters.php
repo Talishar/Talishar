@@ -23,7 +23,7 @@ function BanishCardForPlayer($cardID, $player, $from, $mod = "-", $banishedBy = 
 function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from = "", $banishedBy = "", $banisher = "-", $created = false, $uniqueID = "-")
 {
   global $CS_CardsBanished, $actionPoints, $CS_Num6PowBan, $currentPlayer, $mainPlayer, $CS_NumEarthBanished, $EffectContext, $CS_NumBloodDebtBanished;
-  global $CS_Num6PowPutIntoBanish;
+  global $CS_Num6PowPutIntoBanish, $ChainLinks;
   $rv = -1;
   if ($player == "") $player = $currentPlayer;
   $otherPlayer = 3 - $player;
@@ -126,7 +126,20 @@ function BanishCard(&$banish, &$classState, $cardID, $mod, $player = "", $from =
     WriteLog(CardLink($cardID, $cardID) . " was banished to pay a boost cost. Put a counter on a Hyper Drive you control.");
     AddLayer("TRIGGER", $player, $cardID);
   }
-  if (ModifiedPowerValue($cardID, $player, $from, source: $banishedBy) >= 6) {
+  $pow = -1;
+  if ($from != "CC")
+    $pow = ModifiedPowerValue($cardID, $player, $from, source: $banishedBy);
+  else {
+    for ($i = 0; $i < $ChainLinks->NumLinks(); ++$i) {
+      $Link = $ChainLinks->GetLink($i);
+      $LinkCard = $Link->FindCardUID($uniqueID);
+      if ($LinkCard->Index() != -1)
+        $pow = $LinkCard->TotalPower();
+    }
+  }
+  // fallback if the power can't be found
+  if ($pow == -1) $pow = ModifiedPowerValue($cardID, $player, $from, source: $banishedBy);
+  if ($pow >= 6) {
     if ($classState[$CS_Num6PowBan] == 0 && $player == $mainPlayer && ($characterID == "levia_shadowborn_abomination" || $characterID == "levia") && $character[1] == 2) { // Levia
       WriteLog(CardLink($characterID, $characterID) . " banished a card with 6+ power, and won't lose life from Blood Debt this turn.");
     }
@@ -781,7 +794,7 @@ function AddGraveyard($cardID, $player, $from, $effectController = "", $cardCont
   switch ($cardID) {
     case "mark_of_the_beast_yellow":
       if ($cardController == "" || $player == $cardController) // only if it goes to *your* graveyard
-        BanishCardForPlayer($cardID, $player, $from, "NA");
+        BanishCardForPlayer($cardID, $player, $from, "NA", uniqueID:$uniqueID);
       return;
     case "beast_within_yellow":
       if ($from != "CC" && $from != "COMBATCHAINLINK") AddLayer("TRIGGER", $player, $cardID);

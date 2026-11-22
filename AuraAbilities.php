@@ -1678,7 +1678,14 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
 {
   global $CombatChain, $combatChainState, $CCS_AttackPlayedFrom;
   global $CID_Frailty, $mainPlayer, $defPlayer;
-  $chainCard = $CombatChain->Card($index);
+  $linkIndex = -1;
+  if (str_contains($index, "-")) {
+    $linkNum = explode("-", $index)[1];
+    $linkIndex = explode("-", $index)[0];
+    $chainCard = new LinkCard($linkNum, $linkIndex);
+  }
+  else
+    $chainCard = $CombatChain->Card($index);
   $modifier = 0;
   $player = $chainCard->PlayerID();
   $myAuras = &GetAuras($player);
@@ -1707,6 +1714,13 @@ function AuraPowerModifiers($index, &$powerModifiers, $onBlock=false)
             $modifier -= 1;
             $powerModifiers[] = $myAuras[$i];
             $powerModifiers[] = -1;
+          }
+          elseif($linkIndex == 0) {
+            if (IsWeapon($chainCard->ID(), $chainCard->From(), $mainPlayer) || $chainCard->From() == "ARS") {
+              $modifier -= 1;
+              $powerModifiers[] = $myAuras[$i];
+              $powerModifiers[] = -1;
+            }
           }
           break;
         case "sharpened_senses_yellow":

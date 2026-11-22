@@ -4709,7 +4709,7 @@ function ResolveCard($cardID, $from, $definedCardType, $additionalCosts, $unique
   Await($currentPlayer, "AfterResolveEffects", subsequent:0, final:true);
 }
 
-function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA", $additionalCosts = "-")
+function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController = "", $modifier = "NA", $additionalCosts = "-", $uniqueID="-")
 {
   if($effectController == "") $effectController = $player;
   $otherPlayer = 3 - $player;
@@ -4725,21 +4725,21 @@ function ResolveGoesWhere($goesWhere, $cardID, $player, $from, $effectController
       if ($from == "CC") break; //Things that would go to the GY stay on till the chain is closing and the close step.
       if ($from == "CHAINCLOSING") $from = "CC";
       if (DelimStringContains(CardSubType($cardID), "Affliction") && $from != "CC") $destPlayer = $otherPlayer;
-      return AddGraveyard($cardID, $destPlayer, $from, $effectController, $player, $additionalCosts);
+      return AddGraveyard($cardID, $destPlayer, $from, $effectController, $player, $additionalCosts, uniqueID:$uniqueID);
     case "SOUL":
       AddSoul($cardID, $player, $from);
       break;
     case "BANISH":
-      BanishCardForPlayer($cardID, $player, $from, $modifier);
+      BanishCardForPlayer($cardID, $player, $from, $modifier, uniqueID:$uniqueID);
       break;
     case "THEIRHAND":
       AddPlayerHand($cardID, $otherPlayer, $from);
       break;
     case "THEIRBANISH":
-      BanishCardForPlayer($cardID, $otherPlayer, $from, $modifier);
+      BanishCardForPlayer($cardID, $otherPlayer, $from, $modifier, uniqueID:$uniqueID);
       break;
     case "THEIRDISCARD":
-      return AddGraveyard($cardID, $otherPlayer, $from, $effectController, $player);
+      return AddGraveyard($cardID, $otherPlayer, $from, $effectController, $player, uniqueID:$uniqueID);
     case "THEIRBOTDECK":
       AddBottomDeck($cardID, $otherPlayer, $from);
       break;
