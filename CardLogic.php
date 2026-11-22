@@ -1954,7 +1954,7 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
   global $combatChain, $CS_NumNonAttackCards, $CS_ArcaneDamageDealt, $CS_NumRedPlayed, $CS_DamageTaken, $EffectContext, $CombatChain, $CCS_GoesWhereAfterLinkResolves;
   global $CID_BloodRotPox, $CID_Inertia, $CID_Frailty, $mainPlayer, $combatChainState, $CCS_WeaponIndex, $defPlayer, $CS_NumEarthBanished;
   global $chainLinks, $currentTurnEffects, $ChainLinks;
-  global $landmarks;
+  global $landmarks, $layers;
   global $EffectContextUID;
   $items = &GetItems($player);
   $auras = &GetAuras($player);
@@ -2805,7 +2805,15 @@ function ProcessTrigger($player, $parameter, $uniqueID, $target = "-", $addition
         DestroyAuraUniqueID($player, $uniqueID);
         break;
       case "plague_hive_yellow":
-        $rand = GetRandom(1, 3);
+        $hiveIndex = 0;
+        $pitch = GetPitch($player);
+        for ($i = 0; $i < count($pitch); $i += PitchPieces()) {
+          if ($pitch[$i] == "plague_hive_yellow") ++$hiveIndex;
+        }
+        for ($i = 0; $i < count($layers); $i += LayerPieces()) {
+          if (($layers[$i] == "TRIGGER" || $layers[$i] == "PRETRIGGER") && $layers[$i + 1] == $player && $layers[$i + 2] == "plague_hive_yellow") --$hiveIndex;
+        }
+        $rand = RecordedRandom($player, "plague_hive_yellow-$hiveIndex", 1, 3);
         switch ($rand) {
           case 1:
             $auraCreated = "inertia";
