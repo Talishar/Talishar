@@ -88,7 +88,7 @@ class CharacterCard {
   function Become($cardID) {
     global $CS_OriginalHero;
     if ($this->index == 0 && GetClassState($this->controller, $CS_OriginalHero) == "-") {
-      SetClassState($this->controller, $CS_OriginalHero, $cardID);
+      SetClassState($this->controller, $CS_OriginalHero, $this->CardID());
     }
     if ($this->index == 0 && $this->CardID() != $cardID) LogHeroTransformStats($this->controller, $cardID);
     $this->pieces[$this->index] = $cardID;
