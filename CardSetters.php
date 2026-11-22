@@ -409,9 +409,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
       case "spire_sniping_blue":
         SpireSnipingAbility($player);
         break;
-      case "dry_powder_shot_red":
-        AddCurrentTurnEffect($cardID, $player, "", $uniqueID);
-        break;
       case "entangling_shot_red":
         $search = (ShouldAutotargetOpponent($player)) ? "THEIRCHAR:type=C" : "THEIRCHAR:type=C&MYCHAR:type=C";
         AddDecisionQueue("MULTIZONEINDICES", $player, $search);
@@ -428,9 +425,6 @@ function AddArsenal($cardID, $player, $from, $facing, $counters = 0, $powerCount
         break;
       case "scouting_shot_red":
         LookAtTopCard($player, $cardID, setPlayer:$player);
-        break;
-      case "swift_shot_red":
-        AddCurrentTurnEffect($cardID, $player, "", $uniqueID);
         break;
       default:
         break;
