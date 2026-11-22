@@ -893,14 +893,7 @@ function PopulateAggregateStats(&$deck, &$turnStats, $player = 0)
 
 	// Hand size drives how many cards were available to attack with. Falls back
 	// to 4 when the hero is unknown (unit tests, replays of deleted games).
-	$handSize = 4;
-	if ($player != 0 && function_exists("CharacterIntellect") && function_exists("GetPlayerCharacter")) {
-		$character = &GetPlayerCharacter($player);
-		if (isset($character[0])) {
-			$intellect = intval(CharacterIntellect($character[0]));
-			if ($intellect > 0) $handSize = $intellect;
-		}
-	}
+	$handSize = StatsHandSize($player);
 
 	$totals = function($blocks) use (&$turnStats, $TurnStats_DamageThreatened, $TurnStats_DamageDealt,
 		$TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked, $TurnStats_DamageBlocked, $TurnStats_ResourcesUsed,
@@ -1054,7 +1047,7 @@ function PopulateCardStatResults(&$deck, $cardStats, $useIntval)
 	}
 }
 
-function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false)
+function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $opposingHero = "", $gameName = "", $deckbuilderID = "", $includeFullLog=false, $forStatsScreen=false)
 {
 	global $winner, $currentTurn, $CardStats_TimesPlayed, $CardStats_TimesBlocked, $CardStats_TimesPitched, $CardStats_TimesHit, $CardStats_TimesCharged, $firstPlayer;
 	global $CardStats_TimesKatsuDiscard, $CardStats_TimesDiscarded, $CardStats_TimesActivated, $CardStats_TimesPassiveTriggered;
@@ -1112,6 +1105,13 @@ function SerializeGameResult($player, $DeckLink, $deckAfterSB, $gameID = "", $op
 	PopulateTurnStatsAndAggregates($deck, $turnStats, $otherPlayerTurnStats, $player, false);
 	PopulateAggregateStats($deck, $turnStats, $player);
 	$deck["disruptionValuePerCard"] = DISRUPTION_VALUE_PER_CARD;
+	if ($forStatsScreen) {
+		$deck["handSize"] = StatsHandSize($player);
+		$deck["turnDefensiveCards"] = TurnDefensiveCards($player);
+		$deck["countedTurns"] = array_map(fn($block) => intdiv($block, TurnStatPieces()), UsedTurnStatBlocks($turnStats, GetCardsDisrupted($player)));
+		$lethalAttackPower = PendingLethalAttackPower($player);
+		if ($lethalAttackPower > 0) $deck["lethalAttack"] = ["turnNo" => GetStatTurnIndex($player), "power" => $lethalAttackPower];
+	}
 
 	$contractsCompleted = GetContractsCompleted($player);
 	if ($contractsCompleted > 0) $deck["contractsCompleted"] = $contractsCompleted;
