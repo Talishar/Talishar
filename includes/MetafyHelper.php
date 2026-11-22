@@ -568,6 +568,7 @@ if (!function_exists('MetafySyncCommunities')) {
       $subscription = MetafyCheckSubscription($auth, $conn, $communityId);
       if ($subscription['ok']) {
         $info['has_access'] = $subscription['has_access'];
+        if ($subscription['has_access'] && $subscription['tier_id']) $info['tier_id'] = $subscription['tier_id'];
         if ($subscription['has_access'] && $subscription['tier_id'] && isset($tierMap[$subscription['tier_id']])) {
           $info['metafy_tier'] = $tierMap[$subscription['tier_id']];
         } elseif ($subscription['has_access'] && !empty($storedCommunity['metafy_tier'])) {
@@ -578,6 +579,7 @@ if (!function_exists('MetafySyncCommunities')) {
         // The check failed, so it says nothing about whether they still have access.
         // Keep what we already knew instead of dropping their perks.
         if (isset($storedCommunity['has_access']))  $info['has_access']  = $storedCommunity['has_access'];
+        if (!empty($storedCommunity['tier_id']))     $info['tier_id']     = $storedCommunity['tier_id'];
         if (!empty($storedCommunity['metafy_tier'])) $info['metafy_tier'] = $storedCommunity['metafy_tier'];
       }
 
@@ -604,6 +606,7 @@ if (!function_exists('MetafySyncCommunities')) {
           'type'        => 'supported',
           'has_access'  => true,
         ];
+        if ($subscription['tier_id']) $info['tier_id'] = $subscription['tier_id'];
         if ($subscription['tier_id'] && isset($tierMap[$subscription['tier_id']])) {
           $info['metafy_tier'] = $tierMap[$subscription['tier_id']];
         } elseif (!empty($storedTalishar['metafy_tier'])) {
@@ -706,15 +709,16 @@ if (!function_exists('MetafyApplySupporterCheck')) {
     $communities  = is_array($auth['communities'] ?? null) ? $auth['communities'] : [];
     $wasSupporter = IsTalisharMetafySupporter($communities);
     $hasAccess    = $subscription['has_access'];
+    $tierId       = $hasAccess ? ($subscription['tier_id'] ?? null) : null;
 
-    if ($hasAccess === $wasSupporter) {
+    if ($hasAccess === $wasSupporter && ($tierId === null || $tierId === MetafyStoredTalisharTierId($communities))) {
       // Nothing changed, but record the attempt so we do not re-check on every page load.
       MetafyTouchLastSync($conn, $auth['usersId']);
       $auth['last_sync'] = time();
       return false;
     }
 
-    $communities = MetafyApplyTalisharAccess($communities, $hasAccess);
+    $communities = MetafyApplyTalisharAccess($communities, $hasAccess, $tierId);
 
     MetafySaveCommunities($conn, $auth['usersId'], $communities, $auth['metafy_id'] ?? null);
     $auth['communities'] = $communities;
@@ -729,7 +733,7 @@ if (!function_exists('MetafyApplySupporterCheck')) {
  * `has_access` is what perks are gated on.
  */
 if (!function_exists('MetafyApplyTalisharAccess')) {
-  function MetafyApplyTalisharAccess($communities, $hasAccess)
+  function MetafyApplyTalisharAccess($communities, $hasAccess, $tierId = null)
   {
     if (!is_array($communities)) $communities = [];
     $found = false;
@@ -737,22 +741,55 @@ if (!function_exists('MetafyApplyTalisharAccess')) {
     foreach ($communities as $index => $community) {
       if (($community['id'] ?? null) === METAFY_TALISHAR_COMMUNITY_ID) {
         $communities[$index]['has_access'] = $hasAccess;
+        if ($hasAccess && $tierId) $communities[$index] = MetafySetTalisharTier($communities[$index], $tierId);
         $found = true;
         break;
       }
     }
 
     if (!$found && $hasAccess) {
-      $communities[] = [
+      $entry = [
         'id'         => METAFY_TALISHAR_COMMUNITY_ID,
         'title'      => 'Talishar',
         'type'       => 'supported',
         'has_access' => true,
         'tiers'      => [],
       ];
+      $communities[] = $tierId ? MetafySetTalisharTier($entry, $tierId) : $entry;
     }
 
     return array_values($communities);
+  }
+}
+
+/**
+ * Record the subscription's tier id on the Talishar entry, naming it when the entry's
+ * tier list knows the id. A changed id drops the old name, which would otherwise keep
+ * an upgraded or downgraded subscriber on their previous tier's perks.
+ */
+if (!function_exists('MetafySetTalisharTier')) {
+  function MetafySetTalisharTier($entry, $tierId)
+  {
+    $previousId = $entry['tier_id'] ?? null;
+    $entry['tier_id'] = $tierId;
+    $tierMap = MetafyBuildTierMap($entry);
+    if (isset($tierMap[$tierId])) {
+      $entry['metafy_tier'] = $tierMap[$tierId];
+    } elseif ($previousId !== null && $previousId !== $tierId) {
+      unset($entry['metafy_tier']);
+    }
+    return $entry;
+  }
+}
+
+if (!function_exists('MetafyStoredTalisharTierId')) {
+  function MetafyStoredTalisharTierId($communities)
+  {
+    if (!is_array($communities)) return null;
+    foreach ($communities as $community) {
+      if (($community['id'] ?? null) === METAFY_TALISHAR_COMMUNITY_ID) return $community['tier_id'] ?? null;
+    }
+    return null;
   }
 }
 
@@ -813,6 +850,14 @@ if (!function_exists('GetMetafyTiersFromDatabase')) {
           $tierName = $community['subscription_tier']['name'] ?? null;
         } elseif (isset($community['subscription_tier']) && is_string($community['subscription_tier'])) {
           $tierName = $community['subscription_tier'];
+        }
+
+        if (!$tierName && !empty($community['tier_id'])) {
+          $tierName = MetafyBuildTierMap($community)[$community['tier_id']] ?? null;
+        }
+        // An active subscriber whose tier Metafy did not name is on at least the lowest paid tier.
+        if (!$tierName && IsTalisharMetafySupporter([$community])) {
+          $tierName = array_key_first(GetReplaySlotTierMap());
         }
 
         if ($tierName) {

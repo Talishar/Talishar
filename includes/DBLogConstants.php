@@ -73,9 +73,10 @@ const DBL_DELETE_PLAYER_REPORT         = 80;
 const DBL_FLUSH_GAME_HEALTH_LOG        = 82;
 const DBL_GET_GAME_HEALTH_REPORT       = 83;
 const DBL_IS_BLOCKED_EITHER_WAY        = 84;
+const DBL_GOOGLE_SIGNUP_API            = 85;
 
 // Total number of tracked call sites — used by the report page to iterate all keys.
-const DBL_MAX_KEY = 84;
+const DBL_MAX_KEY = 85;
 
 // Human-readable labels for the report page, indexed by constant value.
 const DBL_LABELS = [
@@ -149,4 +150,5 @@ const DBL_LABELS = [
     82 => 'Libraries/GameHealthLog.php::FlushGameHealthLog',
     83 => 'APIs/GetGameHealthReport.php',
     84 => 'Libraries/BlockedUserLibraries.php::IsBlockedEitherWay',
+    85 => 'AccountFiles/GoogleSignupAPI.php',
 ];

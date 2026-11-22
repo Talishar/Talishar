@@ -453,3 +453,48 @@ function GetContractsCompleted($player)
   global $p1ContractsCompleted, $p2ContractsCompleted;
   return intval(($player == 1 ? $p1ContractsCompleted : $p2ContractsCompleted) ?? 0);
 }
+
+function StatsHandSize($player)
+{
+  if ($player != 0 && function_exists("CharacterIntellect") && function_exists("GetPlayerCharacter")) {
+    $character = &GetPlayerCharacter($player);
+    if (isset($character[0])) {
+      $intellect = intval(CharacterIntellect($character[0]));
+      if ($intellect > 0) return $intellect;
+    }
+  }
+  return 4;
+}
+
+function TurnDefensiveCards($player)
+{
+  global $TurnStats_CardsPlayedDefense, $TurnStats_CardsBlocked;
+  $turnStats = &GetTurnStats($player);
+  $cards = [];
+  for ($i = 0, $count = count($turnStats); $i + TURN_STAT_PIECES <= $count; $i += TURN_STAT_PIECES) {
+    $cards[] = intval($turnStats[$i + $TurnStats_CardsPlayedDefense]) + intval($turnStats[$i + $TurnStats_CardsBlocked]);
+  }
+  return $cards;
+}
+
+function PendingLethalAttackPower($player)
+{
+  global $winner, $mainPlayer, $combatChain, $layers, $CCS_LinkTotalPower;
+  $player = intval($player);
+  if ($player != intval($winner) || $player != intval($mainPlayer)) return 0;
+  if (intval(GetHealth(3 - $player)) > 0) return 0;
+  if (is_array($combatChain) && count($combatChain) > 0) {
+    if (intval(GetCombatChainState($CCS_LinkTotalPower)) != 0) return 0;
+    $totalPower = 0;
+    $totalDefense = 0;
+    EvaluateCombatChain($totalPower, $totalDefense);
+    return max(0, intval($totalPower));
+  }
+  if (!is_array($layers)) return 0;
+  for ($i = 0, $count = count($layers); $i < $count; $i += LayerPieces()) {
+    $cardID = $layers[$i] ?? "";
+    if (intval($layers[$i + 1] ?? 0) != $player || $cardID == "" || !TypeContains($cardID, "AA", $player)) continue;
+    return max(0, intval(PowerValue($cardID, $player, "LAYER")));
+  }
+  return 0;
+}

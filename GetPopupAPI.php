@@ -148,7 +148,7 @@ switch ($popupType) {
     $opponentHero = (isset($theirCharacter) && count($theirCharacter) > 0) ? $theirCharacter[0] : "";
     $myDeckFile = "./Games/" . $gameName . "/p" . $playerID . "Deck.txt";
     $myDeckContents = file_exists($myDeckFile) ? file_get_contents($myDeckFile) : "";
-    echo(SerializeGameResult($playerID, "", $myDeckContents, $gameName, $opponentHero, "", "", includeFullLog:true));
+    echo(SerializeGameResult($playerID, "", $myDeckContents, $gameName, $opponentHero, "", "", includeFullLog:true, forStatsScreen:true));
     exit;
   case "mySoulPopup":
     JSONPopup($response, $mySoul, SoulPieces());

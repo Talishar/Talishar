@@ -89,6 +89,7 @@ CREATE TABLE `users` (
   `metafyLastSync` TIMESTAMP NULL DEFAULT NULL,
   `metafyCommunities` LONGTEXT DEFAULT NULL,
   `metafyID` VARCHAR(128) DEFAULT NULL,
+  `googleID` VARCHAR(64) DEFAULT NULL,
   `displayName` varchar(50) DEFAULT NULL,
   `lastNameChange` TIMESTAMP NULL DEFAULT NULL,
   `createdAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
@@ -96,7 +97,8 @@ CREATE TABLE `users` (
   KEY `usersUid` (`usersUid`),
   KEY `idx_metafy_access_token` (`metafyAccessToken`),
   KEY `idx_rememberMeToken` (`rememberMeToken`),
-  UNIQUE KEY `idx_displayName` (`displayName`)
+  UNIQUE KEY `idx_displayName` (`displayName`),
+  UNIQUE KEY `idx_googleID` (`googleID`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS hero_mastery (
