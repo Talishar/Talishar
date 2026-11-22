@@ -918,19 +918,6 @@ class blue_fin_harpoon_blue extends GoFishCard {
 // }
 
 
-// class dry_powder_shot_red extends Card {
-
-//   function __construct($controller) {
-//     $this->cardID = "dry_powder_shot_red";
-//     $this->controller = $controller;
-//     }
-
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
-
-
 // class entangling_shot_red extends Card {
 
 //   function __construct($controller) {
@@ -2975,18 +2962,48 @@ class sealace_sarong extends Card {
 //   }
 // }
 
+class arrow_shot extends BaseCard {
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-// class swift_shot_red extends Card {
+  function CombatEffectActive($parameter = '-', $defendingCard = '', $flicked = false) {
+    return true;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "swift_shot_red";
-//     $this->controller = $controller;
-//     }
+  function AddArsenalEffect($index) {
+    $Arsenal = new ArsenalCard($index, $this->controller);
+    AddLayer("TRIGGER", $this->controller, $this->cardID, $Arsenal->UniqueID());
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+  function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+    AddCurrentTurnEffect($this->cardID, $this->controller, uniqueID:$target);
+  }
+}
+
+class swift_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "swift_shot_red";
+    $this->controller = $controller;
+    $this->baseCard = new arrow_shot($this->cardID, $this->controller);
+  }
+
+  function CurrentEffectGrantsGoAgain($param) {
+    return true;
+  }
+}
+
+class dry_powder_shot_red extends Card {
+  function __construct($controller) {
+    $this->cardID = "dry_powder_shot_red";
+    $this->controller = $controller;
+    $this->baseCard = new arrow_shot($this->cardID, $this->controller);
+  }
+
+  function EffectPowerModifier($param, $attached = false) {
+    return 2;
+  }
+}
 
 
 // class swiftstrike_bracers extends Card {
