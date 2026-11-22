@@ -1615,7 +1615,6 @@ function AuraAttackAbilities($attackID)
         if ($auras[$i + 5] > 0 && ClassContains($attackID, "ILLUSIONIST", $mainPlayer) && GetClassState($mainPlayer, $CS_NumIllusionistAttacks) <= 1) {
           WriteLog(CardLink($auras[$i], $auras[$i]) . " makes your first illusionist attack each turn loses phantasm");
           --$auras[$i + 5];
-          // AddCurrentTurnEffect("passing_mirage_blue", $mainPlayer, true);
         }
         break;
       case "burn_them_all_red":

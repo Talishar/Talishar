@@ -2672,7 +2672,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
   global $CS_NumWeaponsActivated, $CCS_NumInstantsPlayedByDefendingPlayer, $Stack, $CS_NumBloodDebtAttacksPlayed, $CS_IARGatesMadeorUsed;
   global $CS_NumAuras, $CS_BanishPlayMode;
   global $CCS_AttackReactionsPlayed, $CCS_DefenseReactionsPlayed, $CS_GuardianAACThisTurn, $CS_ReveredAACThisTurn;
-  global $ChainLinks, $CS_ArcaneCardsPlayed;
+  global $ChainLinks, $CS_ArcaneCardsPlayed, $CS_NumIllusionistAttacks;
 
   $otherPlayer = 3 - $currentPlayer;
   $resources = &GetResources($currentPlayer);
@@ -3063,6 +3063,9 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
       IncrementClassState($currentPlayer, $CS_NumAuras);
     if (SubtypeContains($cardID, "Cannon", $currentPlayer) && $isStaticType) {
       IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
+    }
+    if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $resolvedAbilityType == "AA") {
+      IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
     }
     if (!$isStaticType && $playType == "AA" && SearchCurrentTurnEffects("current_funnel_blue", $currentPlayer, true)) {
       GiveAttackGoAgain();
@@ -4976,7 +4979,6 @@ function PlayCardEffect($cardID, $from, $resourcesPaid, $target = "-", $addition
           if (IsHeroAttackTarget()) IncrementClassState($defPlayer, $CS_NumTimesHeroAttacked);
           if (DelimStringContains($definedCardSubType, "Dragon")) IncrementClassState($currentPlayer, $CS_NumDragonAttacks);
           $isIllusionist = ClassContains($cardID, "ILLUSIONIST", $currentPlayer);
-          if ($isIllusionist) IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
           if ($isIllusionist && $definedCardType == "AA") IncrementClassState($currentPlayer, $CS_NumIllusionistActionCardAttacks);
           AuraAttackAbilities($cardID);
           CharacterAttackAbilities($cardID);
