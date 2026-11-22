@@ -518,6 +518,30 @@ function RecordedScabskinRoll($player)
   return intval($record[2]);
 }
 
+function RecordedRandomFile()
+{
+  global $filepath;
+  return $filepath . "recordedRandom.json";
+}
+
+function RecordedRandom($player, $key, $low, $high)
+{
+  global $currentTurn;
+  if (IsReplay()) return GetRandom($low, $high);
+  $file = RecordedRandomFile();
+  $records = json_decode((string)@file_get_contents($file), true);
+  if (!is_array($records)) $records = [];
+  $recordKey = "$currentTurn|$player|$key";
+  if (isset($records[$recordKey])) return intval($records[$recordKey]);
+  $roll = GetRandom($low, $high);
+  foreach ($records as $k => $value) {
+    if (intval(explode("|", $k)[0]) < intval($currentTurn) - 2) unset($records[$k]);
+  }
+  $records[$recordKey] = $roll;
+  file_put_contents($file, json_encode($records));
+  return $roll;
+}
+
 function KeepScabskinSpentAfterUndo()
 {
   global $currentTurn, $skipWriteGamestate, $mainPlayer, $actionPoints;
@@ -550,4 +574,5 @@ function ResetUndoBackupsForRematch()
     }
   }
   @unlink(ScabskinRollFile());
+  @unlink(RecordedRandomFile());
 }

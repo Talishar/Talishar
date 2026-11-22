@@ -67,6 +67,7 @@ if ($displayLevel !== null && $displayLevel > $earnedLevel) {
   mysqli_close($conn);
   MasteryFrameError("You have not unlocked that mastery frame.", 403);
 }
+if ($displayLevel === $earnedLevel) $displayLevel = null;
 
 try {
   $update = $conn->prepare("UPDATE hero_mastery SET displayLevel = ? WHERE userId = ? AND heroId = ?");
