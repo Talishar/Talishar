@@ -72,9 +72,9 @@ function LoadGameListViewer($isShadowBanned)
 
   // Friends list — refresh at most every five minutes per session.
   if ($refreshFriends) {
-    $friends = GetUserFriends($userId);
+    $friends = $conn ? GetUserFriends($userId, $conn) : [];
     $friendUserNames = array_column($friends, 'username');
-    $hiddenByFriendNames = GetFriendsHidingGamesFromFriends($friends);
+    $hiddenByFriendNames = $conn ? GetFriendsHidingGamesFromFriends($friends, $conn) : [];
     $_SESSION['_friendNamesCache'] = $friendUserNames;
     $_SESSION['_friendHiddenGamesCache'] = $hiddenByFriendNames;
     $_SESSION['_friendNamesCacheAt'] = $now;

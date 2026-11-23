@@ -209,9 +209,9 @@ function GetUserFriendUsernames($userId, $connection = null) {
  * @param int $userId
  * @return array List of friend user IDs and names
  */
-function GetUserFriends($userId) {
-  global $conn;
-  
+function GetUserFriends($userId, $connection = null) {
+  $conn = $connection ?? ($GLOBALS['conn'] ?? null);
+
   if (!$conn || !is_numeric($userId)) {
     return [];
   }
