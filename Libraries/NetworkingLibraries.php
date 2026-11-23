@@ -3064,7 +3064,7 @@ function PlayCard($cardID, $from, $dynCostResolved = -1, $index = -1, $uniqueID 
     if (SubtypeContains($cardID, "Cannon", $currentPlayer) && $isStaticType) {
       IncrementClassState($currentPlayer, piece: $CS_NumCannonsActivated);
     }
-    if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && $resolvedAbilityType == "AA") {
+    if (ClassContains($cardID, "ILLUSIONIST", $currentPlayer) && (IsActivated($cardID, $from) && $resolvedAbilityType == "AA" || !IsActivated($cardID, $from) && TypeContains($cardID, "AA"))) {
       IncrementClassState($currentPlayer, $CS_NumIllusionistAttacks);
     }
     if (!$isStaticType && $playType == "AA" && SearchCurrentTurnEffects("current_funnel_blue", $currentPlayer, true)) {

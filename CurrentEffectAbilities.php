@@ -1827,7 +1827,6 @@ function DoesCurrentTurnEffectGrantGoAgain($effectID) {
     case "jittery_bones_red": case "jittery_bones_yellow": case "jittery_bones_blue":
     case "restless_bones_red": case "restless_bones_yellow": case "restless_bones_blue":
     case "line_blue":
-    case "swift_shot_red":
     case "mutiny_on_the_swiftwater_blue":
     case "quick_clicks":
     case "man_overboard_red":
