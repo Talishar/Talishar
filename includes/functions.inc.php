@@ -1656,6 +1656,20 @@ function IsIPBanned($ip = null, $connection = null)
 	return $banned;
 }
 
+function EnsureBanEvaderDismissalsTable($conn)
+{
+	$sql = "CREATE TABLE IF NOT EXISTS ban_evader_dismissals (
+		usersId INT NOT NULL,
+		ip VARCHAR(45) NOT NULL,
+		dismissedBy VARCHAR(255) DEFAULT NULL,
+		dismissedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (usersId, ip)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+	if (!mysqli_query($conn, $sql)) {
+		error_log("Failed to create ban_evader_dismissals table: " . mysqli_error($conn));
+	}
+}
+
 function EnsureIPHistoryTable($conn)
 {
 	$sql = "CREATE TABLE IF NOT EXISTS ip_history (

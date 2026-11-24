@@ -163,42 +163,59 @@ if ($conn) {
   }
   if (count($bannedPlayerIPs) > 0) $response["bannedPlayerIPs"] = $bannedPlayerIPs;
 
+  EnsureBanEvaderDismissalsTable($conn);
   $linkedAccounts = [];
-  $sql = "SELECT DISTINCT u2.usersUid, h1.ip, u1.usersUid
+  $sql = "SELECT DISTINCT u2.usersUid, h1.ip, u1.usersUid, h2.lastSeen
           FROM users u1
           JOIN ip_history h1 ON h1.usersId = u1.usersId
           JOIN ip_history h2 ON h2.ip = h1.ip AND h2.usersId != h1.usersId
           JOIN users u2 ON u2.usersId = h2.usersId
-          WHERE u1.isBanned = 1 AND u2.isBanned = 0
-          LIMIT 200";
+          LEFT JOIN ban_evader_dismissals d ON d.usersId = u2.usersId AND d.ip = h1.ip
+          WHERE u1.isBanned = 1 AND u2.isBanned = 0 AND d.usersId IS NULL
+          LIMIT 2000";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_execute($stmt);
     $linkData = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
-      $linkedAccounts[$row[0] . "|" . $row[1]] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => $row[2]];
+      $linkedAccounts[] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => $row[2], "lastSeen" => $row[3]];
     }
     mysqli_stmt_close($stmt);
   }
-  $sql = "SELECT DISTINCT u.usersUid, b.ip
+  $sql = "SELECT DISTINCT u.usersUid, b.ip, h.lastSeen
           FROM users u
           JOIN ip_history h ON h.usersId = u.usersId
           JOIN banned_ips b ON b.ip = h.ip
-          WHERE u.isBanned = 0
-          LIMIT 200";
+          LEFT JOIN ban_evader_dismissals d ON d.usersId = u.usersId AND d.ip = h.ip
+          WHERE u.isBanned = 0 AND d.usersId IS NULL
+          LIMIT 2000";
   $stmt = mysqli_stmt_init($conn);
   if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_execute($stmt);
     $linkData = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_array($linkData, MYSQLI_NUM)) {
-      $key = $row[0] . "|" . $row[1];
-      if (!isset($linkedAccounts[$key])) {
-        $linkedAccounts[$key] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => "banned IP"];
-      }
+      $linkedAccounts[] = ["username" => $row[0], "ip" => $row[1], "linkedTo" => "banned IP", "lastSeen" => $row[2]];
     }
     mysqli_stmt_close($stmt);
   }
-  $response["linkedAccounts"] = array_values($linkedAccounts);
+  $response["linkedAccounts"] = $linkedAccounts;
+
+  $sharedIPs = array_values(array_unique(array_column($linkedAccounts, "ip")));
+  $ipAccountCounts = [];
+  foreach (array_chunk($sharedIPs, 500) as $chunk) {
+    $placeholders = implode(",", array_fill(0, count($chunk), "?"));
+    $stmt = $conn->prepare("SELECT ip, COUNT(*) FROM ip_history WHERE ip IN ($placeholders) GROUP BY ip");
+    if ($stmt) {
+      $stmt->bind_param(str_repeat("s", count($chunk)), ...$chunk);
+      $stmt->execute();
+      $countData = $stmt->get_result();
+      while ($row = $countData->fetch_array(MYSQLI_NUM)) {
+        $ipAccountCounts[$row[0]] = (int)$row[1];
+      }
+      $stmt->close();
+    }
+  }
+  $response["ipAccountCounts"] = count($ipAccountCounts) > 0 ? $ipAccountCounts : new stdClass();
 
   mysqli_close($conn);
 }
