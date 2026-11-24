@@ -49,6 +49,15 @@ function IsGameHealthPromptPhase($phase)
   return $phase !== "" && !isset($skip[$phase]);
 }
 
+function IsGameHealthTurnAction($mode)
+{
+  static $turnActions = [
+    3 => true, 5 => true, 10 => true, 14 => true, 15 => true, 21 => true, 22 => true, 24 => true, 25 => true,
+    27 => true, 34 => true, 35 => true, 36 => true, 37 => true, 38 => true, 39 => true, 100 => true, 101 => true
+  ];
+  return isset($turnActions[(int)$mode]);
+}
+
 function GameHealthTriggerSetContext($parameter)
 {
   $cardIDs = [];
@@ -98,6 +107,7 @@ function LogGameHealthInput($player, $mode, $buttonInput = "")
   if ($mode >= 10000 && (IsGameHealthBotGame() || IsGameHealthNoOpFix($player, $mode))) return;
 
   $phase = (string)($turn[0] ?? "");
+  if ($mode < 10000 && IsGameHealthTurnAction($mode) && IsGameHealthPromptPhase($phase)) return;
   $context = "-";
   if ($mode == 27) $context = (string)$buttonInput ?: "-";
   else if ($mode < 10000 && IsGameHealthPromptPhase($phase)) $context = GameHealthPromptContext($phase);
@@ -135,6 +145,7 @@ function SummarizeGameHealthLog($lines)
       if (!isset($cards[$lastPlayed])) $cards[$lastPlayed] = ["fixed" => 0] + array_fill_keys(GAME_HEALTH_FIX_KINDS, 0);
     }
 
+    if ($mode < 10000 && IsGameHealthTurnAction($mode) && IsGameHealthPromptPhase($phase)) continue;
     if ($mode < 10000) {
       $key = null;
       if (IsGameHealthPromptPhase($phase)) {
@@ -251,6 +262,28 @@ function RecordGameHealth($conn, $misclicks, $cards)
   }
 }
 
+function GameHealthFlushConnection()
+{
+  static $conn = null;
+  if ($conn !== null) return $conn;
+  include_once __DIR__ . "/../includes/dbh.inc.php";
+  $conn = GetDBConnection(DBL_FLUSH_GAME_HEALTH_LOG) ?: false;
+  if ($conn) {
+    try {
+      mysqli_query($conn, "SET SESSION innodb_lock_wait_timeout = 3");
+    } catch (Throwable $e) {
+      error_log("FlushGameHealthLog lock timeout failed: " . $e->getMessage());
+    }
+    register_shutdown_function(function () use ($conn) {
+      try {
+        mysqli_close($conn);
+      } catch (Throwable $e) {
+      }
+    });
+  }
+  return $conn;
+}
+
 function FlushGameHealthLog($gameName)
 {
   $path = __DIR__ . "/../Games/$gameName/" . GAME_HEALTH_LOG_FILE;
@@ -262,16 +295,13 @@ function FlushGameHealthLog($gameName)
   [$misclicks, $cards] = SummarizeGameHealthLog($lines);
   if (count($misclicks) == 0 && count($cards) == 0) return;
 
-  include_once __DIR__ . "/../includes/dbh.inc.php";
-  $conn = GetDBConnection(DBL_FLUSH_GAME_HEALTH_LOG);
+  $conn = GameHealthFlushConnection();
   if (!$conn) return;
   try {
-    mysqli_query($conn, "SET SESSION innodb_lock_wait_timeout = 3");
     RecordGameHealth($conn, $misclicks, $cards);
   } catch (Throwable $e) {
     error_log("FlushGameHealthLog failed: " . $e->getMessage());
   }
-  mysqli_close($conn);
 }
 
 function GameHealthWilsonLow($hits, $total)

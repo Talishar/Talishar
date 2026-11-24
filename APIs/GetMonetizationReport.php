@@ -73,7 +73,8 @@ try {
 
   $daily = [];
   $emptyDay = ["views" => 0, "estMicros" => 0, "unpricedFills" => 0, "displayImpressions" => 0,
-    "videoImpressions" => 0, "videoViewable" => 0, "videoStarts" => 0, "videoCompletes" => 0, "rewardedShows" => 0];
+    "videoImpressions" => 0, "videoViewable" => 0, "videoStarts" => 0, "videoCompletes" => 0, "rewardedShows" => 0,
+    "rewardedCloses" => 0, "rewardedGrants" => 0];
   $mergeDaily = function ($rows) use (&$daily, $emptyDay) {
     foreach ($rows as $row) {
       $key = $row["day"] . "|" . $row["device"];
@@ -92,7 +93,9 @@ try {
   $mergeDaily(AdReportRows($conn, "SELECT day, device,
       SUM(IF(placement = 'video' AND event = 'started', count, 0)) AS videoStarts,
       SUM(IF(placement = 'video' AND event = 'complete', count, 0)) AS videoCompletes,
-      SUM(IF(event = 'shown', count, 0)) AS rewardedShows
+      SUM(IF(placement LIKE '%reward%' AND event = 'shown', count, 0)) AS rewardedShows,
+      SUM(IF(placement LIKE '%reward%' AND event = 'closed', count, 0)) AS rewardedCloses,
+      SUM(IF(placement LIKE '%reward%' AND event = 'granted', count, 0)) AS rewardedGrants
     FROM ad_event_stats WHERE day >= ? GROUP BY day, device", $since));
   ksort($daily);
   $response["daily"] = array_values($daily);
