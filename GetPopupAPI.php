@@ -188,7 +188,7 @@ switch ($popupType) {
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups, $SET_LeftHanded;
 
     $response->Settings = [];
     
@@ -263,6 +263,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "HideLogNoise", 63, $dbSettings);
       AddSettingFromDB($response->Settings, "FannedHandTipSeen", 64, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableEffectPopups", 65, $dbSettings);
+      AddSettingFromDB($response->Settings, "LeftHanded", 66, $dbSettings);
     } else {
       // Normal game settings
       $playerSettings = GetSettings($playerID);
@@ -323,6 +324,7 @@ switch ($popupType) {
       AddUnsetAwareSetting($response->Settings, "HideLogNoise", $SET_HideLogNoise, $playerSettings);
       AddSetting($response->Settings, "FannedHandTipSeen", $SET_FannedHandTipSeen, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "DisableEffectPopups", $SET_DisableEffectPopups, $playerSettings);
+      AddUnsetAwareSetting($response->Settings, "LeftHanded", $SET_LeftHanded, $playerSettings);
       $response->isSpectatingEnabled = GetCachePiece($gameName, 9) == "1";
     }
     break;
