@@ -11,7 +11,7 @@ function GameHealthFixKind($mode)
 {
   static $kinds = [
     10002 => "ap", 10004 => "ap",
-    10005 => "life", 10006 => "life", 10007 => "life", 10008 => "life",
+    10005 => "life", 10006 => "life", 10008 => "life",
     10009 => "draws", 10010 => "draws",
     10011 => "cards",
     10012 => "resources", 10013 => "resources", 10014 => "resources", 10015 => "resources",
@@ -25,6 +25,19 @@ function IsGameHealthLoggedMode($mode)
 {
   if ($mode < 10000) return !IsModeAsync($mode);
   return GameHealthFixKind($mode) !== null;
+}
+
+function IsGameHealthBotGame()
+{
+  return IsPlayerAI(1) || IsPlayerAI(2);
+}
+
+function IsGameHealthNoOpFix($player, $mode)
+{
+  global $actionPoints;
+  if ($mode == 10004) return (int)$actionPoints <= 0;
+  if ($mode == 10016 || $mode == 10017) return ArsenalEmpty($mode == 10016 ? $player : OtherPlayer($player));
+  return false;
 }
 
 function IsGameHealthPromptPhase($phase)
@@ -72,7 +85,8 @@ function WriteGameHealthLine($player, $mode, $context)
 
   $phase = substr((string)($turn[0] ?? ""), 0, 48);
   $context = substr(str_replace(["\t", "\r", "\n"], " ", $context), 0, 96);
-  $line = (int)(microtime(true) * 1000) . "\t$player\t$mode\t$phase\t$context\t" . trim((string)($lastPlayed[0] ?? "")) . "\n";
+  $cardID = IsGameHealthBotGame() ? "" : trim((string)($lastPlayed[0] ?? ""));
+  $line = (int)(microtime(true) * 1000) . "\t$player\t$mode\t$phase\t$context\t$cardID\n";
   @file_put_contents(__DIR__ . "/../Games/$gameName/" . GAME_HEALTH_LOG_FILE, $line, FILE_APPEND);
 }
 
@@ -81,6 +95,7 @@ function LogGameHealthInput($player, $mode, $buttonInput = "")
   global $turn;
   $mode = (int)$mode;
   if (!IsGameHealthLoggedMode($mode)) return;
+  if ($mode >= 10000 && (IsGameHealthBotGame() || IsGameHealthNoOpFix($player, $mode))) return;
 
   $phase = (string)($turn[0] ?? "");
   $context = "-";
@@ -151,7 +166,7 @@ function SummarizeGameHealthLog($lines)
       $kind = GameHealthFixKind($mode);
       if ($kind === null) continue;
       foreach (array_unique($recentCards) as $cardID) {
-        ++$cards[$cardID][$kind];
+        $cards[$cardID][$kind] = 1;
         $cards[$cardID]["fixed"] = 1;
       }
     }

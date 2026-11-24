@@ -54,8 +54,6 @@ function AdReportRows($conn, $sql, $since)
 }
 
 try {
-  EnsureAdStatsTables($conn);
-
   $response["slots"] = AdReportRows($conn, "SELECT page, placement, device, SUM(mounts) AS mounts, SUM(seen) AS seen,
       SUM(visible_ms) AS visibleMs, SUM(requests) AS requests, SUM(filled) AS filled, SUM(viewable) AS viewable,
       SUM(clicks) AS clicks, SUM(prebid_wins) AS prebidWins, SUM(prebid_micros) AS prebidMicros,
@@ -98,6 +96,12 @@ try {
     FROM ad_event_stats WHERE day >= ? GROUP BY day, device", $since));
   ksort($daily);
   $response["daily"] = array_values($daily);
+} catch (mysqli_sql_exception $e) {
+  if ($e->getCode() != 1146) {
+    error_log("GetMonetizationReport failed: " . $e->getMessage());
+    http_response_code(500);
+    $response["error"] = "Failed to load ad report";
+  }
 } catch (Throwable $e) {
   error_log("GetMonetizationReport failed: " . $e->getMessage());
   http_response_code(500);
