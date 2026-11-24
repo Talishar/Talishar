@@ -100,7 +100,6 @@
       case "outland_skirmish_red": return 3;
       case "outland_skirmish_yellow": return 2;
       case "outland_skirmish_blue": return 1;
-      case "teklo_pounder_blue": return 2;
       case "rotary_ram_red": return 3;
       case "rotary_ram_yellow": return 2;
       case "rotary_ram_blue": return 1;
@@ -154,7 +153,6 @@
       case "blade_runner_red": case "blade_runner_yellow": case "blade_runner_blue": return TypeContains($attackID, "W", $mainPlayer);
       case "outland_skirmish_red": case "outland_skirmish_yellow": case "outland_skirmish_blue": return TypeContains($attackID, "W", $mainPlayer) && Is1H($attackID);
       case "outland_skirmish_red-1": case "outland_skirmish_yellow-1": case "outland_skirmish_blue-1": return TypeContains($attackID, "W", $mainPlayer);
-      case "teklo_pounder_blue": return true;
       case "rotary_ram_red": case "rotary_ram_yellow": case "rotary_ram_blue": return CardType($attackID) == "AA" && ClassContains($attackID, "MECHANOLOGIST", $mainPlayer);
       case "dreadbore": return CardSubType($attackID) == "Arrow";
       case "release_the_tension_red": case "release_the_tension_yellow": case "release_the_tension_blue": return CardSubType($attackID) == "Arrow";

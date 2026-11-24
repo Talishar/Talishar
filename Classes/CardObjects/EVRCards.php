@@ -2501,17 +2501,57 @@ class talisman_of_featherfoot_yellow extends Card {
 // }
 
 
-// class teklo_pounder_blue extends Card {
+class teklo_pounder_blue extends Card {
+  function __construct($controller) {
+    $this->cardID = "teklo_pounder_blue";
+    $this->controller = $controller;
+  }
 
-//   function __construct($controller) {
-//     $this->cardID = "teklo_pounder_blue";
-//     $this->controller = $controller;
-//     }
+  function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
+    return "";
+  }
 
-//   function PlayAbility($from, $resourcesPaid, $target = '-', $additionalCosts = '-', $uniqueID = '-1', $layerIndex = -1) {
-//     return "";
-//   }
-// }
+	function ETASteamCounters() {
+		return 3;
+	}
+
+	function PermanentBoostAbility($index, $banishInd, $owner) {
+		$ItemCard = new ItemCard($index, $this->controller);
+		AddLayer("TRIGGER", $this->controller, $this->cardID, $ItemCard->UniqueID());
+	}
+
+	function ProcessTrigger($uniqueID, $target = '-', $additionalCosts = '-', $from = '-') {
+		global $Stack;
+		$targetAttackUID = "-";
+		$targetAttackID = "-";
+		for ($i = 0; $i < $Stack->NumLayers(); ++$i) {
+			$Layer = $Stack->Card($i, true);
+			if (str_contains($Layer->AdditionalCosts(), "BOOST")) {
+				$targetAttackUID = $Layer->LayerUniqueID();
+				$targetAttackID = $Layer->CardID();
+			}
+		}
+		$Items = new Items($this->controller);
+		$Item = $Items->FindCardUID($target);
+		if ($Item->Index() == -1) return;
+		$itemCardID = $Item->CardID();
+		if($Item->Status() == 2) {
+			WriteLog(CardLink($itemCardID) . " gives " . CardLink($targetAttackID) . " +2");
+			$Item->AddCounters(-1);
+			$Item->SetStatus(1);
+			AddCurrentTurnEffect("teklo_pounder_blue", $this->controller, "PLAY", $targetAttackUID);
+			if($Item->NumCounters() <= 0) DestroyItemForPlayer($this->controller, $Item->Index());
+		}
+	}
+
+	function EffectPowerModifier($param, $attached = false) {
+		return 2;
+	}
+
+	function EffectNeedsAttaching() {
+		return true;
+	}
+}
 
 
 // class this_rounds_on_me_blue extends Card {

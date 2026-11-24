@@ -238,20 +238,13 @@ function ItemBoostEffects()
   for ($i = $Items->NumItems() - 1; $i >=0; $i -= 1) {
     $Item = $Items->Card($i, true);
     $itemCardID = $Item->CardID();
+    $card = GetClass($itemCardID, $currentPlayer);
+    if ($card != "-") $card->PermanentBoostAbility($Item->Index(), -1, $currentPlayer);
     switch ($itemCardID) {
       case "hyper_driver_red": case "hyper_driver_yellow": case "hyper_driver_blue": case "hyper_driver":
         if($Item->Status() == 2) {
           AddLayer("TRIGGER", $currentPlayer, $itemCardID, $Item->Index(), "-", $Item->UniqueID());
           $Item->SetStatus(1);
-        }
-        break;
-      case "teklo_pounder_blue":
-        if($Item->Status() == 2) {
-          WriteLog(CardLink($itemCardID, $itemCardID) . " gives the attack +2");
-          $Item->AddCounters(-1);
-          $Item->SetStatus(1);
-          AddCurrentTurnEffect("teklo_pounder_blue", $currentPlayer, "PLAY");
-          if($Item->NumCounters() <= 0) DestroyItemForPlayer($currentPlayer, $Item->Index());
         }
         break;
       case "hadron_collider_red": case "hadron_collider_yellow": case "hadron_collider_blue":

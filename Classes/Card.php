@@ -1485,4 +1485,10 @@ class Card {
       return $this->baseCard->EffectNeedsAttaching();
     return false;
   }
+
+  function ETASteamCounters() {
+    if (isset($this->baseCard) && method_exists($this->baseCard, "ETASteamCounters"))
+      return $this->baseCard->ETASteamCounters();
+    return 0;
+  }
 }

@@ -3606,6 +3606,7 @@ function HasBeatChest($cardID)
 function ETASteamCounters($cardID)
 {
   global $currentPlayer;
+  $card = GetClass($cardID, 0);
   static $steamCounterMap = [
     "aether_sink_yellow" => 1, "dissolution_sphere_yellow" => 1, "signal_jammer_blue" => 1,
     "prismatic_lens_yellow" => 1, "quantum_processor_yellow" => 1, "tick_tock_clock_red" => 1,
@@ -3617,7 +3618,7 @@ function ETASteamCounters($cardID)
     "teklo_core_blue" => 2, "convection_amplifier_red" => 2, "dissolving_shield_yellow" => 2,
     "mini_forcefield_blue" => 2, "hadron_collider_blue" => 2, "cerebellum_processor_blue" => 2,
     "null_time_zone_blue" => 2, "clamp_press_blue" => 2, "copper_cog_blue" => 2,
-    "teklo_pounder_blue" => 3, "dissolving_shield_red" => 3, "mini_forcefield_yellow" => 3,
+    "dissolving_shield_red" => 3, "mini_forcefield_yellow" => 3,
     "hadron_collider_yellow" => 3,
     "dissipation_shield_yellow" => 4, "mini_forcefield_red" => 4, "hadron_collider_red" => 4,
     "optekal_monocle_blue" => 5, "plasma_mainline_red" => 5,
@@ -3631,8 +3632,10 @@ function ETASteamCounters($cardID)
     case "hyper_driver_blue":
       return SearchCharacterActive($currentPlayer, "puffer_jacket") ? 2 : 1;
     default:
-      return 0;
+      break;
   }
+  if ($card != "-") return $card->ETASteamCounters();
+  return 0;
 }
 
 function AbilityHasGoAgain($cardID, $from)
