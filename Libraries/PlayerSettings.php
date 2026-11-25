@@ -76,6 +76,7 @@ $SET_DisableMiddleClickPass = 62;
 $SET_HideLogNoise = 63;
 $SET_FannedHandTipSeen = 64;
 $SET_DisableEffectPopups = 65;
+$SET_LeftHanded = 66;
 
 function SettingsPieces()
 {
@@ -93,14 +94,14 @@ function IsUnsetAwareSetting($setting)
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise, $SET_DisableEffectPopups;
+    global $SET_HideLogNoise, $SET_DisableEffectPopups, $SET_LeftHanded;
     $unsetAware = array_fill_keys([
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
       $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
-      $SET_HideLogNoise, $SET_DisableEffectPopups,
+      $SET_HideLogNoise, $SET_DisableEffectPopups, $SET_LeftHanded,
     ], true);
   }
   return isset($unsetAware[$setting]);
@@ -743,6 +744,7 @@ function SettingsIdMap()
     "HideLogNoise" => 63,
     "FannedHandTipSeen" => 64,
     "DisableEffectPopups" => 65,
+    "LeftHanded" => 66,
   ];
   return $settingsToId;
 }
@@ -805,7 +807,7 @@ function SaveSettingInDatabase($setting)
     global $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize;
     global $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound;
     global $SET_DisableSpacePass, $SET_DisableMiddleClickPass;
-    global $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups;
+    global $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups, $SET_LeftHanded;
     $persistable = array_fill_keys([
       $SET_DarkMode, $SET_ColorblindMode, $SET_Mute, $SET_Cardback, $SET_DisableStats,
       $SET_Language, $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority,
@@ -819,7 +821,7 @@ function SaveSettingInDatabase($setting)
       $SET_ReducedMotion, $SET_PromptTextSize, $SET_ChatTextSize,
       $SET_SoundVolume, $SET_DisablePrioritySound, $SET_DisableShuffleSound, $SET_DisableHandReorderSound, $SET_DisablePlayerJoinedSound,
       $SET_DisableSpacePass, $SET_DisableMiddleClickPass,
-      $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups,
+      $SET_HideLogNoise, $SET_FannedHandTipSeen, $SET_DisableEffectPopups, $SET_LeftHanded,
     ], true);
   }
   return isset($persistable[$setting]);
