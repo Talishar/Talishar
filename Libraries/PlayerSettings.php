@@ -77,6 +77,7 @@ $SET_HideLogNoise = 63;
 $SET_FannedHandTipSeen = 64;
 $SET_DisableEffectPopups = 65;
 $SET_LeftHanded = 66;
+$SET_AppearOffline = 67; //Show as offline in your friends' friend lists
 
 function SettingsPieces()
 {
@@ -745,6 +746,7 @@ function SettingsIdMap()
     "FannedHandTipSeen" => 64,
     "DisableEffectPopups" => 65,
     "LeftHanded" => 66,
+    "AppearOffline" => 67,
   ];
   return $settingsToId;
 }
@@ -799,7 +801,7 @@ function SaveSettingInDatabase($setting)
     global $SET_Format, $SET_FavoriteDeckIndex, $SET_GameVisibility, $SET_AlwaysHoldPriority, $SET_ManualMode;
     global $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_AlwaysShowCounters;
     global $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
-    global $SET_HideGamesFromFriends;
+    global $SET_HideGamesFromFriends, $SET_AppearOffline;
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
@@ -814,7 +816,7 @@ function SaveSettingInDatabase($setting)
       $SET_ManualMode, $SET_StreamerMode, $SET_AutotargetArcane, $SET_Playmat, $SET_AlwaysAllowUndo,
       $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro,
       $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_AlwaysShowCounters, $SET_HideHandFromFriends,
-      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
+      $SET_GemsOffByDefault, $SET_HideGamesFromFriends, $SET_AppearOffline, $SET_DisableHoldToAutoPass, $SET_ManualDynamo,
       $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons,
       $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity,
       $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen,

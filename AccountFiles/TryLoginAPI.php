@@ -23,6 +23,7 @@ $response = new stdClass();
 $response->isUserLoggedIn = IsUserLoggedIn();
 if($response->isUserLoggedIn) {
   $response->loggedInUserID = LoggedInUser();
+  MarkUserSeen($response->loggedInUserID);
   $response->loggedInUserName = LoggedInUserName();
   $response->loggedInDisplayName = LoggedInDisplayName();
   $response->isPatron = IsLoggedInUserPatron();

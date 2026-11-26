@@ -14,6 +14,7 @@ include_once '../includes/functions.inc.php';
 include_once "../includes/dbh.inc.php";
 include_once "../AccountFiles/AccountSessionAPI.php";
 include_once "../Libraries/FriendLibraries.php";
+include_once "../Libraries/SHMOPLibraries.php";
 
 [$_POST, $userId, $conn] = InitializeAuthenticatedJsonApi(DBL_FRIEND_LIST_API);
 
@@ -23,6 +24,20 @@ $response = new stdClass();
 switch ($action) {
   case 'getFriends':
     $friends = GetUserFriends($userId);
+    $statuses = GetUsersOnlineStatus(array_column($friends, 'friendUserId'));
+    $hideGamesSetting = (string)($SET_HideGamesFromFriends ?? 35);
+    $appearOfflineSetting = (string)($SET_AppearOffline ?? 67);
+    $privacy = count($statuses) > 0
+      ? GetUsersWithSettingsOn(array_keys($statuses), [$hideGamesSetting, $appearOfflineSetting], $conn)
+      : [$hideGamesSetting => [], $appearOfflineSetting => []];
+    foreach ($friends as &$friend) {
+      $friendUserId = $friend['friendUserId'];
+      $status = $statuses[$friendUserId] ?? "offline";
+      if (isset($privacy[$appearOfflineSetting][$friendUserId])) $status = "offline";
+      else if ($status === "playing" && isset($privacy[$hideGamesSetting][$friendUserId])) $status = "online";
+      $friend['onlineStatus'] = $status;
+    }
+    unset($friend);
     $response->friends = $friends;
     $response->success = true;
     break;

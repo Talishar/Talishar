@@ -325,6 +325,41 @@ function GetFriendsHidingGamesFromFriends($friends, $connection = null) {
   }
 }
 
+function GetUsersWithSettingsOn($userIds, $settingNumbers, $connection)
+{
+  $result = [];
+  foreach ($settingNumbers as $settingNumber) $result[(string)$settingNumber] = [];
+  $ids = [];
+  foreach ($userIds as $userId) {
+    if (is_numeric($userId)) $ids[(string)(int)$userId] = true;
+  }
+  if (!$connection || count($ids) === 0 || count($result) === 0) return $result;
+
+  $idParams = array_map('strval', array_keys($ids));
+  $settingParams = array_keys($result);
+  $settingMarks = implode(",", array_fill(0, count($settingParams), "?"));
+  $idMarks = implode(",", array_fill(0, count($idParams), "?"));
+  $stmt = null;
+  try {
+    $stmt = $connection->prepare("SELECT playerId, settingNumber FROM savedsettings
+              WHERE settingValue = '1' AND settingNumber IN ($settingMarks) AND playerId IN ($idMarks)");
+    if (!$stmt) return $result;
+    $params = array_merge($settingParams, $idParams);
+    $stmt->bind_param(str_repeat("s", count($params)), ...$params);
+    if (!$stmt->execute()) return $result;
+    $rows = $stmt->get_result();
+    while ($row = $rows->fetch_assoc()) {
+      $settingKey = (string)$row['settingNumber'];
+      if (isset($result[$settingKey])) $result[$settingKey][(int)$row['playerId']] = true;
+    }
+  } catch (\Throwable $e) {
+    error_log("GetUsersWithSettingsOn: query failed: " . $e->getMessage());
+  } finally {
+    if ($stmt) $stmt->close();
+  }
+  return $result;
+}
+
 /**
  * Send a friend request (one-way pending request)
  * @param int $userId

@@ -975,13 +975,14 @@ function BuildGameStateResponse($gameName, $playerID, $authKey, $sessionData = [
     $manualValdaToken = $playerID != 3 && CanManuallyCreateValdaToken($playerID, $i);
     if ($manualValdaToken) $border = 0;
     $type = CardType($myChar);
-    if (TypeContains($myChar, "D")) $type = "C";
+    $charType = CardTypeExtended($myChar, "-");
+    if (DelimStringContains($charType, "D")) $type = "C";
     $sTypeArr = explode(",", CardSubType($myChar, $myCharacter[$i+11] ?? ""));
     $sType = $sTypeArr[0];
     foreach ($sTypeArr as $st) {
       if (isset($equipSlots[$st])) { $sType = $st; break; }
     }
-    if (TypeContains($myChar, "W", $playerID)) {
+    if (DelimStringContains($charType, "W")) {
       ++$numWeapons;
       if ($numWeapons > 1) {
         $type = "E";

@@ -181,7 +181,7 @@ switch ($popupType) {
     global $SET_Mute, $SET_Cardback, $SET_IsPatron, $SET_MuteChat, $SET_DisableStats, $SET_CasterMode, $SET_StreamerMode, $SET_AlwaysShowCounters;
     global $SET_Playmat, $SET_AlwaysAllowUndo, $SET_DisableAltArts, $SET_ManualTunic, $SET_DisableFabInsights, $SET_DisableHeroIntro, $SET_MirroredBoardLayout, $SET_MirroredPlayerBoardLayout, $SET_HideHandFromFriends;
     global $SET_GemsOffByDefault, $SET_DisableHoldToAutoPass, $SET_ManualDynamo;
-    global $SET_HideGamesFromFriends;
+    global $SET_HideGamesFromFriends, $SET_AppearOffline;
     global $SET_DisableParticles, $SET_DisableCardTilt, $SET_TapToPreviewPlay, $SET_DisableEquipmentGemButtons;
     global $SET_CardSize, $SET_HoverImageSize, $SET_TransparencyIntensity, $SET_PlaymatIntensity;
     global $SET_HideLayerGoAgain, $SET_ManualValda, $SET_AutoPitchForced, $SET_RequireYesNoAnswer, $SET_LandscapeTipSeen;
@@ -235,6 +235,7 @@ switch ($popupType) {
       AddSettingFromDB($response->Settings, "HideHandFromFriends", 33, $dbSettings);
       AddSettingFromDB($response->Settings, "GemsOffByDefault", 34, $dbSettings);
       AddSettingFromDB($response->Settings, "HideGamesFromFriends", 35, $dbSettings);
+      AddSettingFromDB($response->Settings, "AppearOffline", 67, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableHoldToAutoPass", 37, $dbSettings);
       AddSettingFromDB($response->Settings, "ManualDynamo", 38, $dbSettings);
       AddSettingFromDB($response->Settings, "DisableParticles", 39, $dbSettings);
@@ -297,6 +298,7 @@ switch ($popupType) {
       AddSetting($response->Settings, "HideHandFromFriends", $SET_HideHandFromFriends, $playerSettings);
       AddSetting($response->Settings, "GemsOffByDefault", $SET_GemsOffByDefault, $playerSettings);
       AddSetting($response->Settings, "HideGamesFromFriends", $SET_HideGamesFromFriends, $playerSettings);
+      AddSetting($response->Settings, "AppearOffline", $SET_AppearOffline, $playerSettings);
       $response->Settings[] = ["name" => "DisableHoldToAutoPass", "value" => (($playerSettings[$SET_DisableHoldToAutoPass] ?? "1") == "1") ? "1" : "0"];
       AddUnsetAwareSetting($response->Settings, "DisableParticles", $SET_DisableParticles, $playerSettings);
       AddUnsetAwareSetting($response->Settings, "DisableCardTilt", $SET_DisableCardTilt, $playerSettings);

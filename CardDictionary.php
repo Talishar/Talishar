@@ -905,9 +905,7 @@ function BlockValue($cardID, $player="-", $from="-", $blocking=true)
   }
   if ($block == -2) { //it hasn't been set yet
     if ($set != "DUM") {
-      $setID = SetID($cardID);
-      $number = intval(substr($setID, 3));
-      if ($number < 400 || $set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb") $block = GeneratedBlockValue($cardID);
+      if ($set != "MON" && $set != "DYN" && $set != "MST" && $set != "HNT" && $cardID != "teklovossen_the_mechropotent" && $cardID != "teklovossen_the_mechropotentb" || intval(substr(SetID($cardID), 3)) < 400) $block = GeneratedBlockValue($cardID);
     }
   }
   if ($block == -2) { //it hasn't been set yet
@@ -1032,9 +1030,7 @@ function PowerValue($cardID, $player="-", $from="CC", $index=-1, $base=false, $a
       break;
   }
   if ($set != "DUM") {
-    $setID = SetID($cardID);
-    $number = intval(substr($setID, 3));
-    if ($number < 400 || $set != "MON" && $set != "DYN")
+    if ($set != "MON" && $set != "DYN" || intval(substr(SetID($cardID), 3)) < 400)
     $basePower = $basePower == -1 ? GeneratedPowerValue($cardID) : $basePower;
   }
   $basePower = match ($cardID) {

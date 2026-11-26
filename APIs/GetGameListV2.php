@@ -64,6 +64,7 @@ $hiddenByFriendSet = $viewer['hiddenByFriend'];
 session_write_close();
 
 if(IsUserLoggedIn()) {
+  MarkUserSeen(LoggedInUser());
   $lastGameName = SessionLastGameName();
   if($lastGameName != "") {
     $lastGameArr = ReadCacheArray($lastGameName);

@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Assets/patreon-php-master/src/PatreonLibraries.php';
 require_once __DIR__ . '/DeckProviderHelpers.php';
+require_once __DIR__ . '/../Libraries/OnlinePresenceLibraries.php';
 
 use SendGrid\Mail\Mail;
 
@@ -220,6 +221,7 @@ function StoreLastGameInfo($uid, $gameName, $playerID, $authKey)
 	$_SESSION["lastPlayerId"] = $playerID;
 	$_SESSION["lastAuthKey"] = $authKey;
 	session_write_close();
+	MarkUserSeen($uid, $gameName);
 }
 
 function GetLastGameInfo($uid)
