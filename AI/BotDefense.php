@@ -196,16 +196,28 @@ function BotDefenseContext($player)
     "phantasm" => IsPhantasmActive(),
     "weaponSwingLeft" => BotOpponentWeaponSwingLeft(),
     "weaponLockValue" => min(6, 3 + $attackerHand + $attackerArsenal),
+    "fragment" => (bool)HasFragment($attack["id"]),
   ];
+}
+
+function BotReactionStopsEnough($reactions, $incoming)
+{
+  foreach ($reactions as $reaction) {
+    $defense = max(0, intval($reaction["defense"]));
+    if (min($incoming, $defense) * 2 < min($defense, BOT_TYPICAL_INCOMING)) return false;
+  }
+  return true;
 }
 
 function BotBlockCandidates($player, $ctx)
 {
   $candidates = [];
   $restriction = "";
+  $mirage = DoesAttackTriggerMirage();
   $hand = &GetHand($player);
   foreach ($hand as $index => $cardID) {
     if ($cardID === "" || CardType($cardID) == "DR") continue;
+    if ($mirage && HasMirage($cardID)) continue;
     if (!IsPlayable($cardID, "B", "HAND", $index, $restriction, $player)) continue;
     $defense = max(0, intval(BlockValue($cardID, $player, "HAND", false)));
     if ($defense == 0) continue;
@@ -481,6 +493,12 @@ function BotScoreDefensePlan($player, $ctx, $set, $package)
       }
     }
   }
+  $fromHand = 0;
+  foreach ($handBlockers as $card) if ($card["zone"] == "HAND") ++$fromHand;
+  foreach ($set as $card) {
+    if ($fromHand > 0 && $card["equipment"] && GeneratedHasUnity($card["id"])) ++$defense;
+    if ($ctx["fragment"] && $card["defense"] >= 2) $defense += 2;
+  }
   $consumed += $package["consumed"];
   $prevention = $package["amount"];
   $incoming = $ctx["incoming"] + $backlash;
@@ -615,9 +633,14 @@ function BotBestBlockPlan($player)
   $best = null;
   foreach (BotBlockSubsets(BotBlockCandidates($player, $ctx), $ctx) as $set) {
     $consumed = [];
-    foreach ($set as $card) $consumed[BotCardKey($card)] = true;
+    $blocked = 0;
+    foreach ($set as $card) {
+      $consumed[BotCardKey($card)] = true;
+      $blocked += $card["defense"];
+    }
     foreach (BotReactionPackages($player, $reactions, $consumed, $ctx) as $package) {
       $plan = BotScoreDefensePlan($player, $ctx, $set, $package);
+      if (empty($plan["lethal"]) && count($package["cards"]) > 0 && !BotReactionStopsEnough($package["cards"], max(0, $ctx["incoming"] - $blocked))) continue;
       if ($best === null || $plan["score"] > $best["score"] + 1e-9) $best = $plan;
     }
   }
@@ -651,6 +674,7 @@ function BotBestReactionPlan($player)
     $package = ["cards" => [], "amount" => 0, "consumed" => []];
     foreach ($pitch as $index) $package["consumed"]["HAND:" . $index] = true;
     $plan = BotScoreDefensePlan($player, $ctx, $set, $package);
+    if (empty($plan["lethal"]) && count($set) > 0 && !BotReactionStopsEnough($set, $ctx["incoming"])) continue;
     if ($best === null || $plan["score"] > $best["score"] + 1e-9) $best = $plan;
   }
   return $best;
@@ -716,13 +740,15 @@ function BotAttackReactionValue($cardID, $player)
   $attack = BotAttackInfo();
   if ($attack === null) return 0.0;
   $uses = BotCardUses($cardID, $player);
-  if ($uses["pump"] <= 0 || $uses["pumpNext"] || !BotPumpApplies($uses["pumpTarget"], $attack)) return 0.0;
+  $veinBonus = BotDraconicVeinBonus($cardID, $player);
+  $pump = $uses["pumpNext"] || !BotPumpApplies($uses["pumpTarget"], $attack) ? 0.0 : $uses["pump"];
+  if ($pump <= 0 && $veinBonus <= 0) return 0.0;
   $power = intval(CachedTotalPower());
   $block = intval(CachedTotalBlock());
-  $gained = max(0, $power + $uses["pump"] - $block) - max(0, $power - $block);
-  if ($uses["pumpGoAgain"] && !DoesAttackHaveGoAgain()) $gained += 2;
+  $gained = max(0, $power + $pump - $block) - max(0, $power - $block) + $veinBonus;
+  if ($uses["pumpGoAgain"] && $pump > 0 && !DoesAttackHaveGoAgain()) $gained += 2;
   $value = $gained - BotHeldCardValue($cardID, $player);
-  if ($power - $block < intval(GetHealth($defPlayer)) && $power + $uses["pump"] - $block >= intval(GetHealth($defPlayer))) $value += 100000;
+  if ($power - $block < intval(GetHealth($defPlayer)) && $power + $pump - $block >= intval(GetHealth($defPlayer))) $value += 100000;
   return $value > 0 ? 20 + $value * 10 : 0.0;
 }
 

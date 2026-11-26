@@ -170,7 +170,15 @@ function BotShouldPreserveOpeningHandForPlayer($playerID)
   global $currentTurn, $mainPlayer, $firstPlayer;
   if ($currentTurn != 0 || $mainPlayer != $playerID || $mainPlayer != $firstPlayer) return false;
   $opponentHand = &GetHand(3 - $playerID);
-  return count($opponentHand) > 2;
+  return count($opponentHand) > 2 && !BotOpponentRunsManyInstants($playerID);
+}
+
+function BotOpponentRunsManyInstants($playerID)
+{
+  $cards = BotOwnedCards(3 - $playerID);
+  if (count($cards) == 0) return false;
+  $instants = count(array_filter($cards, fn($cardID) => CardType($cardID) == "I"));
+  return $instants / count($cards) >= 0.15;
 }
 
 function BotHasAttackInHand($playerID, $exceptCardID = null)
@@ -435,7 +443,7 @@ function BotSolverActionPriority($cardID, $playerID, $zone)
   $moveKey = match ($zone) {
     "Hand" => "HAND:" . $cardID,
     "Arsenal" => "ARS:" . $cardID,
-    "Character" => CardType($cardID) == "W" ? "W:" . $cardID : null,
+    "Character" => CardType($cardID) == "W" ? "W:" . $cardID : (BotHeroHasSolverSource($cardID, $playerID) ? "CHAR:" . $cardID : null),
     default => null,
   };
   if ($moveKey === null) return null;
@@ -713,7 +721,7 @@ function BotReactionPriority($cardID, $playerID, $zone = "Hand")
   $type = CardType($cardID);
   $roles = BotCardRoles($cardID, $playerID);
   if ($type == "DR") return BotDefenseReactionPriority($cardID, $playerID);
-  if ($type == "AR" && $zone != "Character") return BotAttackReactionValue($cardID, $playerID);
+  if (($type == "AR" || $type == "I") && $zone != "Character") return BotAttackReactionValue($cardID, $playerID);
   if ($type == "AR") {
     if (str_starts_with($cardID, "razor_reflex_")) return 32;
     if ($cardID == "legacy_of_ikaru_blue") {
@@ -736,6 +744,9 @@ function BotReactionPriority($cardID, $playerID, $zone = "Hand")
     $character = &GetPlayerCharacter($playerID);
     if ($cardID === ($character[0] ?? "") && ($cardID == "fai" || $cardID == "fai_rising_rebellion")) {
       return max(0.0, 4.0 + BotFaiHeroAdjustment($cardID, $playerID));
+    }
+    if ($cardID === ($character[0] ?? "") && ($cardID == "ser_boltyn_breaker_of_dawn" || $cardID == "boltyn")) {
+      return BotBoltynReactionPriority($playerID);
     }
     if (function_exists("GetResolvedAbilityType") && GetResolvedAbilityType($cardID, "EQUIP", $playerID) == "AR") {
       return 8;
@@ -827,6 +838,72 @@ function BotWarOrPeace($playerID)
   return $attackValue >= $nonAttackValue ? "War" : "Peace";
 }
 
+function BotModeOptionScore($option, $playerID)
+{
+  $hasAttack = BotHasAttackInHand($playerID);
+  return match ($option) {
+    "Go_Again" => $hasAttack && count(BotOffensiveHandCards($playerID)) >= 2 ? 3.0 : 0.5,
+    "Buff_Power" => 2.0,
+    "Draw_a_Card" => 1.0,
+    "Create_an_Embodiment_of_Lightning" => 3.0,
+    "Buff_your_next_attack" => $hasAttack ? 2.0 : 0.5,
+    "Search_for_Skyzyk" => $hasAttack ? 1.0 : 2.5,
+    default => null,
+  };
+}
+
+function BotStarvoRevealChoice($options, $playerID)
+{
+  $hand = &GetHand($playerID);
+  $count = count($options);
+  $best = null;
+  for ($mask = 1; $mask < (1 << $count); ++$mask) {
+    $chosen = [];
+    $elements = [];
+    for ($i = 0; $i < $count; ++$i) {
+      if (!($mask & (1 << $i))) continue;
+      $chosen[] = $options[$i];
+      $cardID = $hand[intval($options[$i])] ?? "";
+      foreach (["EARTH", "ICE", "LIGHTNING"] as $element) {
+        if (TalentContains($cardID, $element, $playerID)) $elements[$element] = true;
+      }
+    }
+    if (count($chosen) > 3 || count($elements) < 3) continue;
+    if ($best === null || count($chosen) < count($best)) $best = $chosen;
+  }
+  return $best ?? [];
+}
+
+function BotChooseMultiOptions($phase, $param, $playerID, $context = "")
+{
+  global $decisionQueue;
+  $params = explode("-", strval($param));
+  $max = intval($params[0]);
+  $options = ($params[1] ?? "") === "" ? [] : explode(",", $params[1]);
+  $min = count($params) > 2 ? intval($params[2]) : -1;
+  if (($decisionQueue[0] ?? "") == "BRAVOSTARSHOW") return BotStarvoRevealChoice($options, $playerID);
+  $zone = match (true) {
+    str_ends_with($phase, "HAND") => GetHand($playerID),
+    str_ends_with($phase, "DISCARD") => GetDiscard($playerID),
+    str_ends_with($phase, "BANISH") => GetBanish($playerID),
+    str_ends_with($phase, "DECK") => GetDeck($playerID),
+    default => null,
+  };
+  $context = strtolower(str_replace("_", " ", strval($context) . " " . GetDQHelpText()));
+  $spending = preg_match('/discard|bottom|banish|remove|destroy|reveal|pay/', $context) == 1;
+  $want = $spending ? max(0, $min) : ($min > 0 ? $min : (str_starts_with($phase, "MAY") ? 0 : $max));
+  $want = min($want, $max, count($options));
+  if ($want <= 0) return [];
+  $scored = [];
+  foreach ($options as $position => $option) {
+    $cardID = $zone === null ? null : ($zone[intval($option)] ?? null);
+    $value = $cardID === null ? (BotModeOptionScore($option, $playerID) ?? 0.0) : BotCardRoles($cardID, $playerID)["retainValue"];
+    $scored[] = [$spending ? -$value : $value, $position, $option];
+  }
+  usort($scored, fn($left, $right) => $right[0] <=> $left[0] ?: $left[1] <=> $right[1]);
+  return array_map(fn($entry) => $entry[2], array_slice($scored, 0, $want));
+}
+
 function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
 {
   $options = array_values(array_filter($options, fn($option) => $option !== ""));
@@ -886,7 +963,7 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
     } else if (preg_match('/^pay[ _-]?(\d+)$/i', strval($option), $matches)) {
       $score = intval($matches[1]) * 20;
     } else {
-      $score = 1;
+      $score = BotModeOptionScore(trim(strval($option)), $playerID) ?? 1;
     }
     if ($score > $bestScore) {
       $bestScore = $score;

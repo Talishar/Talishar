@@ -225,6 +225,11 @@ if($phase == "deck") {
   else if($playerID == 2) $p2SideboardSubmitted = "1";
 }
 
+if ($playerID == 1 && $p2IsAI == "1" && !$arenaRevealed && $gameStatus < $MGS_GameStarted) {
+  include_once "../AI/BotDecks.php";
+  BotPresentForOpponent($gameName, $submission->hero, $firstPlayer == 2);
+}
+
 if(!$arenaRevealed && $p1EquipmentSubmitted == "1" && $p2EquipmentSubmitted == "1") {
   LogArenaReveal($gameName);
 }

@@ -11,6 +11,59 @@
 
 include 'Libraries/APCuCache.php';
 
+function fillMissingYouTubeTitles(array $videos): array {
+    $requests = [];
+    $multi = curl_multi_init();
+
+    foreach ($videos as $video) {
+        if ($video['type'] !== 'youtube' || $video['mediaTitle'] !== null) continue;
+
+        // A Discord caption is enough when the link preview has no title.
+        $caption = preg_replace('/<[^>]*>|https?:\/\/[^\s<>]+/i', '', $video['title']);
+        $id = $video['videoId'];
+        if (preg_match('/[\p{L}\p{N}]/u', $caption) || isset($requests[$id])) continue;
+
+        $watchUrl = 'https://www.youtube.com/watch?v=' . $id;
+        $request = curl_init('https://www.youtube.com/oembed?format=json&url=' . rawurlencode($watchUrl));
+        curl_setopt_array($request, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT_MS => 750,
+            CURLOPT_TIMEOUT_MS => 1200,
+        ]);
+        curl_multi_add_handle($multi, $request);
+        $requests[$id] = $request;
+    }
+
+    if ($requests) {
+        do {
+            $status = curl_multi_exec($multi, $running);
+            if ($running && $status === CURLM_OK) curl_multi_select($multi, 0.2);
+        } while ($running && $status === CURLM_OK);
+    }
+
+    $titles = [];
+    foreach ($requests as $id => $request) {
+        if (curl_getinfo($request, CURLINFO_HTTP_CODE) === 200) {
+            $metadata = json_decode(curl_multi_getcontent($request), true);
+            if (is_string($metadata['title'] ?? null)) {
+                $titles[$id] = trim($metadata['title']);
+            }
+        }
+        curl_multi_remove_handle($multi, $request);
+        curl_close($request);
+    }
+    curl_multi_close($multi);
+
+    foreach ($videos as &$video) {
+        if ($video['type'] === 'youtube' && $video['mediaTitle'] === null && ($titles[$video['videoId']] ?? '') !== '') {
+            $video['mediaTitle'] = $titles[$video['videoId']];
+        }
+    }
+    unset($video);
+
+    return $videos;
+}
+
 header('Content-Type: application/json');
 
 // CORS validation - whitelist trusted domains
@@ -40,7 +93,7 @@ http_response_code(200);
 
 try {
     // Check cache first
-    $cacheKey = 'discord_carousel_videos';
+    $cacheKey = 'discord_carousel_videos_v2';
     $cachedResult = APCuCache::get($cacheKey);
     if ($cachedResult !== null) {
         echo json_encode($cachedResult);
@@ -128,8 +181,8 @@ try {
     
     // Extract content items
     $videos = [];
-    $ytRegex     = '/(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/)?([a-zA-Z0-9_-]{11})/';
-    $twRegex     = '/twitch\.tv\/(?:videos\/(\d+)|([a-zA-Z0-9_]+))/';
+    $ytRegex     = '/(?:youtube\.com\/(?:watch\?(?:[^\s<>&]+&)*v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?![a-zA-Z0-9_-])/i';
+    $twRegex     = '/twitch\.tv\/videos\/(\d+)/i';
     $metafyRegex = '/https?:\/\/(?:www\.)?metafy\.gg\/(?:guides(?:\/view)?|posts)\/[^\s>]+/i';
 
     // Batch both channel ID substitutions into a single str_replace call
@@ -187,14 +240,37 @@ try {
             continue;
         }
         
-        if (preg_match($ytRegex, $content, $m)) {
-            $videos[] = ['videoId' => $m[1], 'type' => 'youtube', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp, 'tsInt' => $tsInt];
-        } elseif (preg_match($twRegex, $content, $m)) {
-            $vid = $m[1] ?? $m[2] ?? null;
-            if ($vid) {
-                $videos[] = ['videoId' => $vid, 'type' => 'twitch', 'title' => $content, 'author' => $author, 'timestamp' => $timestamp, 'tsInt' => $tsInt];
+        if (preg_match($ytRegex, $content, $match)) {
+            $type = 'youtube';
+            $mediaRegex = $ytRegex;
+        } elseif (preg_match($twRegex, $content, $match)) {
+            $type = 'twitch';
+            $mediaRegex = $twRegex;
+        } else {
+            continue;
+        }
+
+        $id = $match[1];
+        $mediaEmbed = [];
+        foreach ($embeds as $embed) {
+            $embedUrl = $embed['url'] ?? null;
+            if (is_string($embedUrl) && preg_match($mediaRegex, $embedUrl, $embedMatch) && $embedMatch[1] === $id) {
+                $mediaEmbed = $embed;
+                break;
             }
         }
+        $mediaTitle = trim($mediaEmbed['title'] ?? '');
+
+        $videos[] = [
+            'videoId'     => $id,
+            'type'        => $type,
+            'title'       => $content,
+            'mediaTitle'  => $mediaTitle !== '' ? $mediaTitle : null,
+            'thumbnail'   => $mediaEmbed['thumbnail']['url'] ?? null,
+            'author'      => $author,
+            'timestamp'   => $timestamp,
+            'tsInt'       => $tsInt,
+        ];
     }
     
     // Limit to 1 per author, most recent first
@@ -209,8 +285,8 @@ try {
     // Integer subtraction instead of strtotime() on every usort comparison
     usort($final, fn($a, $b) => $b['tsInt'] - $a['tsInt']);
 
-    $sliced = array_slice($final, 0, 12);
-    // Strip internal tsInt field before output so the JSON response is unchanged
+    $sliced = fillMissingYouTubeTitles(array_slice($final, 0, 12));
+    // Strip the internal timestamp used for sorting.
     foreach ($sliced as &$v) unset($v['tsInt']);
     unset($v);
 

@@ -70,6 +70,11 @@ function EncounterAI()
           if($AIDebug) WriteLog("AI Branch - Input Arcane");
           ProcessInput($currentPlayer, 30, "-", 0, 0, "-", false, "Crouching Tiger");
         }
+        else if(str_starts_with($turn[0], "MULTICHOOSE") || str_starts_with($turn[0], "MAYMULTICHOOSE"))
+        {
+          if($AIDebug) WriteLog("AI Branch - Multi Choose");
+          ContinueDecisionQueue(BotChooseMultiOptions($turn[0], $turn[2], $currentPlayer, $EffectContext ?? ""));
+        }
         else
         {
           if($AIDebug) WriteLog("AI Branch -  Decision Policy");
