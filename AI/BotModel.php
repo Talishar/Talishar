@@ -23,6 +23,7 @@ const BOT_BLOCK_RESERVE = 1.5;
 const BOT_BLOCK_SCALE = 2;
 const BOT_BLOCKER_RELIABILITY = 0.9;
 const BOT_PRESSURE_LIFE = 15;
+const BOT_PITCH_TIE_WEIGHT = 0.01;
 
 function BotCardFacts($cardID)
 {
@@ -73,6 +74,7 @@ function BotCardUses($cardID, $playerID)
     "arsenalPlay" => !empty($facts["ap"]),
     "alternative" => min(floatval($facts["pr"] ?? 0), BOT_TYPICAL_INCOMING) * BOT_BLOCK_USE_RATE,
     "onHit" => $kind == "attack" ? BotOnHitFactValue($facts["oh"] ?? null) : 0.0,
+    "bonus" => floatval($facts["bv"] ?? 0),
     "setFlags" => intval($facts["sf"] ?? 0) | (($kind == "attack" || $kind == "action") && GeneratedHasCharge($cardID) ? BOT_FLAG_CHARGED : 0),
     "needFlags" => intval($facts["nf"] ?? 0),
     "goAgainFlags" => intval($facts["gf"] ?? 0),
@@ -87,7 +89,7 @@ function BotOffenseValue($uses, $hitChance = BOT_HIT_CHANCE)
     $value = $uses["power"] + $onHit * $chance;
     return $uses["goAgain"] ? $value : $value * BOT_TERMINAL_FACTOR;
   }
-  return $uses["pump"] + ($uses["pumpGoAgain"] ? 2.0 : 0.0);
+  return $uses["pump"] + ($uses["pumpGoAgain"] ? 2.0 : 0.0) + ($uses["bonus"] ?? 0.0);
 }
 
 function BotBlockUseValue($uses)
@@ -227,7 +229,7 @@ function BotSolverWeapons($playerID, $currentTurn)
     $status = intval($character[$i + 1] ?? 0);
     if ($status == 0 || ($currentTurn && ($status != 2 || intval($character[$i + 5] ?? 0) < 1))) continue;
     if (!BotWeaponSwingAllowed($cardID, $playerID)) continue;
-    $power = BotWeaponSolverPower($cardID, $playerID, max(0, intval(PowerValue($cardID, $playerID, "CHAR", $i, false, false))));
+    $power = BotWeaponSolverPower($cardID, $playerID, max(0, intval(PowerValue($cardID, $playerID, "CHAR", $i, false, false)) + intval($character[$i + 3] ?? 0)));
     if ($power == 0) continue;
     $weapon = BotHeroWeaponPatch([
       "id" => $cardID,
@@ -243,6 +245,9 @@ function BotSolverWeapons($playerID, $currentTurn)
     $weapons[] = $weapon;
     if (BotHeroExtraWeaponSwing($cardID, $playerID, $currentTurn)) {
       $weapons[] = ["power" => $power * BOT_HIT_CHANCE, "onHit" => 0.0, "needFlags" => $weapon["needFlags"] | BOT_FLAG_WEAPON_SWUNG] + $weapon;
+    }
+    if (BotHeroFlurrySwing($cardID, $playerID)) {
+      $weapons[] = ["needFlags" => $weapon["needFlags"] | BOT_FLAG_WEAPON_SWUNG | BOT_FLAG_FLURRY, "goAgainFlags" => 0] + $weapon;
     }
   }
   return $weapons;
@@ -268,7 +273,7 @@ function BotSolverContext($playerID, $ap, $resources, $currentTurn)
   $profile = BotDefenderProfile($playerID, !$currentTurn);
   $abilities = BotAbilityItems($playerID, $currentTurn);
   $pending = BotHeroStartPending($playerID, $currentTurn);
-  $flags = $currentTurn ? BotHeroStartFlags($playerID) : 0;
+  $flags = $currentTurn ? BotHeroStartFlags($playerID) : BotHeroNextTurnFlags($playerID);
   $flagValues = BotHeroFlagValues($playerID);
   return [
     "ap" => $ap,
@@ -284,16 +289,37 @@ function BotSolverContext($playerID, $ap, $resources, $currentTurn)
   ];
 }
 
+function BotContextStateKey($playerID, $currentTurn)
+{
+  global $actionPoints, $currentTurnEffects, $turn;
+  $opponent = 3 - $playerID;
+  $parts = [
+    $playerID, $currentTurn ? 1 : 0, implode(" ", GetPlayerCharacter($playerID)), implode(" ", GetAuras($playerID)),
+    count(GetBanish($playerID)), count(GetHand($opponent)), GetHealth($opponent), implode(" ", GetPlayerCharacter($opponent)),
+  ];
+  if ($currentTurn) {
+    array_push($parts, $actionPoints, implode(" ", GetResources($playerID)), implode(" ", $currentTurnEffects), $turn[0] ?? "",
+      implode(" ", GetHand($playerID)), json_encode($GLOBALS["p" . $playerID . "ClassState"] ?? []));
+  }
+  return md5(implode("|", $parts));
+}
+
 function BotNextTurnContext($playerID)
 {
-  return BotSolverContext($playerID, 1, BotHeroNextTurnResources($playerID), false);
+  static $cache = [];
+  $key = BotContextStateKey($playerID, false);
+  if (count($cache) > 64) $cache = [];
+  return $cache[$key] ??= BotSolverContext($playerID, 1, BotHeroNextTurnResources($playerID), false);
 }
 
 function BotCurrentTurnContext($playerID)
 {
   global $actionPoints;
+  static $cache = [];
+  $key = BotContextStateKey($playerID, true);
+  if (count($cache) > 64) $cache = [];
   $resources = &GetResources($playerID);
-  return BotSolverContext($playerID, max(0, intval($actionPoints)), max(0, intval($resources[0] ?? 0)), true);
+  return $cache[$key] ??= BotSolverContext($playerID, max(0, intval($actionPoints)), max(0, intval($resources[0] ?? 0)), true);
 }
 
 function BotPumpApplies($targets, $attack)
@@ -339,6 +365,7 @@ function BotSolveHand($cards, $playerID, $context = null)
       "zone" => $card["zone"],
       "inHand" => $card["zone"] == "HAND",
       "held" => max(0.0, BotStandaloneValue($uses, $futureProfile) - $average),
+      "raw" => BotStandaloneValue($uses, $futureProfile),
       "arsenal" => BotArsenalValue($uses, $discount, $futureProfile),
       "isAA" => $uses["kind"] == "attack",
       "subtype" => strtolower(CardSubType($card["id"])),
@@ -367,7 +394,7 @@ function BotSolveHand($cards, $playerID, $context = null)
       for ($s = $need; $s >= 0; --$s) {
         if ($best[$s][0] === INF) continue;
         $to = min($need, $s + $item["pitch"]);
-        $loss = $best[$s][0] + $item["held"];
+        $loss = $best[$s][0] + $item["held"] + $item["raw"] * BOT_PITCH_TIE_WEIGHT;
         if ($loss < $best[$to][0]) $best[$to] = [$loss, $best[$s][1] | (1 << $index)];
       }
     }
@@ -466,12 +493,12 @@ function BotSolveHand($cards, $playerID, $context = null)
         $nextAp = $item["kind"] == "action" ? $ap - 1 + ($item["goAgain"] ? 1 : 0) : $ap;
         $nextPending = $pending;
         $nextPending[] = ["key" => $moveKey, "power" => $item["pump"], "target" => $item["pumpTarget"], "goAgain" => $item["pumpGoAgain"]];
-        $consider($moveKey, 0.0, 0.0, $nextMask, $weaponMask, $nextAp, $item["kind"] == "action" ? null : $chain, $nextPending, $flags | $item["setFlags"]);
+        $consider($moveKey, $item["bonus"] ?? 0.0, 0.0, $nextMask, $weaponMask, $nextAp, $item["kind"] == "action" ? null : $chain, $nextPending, $flags | $item["setFlags"]);
       } else if (($item["kind"] == "attack-reaction" || $item["kind"] == "instant") && $chain !== null) {
         $applies = $isPump && BotPumpApplies($item["pumpTarget"], $chain);
         $veinLink = !empty($item["draconic"]) && $chain["draconicGoAgain"] && !$chain["ga"];
         if (!$applies && !$veinLink) continue;
-        $gain = ($applies ? $item["pump"] : 0.0) + ($veinLink ? 1.0 : 0.0);
+        $gain = ($applies ? $item["pump"] : 0.0) + ($veinLink ? 1.0 : 0.0) + ($item["bonus"] ?? 0.0);
         $nextAp = $ap;
         $nextChain = $chain;
         if ((($applies && $item["pumpGoAgain"]) || $veinLink) && !$chain["ga"]) {
@@ -574,9 +601,13 @@ function BotDeckStyle($player)
 
 function BotDefenderProfile($playerID, $nextTurn = false)
 {
+  static $cache = [];
   $opponent = 3 - $playerID;
   $character = &GetPlayerCharacter($opponent);
   $handCount = count(GetHand($opponent));
+  $cacheKey = $playerID . ($nextTurn ? "n" : "c") . $handCount . "|" . GetHealth($opponent) . "|" . implode(" ", $character);
+  if (isset($cache[$cacheKey])) return $cache[$cacheKey];
+  if (count($cache) > 64) $cache = [];
   if ($nextTurn) $handCount = max($handCount, intval(CharacterIntellect($character[0] ?? "")));
   $armor = 0;
   $pieces = CharacterPieces();
@@ -585,7 +616,7 @@ function BotDefenderProfile($playerID, $nextTurn = false)
     $armor = max($armor, intval(BlockValue($character[$i], $opponent, "EQUIP", false)) + min(0, intval($character[$i + 4] ?? 0)));
   }
   $life = intval(GetHealth($opponent));
-  return ["handCount" => $handCount, "life" => $life, "armor" => $armor, "key" => "$handCount.$life.$armor"] + BotDeckStyle($opponent);
+  return $cache[$cacheKey] = ["handCount" => $handCount, "life" => $life, "armor" => $armor, "key" => "$handCount.$life.$armor"] + BotDeckStyle($opponent);
 }
 
 function BotHitChance($power, $onHit, $profile)

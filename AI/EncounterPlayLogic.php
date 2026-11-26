@@ -76,7 +76,21 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
   {
     if($i != $index) $totalPitch += PitchValue($hand[$i]);
   }
-  return $finalCost <= $totalPitch;
+  if($finalCost > $totalPitch) return false;
+  return BotKeepsCardForExtraCost($storedPriorityNode[0], $hand, $index, $finalCost, intval($resources[0]));
+}
+
+function BotKeepsCardForExtraCost($cardID, $hand, $index, $cost, $floating)
+{
+  if(!RequiresDiscard($cardID) && !RequiresBanish($cardID) && $cardID != "enlightened_strike_red") return true;
+  $pitches = [];
+  foreach($hand as $i => $handCard)
+  {
+    if($i !== $index && $handCard !== "") $pitches[] = intval(PitchValue($handCard));
+  }
+  if(count($pitches) == 0) return false;
+  $need = max(0, $cost - $floating);
+  return array_sum($pitches) - min($pitches) >= $need;
 }
 
 function ReactionCardIsPlayable($storedPriorityNode, $hand, $resources)

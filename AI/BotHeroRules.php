@@ -7,6 +7,7 @@ const BOT_FLAG_WEAPON_SWUNG = 4;
 const BOT_FLAG_DISCARDED_SIX = 8;
 const BOT_FLAG_BLOOD_DEBT_SUPPRESSED = 16;
 const BOT_BANISH_SIX_CHANCE = 0.8;
+const BOT_FLAG_FLURRY = 32;
 
 function BotCardFactOverrides()
 {
@@ -14,7 +15,7 @@ function BotCardFactOverrides()
   if ($overrides !== null) return $overrides;
   $sharpen = fn($power) => ["p" => $power, "pt" => "w:sword", "pn" => 1, "sf" => BOT_FLAG_SHARPENED];
   $overrides = [
-    "edict_of_steel_red" => $sharpen(1), "edict_of_steel_yellow" => $sharpen(1), "edict_of_steel_blue" => $sharpen(1),
+    "edict_of_steel_red" => ["sf" => BOT_FLAG_SHARPENED | BOT_FLAG_FLURRY] + $sharpen(1), "edict_of_steel_yellow" => $sharpen(1), "edict_of_steel_blue" => $sharpen(1),
     "sharp_incline_red" => $sharpen(1), "sharp_incline_yellow" => $sharpen(1), "sharp_incline_blue" => $sharpen(1),
     "cut_n_carve_red" => $sharpen(1), "cut_n_carve_yellow" => $sharpen(1), "cut_n_carve_blue" => $sharpen(1),
     "drawn_to_the_blade_yellow" => $sharpen(1),
@@ -30,8 +31,9 @@ function BotCardFactOverrides()
     "bare_fangs_red" => ["sf" => BOT_FLAG_DISCARDED_SIX], "wrecker_romp_blue" => ["sf" => BOT_FLAG_DISCARDED_SIX],
     "beckoning_hunger_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED], "dread_screamer_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
     "endless_maw_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED], "feeding_frenzy_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
-    "shadowrealm_horror_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED], "deadwood_rumbler_blue" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
+    "shadowrealm_horror_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
     "pull_from_beyond_blue" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
+    "pledge_fealty_red" => ["bv" => 2],
     "felling_swing_red" => ["pt" => "w:axe"], "felling_swing_yellow" => ["pt" => "w:axe"], "felling_swing_blue" => ["pt" => "w:axe"],
     "hit_and_run_red" => ["p" => 0, "pga" => 1, "pt" => "w", "pn" => 1],
     "hit_and_run_yellow" => ["p" => 0, "pga" => 1, "pt" => "w", "pn" => 1],
@@ -73,6 +75,7 @@ function BotHeroWeaponPatch($weapon, $playerID)
   if ($weapon["id"] == "zenith_blade") $weapon["goAgainFlags"] = BOT_FLAG_SHARPENED;
   if ($weapon["id"] == "mandible_claw" || $weapon["id"] == "mandible_claw_r") $weapon["goAgainFlags"] = BOT_FLAG_DISCARDED_SIX;
   $weapon["draconicGoAgain"] = BotIsObsidianFireVein($weapon["id"]);
+  if (BotHeroID($playerID) == "fang_dracai_of_blades" && str_contains($weapon["subtype"], "dagger") && BotFealtyCount($playerID) >= 3) $weapon["cost"] = max(0, $weapon["cost"] - 1);
   return $weapon;
 }
 
@@ -105,11 +108,19 @@ function BotHeroExtraWeaponSwing($weaponID, $playerID, $currentTurn)
 function BotHeroCardPatch($item, $playerID, $context)
 {
   $item["draconic"] = ($item["kind"] == "attack-reaction" || $item["kind"] == "instant") && TalentContains($item["id"], "DRACONIC", $playerID);
+  if ($item["id"] == "hunts_end_red" && BotFealtyCount($playerID) < 3) $item["pump"] = 0.0;
+  if ($item["id"] == "edict_of_steel_yellow" || $item["id"] == "edict_of_steel_blue") {
+    $zenith = FindCharacterIndex($playerID, "zenith_blade");
+    $character = &GetPlayerCharacter($playerID);
+    $counters = $zenith == -1 ? 0 : intval($character[$zenith + 3] ?? 0);
+    if ($counters + 1 >= ($item["id"] == "edict_of_steel_yellow" ? 2 : 3)) $item["setFlags"] |= BOT_FLAG_FLURRY;
+  }
   if (empty(BotCardFacts($item["id"])["aw"])) return $item;
   $index = FindCharacterIndex($playerID, "zenith_blade");
   if ($index == -1) return $item;
   $item["kind"] = "attack";
-  $item["power"] = max(0, intval(PowerValue("zenith_blade", $playerID, "CHAR", $index, false, false)));
+  $character = &GetPlayerCharacter($playerID);
+  $item["power"] = max(0, intval(PowerValue("zenith_blade", $playerID, "CHAR", $index, false, false)) + intval($character[$index + 3] ?? 0));
   $item["goAgain"] = false;
   $item["isAA"] = false;
   $item["subtype"] = "sword";
@@ -126,6 +137,13 @@ function BotHeroStartFlags($playerID)
   if (SearchCurrentTurnEffects("SHARPEN", $playerID)) $flags |= BOT_FLAG_SHARPENED;
   if (intval(GetClassState($playerID, $CS_NumCharged)) > 0) $flags |= BOT_FLAG_CHARGED;
   if (intval(GetClassState($playerID, $CS_AttacksWithWeapon)) > 0) $flags |= BOT_FLAG_WEAPON_SWUNG;
+  return $flags | BotHeroNextTurnFlags($playerID);
+}
+
+function BotHeroNextTurnFlags($playerID)
+{
+  $flags = 0;
+  if (SearchAurasForCard("flurry", $playerID) !== "") $flags |= BOT_FLAG_FLURRY;
   return $flags;
 }
 
@@ -218,4 +236,36 @@ function BotHeroFlagValues($playerID)
   if ($heroID != "levia_shadowborn_abomination" && $heroID != "levia") return [];
   $drain = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
   return $drain > 0 ? [BOT_FLAG_BLOOD_DEBT_SUPPRESSED => $drain * BOT_BANISH_SIX_CHANCE] : [];
+}
+
+function BotFealtyCount($playerID)
+{
+  return SearchCount(SearchAurasForCard("fealty", $playerID));
+}
+
+function BotHeroFlurrySwing($weaponID, $playerID)
+{
+  return $weaponID == "zenith_blade" && BotHeroID($playerID) == "hala_bladesaint_of_the_vow";
+}
+
+function BotLeviaSuppressionNeeded($playerID)
+{
+  global $CS_Num6PowPutIntoBanish;
+  $heroID = BotHeroID($playerID);
+  if ($heroID != "levia_shadowborn_abomination" && $heroID != "levia") return false;
+  if (intval(GetClassState($playerID, $CS_Num6PowPutIntoBanish)) > 0) return false;
+  return SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true)) >= 2;
+}
+
+function BotHeroEndTurnNode($playerID)
+{
+  global $turn;
+  if (!BotLeviaSuppressionNeeded($playerID)) return null;
+  $hand = &GetHand($playerID);
+  foreach (["cleave_the_heavens_red", "blood_harvest"] as $cardID) {
+    foreach ($hand as $index => $handCard) {
+      if ($handCard == $cardID && IsPlayable($cardID, $turn[0], "HAND", $index)) return [$cardID, "Hand", $index, 1];
+    }
+  }
+  return null;
 }

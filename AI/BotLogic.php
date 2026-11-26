@@ -427,7 +427,7 @@ function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
   } else if ($type == "AR" || $type == "DR") {
     return 0.0;
   } else if ($type == "E") {
-    $score = 1;
+    $score = BotEquipmentActivationScore($cardID, $playerID);
   } else if ($type == "C" && $zone == "Character") {
     // Active hero abilities are still filtered by Talishar's IsPlayable gate.
     $score = 4;
@@ -794,6 +794,7 @@ function BotCardFromDecisionOption($phase, $option, $playerID)
     $cardID = GetMZCard($playerID, $option);
     return $cardID == "-" ? null : $cardID;
   }
+  if (is_numeric($option) && str_contains($phase, "HAND")) return GetHand($playerID)[intval($option)] ?? null;
   return null;
 }
 
@@ -848,6 +849,10 @@ function BotModeOptionScore($option, $playerID)
     "Create_an_Embodiment_of_Lightning" => 3.0,
     "Buff_your_next_attack" => $hasAttack ? 2.0 : 0.5,
     "Search_for_Skyzyk" => $hasAttack ? 1.0 : 2.5,
+    "Additional_Attack" => BotAvailablePitch($playerID) >= 1 ? 3.0 : 0.5,
+    "Mark" => BotFealtyCount($playerID) < 3 ? 2.5 : 1.0,
+    "Attack" => 2.0,
+    "Ability" => BotLeviaSuppressionNeeded($playerID) ? 3.0 : 1.0,
     default => null,
   };
 }
@@ -881,7 +886,10 @@ function BotChooseMultiOptions($phase, $param, $playerID, $context = "")
   $max = intval($params[0]);
   $options = ($params[1] ?? "") === "" ? [] : explode(",", $params[1]);
   $min = count($params) > 2 ? intval($params[2]) : -1;
-  if (($decisionQueue[0] ?? "") == "BRAVOSTARSHOW") return BotStarvoRevealChoice($options, $playerID);
+  $pieces = DecisionQueuePieces();
+  for ($i = 0, $count = min(count($decisionQueue), $pieces * 3); $i < $count; $i += $pieces) {
+    if ($decisionQueue[$i] == "BRAVOSTARSHOW") return BotStarvoRevealChoice($options, $playerID);
+  }
   $zone = match (true) {
     str_ends_with($phase, "HAND") => GetHand($playerID),
     str_ends_with($phase, "DISCARD") => GetDiscard($playerID),
@@ -928,6 +936,8 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
   }
 
   $helpText = strtolower(str_replace("_", " ", strval(GetDQHelpText())));
+  $charging = str_contains($helpText, "to charge");
+  if ($charging && str_starts_with($phase, "MAY") && BotSkipExtraCharge($playerID)) return "PASS";
   if (str_contains($helpText, "target for the attack")) {
     $bestTarget = 0;
     $bestTargetScore = -INF;
@@ -944,7 +954,8 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
   $yesIndex = array_search("yes", $normalized, true);
   $noIndex = array_search("no", $normalized, true);
   if ($yesIndex !== false && $noIndex !== false) {
-    $decline = str_contains($context, "pay");
+    $resources = &GetResources($playerID);
+    $decline = str_contains($context, "pay") && !(str_contains($context, "vigor") && intval($resources[0] ?? 0) >= 1);
     return $options[$decline ? $noIndex : $yesIndex];
   }
 
@@ -955,9 +966,10 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
     $cardID = BotCardFromDecisionOption($phase, $option, $playerID);
     if ($cardID !== null) {
       $roles = BotCardRoles($cardID, $playerID);
-      $spendingChoice = str_contains($context, "discard")
-        || str_contains($context, "bottom");
+      $spendingChoice = preg_match("/discard|bottom|banish|charge|sink|remove/", $context . " " . $helpText) == 1;
       $score = $spendingChoice ? -$roles["retainValue"] : $roles["playValue"];
+      if ($charging && intval(PitchValue($cardID)) == 2) $score += 0.01;
+      if (str_contains($helpText, "banish") && BotLeviaSuppressionNeeded($playerID) && intval(PowerValue($cardID, $playerID, "GY")) >= 6) $score += 100;
     } else if ($normalizedOption == "pass" || $normalizedOption == "no") {
       $score = -2;
     } else if (preg_match('/^pay[ _-]?(\d+)$/i', strval($option), $matches)) {
@@ -971,6 +983,19 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
     }
   }
   return $options[$bestIndex];
+}
+
+function BotSkipExtraCharge($playerID)
+{
+  global $CS_NumCharged;
+  return intval(GetClassState($playerID, $CS_NumCharged)) > 0 && count(GetHand($playerID)) < 3;
+}
+
+function BotEquipmentActivationScore($cardID, $playerID)
+{
+  if (in_array($cardID, ["flat_trackers", "knucklehead", "savage_sash"], true)) return 0.0;
+  $resources = &GetResources($playerID);
+  return BotNumericCost(AbilityCost($cardID)) > intval($resources[0] ?? 0) ? 0.0 : 1.0;
 }
 
 ?>

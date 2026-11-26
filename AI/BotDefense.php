@@ -289,7 +289,7 @@ function BotCheapestPitch($player, $need, $excluded, $context = null)
   foreach ($hand as $index => $cardID) {
     if ($cardID === "" || isset($excluded["HAND:" . $index])) continue;
     $pitch = intval(PitchValue($cardID));
-    if ($pitch > 0 && CanPitch($cardID, "HAND")) $pitchable[] = [$index, $pitch];
+    if ($pitch > 0 && CanPitch($cardID, "HAND")) $pitchable[] = [$index, $pitch, BotStandaloneValue(BotCardUses($cardID, $player), BotDefenderProfile($player, true))];
   }
   $count = count($pitchable);
   if ($count > 12) $count = 12;
@@ -297,12 +297,14 @@ function BotCheapestPitch($player, $need, $excluded, $context = null)
   for ($mask = 1; $mask < (1 << $count); ++$mask) {
     $total = 0;
     $selected = [];
+    $raw = 0.0;
     $minimum = PHP_INT_MAX;
     for ($i = 0; $i < $count; ++$i) {
       if (!($mask & (1 << $i))) continue;
       $total += $pitchable[$i][1];
       $minimum = min($minimum, $pitchable[$i][1]);
       $selected[] = $pitchable[$i][0];
+      $raw += $pitchable[$i][2];
     }
     if ($total < $need || $total - $minimum >= $need) continue;
     $after = $excluded;
@@ -315,6 +317,7 @@ function BotCheapestPitch($player, $need, $excluded, $context = null)
       $afterPitch["key"] .= ":" . ($total - $need);
       $value = BotSolveHand(BotRemainingOffense($player, $after), $player, $afterPitch)["value"];
     }
+    $value -= $raw * BOT_PITCH_TIE_WEIGHT;
     $candidate = ["indices" => $selected, "value" => $value, "overpay" => $total - $need];
     if ($best === null || $value > $best["value"] + 1e-9
       || (abs($value - $best["value"]) <= 1e-9 && (count($selected) < count($best["indices"])

@@ -129,6 +129,11 @@ function EncounterAI()
           PlayCardAttempt($storedPriorityNode);
           CacheCombatResult();
         }
+        else if(($endTurnNode = BotHeroEndTurnNode($currentPlayer)) !== null)
+        {
+          PlayCardAttempt($endTurnNode);
+          CacheCombatResult();
+        }
         else
         {
           PassInput();
@@ -148,6 +153,11 @@ function EncounterAI()
         if($found == true)
         {
           PlayCardAttempt($storedPriorityNode);
+          CacheCombatResult();
+        }
+        else if(($endTurnNode = BotHeroEndTurnNode($currentPlayer)) !== null)
+        {
+          PlayCardAttempt($endTurnNode);
           CacheCombatResult();
         }
         else
