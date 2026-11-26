@@ -42,3 +42,4 @@ composer-setup.php
 
 # PHPUnit test runner cache
 .phpunit.result.cache
+/GeneratedCode/CardClassMaps/
