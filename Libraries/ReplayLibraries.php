@@ -13,7 +13,11 @@ function ReplaySessionUserId(): string
 
 function IsValidReplayUserId(string $userId): bool
 {
-  return $userId !== "" && preg_match('/^[A-Za-z0-9_-]+$/', $userId) === 1;
+  return $userId !== ""
+    && $userId[0] !== "."
+    && strpbrk($userId, "/\\") === false
+    && preg_match('/[\x00-\x1F\x7F]/', $userId) !== 1
+    && !in_array($userId, ["-", "Player 1", "Player 2", "Practice Dummy"], true);
 }
 
 function ParsePositiveReplayNumber($rawReplayNumber): ?int
