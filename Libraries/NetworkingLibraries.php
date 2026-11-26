@@ -1533,7 +1533,7 @@ function IsModeAsync($mode)
   26 => true, 40 => true, 41 => true, 102 => true, 103 => true, 104 => true, 111 => true, 112 => true, 10000 => true,
   10003 => true, 100000 => true, 100001 => true, 100002 => true,
   100003 => true, 100004 => true, 100007 => true, 100010 => true,
-  100012 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
+  100012 => true, 100013 => true, 100015 => true, 100016 => true, 100017 => true, 100023 => true,
   100018 => true, 100019 => true, 100020 => true, 100021 => true, 100022 => true, 100024 => true, 100025 => true, 100026 => true,
   100027 => true, 100028 => true, 100029 => true, 100030 => true, 100031 => true, 100032 => true, 100033 => true
   ];
