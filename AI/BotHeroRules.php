@@ -47,6 +47,7 @@ function BotCardFactOverrides()
     "and_again_blue" => ["aw" => 1],
     "wild_ride_red" => ["sf" => BOT_FLAG_DISCARDED_SIX], "wild_ride_yellow" => ["sf" => BOT_FLAG_DISCARDED_SIX],
     "bare_fangs_red" => ["sf" => BOT_FLAG_DISCARDED_SIX], "wrecker_romp_blue" => ["sf" => BOT_FLAG_DISCARDED_SIX],
+    "wild_ride_blue" => ["sf" => BOT_FLAG_DISCARDED_SIX], "bare_fangs_yellow" => ["sf" => BOT_FLAG_DISCARDED_SIX], "bare_fangs_blue" => ["sf" => BOT_FLAG_DISCARDED_SIX],
     "beckoning_hunger_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED], "dread_screamer_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
     "endless_maw_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED], "feeding_frenzy_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
     "shadowrealm_horror_red" => ["sf" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED],
@@ -68,6 +69,28 @@ function BotCardFactOverrides()
     "rites_of_nightfall_blue" => ["bv" => 2.0],
   ];
   return $overrides;
+}
+
+function BotDiscardSixChance($cardID, $playerID)
+{
+  $others = 0;
+  $six = 0;
+  $skipped = false;
+  foreach (GetHand($playerID) as $handCard) {
+    if ($handCard === "") continue;
+    if (!$skipped && $handCard == $cardID) { $skipped = true; continue; }
+    ++$others;
+    if (intval(PowerValue($handCard, $playerID, "HAND", -1, false, false)) >= 6) ++$six;
+  }
+  $deck = &GetDeck($playerID);
+  $deckCards = 0;
+  $deckSix = 0;
+  for ($i = 0, $count = count($deck), $pieces = DeckPieces(); $i < $count; $i += $pieces) {
+    if ($deck[$i] === "") continue;
+    ++$deckCards;
+    if (intval(PowerValue($deck[$i], $playerID, "HAND", -1, false, false)) >= 6) ++$deckSix;
+  }
+  return ($six + ($deckCards > 0 ? $deckSix / $deckCards : 0.0)) / ($others + 1);
 }
 
 function BotCounter($flags, $shift)
@@ -269,6 +292,11 @@ function BotHeroCardPatch($item, $playerID, $context)
   if (BotIsLookTuff($item["id"])) $item["cost"] += 1;
   if ($item["kind"] == "attack" && BotKayoHandPowerBonus($playerID)) $item["power"] = max(0, $item["power"] - 1);
   if ($item["id"] == "hunt_to_the_ends_of_rathe_red" && CheckMarked(3 - $playerID)) $item["power"] += 2;
+  if (str_starts_with($item["id"], "wild_ride_") || str_starts_with($item["id"], "bare_fangs_")) {
+    $chance = BotDiscardSixChance($item["id"], $playerID);
+    if (str_starts_with($item["id"], "wild_ride_")) $item["cond"]["gop"] = $chance;
+    else $item["power"] += 2 * $chance;
+  }
   if ($item["kind"] == "attack" && TalentContains($item["id"], "LIGHTNING", $playerID)) $item["setFlags"] |= BOT_FLAG_LIGHTNING_ATTACK;
   $item["brute"] = $item["kind"] == "attack" && ClassContains($item["id"], "BRUTE", $playerID);
   if ($item["id"] == "bloodrush_bellow_yellow") {

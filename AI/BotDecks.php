@@ -133,14 +133,14 @@ function BotDeckPools()
     "KayoSAGE" => [
       "hero" => "kayo",
       "weapons" => ["mandible_claw"],
-      "deck" => ["bare_fangs_red", "bare_fangs_red", "bear_hug_red", "bear_hug_red", "bluster_buff_red", "bluster_buff_red", "buckwild_red", "buckwild_red",
-        "clash_of_agility_red", "clash_of_agility_red", "clash_of_might_red", "clash_of_might_red", "high_pitched_howl_red",
-        "high_pitched_howl_red", "rough_up_red", "rough_up_red", "wild_ride_red", "wild_ride_red", "agile_windup_yellow", "agile_windup_yellow",
-        "buckwild_yellow", "buckwild_yellow", "strongest_survive_yellow", "strongest_survive_yellow", "vigorous_smashup_yellow",
-        "vigorous_smashup_yellow", "wild_ride_yellow", "wild_ride_yellow", "agile_windup_blue", "agile_windup_blue", "assault_and_battery_blue",
-        "assault_and_battery_blue", "bear_hug_blue", "bear_hug_blue", "buckwild_blue", "buckwild_blue", "mighty_windup_blue", "mighty_windup_blue",
-        "run_roughshod_blue", "run_roughshod_blue", "unexpected_backhand_blue", "unexpected_backhand_blue", "vigorous_smashup_blue",
-        "vigorous_smashup_blue", "wrecker_romp_blue", "wrecker_romp_blue"],
+      "deck" => ["bare_fangs_red", "bare_fangs_red", "buckwild_red", "buckwild_red", "clash_of_might_red", "clash_of_might_red",
+        "high_pitched_howl_red", "high_pitched_howl_red", "rough_up_red", "rough_up_red", "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_red",
+        "strongest_survive_red", "strongest_survive_red", "wild_ride_red", "wild_ride_red", "agile_windup_yellow", "agile_windup_yellow",
+        "bare_fangs_yellow", "bare_fangs_yellow", "buckwild_yellow", "buckwild_yellow", "clash_of_might_yellow", "clash_of_might_yellow",
+        "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_yellow", "wild_ride_yellow", "wild_ride_yellow", "agile_windup_blue", "agile_windup_blue",
+        "assault_and_battery_blue", "assault_and_battery_blue", "bear_hug_blue", "bear_hug_blue", "buckwild_blue", "buckwild_blue",
+        "mighty_windup_blue", "mighty_windup_blue", "run_roughshod_blue", "run_roughshod_blue", "smash_instinct_blue", "smash_instinct_blue",
+        "unexpected_backhand_blue", "unexpected_backhand_blue", "vigorous_smashup_blue", "vigorous_smashup_blue"],
       "sideboard" => [],
     ],
     "IraSAGE" => [
@@ -461,15 +461,12 @@ function BotPresentDeck($key, $opponentHeroID = "", $botTurnOrder = "first")
 
     case "KayoSAGE":
       $slow = preg_match('/oldhim|dorinthea|enigma|nuu|terra|riptide/', $name) == 1;
-      $wizard = preg_match('/kano|blaze|iyslander/', $name) == 1;
-      $omit = $slow ? ["clash_of_agility_red", "clash_of_might_red", "bear_hug_red"] : ["agile_windup_yellow", "buckwild_yellow", "mighty_windup_blue"];
+      $arcane = $hasClass("wizard") || preg_match('/kano|blaze|iyslander|oscilio|verdance/', $name) == 1;
+      $omit = $slow ? ["clash_of_might_red", "clash_of_might_yellow", "sirens_of_safe_harbor_yellow"] : ["agile_windup_yellow", "buckwild_yellow", "mighty_windup_blue"];
       $deck = array_values(array_filter($deck, fn($cardID) => !in_array($cardID, $omit, true)));
-      $equipment = [
-        "head" => $wizard ? "nullrune_hood" : "knucklehead",
-        "chest" => "predatory_plating",
-        "arms" => $wizard ? (str_contains($name, "iyslander") ? "nullrune_gloves" : "skera_strapping") : "blade_beckoner_gauntlets",
-        "legs" => preg_match('/bravo|azalea|valda/', $name) == 1 ? "unflinching_foothold" : "flat_trackers",
-      ];
+      $equipment = $arcane
+        ? ["head" => "nullrune_hood", "chest" => "nullrune_robe", "arms" => "skera_strapping", "legs" => "shamanic_shinbones"]
+        : ["head" => "knucklehead", "chest" => "predatory_plating", "arms" => "blade_beckoner_gauntlets", "legs" => "flat_trackers"];
       break;
 
     case "DorintheaSAGE":

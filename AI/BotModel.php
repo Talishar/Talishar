@@ -521,8 +521,10 @@ function BotSolveHand($cards, $playerID, $context = null)
       $value = $power + ($onHit > 0 ? $onHit * BotHitChance($power, $onHit, $profile) : 0.0) - ($attackInfo["selfCost"] ?? 0);
       $chain = $attackInfo + ["ga" => $goAgain, "pumped" => $power > $attackInfo["power"] || !empty($attackInfo["chargedPower"]) || !empty($attackInfo["pumpedBase"])];
       $nextFlags = BotAttackedFlags($flagsNow | $attackInfo["setFlags"], $attackInfo);
-      if (!$goAgain && !empty($attackInfo["cond"]["goh"])) {
-        $chance = BotHitChance($power, $onHit, $profile);
+      $chance = null;
+      if (!$goAgain && !empty($attackInfo["cond"]["goh"])) $chance = BotHitChance($power, $onHit, $profile);
+      else if (!$goAgain && isset($attackInfo["cond"]["gop"])) $chance = floatval($attackInfo["cond"]["gop"]);
+      if ($chance !== null) {
         $consider($moveKey, $value, $power, $nextMask, $nextWeaponMask, $ap, ["ga" => true] + $chain, $remaining, $nextFlags, [$chance, $ap - 1, $chain]);
         return;
       }
