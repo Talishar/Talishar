@@ -180,6 +180,7 @@ function BotDefenseContext($player)
     $representative = min(6, 3 + $attackerHand + $attackerArsenal);
   }
   $required = isset($CCS_RequiredEquipmentBlock) ? max(0, intval(GetCombatChainState($CCS_RequiredEquipmentBlock)) - NumEquipBlock("EQUIP")) : 0;
+  $responseWeight = BotResponseLossWeight($player);
   return [
     "attack" => $attack,
     "incoming" => $incoming,
@@ -197,7 +198,19 @@ function BotDefenseContext($player)
     "weaponSwingLeft" => BotOpponentWeaponSwingLeft(),
     "weaponLockValue" => min(6, 3 + $attackerHand + $attackerArsenal),
     "fragment" => (bool)HasFragment($attack["id"]),
+    "responseWeight" => $responseWeight,
+    "fullResponse" => $responseWeight == 1.0 ? 0.0 : BotResponseValue($player),
   ];
+}
+
+function BotResponseLossWeight($player)
+{
+  return BotHeroID($player) == "aurora_legacy_of_tempest" ? 1.35 : 1.0;
+}
+
+function BotWeightedResponse($full, $remaining, $weight)
+{
+  return $weight == 1.0 ? $remaining : $full - max(0.0, $full - $remaining) * $weight;
 }
 
 function BotReactionStopsEnough($reactions, $incoming)
@@ -395,12 +408,12 @@ function BotHandLossScenarios($player, $onHit, $consumed)
   return [[$chosen, 1.0]];
 }
 
-function BotContinuationResponse($player, $consumed, $representative)
+function BotContinuationResponse($player, $consumed, $representative, $weight = 1.0, $full = 0.0)
 {
   static $cache = [];
   $keys = array_keys($consumed);
   sort($keys);
-  $cacheKey = $player . "|" . $representative . "|" . implode(",", $keys) . "|" . count(GetHand($player));
+  $cacheKey = $player . "|" . $representative . "|" . implode(",", $keys) . "|" . count(GetHand($player)) . "|" . $weight . "|" . $full;
   if (isset($cache[$cacheKey])) return $cache[$cacheKey];
   $candidates = [];
   $hand = &GetHand($player);
@@ -409,7 +422,7 @@ function BotContinuationResponse($player, $consumed, $representative)
     $defense = max(0, intval(BlockValue($cardID, $player, "HAND", false)));
     if ($defense > 0) $candidates[] = ["key" => "HAND:" . $index, "defense" => $defense, "opportunity" => BotCardOpportunityValue($cardID, $player) * 0.1];
   }
-  $evaluate = function ($defenders) use ($player, $consumed, $representative) {
+  $evaluate = function ($defenders) use ($player, $consumed, $representative, $weight, $full) {
     $spent = $consumed;
     $defense = 0;
     $opportunity = 0.0;
@@ -419,7 +432,7 @@ function BotContinuationResponse($player, $consumed, $representative)
       $opportunity += $defender["opportunity"];
     }
     $continuation = [
-      "response" => BotResponseValue($player, $spent),
+      "response" => BotWeightedResponse($full, BotResponseValue($player, $spent), $weight),
       "prevented" => min($representative, $defense),
       "overblock" => max(0, $defense - $representative),
       "opportunity" => $opportunity,
@@ -565,10 +578,10 @@ function BotScoreDefensePlan($player, $ctx, $set, $package)
   $stopProbability = $ctx["stopProbability"];
   foreach ($scenarios as [$lost, $weight]) {
     $spent = $consumed + $lost;
-    $response = BotResponseValue($player, $spent);
+    $response = BotWeightedResponse($ctx["fullResponse"], BotResponseValue($player, $spent), $ctx["responseWeight"]);
     $stopResponse += $response * $weight;
     if ($ctx["representative"] > 0 && $stopProbability < 1) {
-      $next = BotContinuationResponse($player, $spent, $ctx["representative"]);
+      $next = BotContinuationResponse($player, $spent, $ctx["representative"], $ctx["responseWeight"], $ctx["fullResponse"]);
       foreach (["response", "prevented", "overblock", "opportunity"] as $field) $continuation[$field] += $next[$field] * $weight;
     } else {
       $continuation["response"] += $response * $weight;

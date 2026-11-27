@@ -83,7 +83,7 @@ function EncounterAI()
           $decisionContext = $isYesNo ? $turn[2] : ($EffectContext ?? "");
           $choice = BotChooseDecisionOption($turn[0], $options, $currentPlayer, $decisionContext);
           //Some things automatically adjust the data
-          if($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") {
+          if(($turn[0] == "CHOOSEDECK" || $turn[0] == "MAYCHOOSEDECK") && is_numeric($choice)) {
             $deck = &GetDeck($currentPlayer);
             $choice = $deck[$choice * $deckPieces];
           }
@@ -103,6 +103,13 @@ function EncounterAI()
       else if($turn[0] == "M" && $mainPlayer == $currentPlayer && $actionPoints > 0)//AIs turn
       {
         if($AIDebug) WriteLog("AI Branch - AI's Turn");
+        if (($redeemedNode = BotLeviaRedeemedNode($currentPlayer)) !== null) {
+          PlayCardAttempt($redeemedNode);
+          CacheCombatResult();
+          ProcessMacros();
+          $currentPlayerIsAI = IsPlayerAI($currentPlayer);
+          continue;
+        }
         if (BotShouldPreserveOpeningHandForPlayer($currentPlayer)) {
           PassInput();
           ProcessMacros();

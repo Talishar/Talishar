@@ -80,22 +80,21 @@ function BotDeckPools()
     ],
     "LeviaCC" => [
       "hero" => "levia_shadowborn_abomination",
-      "weapons" => ["hexagore_the_death_hydra", "ravenous_meataxe"],
-      "deck" => ["beckoning_hunger_red", "beckoning_hunger_red", "beckoning_hunger_red", "cleave_the_heavens_red", "cleave_the_heavens_red",
-        "cleave_the_heavens_red", "dread_screamer_red", "dread_screamer_red", "dread_screamer_red", "endless_maw_red", "feeding_frenzy_red",
-        "feeding_frenzy_red", "feeding_frenzy_red", "shadowrealm_horror_red", "shadowrealm_horror_red", "shadowrealm_horror_red",
-        "beast_within_yellow", "beast_within_yellow", "beast_within_yellow", "bloodrush_bellow_yellow", "bloodrush_bellow_yellow",
-        "bloodrush_bellow_yellow", "engulfing_shadows_yellow", "engulfing_shadows_yellow", "fallen_herald_yellow", "fallen_herald_yellow",
-        "fallen_herald_yellow", "vigorous_smashup_yellow", "vigorous_smashup_yellow", "vigorous_smashup_yellow", "back_alley_breakline_blue",
-        "call_to_the_grave_blue", "call_to_the_grave_blue", "call_to_the_grave_blue", "cleave_the_heavens_blue", "cleave_the_heavens_blue",
-        "cleave_the_heavens_blue", "deadwood_rumbler_blue", "deadwood_rumbler_blue", "deadwood_rumbler_blue", "diabolic_offering_blue",
-        "diabolic_offering_blue", "diabolic_offering_blue", "doomsday_blue", "goremass_summoning_blue", "goremass_summoning_blue",
-        "goremass_summoning_blue", "pull_from_beyond_blue", "pull_from_beyond_blue", "pull_from_beyond_blue", "rockyard_rodeo_blue",
-        "rockyard_rodeo_blue", "rockyard_rodeo_blue", "soul_harvest_blue", "wrecker_romp_blue", "wrecker_romp_blue", "wrecker_romp_blue",
-        "blood_harvest", "blood_harvest", "blood_harvest"],
-      "sideboard" => ["dam_the_shadowake_red", "dam_the_shadowake_red", "rumbling_hunger_red", "consuming_lash_yellow", "consuming_lash_yellow",
-        "consuming_lash_yellow", "chains_of_mephetis_blue", "chains_of_mephetis_blue"],
-      "inventory" => ["blasmophet_levia_consumed"],
+      "weapons" => ["hexagore_the_death_hydra"],
+      "deck" => ["blood_harvest", "blood_harvest", "blood_harvest", "boneyard_marauder_red", "cleave_the_heavens_red",
+        "cleave_the_heavens_red", "cleave_the_heavens_red", "dread_screamer_red", "dread_screamer_red", "dread_screamer_red",
+        "endless_maw_red", "endless_maw_red", "endless_maw_red", "feeding_frenzy_red", "feeding_frenzy_red", "feeding_frenzy_red",
+        "graveling_growl_red", "graveling_growl_red", "shadowrealm_horror_red", "shadowrealm_horror_red", "shadowrealm_horror_red",
+        "beast_within_yellow", "beast_within_yellow", "bloodrush_bellow_yellow", "bloodrush_bellow_yellow", "bloodrush_bellow_yellow",
+        "engulfing_shadows_yellow", "engulfing_shadows_yellow", "engulfing_shadows_yellow", "fallen_herald_yellow", "fallen_herald_yellow",
+        "fallen_herald_yellow", "graveling_growl_yellow", "call_to_the_grave_blue", "call_to_the_grave_blue", "call_to_the_grave_blue",
+        "cleave_the_heavens_blue", "cleave_the_heavens_blue", "cleave_the_heavens_blue", "deadwood_rumbler_blue", "deadwood_rumbler_blue",
+        "deadwood_rumbler_blue", "diabolic_offering_blue", "diabolic_offering_blue", "diabolic_offering_blue", "doomsday_blue",
+        "dread_screamer_blue", "dread_screamer_blue", "goremass_summoning_blue", "pull_from_beyond_blue", "pull_from_beyond_blue",
+        "pull_from_beyond_blue", "rites_of_nightfall_blue", "rites_of_nightfall_blue", "rites_of_nightfall_blue", "rockyard_rodeo_blue",
+        "rockyard_rodeo_blue", "rockyard_rodeo_blue", "soul_harvest_blue", "wrecker_romp_blue", "wrecker_romp_blue", "wrecker_romp_blue"],
+      "sideboard" => [],
+      "inventory" => ["crown_of_providence", "levia_redeemed"],
     ],
     "JarlCC" => [
       "hero" => "jarl_vetreidi",
@@ -445,44 +444,7 @@ function BotPresentDeck($key, $opponentHeroID = "", $botTurnOrder = "first")
       break;
 
     case "LeviaCC":
-      $deck = [...$pool["deck"], ...$pool["sideboard"]];
-      $matchup = match (true) {
-        str_contains($name, "oscilio") => "wizard",
-        str_contains($name, "marlynn") => "marlynn",
-        str_contains($name, "levia") => "mirror",
-        BotNameHasAny($name, ["viserai", "vynnset"]) => "runeblade",
-        str_contains($name, "arakni, huntsman") => "huntsman",
-        str_contains($name, "gravy bones") => "gravy",
-        str_contains($name, "malice") => "malice",
-        str_contains($name, "tuffnut") => "tuffnut",
-        str_contains($name, "puffin") => "puffin",
-        BotNameHasAny($name, ["jarl", "betsy", "bravo", "mortimer", "hala", "kayo", "pleiades", "teklovossen", "zyggy", "maxx", "lyath", "valda"]) => "grindy",
-        default => "physical",
-      };
-      $cuts = match ($matchup) {
-        "wizard" => [["dam_the_shadowake_red", 2], ["endless_maw_red", 1], ["engulfing_shadows_yellow", 2], ["vigorous_smashup_yellow", 3]],
-        "marlynn" => [["dam_the_shadowake_red", 2], ["rumbling_hunger_red", 1], ["consuming_lash_yellow", 3], ["vigorous_smashup_yellow", 2]],
-        "mirror" => [["consuming_lash_yellow", 3], ["vigorous_smashup_yellow", 3], ["goremass_summoning_blue", 2]],
-        "huntsman" => [["dam_the_shadowake_red", 2], ["rumbling_hunger_red", 1], ["chains_of_mephetis_blue", 2]],
-        "gravy" => [["dam_the_shadowake_red", 2], ["endless_maw_red", 1], ["engulfing_shadows_yellow", 2], ["fallen_herald_yellow", 1], ["goremass_summoning_blue", 2]],
-        "malice" => [["endless_maw_red", 1], ["engulfing_shadows_yellow", 2], ["fallen_herald_yellow", 3], ["chains_of_mephetis_blue", 2]],
-        "tuffnut" => [["dam_the_shadowake_red", 2], ["rumbling_hunger_red", 1], ["fallen_herald_yellow", 3], ["chains_of_mephetis_blue", 2]],
-        "puffin" => [["beckoning_hunger_red", 1], ["dam_the_shadowake_red", 2], ["consuming_lash_yellow", 3], ["chains_of_mephetis_blue", 2]],
-        "runeblade" => [["cleave_the_heavens_red", 2], ["rumbling_hunger_red", 1], ["consuming_lash_yellow", 3], ["chains_of_mephetis_blue", 2]],
-        "grindy" => [["beckoning_hunger_red", 1], ["dam_the_shadowake_red", 2], ["rumbling_hunger_red", 1], ["engulfing_shadows_yellow", 2], ["chains_of_mephetis_blue", 2]],
-        default => [["dam_the_shadowake_red", 2], ["rumbling_hunger_red", 1], ["consuming_lash_yellow", 3], ["chains_of_mephetis_blue", 2]],
-      };
-      foreach ($cuts as [$cardID, $count]) BotRemoveCopies($deck, $cardID, $count);
-      $wizard = $matchup == "wizard";
-      $carrion = BotNameHasAny($name, ["dorinthea", "rhinar", "olympia", "lyath", "valda", "uzuri", "vynnset"]);
-      $grindy = BotNameHasAny($name, ["jarl", "betsy", "bravo", "mortimer", "hala", "kayo", "pleiades", "teklovossen", "zyggy", "arakni, huntsman"]);
-      $equipment = [
-        "head" => $wizard ? "skullhorn" : "boneseer_skullcap",
-        "chest" => $wizard ? "savage_sash" : ($grindy ? "fyendals_spring_tunic" : ($carrion || $matchup == "marlynn" ? "carrion_husk" : "savage_sash")),
-        "arms" => $wizard || $matchup == "runeblade" ? "nullrune_gloves" : ($grindy ? "hex_gauntlet" : "embraforged_gauntlet"),
-        "legs" => "scabskin_leathers",
-      ];
-      $weapons = [$wizard ? "ravenous_meataxe" : "hexagore_the_death_hydra"];
+      $equipment = ["head" => "boneseer_skullcap", "chest" => "savage_sash", "arms" => "gauntlets_of_tyrannical_rex", "legs" => "scabskin_leathers"];
       break;
 
     case "StarvoCC":
@@ -664,7 +626,7 @@ function BotDeckFileText($presentation)
   foreach (["head", "chest", "arms", "legs"] as $slot) {
     if (($presentation["equipment"][$slot] ?? "") !== "") $character[] = $presentation["equipment"][$slot];
   }
-  return implode(" ", $character) . "\r\n" . implode(" ", $presentation["deck"]) . "\r\n" . implode(" ", $presentation["inventory"]);
+  return implode(" ", $character) . "\r\n" . implode(" ", $presentation["deck"]) . str_repeat("\r\n", 10) . implode(" ", $presentation["inventory"]);
 }
 
 function BotPresentForOpponent($gameName, $opponentHeroID, $botGoesFirst)

@@ -974,7 +974,8 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
   $noIndex = array_search("no", $normalized, true);
   if ($yesIndex !== false && $noIndex !== false) {
     $resources = &GetResources($playerID);
-    $decline = str_contains($context, "pay") && !(str_contains($context, "vigor") && intval($resources[0] ?? 0) >= 1);
+    $floatPays = (str_contains($context, "vigor") || str_contains($context, "losing 1 power")) && intval($resources[0] ?? 0) >= 1;
+    $decline = str_contains($context, "pay") && !$floatPays;
     return $options[$decline ? $noIndex : $yesIndex];
   }
 

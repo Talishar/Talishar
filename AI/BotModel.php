@@ -241,6 +241,7 @@ function BotSolverWeapons($playerID, $currentTurn)
       "goAgain" => HasGoAgain($cardID) || AbilityHasGoAgain($cardID, "EQUIP"),
       "subtype" => strtolower(CardSubType($cardID)),
       "onHit" => BotOnHitFactValue(BotCardFacts($cardID)["oh"] ?? null),
+      "brute" => ClassContains($cardID, "BRUTE", $playerID),
       "setFlags" => 0,
       "needFlags" => 0,
       "goAgainFlags" => 0,
@@ -309,7 +310,7 @@ function BotContextStateKey($playerID, $currentTurn)
   ];
   if ($currentTurn) {
     array_push($parts, $actionPoints, implode(" ", GetResources($playerID)), implode(" ", $currentTurnEffects), $turn[0] ?? "",
-      implode(" ", GetHand($playerID)), json_encode($GLOBALS["p" . $playerID . "ClassState"] ?? []));
+      implode(" ", GetHand($playerID)), json_encode($GLOBALS["p" . $playerID . "ClassState"] ?? []), BotChainStartFlags($playerID));
   }
   return md5(implode("|", $parts));
 }
@@ -485,21 +486,28 @@ function BotSolveHand($cards, $playerID, $context = null)
     $best = $stop === null ? [-INF, 0.0, 0.0] : [$stop, 0.0, $stop];
     if ($depth == 0) $roots["stop"] = $best[0];
 
-    $consider = function ($moveKey, $value, $damage, $nextMask, $nextWeaponMask, $nextAp, $nextChain, $nextPending, $nextFlags)
+    $consider = function ($moveKey, $value, $damage, $nextMask, $nextWeaponMask, $nextAp, $nextChain, $nextPending, $nextFlags, $alt = null)
       use (&$search, &$best, &$roots, $depth, $pitchAvailable, $costOf, $resources, $flags, $flagValues) {
       if ($costOf($nextMask, $nextWeaponMask) > $resources + $pitchAvailable($nextMask)) return;
       foreach ($flagValues as $bit => $bonus) if (($nextFlags & ~$flags) & $bit) $value += $bonus;
       $result = $search($nextMask, $nextWeaponMask, $nextAp, $nextChain, $nextPending, $nextFlags, $depth + 1);
       if ($result[0] === -INF) return;
+      if ($alt !== null) {
+        [$chance, $altAp, $altChain] = $alt;
+        $other = $search($nextMask, $nextWeaponMask, $altAp, $altChain, $nextPending, $nextFlags, $depth + 1);
+        if ($other[0] !== -INF) {
+          $result = [$chance * $result[0] + (1 - $chance) * $other[0], $chance * $result[1] + (1 - $chance) * $other[1], $chance * $result[2] + (1 - $chance) * $other[2]];
+        }
+      }
       $total = $value + $result[0];
       if ($depth == 0) $roots[$moveKey] = max($roots[$moveKey] ?? -INF, $total);
       if ($total > $best[0]) $best = [$total, $damage + $result[1], $result[2]];
     };
 
     $attack = function ($attackInfo, $moveKey, $nextMask, $nextWeaponMask, $extraFlags = 0) use ($ap, $pending, $flags, $consider, $profile, $flagsMet) {
-      $power = $attackInfo["power"];
       $flagsNow = $flags | $extraFlags;
-      $goAgain = $attackInfo["goAgain"] || ($attackInfo["goAgainFlags"] > 0 && $flagsMet($flagsNow, $attackInfo["goAgainFlags"]));
+      $power = $attackInfo["power"] + (!empty($attackInfo["brute"]) && ($flags & BOT_FLAG_BLOODRUSH) ? 2 : 0) + BotConditionalPower($attackInfo, $flagsNow);
+      $goAgain = $attackInfo["goAgain"] || ($attackInfo["goAgainFlags"] > 0 && $flagsMet($flagsNow, $attackInfo["goAgainFlags"])) || BotConditionalGoAgain($attackInfo, $flagsNow);
       $remaining = [];
       foreach ($pending as $pump) {
         if (BotPumpApplies($pump["target"], $attackInfo)) {
@@ -512,7 +520,13 @@ function BotSolveHand($cards, $playerID, $context = null)
       $onHit = $attackInfo["onHit"];
       $value = $power + ($onHit > 0 ? $onHit * BotHitChance($power, $onHit, $profile) : 0.0) - ($attackInfo["selfCost"] ?? 0);
       $chain = $attackInfo + ["ga" => $goAgain, "pumped" => $power > $attackInfo["power"] || !empty($attackInfo["chargedPower"]) || !empty($attackInfo["pumpedBase"])];
-      $consider($moveKey, $value, $power, $nextMask, $nextWeaponMask, $ap - 1 + ($goAgain ? 1 : 0), $chain, $remaining, $flagsNow | $attackInfo["setFlags"]);
+      $nextFlags = BotAttackedFlags($flagsNow | $attackInfo["setFlags"], $attackInfo);
+      if (!$goAgain && !empty($attackInfo["cond"]["goh"])) {
+        $chance = BotHitChance($power, $onHit, $profile);
+        $consider($moveKey, $value, $power, $nextMask, $nextWeaponMask, $ap, ["ga" => true] + $chain, $remaining, $nextFlags, [$chance, $ap - 1, $chain]);
+        return;
+      }
+      $consider($moveKey, $value, $power, $nextMask, $nextWeaponMask, $ap - 1 + ($goAgain ? 1 : 0), $chain, $remaining, $nextFlags);
     };
 
     for ($index = 0; $index < $count; ++$index) {
@@ -529,7 +543,9 @@ function BotSolveHand($cards, $playerID, $context = null)
         $attackInfo = [
           "key" => $moveKey, "power" => $item["power"], "goAgain" => $item["goAgain"], "isAA" => $item["isAA"],
           "cost" => $item["cost"], "subtype" => $item["subtype"], "onHit" => $item["onHit"],
-          "setFlags" => $item["setFlags"], "goAgainFlags" => $item["goAgainFlags"], "draconicGoAgain" => false,
+          "setFlags" => $item["setFlags"], "goAgainFlags" => $item["goAgainFlags"], "draconicGoAgain" => false, "brute" => $item["brute"] ?? false,
+          "id" => $item["id"], "cond" => $item["cond"] ?? [], "dracAttack" => $item["dracAttack"] ?? false, "red" => $item["red"] ?? false,
+          "lightning" => $item["lightning"] ?? false, "iraSecond" => $item["iraSecond"] ?? false,
         ];
         $attack($attackInfo, $moveKey, $nextMask, $weaponMask);
         if (!empty($item["charges"])) {
@@ -550,13 +566,13 @@ function BotSolveHand($cards, $playerID, $context = null)
           }
         }
       } else if (!$isPump && $item["kind"] == "action" && ($item["bonus"] ?? 0.0) > 0 && $ap > 0) {
-        $consider($moveKey, $item["bonus"], 0.0, $nextMask, $weaponMask, $ap - 1 + ($item["goAgain"] ? 1 : 0), null, $pending, $flags | $item["setFlags"]);
+        $consider($moveKey, $item["bonus"], 0.0, $nextMask, $weaponMask, $ap - 1 + ($item["goAgain"] ? 1 : 0), null, $pending, BotPlayedFlags($flags, $item) | $item["setFlags"]);
       } else if ($isPump && ($item["pumpNext"] || $item["kind"] == "action")) {
         if ($item["kind"] == "action" && $ap < 1) continue;
         $nextAp = $item["kind"] == "action" ? $ap - 1 + ($item["goAgain"] ? 1 : 0) : $ap;
         $nextPending = $pending;
         $nextPending[] = ["key" => $moveKey, "power" => $item["pump"], "target" => $item["pumpTarget"], "goAgain" => $item["pumpGoAgain"]];
-        $consider($moveKey, $item["bonus"] ?? 0.0, 0.0, $nextMask, $weaponMask, $nextAp, $item["kind"] == "action" ? null : $chain, $nextPending, $flags | $item["setFlags"]);
+        $consider($moveKey, $item["bonus"] ?? 0.0, 0.0, $nextMask, $weaponMask, $nextAp, $item["kind"] == "action" ? null : $chain, $nextPending, BotPlayedFlags($flags, $item) | $item["setFlags"]);
       } else if (($item["kind"] == "attack-reaction" || $item["kind"] == "instant") && $chain !== null) {
         $applies = $isPump && BotPumpApplies($item["pumpTarget"], $chain);
         $veinLink = !empty($item["draconic"]) && $chain["draconicGoAgain"] && !$chain["ga"];
@@ -569,7 +585,7 @@ function BotSolveHand($cards, $playerID, $context = null)
           ++$nextAp;
           $nextChain["ga"] = true;
         }
-        $consider($moveKey, $gain, $gain, $nextMask, $weaponMask, $nextAp, $nextChain, $pending, $flags | $item["setFlags"]);
+        $consider($moveKey, $gain, $gain, $nextMask, $weaponMask, $nextAp, $nextChain, $pending, BotPlayedFlags($flags, $item) | $item["setFlags"]);
       }
     }
     if ($ap > 0) {
@@ -581,7 +597,8 @@ function BotSolveHand($cards, $playerID, $context = null)
           "key" => $moveKey, "power" => $weapon["power"], "goAgain" => $weapon["goAgain"], "isAA" => false,
           "cost" => $weapon["cost"], "subtype" => $weapon["subtype"], "onHit" => $weapon["onHit"],
           "setFlags" => $weapon["setFlags"], "goAgainFlags" => $weapon["goAgainFlags"], "draconicGoAgain" => $weapon["draconicGoAgain"] ?? false,
-          "chargedPower" => $weapon["chargedPower"] ?? false, "selfCost" => $weapon["selfCost"] ?? 0,
+          "chargedPower" => $weapon["chargedPower"] ?? false, "selfCost" => $weapon["selfCost"] ?? 0, "brute" => $weapon["brute"] ?? false,
+          "id" => $weapon["id"], "cond" => $weapon["cond"] ?? [], "dracAttack" => $weapon["dracAttack"] ?? false, "iraSecond" => $weapon["iraSecond"] ?? false,
         ], $moveKey, $mask, $weaponMask | (1 << $index));
       }
     }

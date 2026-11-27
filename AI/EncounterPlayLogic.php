@@ -256,6 +256,10 @@ function PlayCardAttempt($storedPriorityNode)
       ProcessInput($currentPlayer, 22, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
+    case "Permanent":
+      ProcessInput($currentPlayer, 34, "", $storedPriorityNode[2], 0, "");
+      CacheCombatResult();
+      break;
     default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); PassInput(); break;
   }
 }
