@@ -64,11 +64,17 @@ function CardIsPlayable($storedPriorityNode, $hand, $resources)
       $baseCost = CardCost($storedPriorityNode[0]);
       $from = "BANISH";
       break;
+    case "Aura":
+      $index = -1;
+      $baseCost = AbilityCost($storedPriorityNode[0]);
+      $from = "PLAY";
+      break;
     default:
       WriteLog("ERROR: The AI's stored priority node is not a card that can be checked for playability. Please submit a bug report.");
       return false;
   }
   if(!IsPlayable($storedPriorityNode[0], $turn[0], $from, $storedPriorityNode[2])) return false;
+  if($from == "HAND" && BotBanishIntent($storedPriorityNode[0])) $baseCost = max(0, -(BOT_LEVIA_HAND_BANISHERS[$storedPriorityNode[0]] ?? 0));
   $finalCost = BotEffectiveCost($storedPriorityNode[0], $from, $storedPriorityNode[2], $baseCost);
   $totalPitch = $resources[0];
   $handCount = count($hand);
@@ -244,6 +250,10 @@ function PlayCardAttempt($storedPriorityNode)
       break;
     case "Banish":
       ProcessInput($currentPlayer, 14, "", $storedPriorityNode[2], 0, "");
+      CacheCombatResult();
+      break;
+    case "Aura":
+      ProcessInput($currentPlayer, 22, "", $storedPriorityNode[2], 0, "");
       CacheCombatResult();
       break;
     default: WriteLog("ERROR: AI attempting to play an unplayable card. Please log a bug report."); PassInput(); break;

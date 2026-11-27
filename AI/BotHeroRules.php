@@ -8,6 +8,12 @@ const BOT_FLAG_DISCARDED_SIX = 8;
 const BOT_FLAG_BLOOD_DEBT_SUPPRESSED = 16;
 const BOT_BANISH_SIX_CHANCE = 0.8;
 const BOT_FLAG_FLURRY = 32;
+const BOT_FLAG_YELLOW_SOUL = 64;
+const BOT_FLAG_SOUL = 128;
+const BOT_FLAG_LUMINA = 256;
+const BOT_FLAG_NEVER = 1 << 20;
+const BOT_SOUL_HARVESTER_VALUE = 8.0;
+const BOT_LEVIA_HAND_BANISHERS = ["cleave_the_heavens_red" => 0, "fallen_herald_yellow" => 0, "blood_harvest" => 3, "consuming_lash_yellow" => -1];
 
 function BotCardFactOverrides()
 {
@@ -40,6 +46,13 @@ function BotCardFactOverrides()
     "hit_and_run_blue" => ["p" => 0, "pga" => 1, "pt" => "w", "pn" => 1],
     "fatal_engagement_red" => ["p" => 2], "fatal_engagement_yellow" => ["p" => 1.6], "fatal_engagement_blue" => ["p" => 1.2],
     "ironsong_response_red" => ["p" => 1.5], "ironsong_response_yellow" => ["p" => 1], "ironsong_response_blue" => ["p" => 0.5],
+    "bravery_of_the_blade_red" => ["gf" => BOT_FLAG_CHARGED],
+    "beaming_bravado_red" => ["ycp" => 1], "beaming_bravado_yellow" => ["ycp" => 1], "beaming_bravado_blue" => ["ycp" => 1],
+    "duty_bound_blitz_red" => ["nf" => BOT_FLAG_YELLOW_SOUL], "duty_bound_blitz_yellow" => ["nf" => BOT_FLAG_YELLOW_SOUL], "duty_bound_blitz_blue" => ["nf" => BOT_FLAG_YELLOW_SOUL],
+    "courageous_steelhand_red" => ["nf" => BOT_FLAG_CHARGED], "courageous_steelhand_yellow" => ["nf" => BOT_FLAG_CHARGED], "courageous_steelhand_blue" => ["nf" => BOT_FLAG_CHARGED],
+    "lumina_ascension_yellow" => ["p" => 1, "pt" => "w", "sf" => BOT_FLAG_LUMINA],
+    "blessing_of_suraya_yellow" => ["bv" => 1.5], "blessing_of_bellona_yellow" => ["bv" => 1.5],
+    "beacon_of_victory_yellow" => ["p" => 1, "pt" => "any", "nf" => BOT_FLAG_SOUL],
   ];
   return $overrides;
 }
@@ -71,10 +84,14 @@ function BotWeaponSolverPower($weaponID, $playerID, $power)
 function BotHeroWeaponPatch($weapon, $playerID)
 {
   $weapon["setFlags"] |= BOT_FLAG_WEAPON_SWUNG;
-  if ($weapon["id"] == "raydn_duskbane") $weapon["needFlags"] |= BOT_FLAG_CHARGED;
+  if ($weapon["id"] == "raydn_duskbane") {
+    $weapon["needFlags"] |= BOT_FLAG_CHARGED;
+    $weapon["chargedPower"] = true;
+  }
   if ($weapon["id"] == "zenith_blade") $weapon["goAgainFlags"] = BOT_FLAG_SHARPENED;
   if ($weapon["id"] == "mandible_claw" || $weapon["id"] == "mandible_claw_r") $weapon["goAgainFlags"] = BOT_FLAG_DISCARDED_SIX;
   $weapon["draconicGoAgain"] = BotIsObsidianFireVein($weapon["id"]);
+  if ($weapon["id"] == "hexagore_the_death_hydra") $weapon["selfCost"] = BotHexagoreSelfDamage($playerID);
   if (BotHeroID($playerID) == "fang_dracai_of_blades" && str_contains($weapon["subtype"], "dagger") && BotFealtyCount($playerID) >= 3) $weapon["cost"] = max(0, $weapon["cost"] - 1);
   return $weapon;
 }
@@ -109,6 +126,7 @@ function BotHeroCardPatch($item, $playerID, $context)
 {
   $item["draconic"] = ($item["kind"] == "attack-reaction" || $item["kind"] == "instant") && TalentContains($item["id"], "DRACONIC", $playerID);
   if ($item["id"] == "hunts_end_red" && BotFealtyCount($playerID) < 3) $item["pump"] = 0.0;
+  if ($item["id"] == "celestial_cataclysm_yellow" && count(GetSoul($playerID)) < 3) $item["needFlags"] |= BOT_FLAG_NEVER;
   if ($item["id"] == "edict_of_steel_yellow" || $item["id"] == "edict_of_steel_blue") {
     $zenith = FindCharacterIndex($playerID, "zenith_blade");
     $character = &GetPlayerCharacter($playerID);
@@ -137,14 +155,27 @@ function BotHeroStartFlags($playerID)
   if (SearchCurrentTurnEffects("SHARPEN", $playerID)) $flags |= BOT_FLAG_SHARPENED;
   if (intval(GetClassState($playerID, $CS_NumCharged)) > 0) $flags |= BOT_FLAG_CHARGED;
   if (intval(GetClassState($playerID, $CS_AttacksWithWeapon)) > 0) $flags |= BOT_FLAG_WEAPON_SWUNG;
-  return $flags | BotHeroNextTurnFlags($playerID);
+  if (intval(GetClassState($playerID, "NumYellowPutSoul")) > 0) $flags |= BOT_FLAG_YELLOW_SOUL;
+  if (SearchCurrentTurnEffects("lumina_ascension_yellow", $playerID)) $flags |= BOT_FLAG_LUMINA;
+  if (count(GetSoul($playerID)) > 0) $flags |= BOT_FLAG_SOUL;
+  return $flags | BotHeroNextTurnFlags($playerID, true);
 }
 
-function BotHeroNextTurnFlags($playerID)
+function BotHeroNextTurnFlags($playerID, $currentTurn = false)
 {
   $flags = 0;
   if (SearchAurasForCard("flurry", $playerID) !== "") $flags |= BOT_FLAG_FLURRY;
+  if (!$currentTurn && BotIsBoltyn($playerID)) {
+    if (count(GetSoul($playerID)) > 0) $flags |= BOT_FLAG_SOUL;
+    if (SearchAurasForCard("blessing_of_suraya_yellow", $playerID) !== "" || SearchAurasForCard("blessing_of_bellona_yellow", $playerID) !== "") $flags |= BOT_FLAG_YELLOW_SOUL | BOT_FLAG_SOUL;
+  }
   return $flags;
+}
+
+function BotIsBoltyn($playerID)
+{
+  $heroID = BotHeroID($playerID);
+  return $heroID == "ser_boltyn_breaker_of_dawn" || $heroID == "boltyn";
 }
 
 function BotHeroStartPending($playerID, $currentTurn)
@@ -173,13 +204,13 @@ function BotHeroNextTurnResources($playerID)
   return SearchCount(SearchAurasForCard("vigor", $playerID));
 }
 
-function BotAbilityUses($kind, $cost, $goAgain, $pump, $pumpTarget, $pumpGoAgain, $setFlags = 0)
+function BotAbilityUses($kind, $cost, $goAgain, $pump, $pumpTarget, $pumpGoAgain, $setFlags = 0, $needFlags = 0)
 {
   return [
     "kind" => $kind, "power" => 0, "defense" => 0, "pitch" => 0, "cost" => $cost, "goAgain" => $goAgain,
     "pump" => floatval($pump), "pumpNext" => true, "pumpTarget" => $pumpTarget, "pumpGoAgain" => $pumpGoAgain,
     "ambush" => false, "arsenalPlay" => false, "alternative" => 0.0, "onHit" => 0.0,
-    "setFlags" => $setFlags, "needFlags" => 0, "goAgainFlags" => 0,
+    "setFlags" => $setFlags, "needFlags" => $needFlags, "goAgainFlags" => 0,
   ];
 }
 
@@ -188,6 +219,7 @@ function BotHeroAbilityUses($heroID)
   return match ($heroID) {
     "hala_bladesaint_of_the_vow" => BotAbilityUses("action", 3, true, 1, "w:sword", false, BOT_FLAG_SHARPENED),
     "aurora_legacy_of_tempest" => BotAbilityUses("instant", 2, false, 0, "aa", true),
+    "ser_boltyn_breaker_of_dawn" => ["pumpNext" => false] + BotAbilityUses("attack-reaction", 0, false, 0, "w|pumped", true, 0, BOT_FLAG_SOUL),
     default => null,
   };
 }
@@ -198,6 +230,7 @@ function BotHeroSolverSources($playerID, $currentTurn)
   $heroID = BotHeroID($playerID);
   if (BotHeroAbilityUses($heroID) === null) return [];
   $character = &GetPlayerCharacter($playerID);
+  if ($heroID == "ser_boltyn_breaker_of_dawn") return intval($character[1] ?? 0) == 2 ? [["id" => $heroID, "zone" => "CHAR", "index" => 0]] : [];
   if ($currentTurn && (intval($character[1] ?? 0) != 2 || !IsPlayable($heroID, $turn[0], "CHAR", 0))) return [];
   if ($heroID == "hala_bladesaint_of_the_vow" && FindCharacterIndex($playerID, "zenith_blade") == -1) return [];
   if ($heroID == "aurora_legacy_of_tempest" && SearchAurasForCard("lightning_flow", $playerID) === "") return [];
@@ -232,10 +265,14 @@ function BotBoltynReactionPriority($playerID)
 
 function BotHeroFlagValues($playerID)
 {
-  $heroID = BotHeroID($playerID);
-  if ($heroID != "levia_shadowborn_abomination" && $heroID != "levia") return [];
-  $drain = SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
+  if (!BotIsLevia($playerID)) return [];
+  $drain = BotLeviaDrain($playerID);
   return $drain > 0 ? [BOT_FLAG_BLOOD_DEBT_SUPPRESSED => $drain * BOT_BANISH_SIX_CHANCE] : [];
+}
+
+function BotLeviaDrain($playerID)
+{
+  return SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true));
 }
 
 function BotFealtyCount($playerID)
@@ -251,10 +288,99 @@ function BotHeroFlurrySwing($weaponID, $playerID)
 function BotLeviaSuppressionNeeded($playerID)
 {
   global $CS_Num6PowPutIntoBanish;
-  $heroID = BotHeroID($playerID);
-  if ($heroID != "levia_shadowborn_abomination" && $heroID != "levia") return false;
+  if (!BotIsLevia($playerID)) return false;
   if (intval(GetClassState($playerID, $CS_Num6PowPutIntoBanish)) > 0) return false;
-  return SearchCount(SearchBanish($playerID, "", "", -1, -1, "", "", true)) >= 2;
+  return BotLeviaDrain($playerID) >= 2;
+}
+
+function BotIsLevia($playerID)
+{
+  $heroID = BotHeroID($playerID);
+  return $heroID == "levia_shadowborn_abomination" || $heroID == "levia";
+}
+
+function BotHeroBanishTwin($item, $playerID)
+{
+  if (!$item["inHand"] || !isset(BOT_LEVIA_HAND_BANISHERS[$item["id"]]) || !BotIsLevia($playerID)) return null;
+  $certainty = BotLeviaDrain($playerID) * (1 - BOT_BANISH_SIX_CHANCE);
+  return [
+    "kind" => "banish", "power" => 0, "defense" => 0, "pitch" => 0, "cost" => BotEffectiveCost($item["id"], "HAND", -1, 0) - BOT_LEVIA_HAND_BANISHERS[$item["id"]], "goAgain" => false,
+    "pump" => 0.0, "pumpNext" => false, "pumpTarget" => "any", "pumpGoAgain" => false, "ambush" => false, "arsenalPlay" => false,
+    "alternative" => 0.0, "onHit" => 0.0, "bonus" => $certainty, "setFlags" => BOT_FLAG_BLOOD_DEBT_SUPPRESSED, "needFlags" => 0, "goAgainFlags" => 0,
+    "id" => $item["id"], "zone" => "BANISH", "inHand" => false, "held" => 0.0, "raw" => 0.0, "arsenal" => 0.0, "isAA" => false, "subtype" => "",
+  ];
+}
+
+function BotHeroGateCards($playerID)
+{
+  if (!BotIsLevia($playerID)) return [];
+  $gates = SearchCount(SearchAurasForCard("gate_to_iarathael", $playerID));
+  if ($gates == 0) return [];
+  $candidates = [];
+  $banish = &GetBanish($playerID);
+  foreach (explode(",", SearchBanish($playerID, "", "", -1, -1, "", "", true)) as $index) {
+    if ($index === "") continue;
+    $cardID = $banish[intval($index)] ?? "";
+    $type = CardType($cardID);
+    if ($type != "AA" && $type != "A") continue;
+    $candidates[$cardID] = ["id" => $cardID, "zone" => "GATE", "index" => intval($index), "power" => intval(PowerValue($cardID, $playerID, "BANISH", -1, false, false))];
+  }
+  usort($candidates, fn($left, $right) => $right["power"] <=> $left["power"]);
+  return array_slice(array_values($candidates), 0, min($gates, 2));
+}
+
+function BotHeroAllyAttackers($playerID, $currentTurn)
+{
+  if (!BotIsLevia($playerID)) return [];
+  $attackers = [];
+  $allies = &GetAllies($playerID);
+  $pieces = AllyPieces();
+  for ($i = 0, $count = count($allies); $i < $count; $i += $pieces) {
+    if ($allies[$i] != "blasmophet_the_soul_harvester" || ($currentTurn && intval($allies[$i + 1] ?? 0) != 2)) continue;
+    $attackers[] = [
+      "id" => $allies[$i], "power" => 6, "cost" => 0, "goAgain" => false, "subtype" => "demon", "onHit" => 0.0,
+      "setFlags" => 0, "needFlags" => 0, "goAgainFlags" => 0,
+    ];
+  }
+  return $attackers;
+}
+
+function BotHeroHeldBonus($cardID, $playerID)
+{
+  if ($cardID != "doomsday_blue" || !BotIsLevia($playerID)) return 0.0;
+  $allies = &GetAllies($playerID);
+  return in_array("blasmophet_the_soul_harvester", $allies, true) ? 0.0 : BOT_SOUL_HARVESTER_VALUE;
+}
+
+function BotHeroCardDead($cardID, $playerID)
+{
+  return $cardID == "celestial_cataclysm_yellow" && count(GetSoul($playerID)) < 3;
+}
+
+function BotHeroCardPriority($cardID, $playerID)
+{
+  if ($cardID == "doomsday_blue" && BotIsLevia($playerID)) return 60.0;
+  return null;
+}
+
+function BotGateIntent($cardID = null)
+{
+  static $intent = null;
+  if ($cardID !== null) $intent = $cardID === "" ? null : $cardID;
+  return $intent;
+}
+
+function BotBanishIntent($cardID, $intent = null)
+{
+  static $intents = [];
+  if ($intent !== null) $intents[$cardID] = $intent;
+  return $intents[$cardID] ?? null;
+}
+
+function BotPendingAbilityTypeCard()
+{
+  global $decisionQueue;
+  return ($decisionQueue[0] ?? "") == "SETABILITYTYPE" ? strval($decisionQueue[2] ?? "") : "";
 }
 
 function BotHeroEndTurnNode($playerID)
@@ -262,9 +388,15 @@ function BotHeroEndTurnNode($playerID)
   global $turn;
   if (!BotLeviaSuppressionNeeded($playerID)) return null;
   $hand = &GetHand($playerID);
-  foreach (["cleave_the_heavens_red", "blood_harvest"] as $cardID) {
+  $resources = &GetResources($playerID);
+  foreach (BOT_LEVIA_HAND_BANISHERS as $cardID => $gain) {
     foreach ($hand as $index => $handCard) {
-      if ($handCard == $cardID && IsPlayable($cardID, $turn[0], "HAND", $index)) return [$cardID, "Hand", $index, 1];
+      if ($handCard != $cardID || !IsPlayable($cardID, $turn[0], "HAND", $index)) continue;
+      $pitch = intval($resources[0] ?? 0);
+      foreach ($hand as $other => $otherCard) if ($other != $index) $pitch += intval(PitchValue($otherCard));
+      if (BotEffectiveCost($cardID, "HAND", $index, 0) + max(0, -$gain) > $pitch) continue;
+      BotBanishIntent($cardID, true);
+      return [$cardID, "Hand", $index, 1];
     }
   }
   return null;

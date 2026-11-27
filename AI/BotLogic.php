@@ -385,6 +385,8 @@ function BotCharacterEnablerPriority($cardID, $heroID, $playerID)
 function BotActionPriority($cardID, $heroID, $playerID, $zone = "Hand")
 {
   global $currentTurn;
+  $heroPriority = BotHeroCardPriority($cardID, $playerID);
+  if ($heroPriority !== null) return $heroPriority;
   if ($zone == "Character") {
     $enablerPriority = BotCharacterEnablerPriority($cardID, $heroID, $playerID);
     if ($enablerPriority !== null) return $enablerPriority;
@@ -444,16 +446,33 @@ function BotSolverActionPriority($cardID, $playerID, $zone)
     "Hand" => "HAND:" . $cardID,
     "Arsenal" => "ARS:" . $cardID,
     "Character" => CardType($cardID) == "W" ? "W:" . $cardID : (BotHeroHasSolverSource($cardID, $playerID) ? "CHAR:" . $cardID : null),
+    "Aura" => $cardID == "gate_to_iarathael" ? "GATE" : null,
+    "Ally" => $cardID == "blasmophet_the_soul_harvester" ? "W:" . $cardID : null,
     default => null,
   };
   if ($moveKey === null) return null;
-  if ($zone != "Character") {
+  if ($moveKey == "GATE") {
+    $plan = BotSolveHand(BotOffensiveHandCards($playerID), $playerID, BotCurrentTurnContext($playerID));
+    $best = null;
+    foreach ($plan["first"] as $key => $value) {
+      if (str_starts_with($key, "GATE:") && ($best === null || $value > $plan["first"][$best])) $best = $key;
+    }
+    if ($best === null) return 0.0;
+    BotGateIntent(substr($best, 5));
+    return max(0.0, ($plan["first"][$best] - ($plan["first"]["stop"] ?? 0.0)) * 10);
+  }
+  if ($zone == "Hand" || $zone == "Arsenal") {
     $uses = BotCardUses($cardID, $playerID);
-    $modelled = $uses["kind"] == "attack" || ($uses["pump"] > 0 && ($uses["kind"] == "action" || $uses["pumpNext"]));
+    $modelled = $uses["kind"] == "attack" || ($uses["pump"] > 0 && ($uses["kind"] == "action" || $uses["pumpNext"])) || ($uses["kind"] == "action" && $uses["bonus"] > 0);
     if (!$modelled) return null;
   }
   $plan = BotSolveHand(BotOffensiveHandCards($playerID), $playerID, BotCurrentTurnContext($playerID));
   $value = $plan["first"][$moveKey] ?? null;
+  if ($zone == "Hand" && isset($plan["first"]["BANISH:" . $cardID])) {
+    $banish = $plan["first"]["BANISH:" . $cardID];
+    BotBanishIntent($cardID, $value === null || $banish > $value);
+    $value = max($value ?? -INF, $banish);
+  }
   if ($value === null) return 0.0;
   $score = ($value - ($plan["first"]["stop"] ?? 0.0)) * 10;
   if ($value >= $plan["value"] - 1e-9 && $plan["damage"] >= intval(GetHealth(3 - $playerID))) $score += 100000;
@@ -776,7 +795,7 @@ function BotPriority($cardID, $heroID, $type, $playerID = null, $zone = "Hand")
     0 => BotDefensePriority($cardID, $playerID, $zone),
     1, 2 => BotActionPriority($cardID, $heroID, $playerID, $zone),
     3, 4 => BotReactionPriority($cardID, $playerID, $zone),
-    5 => BotPitchPriority($cardID, $playerID),
+    5 => $zone == "Banish" && $cardID === BotGateIntent() ? 100000.0 : BotPitchPriority($cardID, $playerID),
     6 => BotArsenalPriority($cardID, $playerID),
     7 => max(0.0, BotActionPriority($cardID, $heroID, $playerID, $zone)),
     default => 0.0,
@@ -852,7 +871,7 @@ function BotModeOptionScore($option, $playerID)
     "Additional_Attack" => BotAvailablePitch($playerID) >= 1 ? 3.0 : 0.5,
     "Mark" => BotFealtyCount($playerID) < 3 ? 2.5 : 1.0,
     "Attack" => 2.0,
-    "Ability" => BotLeviaSuppressionNeeded($playerID) ? 3.0 : 1.0,
+    "Ability" => (BotBanishIntent(BotPendingAbilityTypeCard()) ?? BotLeviaSuppressionNeeded($playerID)) ? 3.0 : 1.0,
     default => null,
   };
 }
@@ -968,8 +987,9 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
       $roles = BotCardRoles($cardID, $playerID);
       $spendingChoice = preg_match("/discard|bottom|banish|charge|sink|remove/", $context . " " . $helpText) == 1;
       $score = $spendingChoice ? -$roles["retainValue"] : $roles["playValue"];
-      if ($charging && intval(PitchValue($cardID)) == 2) $score += 0.01;
+      if ($charging && intval(PitchValue($cardID)) == 2) $score += BotIsBoltyn($playerID) ? 5.0 : 0.01;
       if (str_contains($helpText, "banish") && BotLeviaSuppressionNeeded($playerID) && intval(PowerValue($cardID, $playerID, "GY")) >= 6) $score += 100;
+      if (str_starts_with(strval($option), "MYBANISH") && $cardID === BotGateIntent()) $score += 1000;
     } else if ($normalizedOption == "pass" || $normalizedOption == "no") {
       $score = -2;
     } else if (preg_match('/^pay[ _-]?(\d+)$/i', strval($option), $matches)) {

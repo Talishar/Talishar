@@ -48,6 +48,7 @@ function GeneratePriorityValues($hand, $character, $arsenal, $items, $allies, $b
       $priorityArray = PushArray($priorityArray, "Items", $items, $character, 7);
       $priorityArray = PushArray($priorityArray, "Allies", $allies, $character, 7);
       $priorityArray = PushArray($priorityArray, "Banish", $banish, $character, 5);
+      $priorityArray = PushArray($priorityArray, "Auras", GetAuras($GLOBALS["currentPlayer"]), $character, 1);
       return SortPriorityArray($priorityArray);
       
     case "Pitch":
@@ -121,6 +122,14 @@ function PushArray($priorityArray, $zone, $zoneArr, $character, $priorityIndex)
       $allyPieces = AllyPieces();
       for ($i = 0; $i < $zoneCount; $i += $allyPieces) {
         $priorityArray[] = [$zoneArr[$i], "Ally", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Ally")];
+      }
+      return $priorityArray;
+
+    case "Auras":
+      $auraPieces = AuraPieces();
+      for ($i = 0, $zoneCount = count($zoneArr); $i < $zoneCount; $i += $auraPieces) {
+        if ($zoneArr[$i] != "gate_to_iarathael") continue;
+        $priorityArray[] = [$zoneArr[$i], "Aura", $i, GetPriority($zoneArr[$i], $character[0], $priorityIndex, "Aura")];
       }
       return $priorityArray;
 
