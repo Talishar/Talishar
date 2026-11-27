@@ -83,10 +83,33 @@ function CheckImage($setID, $cardID, $isDuplicate=false, $manualImageURL="", $is
       echo("Attempting to convert image for " . $cardID . " to crops.<BR>");
       $image = imagecreatefromwebp($cardImagesUploadedFolder);
       $image = imagecrop($image, ['x' => 50, 'y' => 100, 'width' => 350, 'height' => 270]);
-      if(!file_exists($cardCropsUploadedFolder)) imagewebp($image, $cardCropsMissingFolder);
+      $heroCrop = $isHero ? HeroCropFromLargeImage($setID, $manualImageURL) : null;
+      if(!file_exists($cardCropsUploadedFolder)) imagewebp($heroCrop ?? $image, $cardCropsMissingFolder, $heroCrop ? 92 : -1);
       if($isHero) imagepng($image, __DIR__ . "/../CardImages/media/missing/crops/" . $cardID . "_cropped.png"); // Shared replay link previews can only decode PNG crops
     }
   }
+}
+
+// Hero banners are shown far larger than the 450x628 card, so crop them from the full-size LSS image.
+// Keep in sync with CardImages/scripts/regenerateHeroCrops.js.
+function HeroCropFromLargeImage($setID, $manualImageURL="")
+{
+  $urls = $manualImageURL != "" ? [$manualImageURL] : array_map(
+    fn($suffix) => "https://legendstory-production-s3-public.s3.amazonaws.com/media/cards/large/$setID$suffix.webp",
+    ["", "-RF", "-CF"]
+  );
+  foreach($urls as $url) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FAILONERROR => true, CURLOPT_TIMEOUT => 20]);
+    if(defined('CURLSSLOPT_NATIVE_CA')) curl_setopt($ch, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NATIVE_CA);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    $card = is_string($data) && strlen($data) >= 10000 ? @imagecreatefromstring($data) : false;
+    if($card === false) continue;
+    $scale = imagesx($card) / 546;
+    return imagecrop($card, ['x' => (int)round(62 * $scale), 'y' => (int)round(114 * $scale), 'width' => (int)round(422 * $scale), 'height' => (int)round(314 * $scale)]);
+  }
+  return null;
 }
 
 function NormalizeCardBackID($id)

@@ -546,7 +546,7 @@
         case "health":
           $data = $cardArray[$i]->health;
           if ($getImage && $cardID != "hunters_klaive_r") CheckImage($setID, $cardID, $isDuplicate, isHero: MapType($cardArray[$i], $setID) == "C");
-          if (MapType($cardArray[$i], $setID) == "C") CheckImage($setID, $setID, $isDuplicate);
+          if (MapType($cardArray[$i], $setID) == "C") CheckImage($setID, $setID, $isDuplicate, isHero: true);
           break;
         case "intelligence":
           $data = $cardArray[$i]->intelligence;
