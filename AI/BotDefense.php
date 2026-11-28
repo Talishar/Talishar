@@ -750,6 +750,22 @@ function BotSurvivalRisk($lifeAfter)
   return is_infinite($risk) ? 100000.0 : $risk;
 }
 
+function BotExtraActionValue($player, $excludeCardID)
+{
+  $cards = [];
+  $skipped = false;
+  foreach (BotOffensiveHandCards($player) as $card) {
+    if (!$skipped && $card["zone"] == "HAND" && $card["id"] == $excludeCardID) {
+      $skipped = true;
+      continue;
+    }
+    $cards[] = $card;
+  }
+  $context = BotCurrentTurnContext($player);
+  $extra = ["ap" => $context["ap"] + 1, "key" => $context["key"] . ":extra"] + $context;
+  return max(0.0, BotSolveHand($cards, $player, $extra)["value"] - BotSolveHand($cards, $player, $context)["value"]);
+}
+
 function BotAttackReactionValue($cardID, $player)
 {
   global $defPlayer;
@@ -757,13 +773,18 @@ function BotAttackReactionValue($cardID, $player)
   if ($attack === null) return 0.0;
   $uses = BotCardUses($cardID, $player);
   $veinBonus = BotDraconicVeinBonus($cardID, $player);
-  $pump = $uses["pumpNext"] || !BotPumpApplies($uses["pumpTarget"], $attack) ? 0.0 : $uses["pump"];
-  if ($pump <= 0 && $veinBonus <= 0) return 0.0;
+  $applies = !$uses["pumpNext"] && BotPumpApplies($uses["pumpTarget"], $attack);
+  $pump = $applies ? $uses["pump"] : 0.0;
+  $bonus = $applies ? floatval($uses["bonus"] ?? 0) : 0.0;
+  $goAgain = $applies && $uses["pumpGoAgain"] && !DoesAttackHaveGoAgain();
+  if ($pump <= 0 && $veinBonus <= 0 && $bonus <= 0 && !$goAgain) return 0.0;
   $power = intval(CachedTotalPower());
   $block = intval(CachedTotalBlock());
-  $gained = max(0, $power + $pump - $block) - max(0, $power - $block) + $veinBonus;
-  if ($uses["pumpGoAgain"] && $pump > 0 && !DoesAttackHaveGoAgain()) $gained += 2;
-  $value = $gained - BotHeldCardValue($cardID, $player);
+  $gained = max(0, $power + $pump - $block) - max(0, $power - $block) + $veinBonus + $bonus;
+  if ($goAgain) $gained += BotExtraActionValue($player, $cardID);
+  $resources = &GetResources($player);
+  $cost = max(0, BotEffectiveCost($cardID, "HAND", -1, CardCost($cardID, "HAND")) + intval(SelfCostModifier($cardID, "HAND")));
+  $value = $gained - BotHeldCardValue($cardID, $player) - max(0, $cost - intval($resources[0] ?? 0)) * BOT_PITCH_FUNDING_RATE;
   if ($power - $block < intval(GetHealth($defPlayer)) && $power + $pump - $block >= intval(GetHealth($defPlayer))) $value += 100000;
   return $value > 0 ? 20 + $value * 10 : 0.0;
 }

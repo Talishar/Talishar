@@ -872,6 +872,7 @@ function BotModeOptionScore($option, $playerID)
     "Mark" => BotFealtyCount($playerID) < 3 ? 2.5 : 1.0,
     "Attack" => 2.0,
     "Ability" => (BotBanishIntent(BotPendingAbilityTypeCard()) ?? BotLeviaSuppressionNeeded($playerID)) ? 3.0 : 1.0,
+    "Both" => 4.0,
     default => null,
   };
 }
@@ -969,6 +970,8 @@ function BotChooseDecisionOption($phase, $options, $playerID, $context = "")
     }
     return $options[$bestTarget];
   }
+
+  if (str_contains($helpText, "choose a target for") && in_array("THEIRCHAR-0", $options, true) && HasMeld(strval($GLOBALS["dqVars"][0] ?? ""))) return "THEIRCHAR-0";
 
   $yesIndex = array_search("yes", $normalized, true);
   $noIndex = array_search("no", $normalized, true);

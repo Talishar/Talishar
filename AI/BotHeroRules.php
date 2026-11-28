@@ -22,6 +22,16 @@ const BOT_FLAG_LIGHTNING_PLAYED = 1 << 18;
 const BOT_FLAG_LAST_EDGE = 1 << 21;
 const BOT_FLAG_LAST_TIGER = 1 << 22;
 const BOT_COMBO_FLAGS = BOT_FLAG_LAST_EDGE | BOT_FLAG_LAST_TIGER;
+const BOT_FLAG_LAST_ACTION_LIGHTNING = 1 << 11;
+const BOT_FLAG_INSTANT_CHAIN = 1 << 19;
+const BOT_NAA_SHIFT = 23;
+const BOT_FLAG_DAGGER_ATTACKED = 1 << 25;
+const BOT_FLAG_DAGGER_HIT = 1 << 26;
+const BOT_FLAG_DAMAGE_DEALT = 1 << 27;
+const BOT_DAGGER_HIT_CHANCE = 0.7;
+const BOT_DAMAGE_DEALT_CHANCE = 0.75;
+const BOT_PLAYABLE_MELDS = ["arcane_seeds__life_red" => true, "burn_up__shock_red" => true];
+
 const BOT_AGILITY_SETUP_VALUE = 2.5;
 const BOT_MIGHT_SETUP_VALUE = 1.0;
 const BOT_SOUL_HARVESTER_VALUE = 8.0;
@@ -67,6 +77,15 @@ function BotCardFactOverrides()
     "blessing_of_suraya_yellow" => ["bv" => 1.5], "blessing_of_bellona_yellow" => ["bv" => 1.5],
     "beacon_of_victory_yellow" => ["p" => 1, "pt" => "any", "nf" => BOT_FLAG_SOUL],
     "rites_of_nightfall_blue" => ["bv" => 2.0],
+    "arc_lightning_yellow" => ["p" => 0, "pga" => 1, "pt" => "aa", "pn" => 1, "bv" => 1.5],
+    "arcane_seeds__life_red" => ["bv" => 2.75],
+    "burn_up__shock_red" => ["p" => 4 * BOT_HIT_CHANCE, "pt" => "any", "pn" => 1, "bv" => 1.0],
+    "glint_the_quicksilver_blue" => ["pga" => 1, "pt" => "w"],
+    "blade_flurry_red" => ["pn" => 0, "bv" => 1.0],
+    "ancestral_empowerment_red" => ["bv" => BOT_DRAW_VALUE],
+    "provoke_blue" => ["pt" => "w", "bv" => 2.0],
+    "throw_dagger_blue" => ["bv" => 1.0],
+    "relentless_pursuit_blue" => ["bv" => 1.5],
   ];
   return $overrides;
 }
@@ -128,6 +147,13 @@ function BotCardConditions($cardID)
     "flying_kick" => ["lp" => [2, 2]],
     "lava_burst" => ["lp" => [3, 3]],
     "phoenix_flame" => ["dp" => [2, 1]],
+    "burning_blade_dance", "demonstrate_devotion", "display_loyalty" => ["ga" => "drac2"],
+    "cut_through" => ["ga" => "dagger", "dgp" => 1],
+    "second_strike" => ["ga" => "dealt"],
+    "current_funnel" => ["ga" => "lastLightning"],
+    "flittering_charge" => ["ga" => "instant"],
+    "skyzyk", "rush_of_power" => ["gap" => 1],
+    "path_of_same_ends" => ["ga" => "always", "atk" => 1],
     "pouncing_qi" => ["combo" => BOT_FLAG_LAST_TIGER, "cp" => 1, "cga" => true],
     "seek_vengeance", "vengeance_never_rests" => ["combo" => BOT_FLAG_LAST_EDGE, "cga" => true],
     default => [],
@@ -155,6 +181,7 @@ function BotConditionalPower($attack, $flags)
   if (isset($cond["dp"]) && BotCounter($flags, BOT_DRAC_SHIFT) + (!empty($attack["dracAttack"]) ? 1 : 0) >= $cond["dp"][0]) $bonus += $cond["dp"][1];
   if (isset($cond["combo"]) && ($flags & $cond["combo"])) $bonus += $cond["cp"] ?? 0;
   if (isset($cond["lgp"]) && ($flags & BOT_FLAG_LIGHTNING_PLAYED)) $bonus += $cond["lgp"];
+  if (isset($cond["dgp"]) && ($flags & BOT_FLAG_DAGGER_HIT)) $bonus += $cond["dgp"];
   return $bonus;
 }
 
@@ -166,7 +193,21 @@ function BotConditionalGoAgain($attack, $flags)
     "drac2" => BotCounter($flags, BOT_DRAC_SHIFT) + (!empty($attack["dracAttack"]) ? 1 : 0) >= 2,
     "red2" => BotCounter($flags, BOT_RED_SHIFT) + (!empty($attack["red"]) ? 1 : 0) >= 2,
     "lightning" => ($flags & BOT_FLAG_LIGHTNING_PLAYED) != 0,
+    "dagger" => ($flags & BOT_FLAG_DAGGER_HIT) != 0,
+    "dealt" => ($flags & BOT_FLAG_DAMAGE_DEALT) != 0,
+    "lastLightning" => ($flags & BOT_FLAG_LAST_ACTION_LIGHTNING) != 0,
+    "instant" => ($flags & BOT_FLAG_INSTANT_CHAIN) != 0,
+    "always" => true,
     default => false,
+  };
+}
+
+function BotConditionalGoAgainChance($attack, $flags)
+{
+  return match ($attack["cond"]["ga"] ?? "") {
+    "dagger" => ($flags & BOT_FLAG_DAGGER_ATTACKED) ? BOT_DAGGER_HIT_CHANCE : 0.0,
+    "dealt" => BotCounter($flags, BOT_LINK_SHIFT) > 0 ? BOT_DAMAGE_DEALT_CHANCE : 0.0,
+    default => 0.0,
   };
 }
 
@@ -174,6 +215,10 @@ function BotPlayedFlags($flags, $item)
 {
   if (!empty($item["red"])) $flags = BotCounterAdd($flags, BOT_RED_SHIFT);
   if (!empty($item["lightning"])) $flags |= BOT_FLAG_LIGHTNING_PLAYED;
+  $kind = $item["kind"] ?? "";
+  if ($kind == "action" || !empty($item["isAA"])) $flags = !empty($item["lightning"]) ? $flags | BOT_FLAG_LAST_ACTION_LIGHTNING : $flags & ~BOT_FLAG_LAST_ACTION_LIGHTNING;
+  if ($kind == "action") $flags = BotCounterAdd($flags, BOT_NAA_SHIFT);
+  if ($kind == "instant") $flags |= BOT_FLAG_INSTANT_CHAIN;
   return $flags;
 }
 
@@ -181,18 +226,40 @@ function BotAttackedFlags($flags, $attack)
 {
   $flags = BotCounterAdd(BotPlayedFlags($flags, $attack), BOT_LINK_SHIFT);
   if (!empty($attack["dracAttack"])) $flags = BotCounterAdd($flags, BOT_DRAC_SHIFT);
+  if (empty($attack["isAA"]) && str_contains($attack["subtype"] ?? "", "dagger")) $flags |= BOT_FLAG_DAGGER_ATTACKED;
   return ($flags & ~BOT_COMBO_FLAGS) | BotComboSourceFlag($attack["id"] ?? "");
 }
 
 function BotChainStartFlags($playerID)
 {
-  global $CS_NumAttacks, $CS_NumRedPlayed, $CS_NumLightningPlayed, $ChainLinks;
+  global $CS_NumAttacks, $CS_NumRedPlayed, $CS_NumLightningPlayed, $ChainLinks, $CS_DamageDealt, $CS_ArcaneDamageDealt, $CS_ActionsPlayed, $CS_NumNonAttackCards;
+  global $CCS_NumInstantsPlayedByAttackingPlayer, $CCS_FlickedDamage, $chainLinks, $chainLinkSummary, $mainPlayer;
   $flags = BotCounterAdd(0, BOT_LINK_SHIFT, intval(GetClassState($playerID, $CS_NumAttacks)));
   $flags = BotCounterAdd($flags, BOT_DRAC_SHIFT, NumDraconicChainLinks());
   $flags = BotCounterAdd($flags, BOT_RED_SHIFT, intval(GetClassState($playerID, $CS_NumRedPlayed)));
   if (intval(GetClassState($playerID, $CS_NumLightningPlayed)) > 0) $flags |= BOT_FLAG_LIGHTNING_PLAYED;
   if (isset($ChainLinks) && $ChainLinks->NumLinks() > 0) $flags |= BotComboSourceFlag($ChainLinks->LastLink()->AttackCard()->ID());
+  if (intval(GetClassState($playerID, $CS_DamageDealt)) + intval(GetClassState($playerID, $CS_ArcaneDamageDealt)) > 0) $flags |= BOT_FLAG_DAMAGE_DEALT;
+  $actions = explode(",", strval(GetClassState($playerID, $CS_ActionsPlayed) ?? "-"));
+  $lastAction = end($actions);
+  if ($lastAction !== false && $lastAction !== "-" && $lastAction !== "" && TalentContains($lastAction, "LIGHTNING", $playerID)) $flags |= BOT_FLAG_LAST_ACTION_LIGHTNING;
+  $flags = BotCounterAdd($flags, BOT_NAA_SHIFT, intval(GetClassState($playerID, $CS_NumNonAttackCards)));
+  if ($mainPlayer == $playerID) {
+    if (intval(GetCombatChainState($CCS_NumInstantsPlayedByAttackingPlayer)) > 0) $flags |= BOT_FLAG_INSTANT_CHAIN;
+    $pieces = ChainLinkSummaryPieces();
+    $daggerHit = intval(GetCombatChainState($CCS_FlickedDamage)) > 0;
+    for ($i = 0, $count = is_array($chainLinks) ? count($chainLinks) : 0; $i < $count && !$daggerHit; ++$i) {
+      if (SubtypeContains($chainLinks[$i][0], "Dagger") && intval($chainLinkSummary[$i * $pieces] ?? 0) > 0) $daggerHit = true;
+    }
+    if ($daggerHit) $flags |= BOT_FLAG_DAGGER_HIT;
+  }
   return $flags;
+}
+
+function BotIsBriar($playerID)
+{
+  $heroID = BotHeroID($playerID);
+  return $heroID == "briar" || $heroID == "briar_warden_of_thorns";
 }
 
 function BotIsIra($playerID)
@@ -285,6 +352,9 @@ function BotHeroCardPatch($item, $playerID, $context)
   $item["draconic"] = ($item["kind"] == "attack-reaction" || $item["kind"] == "instant") && TalentContains($item["id"], "DRACONIC", $playerID);
   $item["cond"] = BotCardConditions($item["id"]);
   $item["dracAttack"] = $item["kind"] == "attack" && TalentContains($item["id"], "DRACONIC", $playerID);
+  if ($item["id"] == "art_of_the_dragon_blood_red" && $item["dracAttack"]) $item["goAgain"] = true;
+  if ($item["id"] == "blood_runs_deep_red" && str_starts_with($context["key"] ?? "", "now")) $item["cost"] = max(0, $item["cost"] - NumDraconicChainLinks());
+  if (str_starts_with($item["id"], "lightning_surge_") && $item["zone"] == "ARS") $item["goAgain"] = true;
   $item["red"] = intval(PitchValue($item["id"])) == 1;
   $item["lightning"] = TalentContains($item["id"], "LIGHTNING", $playerID);
   $item["iraSecond"] = $item["kind"] == "attack" && BotIsIra($playerID);
@@ -419,6 +489,7 @@ function BotAbilityUses($kind, $cost, $goAgain, $pump, $pumpTarget, $pumpGoAgain
 function BotHeroAbilityUses($heroID)
 {
   return match ($heroID) {
+    "scabskin_leathers" => BotAbilityUses("scab", 0, false, 0, "any", false),
     "hala_bladesaint_of_the_vow" => BotAbilityUses("action", 3, true, 1, "w:sword", false, BOT_FLAG_SHARPENED),
     "aurora_legacy_of_tempest" => BotAbilityUses("instant", 2, false, 0, "aa", true),
     "ser_boltyn_breaker_of_dawn" => ["pumpNext" => false] + BotAbilityUses("attack-reaction", 0, false, 0, "w|pumped", true, 0, BOT_FLAG_SOUL),
@@ -427,6 +498,26 @@ function BotHeroAbilityUses($heroID)
 }
 
 function BotHeroSolverSources($playerID, $currentTurn)
+{
+  return [...BotHeroOwnSolverSources($playerID, $currentTurn), ...BotEquipmentSolverSources($playerID, $currentTurn)];
+}
+
+function BotEquipmentSolverSources($playerID, $currentTurn)
+{
+  global $turn;
+  $sources = [];
+  $character = &GetPlayerCharacter($playerID);
+  $pieces = CharacterPieces();
+  for ($i = $pieces, $count = count($character); $i < $count; $i += $pieces) {
+    $cardID = $character[$i];
+    if ($cardID != "scabskin_leathers" || intval($character[$i + 1] ?? 0) != 2) continue;
+    if ($currentTurn && !IsPlayable($cardID, $turn[0], "CHAR", $i)) continue;
+    $sources[] = ["id" => $cardID, "zone" => "CHAR", "index" => $i];
+  }
+  return $sources;
+}
+
+function BotHeroOwnSolverSources($playerID, $currentTurn)
 {
   global $turn;
   $heroID = BotHeroID($playerID);

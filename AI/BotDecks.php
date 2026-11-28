@@ -149,7 +149,7 @@ function BotDeckPools()
       "deck" => ["arcane_polarity_red", "arcane_polarity_red", "aspect_of_tiger_body_red", "aspect_of_tiger_body_red", "bittering_thorns_red",
         "bittering_thorns_red", "blessing_of_qi_red", "blessing_of_qi_red", "bluster_buff_red", "bluster_buff_red", "flying_kick_red",
         "flying_kick_red", "flying_kick_blue", "flying_kick_blue", "growl_red", "growl_red", "humble_red", "humble_red", "on_the_horizon_red",
-        "on_the_horizon_red", "pouncing_qi_red", "pouncing_qi_red", "pouncing_qi_blue", "pouncing_qi_blue", "reinforce_the_line_red",
+        "razor_reflex_red", "pouncing_qi_red", "pouncing_qi_red", "pouncing_qi_blue", "pouncing_qi_blue", "reinforce_the_line_red",
         "reinforce_the_line_red", "scar_for_a_scar_red", "scar_for_a_scar_red", "seek_vengeance_red", "seek_vengeance_red", "seek_vengeance_blue",
         "seek_vengeance_blue", "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_red", "sirens_of_safe_harbor_yellow",
         "sirens_of_safe_harbor_yellow", "sirens_of_safe_harbor_blue", "sirens_of_safe_harbor_blue", "untamed_red", "untamed_red",
@@ -234,6 +234,7 @@ function BotDeckKeyForHero($heroID)
     "bravo_flattering_showman" => "BravoSAGE",
     "kayo" => "KayoSAGE",
     "dorinthea" => "DorintheaSAGE",
+    "ira_crimson_haze" => "IraSAGE",
     "cindra_dracai_of_retribution" => "CindraCC",
     "hala_bladesaint_of_the_vow" => "HalaCC",
     "levia_shadowborn_abomination" => "LeviaCC",
@@ -467,6 +468,32 @@ function BotPresentDeck($key, $opponentHeroID = "", $botTurnOrder = "first")
       $equipment = $arcane
         ? ["head" => "nullrune_hood", "chest" => "nullrune_robe", "arms" => "skera_strapping", "legs" => "shamanic_shinbones"]
         : ["head" => "knucklehead", "chest" => "predatory_plating", "arms" => "blade_beckoner_gauntlets", "legs" => "flat_trackers"];
+      break;
+
+    case "IraSAGE":
+      $matchup = match (true) {
+        $hasClass("wizard") || $hasClass("runeblade") || preg_match('/kano|blaze|iyslander|oscilio|briar|viserai|aurora/', $name) == 1 => "arcane",
+        preg_match('/bravo|azalea|valda/', $name) == 1 => "dominate",
+        preg_match('/oldhim|dorinthea|enigma|nuu|terra|riptide|dromai/', $name) == 1 => "slow",
+        preg_match('/\b(?:kayo|rhinar|katsu|fai|ira|cindra|dash|boltyn|fang|kassai|levia)\b/', $name) == 1 => "aggro",
+        default => "default",
+      };
+      $flex = ["arcane_polarity_red", "reinforce_the_line_red", "humble_red", "on_the_horizon_red", "razor_reflex_red", "bluster_buff_red"];
+      $keep = match ($matchup) {
+        "arcane" => ["arcane_polarity_red"],
+        "dominate" => ["reinforce_the_line_red"],
+        "slow" => ["humble_red"],
+        "aggro" => ["on_the_horizon_red", "razor_reflex_red"],
+        default => ["bluster_buff_red"],
+      };
+      $deck = array_values(array_filter($deck, fn($cardID) => !in_array($cardID, $flex, true) || in_array($cardID, $keep, true)));
+      $arcane = $matchup == "arcane";
+      $equipment = [
+        "head" => $arcane ? "mask_of_the_swarming_claw" : "blade_beckoner_helm",
+        "chest" => $arcane ? "double_cross_strap" : "blood_scent",
+        "arms" => "tearing_shuko",
+        "legs" => "pouncing_paws",
+      ];
       break;
 
     case "DorintheaSAGE":
